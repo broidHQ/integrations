@@ -15,23 +15,23 @@ Thanks!  :heart:
 
 | Name             | Lastest version    |
 | ---------------- |:------------------:|
-| [broid-slack](https://github.com/broidhq/broid-slack)      | 1.0.               |
-| [broid-twitter](https://github.com/broidhq/broid-twitter)      | 1.0.               |
-| [broid-viber](https://github.com/broidhq/broid-viber)      | 1.0.               |
-| [broid-line](https://github.com/broidhq/broid-line)      | 1.0.               |
-| [broid-callr](https://github.com/broidhq/broid-callr)      | 1.0.               |
-| [broid-twilio](https://github.com/broidhq/broid-twilio)      | 1.0.               |
-| [broid-skype](https://github.com/broidhq/broid-skype)      | 1.0.               |
-| [broid-discord](https://github.com/broidhq/broid-discord)      | 1.0.               |
-| [broid-messenger](https://github.com/broidhq/broid-messenger)      | 1.0.               |
-| [broid-telegram](https://github.com/broidhq/broid-telegram)      | 1.0.               |
-| [broid-kik](https://github.com/broidhq/broid-kik)      | 1.0.               |
+| [broid-slack](https://github.com/broidhq/broid-slack)      | 1.0.0               |
+| [broid-twitter](https://github.com/broidhq/broid-twitter)      | 1.0.0               |
+| [broid-viber](https://github.com/broidhq/broid-viber)      | 1.0.0               |
+| [broid-line](https://github.com/broidhq/broid-line)      | 1.0.0               |
+| [broid-callr](https://github.com/broidhq/broid-callr)      | 1.0.0               |
+| [broid-twilio](https://github.com/broidhq/broid-twilio)      | 1.0.0               |
+| [broid-skype](https://github.com/broidhq/broid-skype)      | 1.0.0               |
+| [broid-discord](https://github.com/broidhq/broid-discord)      | 1.0.0               |
+| [broid-messenger](https://github.com/broidhq/broid-messenger)      | 1.0.0               |
+| [broid-telegram](https://github.com/broidhq/broid-telegram)      | 1.0.0               |
+| [broid-kik](https://github.com/broidhq/broid-kik)      | 1.0.0               |
 
 ## Helpers
 | Name             | Lastest version    |
 | ---------------- |:------------------:|
-| [broid-schemas](https://github.com/broidhq/broid-schemas)      | 1.0.               |
-| [broid-helpers](https://github.com/broidhq/broid-helpers)      | 1.0.               |
+| [broid-schemas](https://github.com/broidhq/broid-schemas)      | 1.0.0               |
+| [broid-helpers](https://github.com/broidhq/broid-helpers)      | 1.0.0               |
 
 ___
 
