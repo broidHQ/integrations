@@ -27,7 +27,7 @@ Thanks!  :heart:
 | [broid-telegram](https://github.com/broidhq/broid-telegram)      | 1.0.0               |
 | [broid-kik](https://github.com/broidhq/broid-kik)      | 1.0.0               |
 
-## Helpers
+## Others repos
 | Name             | Lastest version    |
 | ---------------- |:------------------:|
 | [broid-schemas](https://github.com/broidhq/broid-schemas)      | 1.0.0               |
