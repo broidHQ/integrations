@@ -40,7 +40,7 @@ Thanks!  :heart:
 
 ___
 
-__Contributors__:
+## Contributors
 
 [killix](https://github.com/killix)
 
