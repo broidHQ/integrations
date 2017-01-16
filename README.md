@@ -26,10 +26,14 @@ Thanks!  :heart:
 | Messenger   | [1.0.0](https://github.com/broidhq/broid-messenger)  |
 | Telegram    | [1.0.0](https://github.com/broidhq/broid-telegram)   |
 | Kik         | [1.0.0](https://github.com/broidhq/broid-kik)        |
-| IRC         | Coming on Q1 2017   |
-| Email       | Coming on Q1 2017   |
-| Alexa       | Coming on Q2 2017   |
-| GroupMe     | Coming on Q2 2017   |
+| IRC                   | Coming - [issue#12](https://github.com/broidHQ/feedhack/issues/12)   |
+| Email                 | Coming - [issue#13](https://github.com/broidHQ/feedhack/issues/13)   |
+| Alexa                 | Coming - [issue#10](https://github.com/broidHQ/feedhack/issues/10)   |
+| GroupMe               | Coming - [issue#11](https://github.com/broidHQ/feedhack/issues/11)   |
+| Microsoft Cortana     | Coming - [issue#9](https://github.com/broidHQ/feedhack/issues/9)     |
+| Cisco Tropo           | Coming - [issue#8](https://github.com/broidHQ/feedhack/issues/8)     |
+| Cisco Spark           | Coming - [issue#7](https://github.com/broidHQ/feedhack/issues/7)     |
+| Google Assistant      | Coming - [issue#6](https://github.com/broidHQ/feedhack/issues/6)     |
 
 
 ## Others repos
