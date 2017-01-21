@@ -26,6 +26,7 @@ Thanks!  :heart:
 | Messenger   | [1.0.0](https://github.com/broidhq/broid-messenger)  |
 | Telegram    | [1.0.0](https://github.com/broidhq/broid-telegram)   |
 | Kik         | [1.0.0](https://github.com/broidhq/broid-kik)        |
+| Flowdock              | Coming - [issue#18](https://github.com/broidHQ/feedhack/issues/18)   |
 | IRC                   | Coming - [issue#12](https://github.com/broidHQ/feedhack/issues/12)   |
 | Email                 | Coming - [issue#13](https://github.com/broidHQ/feedhack/issues/13)   |
 | Alexa                 | Coming - [issue#10](https://github.com/broidHQ/feedhack/issues/10)   |
