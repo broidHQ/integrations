@@ -15,7 +15,7 @@ Thanks!  :heart:
 
 | Name        | Lastest version                                      |
 | ----------- |:----------------------------------------------------:|
-| Slack       | [1.0.0](https://github.com/broidhq/broid-slack)      |
+| Slack       | [1.0.1](https://github.com/broidhq/broid-slack)      |
 | Twitter     | [1.0.0](https://github.com/broidhq/broid-twitter)    |
 | Viber       | [1.0.0](https://github.com/broidhq/broid-viber)      |
 | Line        | [1.0.0](https://github.com/broidhq/broid-line)       |
