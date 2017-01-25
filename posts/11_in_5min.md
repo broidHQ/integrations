@@ -1,13 +1,12 @@
 # Integrate 11 messaging platforms in 5 minutes.
 
-Making available bot or application on 11 different platforms can be long and tedious. Broid allows you to do this very quickly.
+The task of making your bot or application available on 11 different platforms can be long and tedious. Broid allows you to do this very quickly.
 
-First you have to sign in on all the platforms, here is how to do this for:
+First step is you have to sign in on all the platforms:
 
-- Slack
 - Discord
 - Messenger
-- Discord
+- Slack
 - Twitter
 
 ## Create an nodejS project
@@ -38,7 +37,7 @@ ramda
 
 ## Connect your application
 
-Because each broid integrations provide you an observable, the first part of the code can look like:
+Each broid integration provides you an observable, the first part of the code can look like:
 
 ```js
 const Rx = require("rxjs/Rx");
@@ -77,11 +76,11 @@ Rx.Observable.merge(...R.map(client => client.connect(), R.values(clients)))
 });
 ```
 
-Now we our application can connect to the 11 messaging plateforms.
+Now our application can connect to all 11 messaging platforms.
 
-## Listen to messages coming
+## Listen to incoming messages
 
-Really simple, the code look like
+Really simple:
 
 ```js
 Rx.Observable.merge(...R.map(client => client.listen(), R.values(clients)))
@@ -92,11 +91,11 @@ Rx.Observable.merge(...R.map(client => client.listen(), R.values(clients)))
 
 ```
 
-At this point, our application can hear all messages coming from theses 11 platforms.
+At this point, our application can receive all messages coming from theses 11 platforms.
 
 ## Respond to an hello world message
 
-Now let make some greeting in our application by responding only to an “hello world message”
+Next we can handle a greeting in our application by responding only to a "hello world" message.
 
 ```js
 Rx.Observable.merge(...R.map(client => client.listen(), R.values(clients)))
