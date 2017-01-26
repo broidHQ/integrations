@@ -2,7 +2,9 @@
 <img alt="Broid.ai" width="500" src="https://cloud.githubusercontent.com/assets/22947293/22179714/e63879ca-e029-11e6-9234-d317a0ae57a2.png">
 </p>
 
-Broid is an open source project. Broid wouldn't be where it is now without contributions by the community. Please consider forking Broid to improve, enhance or fix issues. If you feel like the community will benefit from your fork, please open a pull request on the corresponding repo.
+Broid _Parsers_ is an **open source project** providing a suite of [Activity Streams 2](https://www.w3.org/TR/activitystreams-core/) libraries for unified communications among a vast number of communication platforms.
+
+Broid wouldn't be where it is now without contributions by the community. Please consider forking Broid to improve, enhance or fix issues. If you feel like the community will benefit from your fork, please open a pull request on the corresponding repo.
 
 This repo is a place to report bugs, give feedback and share ideas on how we can improve [Broid](http://www.broid.ai).
 
