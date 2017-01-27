@@ -17,18 +17,18 @@ Thanks!  :heart:
 
 | Name        | Lastest version                                      |
 | ----------- |:----------------------------------------------------:|
-| Slack       | [1.1.1](https://github.com/broidhq/broid-slack)      |
-| Twitter     | [1.1.1](https://github.com/broidhq/broid-twitter)    |
-| Viber       | [1.1.1](https://github.com/broidhq/broid-viber)      |
-| Line        | [1.1.1](https://github.com/broidhq/broid-line)       |
-| Callr       | [1.1.1](https://github.com/broidhq/broid-callr)      |
-| Twilio      | [1.1.1](https://github.com/broidhq/broid-twilio)     |
-| Skype       | [1.1.1](https://github.com/broidhq/broid-skype)      |
-| Discord     | [1.1.1](https://github.com/broidhq/broid-discord)    |
-| Messenger   | [1.1.1](https://github.com/broidhq/broid-messenger)  |
-| Telegram    | [1.1.1](https://github.com/broidhq/broid-telegram)   |
-| Kik         | [1.1.1](https://github.com/broidhq/broid-kik)        |
-| Flowdock              | [1.0.1](https://github.com/broidhq/broid-flowdock)    |
+| Slack       | [![Build Status](https://travis-ci.org/broidHQ/broid-slack.svg?branch=master)](https://travis-ci.org/broidHQ/broid-slack) [![npm version](https://img.shields.io/npm/v/broid-slack.svg?style=flat)](https://www.npmjs.com/package/broid-slack) [![readme](https://img.shields.io/badge/read-readme-green.svg?style=flat)](https://github.com/broidhq/broid-slack)  |
+| Twitter     | [![Build Status](https://travis-ci.org/broidHQ/broid-twitter.svg?branch=master)](https://travis-ci.org/broidHQ/broid-twitter) [![npm version](https://img.shields.io/npm/v/broid-twitter.svg?style=flat)](https://www.npmjs.com/package/broid-twitter) [![readme](https://img.shields.io/badge/read-readme-green.svg?style=flat)](https://github.com/broidhq/broid-twitter) |
+| Viber       | [![Build Status](https://travis-ci.org/broidHQ/broid-viber.svg?branch=master)](https://travis-ci.org/broidHQ/broid-viber) [![npm version](https://img.shields.io/npm/v/broid-viber.svg?style=flat)](https://www.npmjs.com/package/broid-viber) [![readme](https://img.shields.io/badge/read-readme-green.svg?style=flat)](https://github.com/broidhq/broid-viber) |
+| Line        | [![Build Status](https://travis-ci.org/broidHQ/broid-line.svg?branch=master)](https://travis-ci.org/broidHQ/broid-line) [![npm version](https://img.shields.io/npm/v/broid-line.svg?style=flat)](https://www.npmjs.com/package/broid-line) [![readme](https://img.shields.io/badge/read-readme-green.svg?style=flat)](https://github.com/broidhq/broid-line)  |
+| Callr       | [![Build Status](https://travis-ci.org/broidHQ/broid-callr.svg?branch=master)](https://travis-ci.org/broidHQ/broid-callr) [![npm version](https://img.shields.io/npm/v/broid-callr.svg?style=flat)](https://www.npmjs.com/package/broid-callr) [![readme](https://img.shields.io/badge/read-readme-green.svg?style=flat)](https://github.com/broidhq/broid-callr) |
+| Twilio      | [![Build Status](https://travis-ci.org/broidHQ/broid-twilio.svg?branch=master)](https://travis-ci.org/broidHQ/broid-twilio) [![npm version](https://img.shields.io/npm/v/broid-twilio.svg?style=flat)](https://www.npmjs.com/package/broid-twilio) [![readme](https://img.shields.io/badge/read-readme-green.svg?style=flat)](https://github.com/broidhq/broid-twilio)|
+| Skype       | [![Build Status](https://travis-ci.org/broidHQ/broid-skype.svg?branch=master)](https://travis-ci.org/broidHQ/broid-skype) [![npm version](https://img.shields.io/npm/v/broid-skype.svg?style=flat)](https://www.npmjs.com/package/broid-skype) [![readme](https://img.shields.io/badge/read-readme-green.svg?style=flat)](https://github.com/broidhq/broid-skype) |
+| Discord     | [![Build Status](https://travis-ci.org/broidHQ/broid-discord.svg?branch=master)](https://travis-ci.org/broidHQ/broid-discord) [![npm version](https://img.shields.io/npm/v/broid-discord.svg?style=flat)](https://www.npmjs.com/package/broid-discord) [![readme](https://img.shields.io/badge/read-readme-green.svg?style=flat)](https://github.com/broidhq/broid-discord) |
+| Messenger   | [![Build Status](https://travis-ci.org/broidHQ/broid-messenger.svg?branch=master)](https://travis-ci.org/broidHQ/broid-messenger) [![npm version](https://img.shields.io/npm/v/broid-messenger.svg?style=flat)](https://www.npmjs.com/package/broid-messenger) [![readme](https://img.shields.io/badge/read-readme-green.svg?style=flat)](https://github.com/broidhq/broid-messenger) |
+| Telegram    | [![Build Status](https://travis-ci.org/broidHQ/broid-telegram.svg?branch=master)](https://travis-ci.org/broidHQ/broid-telegram) [![npm version](https://img.shields.io/npm/v/broid-telegram.svg?style=flat)](https://www.npmjs.com/package/broid-telegram) [![readme](https://img.shields.io/badge/read-readme-green.svg?style=flat)](https://github.com/broidhq/broid-telegram) |
+| Kik         | [![Build Status](https://travis-ci.org/broidHQ/broid-kik.svg?branch=master)](https://travis-ci.org/broidHQ/broid-kik) [![npm version](https://img.shields.io/npm/v/broid-kik.svg?style=flat)](https://www.npmjs.com/package/broid-kik) [![readme](https://img.shields.io/badge/read-readme-green.svg?style=flat)](https://github.com/broidhq/broid-kik) |
+| Flowdock              | [![Build Status](https://travis-ci.org/broidHQ/broid-flowdock.svg?branch=master)](https://travis-ci.org/broidHQ/broid-flowdock) [![npm version](https://img.shields.io/npm/v/broid-flowdock.svg?style=flat)](https://www.npmjs.com/package/broid-flowdock) [![readme](https://img.shields.io/badge/read-readme-green.svg?style=flat)](https://github.com/broidhq/broid-flowdock) |
 | IRC                   | Coming - [issue#12](https://github.com/broidHQ/feedhack/issues/12)   |
 | Email                 | Coming - [issue#13](https://github.com/broidHQ/feedhack/issues/13)   |
 | Alexa                 | Coming - [issue#10](https://github.com/broidHQ/feedhack/issues/10)   |
@@ -43,8 +43,8 @@ Thanks!  :heart:
 
 | Name               | Lastest version                                        |
 | ------------------ |:------------------------------------------------------:|
-| broid-schemas      | [1.1.1](https://github.com/broidhq/broid-schemas)      |
-| broid-utils        | [1.0.5](https://github.com/broidhq/broid-utils)      |
+| broid-schemas      | [![npm version](https://img.shields.io/npm/v/broid-schemas.svg?style=flat)](https://www.npmjs.com/package/broid-schemas) [![readme](https://img.shields.io/badge/read-readme-green.svg?style=flat)](https://github.com/broidhq/broid-schemas)     |
+| broid-utils        | [![Build Status](https://travis-ci.org/broidHQ/broid-utils.svg?branch=master)](https://travis-ci.org/broidHQ/broid-utils) [![npm version](https://img.shields.io/npm/v/broid-utils.svg?style=flat)](https://www.npmjs.com/package/broid-utils) [![readme](https://img.shields.io/badge/read-readme-green.svg?style=flat)](https://github.com/broidhq/broid-utils)|
 
 ___
 
