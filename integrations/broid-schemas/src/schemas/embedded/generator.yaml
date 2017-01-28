@@ -1,0 +1,10 @@
+type: object
+properties:
+  "id":
+    type: string
+  type:
+    type: string
+    enum: [ Service ]
+  name:
+    type: string
+required: [ id, type, name ]

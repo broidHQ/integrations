@@ -1,0 +1,27 @@
+type: object
+properties:
+  "@context":
+    type: string
+    enum: [ "https://www.w3.org/ns/activitystreams" ]
+  type:
+    type: string
+    enum: [ Create, Update, Delete ]
+  generator:
+    $ref: "http://schemas.broid.ai/embedded/generator.json"
+  to:
+    oneOf:
+      - $ref: "http://schemas.broid.ai/embedded/actor.json"
+        required: [ id, type ]
+      - $ref: "http://schemas.broid.ai/embedded/group.json"
+        required: [ id, type ]
+  object:
+    oneOf:
+      - $ref: "http://schemas.broid.ai/object/note.json"
+        required: [ type, content ]
+      - $ref: "http://schemas.broid.ai/object/media.json"
+        required: [ type, url ]
+      - $ref: "http://schemas.broid.ai/object/place.json"
+        required: [ type, latitude, longitude ]
+      - $ref: "http://schemas.broid.ai/object/collection.json"
+        required: [ type, items ]
+required: [ type, generator, to, object ]

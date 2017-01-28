@@ -1,0 +1,42 @@
+{
+  "name": "broid-utils",
+  "version": "1.0.5",
+  "main": "lib/index.js",
+  "license": "AGPL-3.0+",
+  "author": "Broid Team <opensource@broid.ai> (https://broid.ai)",
+  "description": "Broid Utils used in Broid Integrations.",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:broidHQ/broid-utils.git"
+  },
+  "bugs": {
+    "url": "https://github.com/broidHQ/feedhack/issues"
+  },
+  "homepage": "https://github.com/broidHQ/feedhack#readme",
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "watch": "concurrently --kill-others \"npm run lint:watch\" \"npm run tsc:watch\"",
+    "lint": "tslint -c tslint.json src/*",
+    "lint:watch": "watch 'tslint -c tslint.json src/*' src",
+    "tsc:watch": "tsc --watch",
+    "clean": "rm -rf lib && rm -rf typings",
+    "travis": "npm run lint",
+    "release": "npm run clean && typings install && npm run build && npm publish"
+  },
+  "dependencies": {
+    "pino": "^3.0.5",
+    "ramda": "^0.22.1"
+  },
+  "devDependencies": {
+    "concurrently": "^3.1.0",
+    "tslint": "^4.3.1",
+    "tslint-eslint-rules": "^3.2.3",
+    "typescript": "^2.1.4",
+    "typings": "^2.1.0",
+    "watch": "^1.0.1"
+  }
+}

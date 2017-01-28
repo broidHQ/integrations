@@ -1,0 +1,37 @@
+{
+  "@context": "https://www.w3.org/ns/activitystreams",
+  "generator": {
+    "id": "test_service",
+    "name": "flowdock",
+    "type": "Service"
+  },
+  "published": 1485039664944,
+  "type": "Create",
+  "actor": {
+    "id": "266836",
+    "name": "Marc Boui",
+    "type": "Person"
+  },
+  "target": {
+    "id": "bd9b6be2-f2b9-4918-ae6d-370aa68e3f5a",
+    "name": "Main",
+    "type": "Group"
+  },
+  "object": {
+    "content": "hello world with hashtag #tag1 ",
+    "id": "87",
+    "type": "Note",
+    "context": {
+      "content": "sOLFpMUoArB-KiqeUTTRqUwVcZP",
+      "name": "thread",
+      "type": "Object"
+    },
+    "tag": [
+      {
+        "id": "tag1",
+        "name": "tag1",
+        "type": "Object"
+      }
+    ]
+  }
+}

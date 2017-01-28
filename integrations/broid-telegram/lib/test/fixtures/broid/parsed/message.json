@@ -1,0 +1,1 @@
+{"@context":"https://www.w3.org/ns/activitystreams","generator":{"id":"test_service","name":"telegram","type":"Service"},"published":1485173014,"type":"Create","actor":{"id":"43418205","name":"Killix","type":"Person"},"target":{"id":"-199586965","name":"test","type":"Group"},"object":{"content":"hello world","id":"112","type":"Note"}}

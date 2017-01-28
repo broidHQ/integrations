@@ -1,0 +1,10 @@
+{
+  "name": "yourfukurou",
+  "dependencies": {
+    "eventemitter3": "registry:dt/eventemitter3#1.2.0+20161121211436"
+  },
+  "globalDependencies": {
+    "node": "registry:env/node#6.0.0+20170102175725"
+  },
+  "globalDevDependencies": {}
+}

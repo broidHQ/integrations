@@ -1,0 +1,28 @@
+type: object
+properties:
+  type:
+    type: string
+    enum: [ Image, Video ]
+  id:
+    type: string
+  name:
+    type: string
+  content:
+    type: string
+  url:
+    type: string
+    format: uri
+  preview:
+    type: string
+    format: uri
+  mediaType:
+    type: string
+  context:
+    oneOf:
+      - $ref: "http://schemas.broid.ai/object/object.json"
+      - { type: array, items: { $ref: "http://schemas.broid.ai/object/object.json" } }
+  tag:
+    oneOf:
+      - $ref: "http://schemas.broid.ai/embedded/tag.json"
+      - { type: array, items: { $ref: "http://schemas.broid.ai/embedded/tag.json" } }
+required: [ type, url ]
