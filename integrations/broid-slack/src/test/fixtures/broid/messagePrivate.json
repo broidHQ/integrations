@@ -1,0 +1,1 @@
+{"@context":"https://www.w3.org/ns/activitystreams","generator":{"id":"test_service","name":"slack","type":"Service"},"published":1485048491,"type":"Create","actor":{"id":"U0K82Q1N6","name":"killix","type":"Person"},"target":{"id":"D2LGDFRM8","name":"D2LGDFRM8","type":"Person"},"object":{"content":"hello private","id":"1485048491.000002","type":"Note"}}

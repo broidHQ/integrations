@@ -1,0 +1,51 @@
+{
+  "name": "broid-schemas",
+  "version": "1.1.1",
+  "main": "lib/index.js",
+  "license": "AGPL-3.0+",
+  "author": "Broid Team <opensource@broid.ai> (https://broid.ai)",
+  "description": "Validate Broid activity streams 2.0 messages",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:broidHQ/broid-schemas.git"
+  },
+  "bugs": {
+    "url": "https://github.com/broidHQ/feedhack/issues"
+  },
+  "homepage": "https://github.com/broidHQ/feedhack#readme",
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "make && babel src --out-dir lib",
+    "release": "npm run build && npm publish"
+  },
+  "babel": {
+    "presets": [
+      "es2015",
+      "stage-0"
+    ],
+    "plugins": [
+      [
+        "coverage",
+        {
+          "only": "src/*/"
+        }
+      ],
+      "transform-runtime"
+    ]
+  },
+  "dependencies": {
+    "ajv": "^4.10.0",
+    "bluebird": "^3.4.6"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.18.0",
+    "babel-eslint": "^7.1.1",
+    "babel-plugin-coverage": "^1.0.0",
+    "babel-plugin-transform-runtime": "^6.15.0",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-stage-0": "^6.16.0"
+  }
+}
