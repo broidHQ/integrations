@@ -1,4 +1,4 @@
-# [Broid Schemas Parser](https://github.com/broidhq/feedhack) &middot; [![npm version](https://img.shields.io/npm/v/broid-schemas.svg?style=flat)](https://www.npmjs.com/package/broid-schemas) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/broidHQ/feedhack) [![CLA assistant](https://cla-assistant.io/readme/badge/broidhq/broid-schemas)](https://cla-assistant.io/broidhq/broid-schemas)
+# [Broid Schemas Parser](https://github.com/broidhq/feedhack) &middot; [![npm version](https://img.shields.io/npm/v/broid-schemas.svg?style=flat)](https://www.npmjs.com/package/broid-schemas) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/broidHQ/feedhack) [![CLA assistant](https://cla-assistant.io/readme/badge/broidhq/feedhack)](https://cla-assistant.io/broidhq/feedhack)
 
 Broid _Integrations_ is an **open source project** providing a suite of [Activity Streams 2](https://www.w3.org/TR/activitystreams-core/) libraries for unified communications among a vast number of communication platforms.
 
@@ -91,9 +91,9 @@ Make sure that you're read and understand the [Code of Conduct](http://contribut
 
 ## CLA
 
-To protect the interests of the Broid contributors, Broid, customers and end users we require contributors to sign a [Contributors License Agreement](https://cla-assistant.io/broidhq/broid-schemas) (CLA) before we pull the changes into the main repository. [Our CLA](https://cla-assistant.io/broidhq/broid-schemas) is simple and straightforward - it requires that the contributions you make to any Broid open source project are properly licensed and that you have the legal authority to make those changes. This helps us significantly reduce future legal risk for everyone involved. It's easy---no faxing or printing required!
+To protect the interests of the Broid contributors, Broid, customers and end users we require contributors to sign a [Contributors License Agreement](https://cla-assistant.io/broidhq/feedhack) (CLA) before we pull the changes into the main repository. [Our CLA](https://cla-assistant.io/broidhq/feedhack) is simple and straightforward - it requires that the contributions you make to any Broid open source project are properly licensed and that you have the legal authority to make those changes. This helps us significantly reduce future legal risk for everyone involved. It's easy---no faxing or printing required!
 
-You can digitally sign the [CLA online](https://cla-assistant.io/broidhq/broid-schemas). Please indicate your email address in your first pull request so that we can make sure that will locate your CLA. Once you've submitted it, you no longer need to send one for subsequent submissions.
+You can digitally sign the [CLA online](https://cla-assistant.io/broidhq/feedhack). Please indicate your email address in your first pull request so that we can make sure that will locate your CLA. Once you've submitted it, you no longer need to send one for subsequent submissions.
 
 ## Copyright & License
 
