@@ -1,18 +1,18 @@
 {
   "name": "broid-discord",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "main": "lib/core/index.js",
   "license": "AGPL-3.0+",
   "author": "Broid Team <opensource@broid.ai> (https://broid.ai)",
   "description": "Convert Discord messages into Activity Streams 2 with Broid Integration",
   "repository": {
     "type": "git",
-    "url": "git@github.com:broidHQ/broid-discord.git"
+    "url": "git@github.com:broidHQ/integrations.git"
   },
   "bugs": {
-    "url": "https://github.com/broidHQ/feedhack/issues"
+    "url": "https://github.com/broidHQ/integrations/issues"
   },
-  "homepage": "https://github.com/broidHQ/feedhack#readme",
+  "homepage": "https://github.com/broidHQ/integrations/tree/master/integrations/broid-discord#readme",
   "engines": {
     "node": ">=6.0.0"
   },
