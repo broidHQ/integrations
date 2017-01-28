@@ -1,0 +1,43 @@
+#!/bin/sh -e
+
+secondDir() {
+  xargs -n1 | cut -d/ -f2
+}
+
+integrations() {
+  echo */*/package.json | secondDir | sort | sed '/^_/d'
+}
+
+revelant_directories() {
+  git diff --name-only "$TRAVIS_COMMIT" "$TRAVIS_BRANCH" | secondDir | sort | uniq
+}
+
+changed_integrations() {
+  integrations > .integrations
+  revelant_directories > .revelant_directories
+  comm -12 .integrations .revelant_directories
+}
+
+integrations=$(changed_integrations)
+echo "========= UPDATED ==========="
+echo "$integrations"
+echo "============================="
+
+command_install() {
+  for integration in $integrations; do
+    (cd "integrations/$integration" && yarn install --ignore-scripts)
+  done
+}
+
+command_test() {
+  for integration in $integrations; do
+    echo "> Testing $integration"
+    (
+      cd "integrations/$integration"
+      yarn run travis
+    )
+  done
+}
+
+# Execute given command, default to `test`
+"command_${1:-test}"
