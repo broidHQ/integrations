@@ -12,25 +12,35 @@ revelant_directories() {
   git diff --name-only "$TRAVIS_COMMIT" "$TRAVIS_BRANCH" | secondDir | sort | uniq
 }
 
-changed_integrations() {
+integrations_changed() {
   integrations > .integrations
   revelant_directories > .revelant_directories
   comm -12 .integrations .revelant_directories
 }
 
-integrations=$(changed_integrations)
-echo "========= UPDATED ==========="
-echo "$integrations"
-echo "============================="
+INTS_UPDATED=$(integrations_changed)
+if [ ${#INTS_UPDATED[@]} -eq 0 ]; then
+  echo "========= UPDATED FORCED ==========="
+  INTS_UPDATED=$(integrations)
+  echo "$INTS_UPDATED"
+  echo "============================="
+else
+  if [ -z "$INTS_UPDATED" ]; then
+    exit 1
+  fi
+  echo "========= UPDATED ==========="
+  echo "$INTS_UPDATED"
+  echo "============================="
+fi
 
 command_install() {
-  for integration in $integrations; do
+  for integration in $INTS_UPDATED; do
     (cd "integrations/$integration" && yarn install --ignore-scripts)
   done
 }
 
 command_test() {
-  for integration in $integrations; do
+  for integration in $INTS_UPDATED; do
     echo "> Testing $integration"
     (
       cd "integrations/$integration"
