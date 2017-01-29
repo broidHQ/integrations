@@ -23,8 +23,9 @@
     "lint": "tslint -c tslint.json src/*",
     "lint:watch": "watch 'tslint -c tslint.json src/*' src",
     "prepublish": "npm run test",
+    "nsp-check": "nsp check -o summary",
     "release": "npm run build && npm publish",
-    "test": "npm run lint && npm run build && nyc ava --verbose",
+    "test": "npm run lint && npm run nsp-check && npm run build && nyc ava --verbose",
     "travis": "npm run test",
     "tsc:watch": "tsc --watch",
     "watch": "concurrently --kill-others \"npm run lint:watch\" \"npm run tsc:watch\""

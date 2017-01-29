@@ -17,9 +17,11 @@
     "node": ">=6.0.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "make && babel src --out-dir lib",
-    "release": "npm run build && npm publish"
+    "nsp-check": "nsp check -o summary",
+    "release": "npm run nsp-check && npm run build && npm publish",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "travis": "npm run nsp-check"
   },
   "babel": {
     "presets": [
