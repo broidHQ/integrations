@@ -1,13 +1,13 @@
 {
   "name": "broid-schemas",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "main": "lib/index.js",
   "license": "AGPL-3.0+",
   "author": "Broid Team <opensource@broid.ai> (https://broid.ai)",
   "description": "Validate Broid activity streams 2.0 messages",
   "repository": {
     "type": "git",
-    "url": "git@github.com:broidHQ/broid-schemas.git"
+    "url": "git@github.com:broidHQ/integrations.git"
   },
   "bugs": {
     "url": "https://github.com/broidHQ/integrations/issues"

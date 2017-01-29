@@ -1,13 +1,13 @@
 {
   "name": "broid-utils",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "main": "lib/index.js",
   "license": "AGPL-3.0+",
   "author": "Broid Team <opensource@broid.ai> (https://broid.ai)",
   "description": "Broid Utils used in Broid Integrations.",
   "repository": {
     "type": "git",
-    "url": "git@github.com:broidHQ/broid-utils.git"
+    "url": "git@github.com:broidHQ/integrations.git"
   },
   "bugs": {
     "url": "https://github.com/broidHQ/integrations/issues"
