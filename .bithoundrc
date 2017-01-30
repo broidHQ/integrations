@@ -1,0 +1,28 @@
+{
+	"ignore": [
+  "**/blogposts/**",
+  "**/integrations/**/lib/**/*.js",
+	"**/integrations/**/node_modules/**"
+	],
+	"test": [
+		"**/integrations/**/src/test/**"
+	],
+	"critics": {
+		"lint": {
+			"engine": "tslint",
+      "configLocation": ".travis/tslint.json"
+		},
+		"wc": {
+			"limit": 3000
+		}
+	},
+	"dependencies": {
+		"mute": [],
+		"unused-ignores": [
+			"tslint",
+			"rimraf",
+			"nodemon",
+			"@types/*"
+		]
+	}
+}

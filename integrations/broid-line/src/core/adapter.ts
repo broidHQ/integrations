@@ -91,10 +91,12 @@ export default class Adapter {
   // Listen "message" event from Messenger
   public listen(): Observable<Object> {
     return Observable.merge(
-      Observable.fromEvent(this.session, LineBot.Events.MESSAGE,
-                              (...args) => args[1].getEvent()),
-      Observable.fromEvent(this.session, LineBot.Events.POSTBACK,
-                              (...args) => args[1].getEvent()))
+      Observable
+        .fromEvent(this.session, LineBot.Events.MESSAGE, (...args) =>
+          args[1].getEvent()),
+      Observable
+        .fromEvent(this.session, LineBot.Events.POSTBACK, (...args) =>
+          args[1].getEvent()))
       .mergeMap((event: any) => this.parser.normalize(event))
       .mergeMap((message: any) => {
         if (R.path(["source", "type"], message) === "user") {
@@ -118,12 +120,14 @@ export default class Adapter {
     const createButtons = (attachments, tpl: null): any => {
       const template = tpl || new LineBot.ButtonTemplateBuilder();
 
-      R.forEach((attachment) => {
-        let type = LineBot.Action.POSTBACK;
-        if (attachment.mediaType === "text/html") { type = LineBot.Action.URI; }
-        template.addAction(attachment.content || attachment.name, attachment.url, type);
-        return;
-      }, attachments);
+      R.forEach(
+        (attachment) => {
+          let type = LineBot.Action.POSTBACK;
+          if (attachment.mediaType === "text/html") { type = LineBot.Action.URI; }
+          template.addAction(attachment.content || attachment.name, attachment.url, type);
+          return;
+        },
+        attachments);
 
       return template;
     };
@@ -143,15 +147,19 @@ export default class Adapter {
           let objects: any = R.path(["object", "items"], data);
           if (!R.is(Array, objects)) { objects = [objects]; }
 
-          const columns = R.map((object) => {
-            const column = createButtons(object.attachment || [],
-                                         new LineBot.CarouselColumnTemplateBuilder());
-            column.setTitle(object.name);
-            column.setMessage(object.content);
-            column.setThumbnail(object.preview || object.url);
+          const columns = R.map(
+            (object) => {
+              const column = createButtons(
+                object.attachment || [],
+                new LineBot.CarouselColumnTemplateBuilder()
+              );
+              column.setTitle(object.name);
+              column.setMessage(object.content);
+              column.setThumbnail(object.preview || object.url);
 
-            return column;
-          }, objects);
+              return column;
+            },
+            objects);
 
           const carousel = new LineBot.CarouselTemplateBuilder(columns);
           return new LineBot
@@ -163,11 +171,13 @@ export default class Adapter {
           const url = R.path(["object", "url"], data);
           const preview = R.path(["object", "preview"], data);
           if (R.is(Array, attachments) && !R.isEmpty(attachments)) {
-            const attachmentsButtons = R.filter((attachment) =>
-              attachment.type === "Button" && R.isEmpty(attachment.attachment || []),
+            const attachmentsButtons = R.filter(
+              (attachment) =>
+                attachment.type === "Button" && R.isEmpty(attachment.attachment || []),
               attachments);
-            const attachmentsConfirm = R.filter((attachment) =>
-              attachment.type === "Button" && !R.isEmpty(attachment.attachment || []),
+            const attachmentsConfirm = R.filter(
+              (attachment) =>
+                attachment.type === "Button" && !R.isEmpty(attachment.attachment || []),
               attachments);
 
             if (!R.isEmpty(attachmentsConfirm)) {
