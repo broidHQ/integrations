@@ -57,7 +57,9 @@ class Adapter {
         return Promise.reject(new Error("Not supported"));
     }
     listen() {
-        return Rx_1.Observable.merge(Rx_1.Observable.fromEvent(this.session, LineBot.Events.MESSAGE, (...args) => args[1].getEvent()), Rx_1.Observable.fromEvent(this.session, LineBot.Events.POSTBACK, (...args) => args[1].getEvent()))
+        return Rx_1.Observable.merge(Rx_1.Observable
+            .fromEvent(this.session, LineBot.Events.MESSAGE, (...args) => args[1].getEvent()), Rx_1.Observable
+            .fromEvent(this.session, LineBot.Events.POSTBACK, (...args) => args[1].getEvent()))
             .mergeMap((event) => this.parser.normalize(event))
             .mergeMap((message) => {
             if (R.path(["source", "type"], message) === "user") {

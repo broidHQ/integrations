@@ -86,13 +86,15 @@ export default class Parser {
         }
       }
     } else if (normalized.numMedia > 1) {
-      let attachments = R.map((mediaURL) => {
-        const m = parseMedia(mediaURL);
-        if (m) {
-          return m;
-        }
-        return null;
-      }, normalized.mediaURLs);
+      let attachments = R.map(
+        (mediaURL) => {
+          const m = parseMedia(mediaURL);
+          if (m) {
+            return m;
+          }
+          return null;
+        },
+        normalized.mediaURLs);
       attachments = R.reject(R.isNil)(attachments);
 
       if (!R.isEmpty(attachments)) {
@@ -131,16 +133,18 @@ export default class Parser {
 
     const data = {
       eventID,
-      mediaURLs: R.reject(R.isNil)(R.map((num) => {
-        const url = body[`MediaUrl${num}`];
-        if (url) {
-          return {
-            mediatype: body[`MediaContentType${num}`],
-            url,
-          };
-        }
-        return null;
-      }, R.range(0, 11))),
+      mediaURLs: R.reject(R.isNil)(R.map(
+        (num) => {
+          const url = body[`MediaUrl${num}`];
+          if (url) {
+            return {
+              mediatype: body[`MediaContentType${num}`],
+              url,
+            };
+          }
+          return null;
+        },
+        R.range(0, 11))),
       numMedia: Number(body.NumMedia),
       senderPhoneNumber,
       text,
