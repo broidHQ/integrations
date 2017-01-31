@@ -2,6 +2,7 @@
 <img alt="Broid.ai" width="500" src="https://cloud.githubusercontent.com/assets/22947293/22179714/e63879ca-e029-11e6-9234-d317a0ae57a2.png">
 </p>
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/35b8361c345b43cb9b9e2a4e9f49ad73)](https://www.codacy.com/app/broidy/integrations?utm_source=github.com&utm_medium=referral&utm_content=broidHQ/integrations&utm_campaign=badger)
 [![Build Status](https://travis-ci.org/broidHQ/integrations.svg?branch=master)](https://travis-ci.org/broidHQ/integrations) [![NSP Checked](https://img.shields.io/badge/nsp-checked-green.svg?style=flat)](https://nodesecurity.io) [![bitHound Overall Score](https://www.bithound.io/github/broidHQ/integrations/badges/score.svg)](https://www.bithound.io/github/broidHQ/integrations) [![bitHound Code](https://www.bithound.io/github/broidHQ/integrations/badges/code.svg)](https://www.bithound.io/github/broidHQ/integrations)
 
 Broid _Integrations_ is an **open source project** providing a suite of [Activity Streams 2](https://www.w3.org/TR/activitystreams-core/) libraries for unified communications among a vast number of communication platforms.
