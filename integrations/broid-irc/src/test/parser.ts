@@ -1,5 +1,7 @@
 import test from "ava";
+import * as uuid from "node-uuid";
 import * as sinon from "sinon";
+
 import Parser from "../core/parser";
 
 import * as groupMessage from "./fixtures/group-message.json";
@@ -7,8 +9,8 @@ import * as privateMessage from "./fixtures/private-message.json";
 
 let parser: Parser;
 test.before(() => {
-  sinon.stub(Math, "random", () => {
-    return 0.5;
+  sinon.stub(uuid, "v4", () => {
+    return "2eb3b34b-3b23-4488-9879-b03e094d250e";
   });
 
   sinon.stub(Date, "now", () => {

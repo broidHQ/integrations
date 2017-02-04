@@ -8,14 +8,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 const ava_1 = require("ava");
+const uuid = require("node-uuid");
 const sinon = require("sinon");
 const parser_1 = require("../core/parser");
 const groupMessage = require("./fixtures/group-message.json");
 const privateMessage = require("./fixtures/private-message.json");
 let parser;
 ava_1.default.before(() => {
-    sinon.stub(Math, "random", () => {
-        return 0.5;
+    sinon.stub(uuid, "v4", () => {
+        return "2eb3b34b-3b23-4488-9879-b03e094d250e";
     });
     sinon.stub(Date, "now", () => {
         return 1483589416000;

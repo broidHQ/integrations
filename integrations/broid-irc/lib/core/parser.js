@@ -2,6 +2,7 @@
 const Promise = require("bluebird");
 const broid_schemas_1 = require("broid-schemas");
 const broid_utils_1 = require("broid-utils");
+const uuid = require("node-uuid");
 const R = require("ramda");
 class Parser {
     constructor(username, serviceID, logLevel) {
@@ -47,7 +48,7 @@ class Parser {
             },
             "object": {
                 content: normalized.message,
-                id: Math.floor(Math.random() * (99999998 - 10000000) + 10000000).toString(),
+                id: uuid.v4(),
                 type: "Note",
             },
             "published": Math.floor(Date.now() / 1000),

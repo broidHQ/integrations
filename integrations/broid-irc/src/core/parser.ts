@@ -1,6 +1,7 @@
 import * as Promise from "bluebird";
 import broidSchemas from "broid-schemas";
 import { cleanNulls, Logger } from "broid-utils";
+import * as uuid from "node-uuid";
 import * as R from "ramda";
 
 import { IActivityStream } from "./interfaces";
@@ -59,7 +60,7 @@ export default class Parser {
       },
       "object": {
         content: normalized.message,
-        id: Math.floor(Math.random() * (99999998 - 10000000) + 10000000).toString(),
+        id: uuid.v4(),
         type: "Note",
       },
       "published": Math.floor(Date.now() / 1000),
