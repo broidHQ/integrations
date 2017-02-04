@@ -1,0 +1,1 @@
+{"target":{"type":"Group","id":"#supersecretirc","name":"#supersecretirc"},"generator":{"type":"Service","id":"test_irc_service","name":"irc"},"object":{"content":"hello world","type":"Note","id":"54999999"},"actor":{"type":"Person","id":"SallyDude","name":"SallyDude"},"published":1483589416,"@context":"https://www.w3.org/ns/activitystreams","type":"Create"}
