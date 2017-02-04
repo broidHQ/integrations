@@ -23,7 +23,7 @@
     "lint:watch": "watch 'tslint -c tslint.json src/*' src",
     "nsp-check": "nsp check -o summary",
     "release": "npm run nsp-check && npm run build && npm publish",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo \"Error: no test specified\" && exit 0",
     "travis": "npm run test",
     "tsc:watch": "tsc --watch",
     "watch": "concurrently --kill-others \"npm run lint:watch\" \"npm run tsc:watch\""
