@@ -165,7 +165,7 @@ class Adapter {
             throw new Error("Image, Video and Note are only supported.");
         })
             .then((r) => {
-            const d = { type: "sended", serviceID: this.serviceId() };
+            const d = { type: "sent", serviceID: this.serviceId() };
             if (r && r.id) {
                 d.id = r.id;
             }
