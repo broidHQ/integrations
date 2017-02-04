@@ -126,7 +126,7 @@ class Adapter {
                     .message(flowID, content, tags, cb));
             });
         })
-            .then(({ type: "sended", serviceID: this.serviceId() }));
+            .then(({ type: "sent", serviceID: this.serviceId() }));
     }
     userByID(userID) {
         return Promise.resolve(this.storeUsers.get(userID))

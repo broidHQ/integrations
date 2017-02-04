@@ -225,7 +225,7 @@ export default class Adapter {
 
         return Promise.reject(new Error("Note, Image, Video are only supported."));
       })
-      .then(() => ({ serviceID: this.serviceId(), type: "sended" }));
+      .then(() => ({ serviceID: this.serviceId(), type: "sent" }));
   }
 
   // Return user information

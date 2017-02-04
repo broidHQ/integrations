@@ -122,7 +122,7 @@ export default class Adapter {
           return new Promise((resolve, reject) => {
             return this.session.messages.create(sms, (err) => {
               if (err) { return reject(err); }
-              return resolve({ type: "sended", serviceID: this.serviceId() });
+              return resolve({ type: "sent", serviceID: this.serviceId() });
             });
           });
         }

@@ -98,7 +98,7 @@ class Adapter {
             if (type === "Note" || type === "Image" || type === "Video") {
                 return new Promise((resolve, reject) => {
                     return this.session.call("sms.send", this.username, toNumber, content, null)
-                        .success(() => resolve({ type: "sended", serviceID: this.serviceId() }))
+                        .success(() => resolve({ type: "sent", serviceID: this.serviceId() }))
                         .error((error) => reject(error));
                 });
             }
