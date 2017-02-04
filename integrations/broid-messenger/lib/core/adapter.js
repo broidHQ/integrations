@@ -181,7 +181,7 @@ class Adapter {
                     qs: { access_token: this.token },
                     uri: "https://graph.facebook.com/v2.8/me/messages",
                 })
-                    .then(() => ({ type: "sended", serviceID: this.serviceId() }));
+                    .then(() => ({ type: "sent", serviceID: this.serviceId() }));
             }
             return Promise.reject(new Error("Only Note, Image, and Video are supported."));
         });

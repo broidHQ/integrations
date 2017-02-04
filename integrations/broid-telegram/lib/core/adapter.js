@@ -110,7 +110,7 @@ class Adapter {
             const type = R.path(["object", "type"], data);
             const toID = R.path(["to", "id"], data)
                 || R.path(["to", "name"], data);
-            const confirm = () => ({ type: "sended", serviceID: this.serviceId() });
+            const confirm = () => ({ type: "sent", serviceID: this.serviceId() });
             if (type === "Image" || type === "Video") {
                 const url = R.path(["object", "url"], data);
                 if (url.startsWith("http://") || url.startsWith("https://")) {

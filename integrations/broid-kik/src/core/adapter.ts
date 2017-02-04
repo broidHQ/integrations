@@ -159,7 +159,7 @@ export default class Adapter {
               }
 
               return this.session.send(content, toID)
-                .then(() => ({ type: "sended", serviceID: this.serviceId() }));
+                .then(() => ({ type: "sent", serviceID: this.serviceId() }));
             }
 
             throw new Error("Only Note, Image, and Video are supported.");

@@ -292,12 +292,12 @@ class Adapter {
                     return {
                         callbackID: msg.callbackID,
                         serviceID: this.serviceId(),
-                        type: "sended",
+                        type: "sent",
                     };
                 }
                 return {
                     serviceID: this.serviceId(),
-                    type: "sended",
+                    type: "sent",
                 };
             };
             if (msg.responseURL) {

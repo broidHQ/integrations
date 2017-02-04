@@ -197,7 +197,7 @@ export default class Adapter {
         if (messageBuilder) {
           const toID = R.path(["to", "id"], message);
           return this.session.sendMessage({ id: toID }, messageBuilder)
-            .then(() => ({ type: "sended", serviceID: this.serviceId() }));
+            .then(() => ({ type: "sent", serviceID: this.serviceId() }));
         }
 
         return Promise.reject(new Error("Note, Image, Video are only supported."));
