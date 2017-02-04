@@ -159,7 +159,7 @@ class Adapter {
                     params.media_ids = R.values(mediaID);
                 }
                 return this.sessionPOST(path, params)
-                    .then(() => ({ type: "sended", serviceID: this.serviceId() }));
+                    .then(() => ({ type: "sent", serviceID: this.serviceId() }));
             });
         });
     }

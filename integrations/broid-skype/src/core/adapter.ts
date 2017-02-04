@@ -248,7 +248,7 @@ export default class Adapter {
         if (type === "Note" || type === "Image" || type === "Video") {
           messageBuilder.attachments(messageAttachments);
           return Promise.fromCallback((cb) => this.session.send(messageBuilder, cb))
-            .then(() => ({ serviceID: this.serviceId(), type: "sended" }));
+            .then(() => ({ serviceID: this.serviceId(), type: "sent" }));
         }
 
         return Promise.reject(new Error("Only Note, Image, and Video are supported."));

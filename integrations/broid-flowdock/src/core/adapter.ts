@@ -174,7 +174,7 @@ export default class Adapter {
               .message(flowID, content, tags, cb));
           });
       })
-      .then(({ type: "sended", serviceID: this.serviceId() }));
+      .then(({ type: "sent", serviceID: this.serviceId() }));
   }
 
   private userByID(userID: string): Promise<any> {
