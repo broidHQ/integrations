@@ -21,16 +21,6 @@ export interface IActivityStream {
   readonly type: string;
 }
 
-export interface IActivityStream {
-  actor?: {};
-  object?: IActivityStreamObject;
-  target?: {};
-  readonly "@context": string;
-  readonly generator: {};
-  readonly published: number;
-  readonly type: string;
-}
-
 export interface IActivityStreamObject {
   attachment?: IMediaObject | IMediaObject[] | null;
   content?: string;
