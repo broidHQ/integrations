@@ -3,13 +3,13 @@ import * as Promise from "bluebird";
 
 export interface IASBase {
   id: string;
-  name: string;
+  name?: string;
   type: string;
 }
 
 export interface IASContext {
   content: string;
-  name: string;
+  name?: string;
   type: string;
 }
 
@@ -41,9 +41,9 @@ export interface IActivityStream {
    readonly published: number;
    readonly type: string;
    readonly generator: IASBase;
-   actor: IASBase;
-   target: IASBase;
-   object: IASObject;
+   actor?: IASBase;
+   target?: IASBase;
+   object?: IASObject;
  }
 
 export default function(data: any, schema: string): Promise<any> {
