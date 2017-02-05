@@ -1,9 +1,21 @@
 {
   "name": "broid-irc",
   "version": "1.0.0",
-  "main": "dist/index.js",
+  "main": "lib/core/index.js",
   "license": "AGPL-3.0+",
   "author": "Broid Team <opensource@broid.ai> (https://broid.ai)",
+  "description": "Convert IRC messages into Activity Streams 2 with Broid Integration",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:broidHQ/integrations.git"
+  },
+  "bugs": {
+    "url": "https://github.com/broidHQ/integrations/issues"
+  },
+  "homepage": "https://github.com/broidHQ/integrations/tree/master/integrations/broid-irc#readme",
+  "engines": {
+    "node": ">=6.0.0"
+  },
   "scripts": {
     "test": "npm run lint && npm run build && nyc ava --verbose",
     "build": "npm run clean && npm run copy && tsc",
@@ -13,7 +25,7 @@
     "lint": "tslint -c tslint.json src/*",
     "lint:watch": "watch 'tslint -c tslint.json src/*' src",
     "tsc:watch": "tsc --watch",
-    "travis": "npm run lint && npm run build",
+    "travis": "npm run lint && npm run build && npm run test",
     "release": "npm run build && npm publish"
   },
   "devDependencies": {
