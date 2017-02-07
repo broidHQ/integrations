@@ -127,11 +127,11 @@ export default class Adapter {
       });
   }
 
-  public send(data: Object): Promise<Object | Error> {
+  public send(data: any): Promise<Object | Error> {
     this.logger.debug("sending", { message: data });
     return broidSchemas(data, "send")
       .then(() => {
-        if (R.path(["object", "type"], data) !== "Note") {
+        if (data.object.type !== "Note") {
           return Promise.reject(new Error("Only Note is supported."));
         }
 

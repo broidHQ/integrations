@@ -93,7 +93,7 @@ class Adapter {
         this.logger.debug("sending", { message: data });
         return broid_schemas_1.default(data, "send")
             .then(() => {
-            if (R.path(["object", "type"], data) !== "Note") {
+            if (data.object.type !== "Note") {
                 return Promise.reject(new Error("Only Note is supported."));
             }
             return Promise.resolve(data)
