@@ -58,5 +58,5 @@ typings
 
 # End of https://www.gitignore.io/api/node,typings
 
-.changed_dirs
+.revelant_directories
 .integrations
