@@ -1,11 +1,11 @@
 {
 	"ignore": [
-  "**/blogposts/**",
-  "**/integrations/**/lib/**/*.js",
-	"**/integrations/**/node_modules/**"
+  "**/ressources/**",
+  "**/lib/**/*.js",
+	"**/node_modules/**"
 	],
 	"test": [
-		"**/integrations/**/src/test/**"
+		"**/src/test/**"
 	],
 	"critics": {
 		"lint": {
