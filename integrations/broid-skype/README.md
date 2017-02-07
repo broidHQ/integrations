@@ -17,7 +17,7 @@ import broidSkype from 'broid-skype'
 
 const skype = new broidSkype({
   token: 'xxxxx',
-  token_secret: 'xxxxxx',
+  tokenSecret: 'xxxxxx',
 })
 
 skype.connect()
