@@ -6,7 +6,12 @@
 [![bithoundscore][bithoundscore]][bithoundscore-url]
 [![nsp-checked][nsp-checked]][nsp-checked-url]
 
-<br>
+# Broid
+
+Broid Integrations is an open source project providing a suite of Activity Streams 2 libraries for unified communications among a vast number of communication platforms.
+
+> Connect your App to Multiple Messaging Channels with  One OpenSource Language.
+
 <br>
 <a href="https://github.com/broidHQ/integrations">
 <img alt="Broid.ai" src="https://t.broid.ai/i/b-github-cover?utm_source=github&utm_medium=readme&utm_campaign=cover#a">
@@ -15,13 +20,6 @@
 <br>
 [![gitter](https://badges.gitter.im/broidHQ/broid.svg)](https://t.broid.ai/c/Blwjlw?utm_source=github&utm_medium=readme&utm_campaign=top&link=gitter)
 
-<br>
-
-# Broid
-
-Broid Integrations is an open source project providing a suite of Activity Streams 2 libraries for unified communications among a vast number of communication platforms.
-
-> Connect your App to Multiple Messaging Channels with  One OpenSource Language.
 
 ## Install
 
