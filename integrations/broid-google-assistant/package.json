@@ -1,10 +1,10 @@
 {
-  "name": "broid-irc",
+  "name": "broid-google-assistant",
   "version": "1.0.0",
-  "main": "lib/core/index.js",
+  "main": "dist/index.js",
   "license": "AGPL-3.0+",
   "author": "Broid Team <opensource@broid.ai> (https://broid.ai)",
-  "description": "Convert IRC messages into Activity Streams 2 with Broid Integration",
+  "description": "Convert Google Assistant messages into Activity Streams 2 with Broid Integration",
   "repository": {
     "type": "git",
     "url": "git@github.com:broidHQ/integrations.git"
@@ -12,14 +12,14 @@
   "bugs": {
     "url": "https://github.com/broidHQ/integrations/issues"
   },
-  "homepage": "https://github.com/broidHQ/integrations/tree/master/integrations/broid-irc#readme",
+  "homepage": "https://github.com/broidHQ/integrations/tree/master/integrations/broid-kik#readme",
   "engines": {
     "node": ">=6.0.0"
   },
   "scripts": {
     "test": "npm run lint && npm run build && nyc ava --verbose",
     "build": "npm run clean && npm run copy && tsc",
-    "clean": "rm -rf lib && rm -rf typings",
+    "clean": "rm -rf lib",
     "copy": "copyfiles -u 1 src/**/*.json lib/",
     "watch": "concurrently --kill-others \"npm run lint:watch\" \"npm run tsc:watch\"",
     "lint": "tslint -c tslint.json src/*",
@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@types/bluebird": "^3.0.37",
-    "@types/irc": "^0.3.32",
+    "@types/node": "^7.0.5",
     "@types/node-uuid": "0.0.28",
     "@types/ramda": "0.0.3",
     "ava": "^0.18.1",
@@ -44,11 +44,12 @@
     "watch": "^1.0.1"
   },
   "dependencies": {
+    "actions-on-google": "^1.0.5",
     "bluebird": "^3.4.7",
+    "body-parser": "^1.16.0",
     "broid-schemas": "^1.1.0",
     "broid-utils": "^1.0.4",
-    "irc": "^0.5.2",
-    "mimetype": "^0.0.8",
+    "express": "^4.14.0",
     "node-uuid": "^1.4.7",
     "ramda": "^0.23.0",
     "rxjs": "^5.0.2"

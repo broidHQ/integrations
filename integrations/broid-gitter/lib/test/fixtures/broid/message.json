@@ -1,0 +1,25 @@
+{
+  "@context": "https://www.w3.org/ns/activitystreams",
+  "generator": {
+    "id": "testuser",
+    "name": "gitter",
+    "type": "Service"
+  },
+  "published": 1486333660,
+  "type": "Create",
+  "actor": {
+    "id": "588f9929d73408ce4f470489",
+    "name": "broidy",
+    "type": "Person"
+  },
+  "target": {
+    "id": "58975c67d73408ce4f484121",
+    "name": "Broid/test",
+    "type": "Group"
+  },
+  "object": {
+    "content": "hello world",
+    "id": "5897a6dc6018ccd652741c61",
+    "type": "Note"
+  }
+}
