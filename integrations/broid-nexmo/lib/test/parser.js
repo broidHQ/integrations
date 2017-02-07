@@ -9,14 +9,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 const ava_1 = require("ava");
 const parser_1 = require("../core/parser");
-const nexmoMessage = require("./fixtures/nexmo/message.json");
 const broidMessage = require("./fixtures/broid/message.json");
+const nexmoMessage = require("./fixtures/nexmo/message.json");
 let parser;
 ava_1.default.before(() => {
     parser = new parser_1.default("testuser", "info");
 });
 ava_1.default("Parse a group message", (t) => __awaiter(this, void 0, void 0, function* () {
-    let data = yield parser.parse(nexmoMessage);
+    const data = yield parser.parse(nexmoMessage);
     t.deepEqual(data, broidMessage);
 }));
 ava_1.default("Validate a group message", (t) => __awaiter(this, void 0, void 0, function* () {

@@ -104,10 +104,14 @@ export default class Adapter {
       });
   }
 
-  public send(data: Object): Promise<Object | Error> {
+  public send(data: any): Promise<Object | Error> {
     this.logger.debug("sending", { message: data });
     return broidSchemas(data, "send")
       .then(() => {
+        if (data.object.type !== "Note") {
+          return Promise.reject(new Error("Only Note is supported."));
+        }
+
         return Promise.resolve(data)
           .then((result: any) => {
             const toNumber = R.path(["to", "id"], result);

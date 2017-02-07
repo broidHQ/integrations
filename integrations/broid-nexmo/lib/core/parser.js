@@ -2,6 +2,7 @@
 const Promise = require("bluebird");
 const broid_schemas_1 = require("broid-schemas");
 const broid_utils_1 = require("broid-utils");
+const moment = require("moment");
 const uuid = require("node-uuid");
 const R = require("ramda");
 class Parser {
@@ -55,6 +56,11 @@ class Parser {
         return uuid.v4();
     }
     createActivityStream(event) {
+        let timestamp = moment().unix();
+        if (event.timestamp) {
+            timestamp = moment.utc(event.timestamp, "YYYY-MM-DD HH:mm:ss", true)
+                .unix();
+        }
         return {
             "@context": "https://www.w3.org/ns/activitystreams",
             "generator": {
@@ -62,7 +68,7 @@ class Parser {
                 name: this.generatorName,
                 type: "Service",
             },
-            "published": event.timestamp ? (new Date(event.timestamp).getTime() / 1000) : Math.floor(Date.now() / 1000),
+            "published": timestamp,
             "type": "Create",
         };
     }

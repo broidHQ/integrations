@@ -1,6 +1,7 @@
 import * as Promise from "bluebird";
 import { default as broidSchemas, IActivityStream } from "broid-schemas";
 import { cleanNulls, Logger } from "broid-utils";
+import * as moment from "moment";
 import * as uuid from "node-uuid";
 import * as R from "ramda";
 
@@ -70,6 +71,12 @@ export default class Parser {
   }
 
   private createActivityStream(event: any): IActivityStream {
+    let timestamp = moment().unix();
+    if (event.timestamp) {
+      timestamp = moment.utc(event.timestamp, "YYYY-MM-DD HH:mm:ss", true)
+        .unix();
+    }
+
     return {
       "@context": "https://www.w3.org/ns/activitystreams",
       "generator": {
@@ -77,7 +84,7 @@ export default class Parser {
         name: this.generatorName,
         type: "Service",
       },
-      "published": event.timestamp ? (new Date(event.timestamp).getTime() / 1000) : Math.floor(Date.now() / 1000),
+      "published": timestamp,
       "type": "Create",
     };
   }

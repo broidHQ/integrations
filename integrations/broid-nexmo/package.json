@@ -29,6 +29,7 @@
     "release": "npm run build && npm publish"
   },
   "devDependencies": {
+    "@types/moment": "^2.13.0",
     "@types/node": "^7.0.5",
     "@types/node-uuid": "0.0.28",
     "@types/ramda": "0.0.3",
@@ -48,6 +49,7 @@
     "broid-schemas": "^1.1.0",
     "broid-utils": "^1.0.4",
     "express": "^4.14.0",
+    "moment": "^2.17.1",
     "nexmo": "^1.2.0",
     "node-uuid": "^1.4.7",
     "ramda": "^0.23.0",
