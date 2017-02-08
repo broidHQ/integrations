@@ -67,6 +67,7 @@ This make Broid **flexible** and **usefull** to use in your application.
 |<a href="https://github.com/broidHQ/integrations/tree/master/integrations/broid-gitter"><img width="35" src="https://t.broid.ai/i/p-gitter-color?utm_source=github&utm_medium=readme&utm_campaign=integrations"></a>| broid-gitter |[![gitter][gitter-npm]][gitter-url] [![gitter][gitter-dm]][gitter-dm-url] [![gitter][integration-doc]][gitter-url]|
 |<a href="https://github.com/broidHQ/integrations/tree/master/integrations/broid-google-assistant"><img width="35" src="https://t.broid.ai/i/p-google-assistant-color?utm_source=github&utm_medium=readme&utm_campaign=integrations"></a>| broid-google-assistant |[![google-assistant][google-assistant-npm]][google-assistant-url] [![google-assistant][google-assistant-dm]][google-assistant-dm-url] [![google-assistant][integration-doc]][google-assistant-url]|
 |<a href="https://github.com/broidHQ/integrations/tree/master/integrations/broid-nexmo"><img width="35" src="https://t.broid.ai/i/p-nexmo-color?utm_source=github&utm_medium=readme&utm_campaign=integrations"></a>| broid-nexmo |[![nexmo][nexmo-npm]][nexmo-url] [![nexmo][nexmo-dm]][nexmo-dm-url] [![nexmo][integration-doc]][nexmo-url]|
+|<a href="https://github.com/broidHQ/integrations/tree/master/integrations/broid-groupme"><img width="35" src="https://t.broid.ai/i/p-groupme-color?utm_source=github&utm_medium=readme&utm_campaign=integrations"></a>| broid-groupme |[![groupme][groupme-npm]][groupme-url] [![groupme][groupme-dm]][groupme-dm-url] [![groupme][integration-doc]][groupme-url]|
 
 [integration-doc]: https://img.shields.io/badge/docs--green.svg?style=flat
 
@@ -149,6 +150,11 @@ This make Broid **flexible** and **usefull** to use in your application.
 [nexmo-dm]: https://david-dm.org/broidhq/integrations.svg?path=integrations/broid-nexmo
 [nexmo-dm-url]: https://david-dm.org/broidhq/integrations?path=integrations/broid-nexmo
 [nexmo-npm]: https://img.shields.io/npm/v/broid-nexmo.svg
+
+[groupme-url]: https://github.com/broidHQ/integrations/tree/master/integrations/broid-nexmo
+[groupme-dm]: https://david-dm.org/broidhq/integrations.svg?path=integrations/broid-nexmo
+[groupme-dm-url]: https://david-dm.org/broidhq/integrations?path=integrations/broid-nexmo
+[groupme-npm]: https://img.shields.io/npm/v/broid-nexmo.svg
 
 ### Broid Formats
 

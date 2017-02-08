@@ -1,14 +1,28 @@
-# [Broid Telegram Parser](https://github.com/broidhq/integrations) &middot; [![Build Status](https://travis-ci.org/broidHQ/broid-telegram.svg?branch=master)](https://travis-ci.org/broidHQ/broid-telegram) [![npm version](https://img.shields.io/npm/v/broid-telegram.svg?style=flat)](https://www.npmjs.com/package/broid-telegram) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/broidHQ/integrations) [![CLA assistant](https://cla-assistant.io/readme/badge/broidhq/integrations)](https://cla-assistant.io/broidhq/integrations)
+[![npm][npm]][npm-url]
+[![node][node]][node-url]
+[![deps][deps]][deps-url]
+[![tests][tests]][tests-url]
+[![bithound][bithound]][bithound-url]
+[![bithoundscore][bithoundscore]][bithoundscore-url]
+[![nsp-checked][nsp-checked]][nsp-checked-url]
 
-Broid _Integrations_ is an **open source project** providing a suite of [Activity Streams 2](https://www.w3.org/TR/activitystreams-core/) libraries for unified communications among a vast number of communication platforms.
+# Broid Telegram Integration
 
-**Feeback or features request are welcome. Go to https://github.com/broidhq/integrations**
+Broid Integrations is an open source project providing a suite of Activity Streams 2 libraries for unified communications among a vast number of communication platforms.
+
+> Connect your App to Multiple Messaging Channels with  One OpenSource Language.
+
+[![gitter](https://badges.gitter.im/broidHQ/broid.svg)](https://t.broid.ai/c/Blwjlw?utm_source=github&utm_medium=readme&utm_campaign=top&link=gitter)
+
+## Message types supported
+
+| Simple   | Image    | Video  | Buttons  | Location  | Phone number |
+|:--------:|:--------:|:------:|:--------:|:---------:|:------------:|
+| ✅       | ✅      | ✅     | ✅        |        |              |
+
+_Location, Phone number are platform limitations._
 
 ## Getting started
-
-- `connect` and `listen` method return [a observable](http://reactivex.io/rxjs/).
-
-- `send` method return [a promise](https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Objets_globaux/Promise)
 
 ### Connect to Telegram
 
@@ -287,17 +301,11 @@ telegram.send(message_formated)
 Broid is an open source project. Broid wouldn't be where it is now without contributions by the community. Please consider forking Broid to improve, enhance or fix issues. If you feel like the community will benefit from your fork, please open a pull request.
 
 And because we want to do the better for you. Help us improving Broid by
-sharing your feedback on our [integrations GitHub Repo](https://github.com/broidhq/integrations) and let's build Broid together!
+sharing your feedback on our [Integrations GitHub Repo](https://github.com/broidhq/integrations) and let's build Broid together!
 
 ## Code of Conduct
 
 Make sure that you're read and understand the [Code of Conduct](http://contributor-covenant.org/version/1/2/0/).
-
-## CLA
-
-To protect the interests of the Broid contributors, Broid, customers and end users we require contributors to sign a [Contributors License Agreement](https://cla-assistant.io/broidhq/integrations) (CLA) before we pull the changes into the main repository. [Our CLA](https://cla-assistant.io/broidhq/integrations) is simple and straightforward - it requires that the contributions you make to any Broid open source project are properly licensed and that you have the legal authority to make those changes. This helps us significantly reduce future legal risk for everyone involved. It's easy---no faxing or printing required!
-
-You can digitally sign the [CLA online](https://cla-assistant.io/broidhq/integrations). Please indicate your email address in your first pull request so that we can make sure that will locate your CLA. Once you've submitted it, you no longer need to send one for subsequent submissions.
 
 ## Copyright & License
 
@@ -305,3 +313,24 @@ Copyright (c) 2016-2017 Broid.ai
 
 This project is licensed under the AGPL 3, which can be
 [found here](https://www.gnu.org/licenses/agpl-3.0.en.html).
+
+[npm]: https://img.shields.io/badge/npm-broid-green.svg?style=flat
+[npm-url]: https://www.npmjs.com/~broid
+
+[node]: https://img.shields.io/node/v/broid-telegram.svg
+[node-url]: https://nodejs.org
+
+[deps]: https://img.shields.io/badge/dependencies-checked-green.svg?style=flat
+[deps-url]: #integrations
+
+[tests]: https://img.shields.io/travis/broidHQ/integrations/master.svg
+[tests-url]: https://travis-ci.org/broidHQ/integrations
+
+[bithound]: https://img.shields.io/bithound/code/github/broidHQ/integrations.svg
+[bithound-url]: https://www.bithound.io/github/broidHQ/integrations
+
+[bithoundscore]: https://www.bithound.io/github/broidHQ/integrations/badges/score.svg
+[bithoundscore-url]: https://www.bithound.io/github/broidHQ/integrations
+
+[nsp-checked]: https://img.shields.io/badge/nsp-checked-green.svg?style=flat
+[nsp-checked-url]: https://nodesecurity.io

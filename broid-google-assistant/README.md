@@ -14,6 +14,14 @@ Broid Integrations is an open source project providing a suite of Activity Strea
 
 [![gitter](https://badges.gitter.im/broidHQ/broid.svg)](https://t.broid.ai/c/Blwjlw?utm_source=github&utm_medium=readme&utm_campaign=top&link=gitter)
 
+## Message types supported
+
+| Simple   | Image    | Video  | Buttons  | Location  | Phone number |
+|:--------:|:--------:|:------:|:--------:|:---------:|:------------:|
+| ✅       |       |      |          |        |              |
+
+_Image, Video, Buttons, Location, Phone number are platform limitations._
+
 ## Getting started
 
 ### Install
@@ -194,7 +202,7 @@ This project is licensed under the AGPL 3, which can be
 [npm]: https://img.shields.io/badge/npm-broid-green.svg?style=flat
 [npm-url]: https://www.npmjs.com/~broid
 
-[node]: https://img.shields.io/node/v/broid-slack.svg
+[node]: https://img.shields.io/node/v/broid-google-assistant.svg
 [node-url]: https://nodejs.org
 
 [deps]: https://img.shields.io/badge/dependencies-checked-green.svg?style=flat
