@@ -1,0 +1,1 @@
+{"application":{"applicationId":"9e8a-9e341943f580"},"intentName":"GetHoroscope","messageID":"b3ed-56e4284d1a45","requestType":"IntentRequest","slots":{"Sign":{"name":"Sign","value":"Leos"},"Date":{"name":"Date"}},"user":{"userId":"DJZ6KCCONPVYGPPHJOC6V3B4QYLBQ2S6JHTU7BSMTELI"}}
