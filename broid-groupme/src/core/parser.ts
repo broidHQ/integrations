@@ -28,11 +28,6 @@ export default class Parser {
     const parsed = cleanNulls(event);
     if (!parsed || R.isEmpty(parsed)) { return Promise.resolve(null); }
 
-    if (!parsed.type) {
-      this.logger.debug("Type not found.", { parsed });
-      return Promise.resolve(null);
-    }
-
     return broidSchemas(parsed, "activity")
       .then(() => parsed)
       .catch((err) => {
