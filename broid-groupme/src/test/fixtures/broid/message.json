@@ -1,0 +1,25 @@
+{
+  "@context": "https://www.w3.org/ns/activitystreams",
+  "generator": {
+    "id": "testuser",
+    "name": "groupme",
+    "type": "Service"
+  },
+  "published": 1483589416,
+  "type": "Create",
+  "actor": {
+    "id": "43963839",
+    "name": "Issam Hakimi",
+    "type": "Person"
+  },
+  "target": {
+    "id": "28728284",
+    "name": "dev",
+    "type": "Person"
+  },
+  "object": {
+    "content": "Hello world",
+    "id": "148652400858374100",
+    "type": "Note"
+  }
+}

@@ -6,7 +6,7 @@
 [![bithoundscore][bithoundscore]][bithoundscore-url]
 [![nsp-checked][nsp-checked]][nsp-checked-url]
 
-# Broid Gitter Integration
+# Broid GroupMe Integration
 
 Broid Integrations is an open source project providing a suite of Activity Streams 2 libraries for unified communications among a vast number of communication platforms.
 
@@ -18,28 +18,36 @@ Broid Integrations is an open source project providing a suite of Activity Strea
 
 | Simple   | Image    | Video  | Buttons  | Location  | Phone number |
 |:--------:|:--------:|:------:|:--------:|:---------:|:------------:|
-| ✅       | ✅      | ✅     |          |        |              |
+| ✅       | ✅      | ✅     |          | ✅        |              |
 
-_Buttons, Location, Phone number are platform limitations._
+_Buttons, Phone number are platform limitations._
+
+_Videos is supported as a simple message_
 
 ## Getting started
 
 ### Install
 
 ```bash
-npm install --save broid-gitter
+npm install --save broid-groupme
 ```
 
-### Connect to Gitter
+### Connect to Groupme
 
 ```javascript
-import broidGitter from 'broid-gitter'
+import broidGroupme from 'broid-groupme'
 
-const gitter = new broidGitter({
-  token: '<your_action_name_here>'
+const groupme = new broidGroupme({
+  username: '<your_sender_number>',
+  token: '<your_groupme_token>',
+  tokenSecret: '<your_groupme_token_secret>',
+  http: {
+    port: 8080,
+    host: "0.0.0.0"
+  }
 })
 
-gitter.connect()
+groupme.connect()
   .subscribe({
     next: data => console.log(data),
     error: err => console.error(`Something went wrong: ${err.message}`),
@@ -53,12 +61,15 @@ gitter.connect()
 | --------------- |:--------:| :--------: | --------------------------|
 | serviceID       | string   | random     | Arbitrary identifier of the running instance |
 | logLevel        | string   | `info`     | Can be : `fatal`, `error`, `warn`, `info`, `debug`, `trace` |
-| token           | string   |            | Gitter token. |
+| username        | string   |            | Your bot name |
+| token           | string   |            | Your groupme bot id         |
+| tokenSecret     | string   |            | Your groupme access token  |
+| http            | object   | `{ "port": 8080, "http": "0.0.0.0" }` | WebServer options (`host`, `port`) |
 
 ### Receive a message
 
 ```javascript
-gitter.listen()
+groupme.listen()
   .subscribe({
     next: data => console.log(`Received message: ${data}`),
     error: err => console.error(`Something went wrong: ${err.message}`),
@@ -73,7 +84,7 @@ To send a message, the format should use the [broid-schemas](https://github.com/
 ```javascript
 const message_formated = '...'
 
-gitter.send(message_formated)
+groupme.send(message_formated)
   .then(() => console.log("ok"))
   .catch(err => console.error(err))
 ```
@@ -92,52 +103,86 @@ gitter.send(message_formated)
   "generator": {
     "id": "67c9cb10-8a74-42c8-ba55-294d0447cdf9",
     "type": "Service",
-    "name": "gitter"
+    "name": "groupme"
   },
   "actor": {
-    "id": "588f9929d73402ce4f470489",
-    "name": "Sally",
+    "id": "43963839",
+    "name": "Sally Doe",
     "type": "Person"
   },
   "target": {
-    "id": "588f9929d73402ce4f470489",
-    "type": "Group",
-    "name": "Broid/test"
+    "id": "28728284",
+    "name": "dev",
+    "type": "Person"
   },
   "object": {
     "type": "Note",
-    "id": "5897bfbbaa800ee52c57be39",
+    "id": "0B0000003186F6EB",
     "content": "Hello world"
   }
 }
 ```
 
-- A private message received from Sally
+- A image received from Sally
 
 ```json
 {
   "@context": "https://www.w3.org/ns/activitystreams",
-  "published": 1483677146,
-  "type": "Create",
   "generator": {
     "id": "67c9cb10-8a74-42c8-ba55-294d0447cdf9",
     "type": "Service",
-    "name": "gitter"
+    "name": "groupme"
   },
+  "published": 1483589416,
+  "type": "Create",
   "actor": {
-    "id": "588f9929d73402ce4f470489",
-    "name": "Sally",
+    "id": "43963839",
+    "name": "Sally Doe",
     "type": "Person"
   },
   "target": {
-    "id": "588f9929d73402ce4f470489",
-    "name": "Sally",
+    "id": "28728284",
+    "name": "dev",
     "type": "Person"
   },
   "object": {
-    "type": "Note",
-    "id": "5897bfbbaa800ee52c57be39",
-    "content": "Hello world"
+    "id": "148652412159143683",
+    "mediaType": "image/jpg",
+    "type": "Image",
+    "url": "https://i.groupme.com/2592x1936.jpeg.be944ea23f664198a023728a50dbfed7",
+    "content": "hello world with image"
+  }
+}
+```
+
+- A location received from Sally
+
+```json
+{
+  "@context": "https://www.w3.org/ns/activitystreams",
+  "generator": {
+    "id": "67c9cb10-8a74-42c8-ba55-294d0447cdf9",
+    "type": "Service",
+    "name": "groupme"
+  },
+  "published": 1483589416,
+  "type": "Create",
+  "actor": {
+    "id": "43963839",
+    "name": "Sally Doe",
+    "type": "Person"
+  },
+  "target": {
+    "id": "28728284",
+    "name": "dev",
+    "type": "Person"
+  },
+  "object": {
+    "id": "148652394682185354",
+    "latitude": 45.531106,
+    "longitude": -73.554582,
+    "name": "Café Touski",
+    "type": "Place"
   }
 }
 ```
@@ -153,42 +198,20 @@ gitter.send(message_formated)
   "generator": {
     "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
     "type": "Service",
-    "name": "gitter"
+    "name": "groupme"
   },
   "object": {
     "type": "Note",
     "content": "hello world"
   },
   "to": {
-    "id": "588f9929d73402ce4f470489",
-    "type": "Group"
-  }
-}
-```
-
-- Send a simple private message
-
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "type": "Create",
-  "generator": {
-    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
-    "type": "Service",
-    "name": "gitter"
-  },
-  "object": {
-    "type": "Note",
-    "content": "hello world"
-  },
-  "to": {
-    "id": "588f9929d73352ce4f470489",
+    "id": "28728284",
     "type": "Person"
   }
 }
 ```
 
-- Edit a message
+- Send a image
 
 ```json
 {
@@ -197,15 +220,15 @@ gitter.send(message_formated)
   "generator": {
     "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
     "type": "Service",
-    "name": "gitter"
+    "name": "groupme"
   },
   "object": {
-    "id": "548f9929d73352ce4f470499",
-    "type": "Note",
-    "content": "hello world"
+    "type": "Image",
+    "content": "hello world",
+    "url": "http://www.broid.ai/image.jpg",
   },
   "to": {
-    "id": "588f9929d73402ce4f470489",
+    "id": "28728284",
     "type": "Person"
   }
 }
@@ -232,7 +255,7 @@ This project is licensed under the AGPL 3, which can be
 [npm]: https://img.shields.io/badge/npm-broid-green.svg?style=flat
 [npm-url]: https://www.npmjs.com/~broid
 
-[node]: https://img.shields.io/node/v/broid-gitter.svg
+[node]: https://img.shields.io/node/v/broid-slack.svg
 [node-url]: https://nodejs.org
 
 [deps]: https://img.shields.io/badge/dependencies-checked-green.svg?style=flat

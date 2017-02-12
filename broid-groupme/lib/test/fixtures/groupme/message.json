@@ -1,0 +1,40 @@
+{
+  "body": {
+    "attachments": [],
+    "avatar_url": null,
+    "created_at": 1486524008,
+    "group_id": "28728284",
+    "id": "148652400858374100",
+    "name": "Issam Hakimi",
+    "sender_id": "43963839",
+    "sender_type": "user",
+    "source_guid": "ABFB324E-66A4-47D6-9BF6-D67868D6DE94",
+    "system": false,
+    "text": "Hello world",
+    "user_id": "43963839"
+  },
+  "headers": {
+    "user-agent": "GroupMeBotNotifier/1.0",
+    "content-length": "284",
+    "content-type": "application/json",
+    "accept-encoding": "gzip",
+    "connection": "close",
+    "x-forwarded-proto": "https"
+  },
+  "group": [
+    {
+      "created_at": 1486484464,
+      "id": "28728284",
+      "members": [
+        {
+          "avatar": null,
+          "id": "43963839",
+          "username": "Issam Hakimi"
+        }
+      ],
+      "name": "dev",
+      "type": "private",
+      "updated_at": 1486524008
+    }
+  ]
+}
