@@ -1,6 +1,4 @@
 
-# Created by https://www.gitignore.io/api/node,typings
-
 ### Node ###
 # Logs
 logs
@@ -50,10 +48,13 @@ jspm_packages
 # Yarn Integrity file
 .yarn-integrity
 
+# Source code
+src/
 
+# Tests
+lib/test/
 
-### Typings ###
-## Ignore downloaded typings
-typings
-
-# End of https://www.gitignore.io/api/node,typings
+# Typescript configs
+tslint.json
+tsconfig.json
+typings.json

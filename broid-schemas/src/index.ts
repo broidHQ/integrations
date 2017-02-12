@@ -29,9 +29,12 @@ export interface IASObject {
   content?: string;
   context?: IASContext;
   id: string;
+  latitude?: number;
+  longitude?: number;
   mediaType?: string;
   name?: string;
   preview?: string;
+  tag?: IASTag | IASTag[];
   type: string;
   url?: string;
 }
@@ -44,6 +47,12 @@ export interface IActivityStream {
    actor?: IASBase;
    target?: IASBase;
    object?: IASObject;
+ }
+
+ export interface IASTag {
+   id: string;
+   name: string;
+   type: string;
  }
 
 export default function(data: any, schema: string): Promise<any> {

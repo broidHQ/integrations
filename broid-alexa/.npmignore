@@ -48,4 +48,13 @@ jspm_packages
 # Yarn Integrity file
 .yarn-integrity
 
-lib
+# Source code
+src/
+
+# Tests
+lib/test/
+
+# Typescript configs
+tslint.json
+tsconfig.json
+typings.json

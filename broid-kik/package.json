@@ -1,6 +1,6 @@
 {
   "name": "broid-kik",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "main": "lib/core/index.js",
   "license": "AGPL-3.0+",
   "author": "Broid Team <opensource@broid.ai> (https://broid.ai)",
@@ -12,7 +12,7 @@
   "bugs": {
     "url": "https://github.com/broidHQ/integrations/issues"
   },
-  "homepage": "https://github.com/broidHQ/integrations/tree/master/integrations/broid-kik#readme",
+  "homepage": "https://github.com/broidHQ/integrations/tree/master/broid-kik#readme",
   "engines": {
     "node": ">=6.0.0"
   },

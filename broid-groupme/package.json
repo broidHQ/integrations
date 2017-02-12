@@ -12,7 +12,7 @@
   "bugs": {
     "url": "https://github.com/broidHQ/integrations/issues"
   },
-  "homepage": "https://github.com/broidHQ/integrations/tree/master/integrations/broid-kik#readme",
+  "homepage": "https://github.com/broidHQ/integrations/tree/master/broid-groupme#readme",
   "engines": {
     "node": ">=6.0.0"
   },
