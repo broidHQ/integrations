@@ -5,15 +5,18 @@ import * as messengerMessage from "./fixtures/messenger/message.json";
 import * as messengerMessageImage from "./fixtures/messenger/messageImage.json";
 import * as messengerMessageInteractiveCallback from "./fixtures/messenger/messageInteractiveCallback.json";
 import * as messengerMessageLink from "./fixtures/messenger/messageLink.json";
+import * as messengerMessageLocation from "./fixtures/messenger/messageLocation.json";
 
 import * as broidMessageNormalized from "./fixtures/broid/normalized/message.json";
 import * as broidMessageNormalizedImage from "./fixtures/broid/normalized/messageImage.json";
 import * as broidMessageNormalizedInteractiveCallback from "./fixtures/broid/normalized/messageInteractiveCallback.json";
+import * as broidMessageNormalizedLocation from "./fixtures/broid/normalized/messageLocation.json";
 import * as broidMessageNormalizedLink from "./fixtures/broid/normalized/messageLink.json";
 
 import * as broidMessage from "./fixtures/broid/parsed/message.json";
 import * as broidMessageImage from "./fixtures/broid/parsed/messageImage.json";
 import * as broidMessageInteractiveCallback from "./fixtures/broid/parsed/messageInteractiveCallback.json";
+import * as broidMessageLocation from "./fixtures/broid/parsed/messageLocation.json";
 import * as broidMessageLink from "./fixtures/broid/parsed/messageLink.json";
 
 const author = {
@@ -53,6 +56,11 @@ test("Normalize a interactive message callback", async(t) => {
   t.deepEqual(await data, broidMessageNormalizedInteractiveCallback);
 });
 
+test("Normalize a location message", async(t) => {
+  const data = parser.normalize(messengerMessageLocation as any);
+  t.deepEqual(await data, broidMessageNormalizedLocation);
+});
+
 test("Parse a simple message", async(t) => {
   const r: any = Object.assign({}, broidMessageNormalized[0]);
   r.authorInformation = author;
@@ -81,6 +89,13 @@ test("Parse a interactive message callback", async(t) => {
   t.deepEqual(await data, broidMessageInteractiveCallback);
 });
 
+test("Parse a location message", async(t) => {
+  const r: any = Object.assign({}, broidMessageNormalizedLocation[0]);
+  r.authorInformation = author;
+  const data = parser.parse(r);
+  t.deepEqual(await data, broidMessageLocation);
+});
+
 test("Validate a simple message", async(t) => {
   const data = parser.validate(broidMessage);
   t.deepEqual(await data, broidMessage);
@@ -99,4 +114,9 @@ test("Validate a message with link", async(t) => {
 test("Validate a interactive message callback", async(t) => {
   const data = parser.validate(broidMessageInteractiveCallback);
   t.deepEqual(await data, broidMessageInteractiveCallback);
+});
+
+test("Validate a location message", async(t) => {
+  const data = parser.validate(broidMessageLocation);
+  t.deepEqual(await data, broidMessageLocation);
 });
