@@ -26,7 +26,7 @@
     "lint:watch": "watch 'tslint -c tslint.json src/*' src",
     "tsc:watch": "tsc --watch",
     "travis": "npm run lint && npm run build && npm run test",
-    "release": "npm run build && npm publish"
+    "release": "npm run travis && npm run build && npm publish"
   },
   "devDependencies": {
     "@types/bluebird": "^3.0.37",
@@ -45,7 +45,7 @@
   },
   "dependencies": {
     "bluebird": "^3.4.7",
-    "broid-schemas": "^1.1.0",
+    "broid-schemas": "^1.1.4",
     "broid-utils": "^1.0.4",
     "irc": "^0.5.2",
     "mimetype": "^0.0.8",

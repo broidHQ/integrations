@@ -16,10 +16,6 @@ class Parser {
         if (!parsed || R.isEmpty(parsed)) {
             return Promise.resolve(null);
         }
-        if (!parsed.type) {
-            this.logger.debug("Type not found.", { parsed });
-            return Promise.resolve(null);
-        }
         return broid_schemas_1.default(parsed, "activity")
             .then(() => parsed)
             .catch((err) => {

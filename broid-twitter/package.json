@@ -24,7 +24,7 @@
     "lint:watch": "watch 'tslint -c tslint.json src/*' src",
     "nsp-check": "nsp check -o summary",
     "prepublish": "npm run test",
-    "release": "npm run build && npm publish",
+    "release": "npm run travis && npm run build && npm publish",
     "test": "npm run lint && npm run nsp-check && npm run build && nyc ava --verbose",
     "travis": "npm run test",
     "tsc:watch": "tsc --watch",
@@ -43,7 +43,7 @@
   },
   "dependencies": {
     "bluebird": "^3.4.7",
-    "broid-schemas": "^1.1.0",
+    "broid-schemas": "^1.1.4",
     "broid-utils": "^1.0.4",
     "mimetype": "^0.0.8",
     "node-uuid": "^1.4.7",

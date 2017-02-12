@@ -1,10 +1,10 @@
 {
-  "name": "broid-nexmo",
+  "name": "broid-groupme",
   "version": "1.0.0",
   "main": "dist/index.js",
   "license": "AGPL-3.0+",
   "author": "Broid Team <opensource@broid.ai> (https://broid.ai)",
-  "description": "Convert Nexmo messages into Activity Streams 2 with Broid Integration",
+  "description": "Convert GroupMe messages into Activity Streams 2 with Broid Integration",
   "repository": {
     "type": "git",
     "url": "git@github.com:broidHQ/integrations.git"
@@ -26,7 +26,7 @@
     "lint:watch": "watch 'tslint -c tslint.json src/*' src",
     "tsc:watch": "tsc --watch",
     "travis": "npm run lint && npm run build && npm run test",
-    "release": "npm run build && npm publish"
+    "release": "npm run travis && npm run build && npm publish"
   },
   "devDependencies": {
     "@types/moment": "^2.13.0",
@@ -46,7 +46,7 @@
   "dependencies": {
     "bluebird": "^3.4.7",
     "body-parser": "^1.16.0",
-    "broid-schemas": "^1.1.0",
+    "broid-schemas": "^1.1.4",
     "broid-utils": "^1.0.4",
     "express": "^4.14.0",
     "nexmo": "^1.2.0",

@@ -20,9 +20,9 @@ agent-base@2:
     extend "~3.0.0"
     semver "~5.0.1"
 
-ajv@^4.10.0:
-  version "4.11.2"
-  resolved "https://registry.yarnpkg.com/ajv/-/ajv-4.11.2.tgz#f166c3c11cbc6cb9dcc102a5bcfe5b72c95287e6"
+ajv@^5.0.1-beta.1:
+  version "5.0.1-beta.3"
+  resolved "https://registry.yarnpkg.com/ajv/-/ajv-5.0.1-beta.3.tgz#4eac3b28af93f001c9f3ea944df2386f12fa1fef"
   dependencies:
     co "^4.6.0"
     json-stable-stringify "^1.0.1"
@@ -957,11 +957,11 @@ braces@^1.8.2:
     preserve "^0.2.0"
     repeat-element "^1.1.2"
 
-broid-schemas@^1.1.0:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/broid-schemas/-/broid-schemas-1.1.2.tgz#2f03788db508a49f4e274e8dda08479c900c8ca8"
+broid-schemas@^1.1.4:
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/broid-schemas/-/broid-schemas-1.1.4.tgz#80afd377b1448a745a61421add7550dfa1bd9d0d"
   dependencies:
-    ajv "^4.10.0"
+    ajv "^5.0.1-beta.1"
     bluebird "^3.4.6"
 
 broid-utils@^1.0.4:

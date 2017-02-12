@@ -73,93 +73,93 @@ This make Broid **flexible** and **usefull** to use in your application.
 [integration-doc]: https://img.shields.io/badge/docs--green.svg?style=flat
 
 [slack-url]: https://github.com/broidHQ/integrations/tree/master/broid-slack
-[slack-dm]: https://david-dm.org/broidhq/integrations.svg?path=integrations/broid-slack
-[slack-dm-url]: https://david-dm.org/broidhq/integrations?path=integrations/broid-slack
+[slack-dm]: https://david-dm.org/broidhq/integrations.svg?path=broid-slack
+[slack-dm-url]: https://david-dm.org/broidhq/integrations?path=broid-slack
 [slack-npm]: https://img.shields.io/npm/v/broid-slack.svg
 
 [twitter-url]: https://github.com/broidHQ/integrations/tree/master/broid-twitter
-[twitter-dm]: https://david-dm.org/broidhq/integrations.svg?path=integrations/broid-twitter
-[twitter-dm-url]: https://david-dm.org/broidhq/integrations?path=integrations/broid-twitter
+[twitter-dm]: https://david-dm.org/broidhq/integrations.svg?path=broid-twitter
+[twitter-dm-url]: https://david-dm.org/broidhq/integrations?path=broid-twitter
 [twitter-npm]: https://img.shields.io/npm/v/broid-twitter.svg
 
 [viber-url]: https://github.com/broidHQ/integrations/tree/master/broid-viber
-[viber-dm]: https://david-dm.org/broidhq/integrations.svg?path=integrations/broid-viber
-[viber-dm-url]: https://david-dm.org/broidhq/integrations?path=integrations/broid-viber
+[viber-dm]: https://david-dm.org/broidhq/integrations.svg?path=broid-viber
+[viber-dm-url]: https://david-dm.org/broidhq/integrations?path=broid-viber
 [viber-npm]: https://img.shields.io/npm/v/broid-viber.svg
 
 [line-url]: https://github.com/broidHQ/integrations/tree/master/broid-line
-[line-dm]: https://david-dm.org/broidhq/integrations.svg?path=integrations/broid-line
-[line-dm-url]: https://david-dm.org/broidhq/integrations?path=integrations/broid-line
+[line-dm]: https://david-dm.org/broidhq/integrations.svg?path=broid-line
+[line-dm-url]: https://david-dm.org/broidhq/integrations?path=broid-line
 [line-npm]: https://img.shields.io/npm/v/broid-line.svg
 
 [callr-url]: https://github.com/broidHQ/integrations/tree/master/broid-callr
-[callr-dm]: https://david-dm.org/broidhq/integrations.svg?path=integrations/broid-callr
-[callr-dm-url]: https://david-dm.org/broidhq/integrations?path=integrations/broid-callr
+[callr-dm]: https://david-dm.org/broidhq/integrations.svg?path=broid-callr
+[callr-dm-url]: https://david-dm.org/broidhq/integrations?path=broid-callr
 [callr-npm]: https://img.shields.io/npm/v/broid-callr.svg
 
 [twilio-url]: https://github.com/broidHQ/integrations/tree/master/broid-twilio
-[twilio-dm]: https://david-dm.org/broidhq/integrations.svg?path=integrations/broid-twilio
-[twilio-dm-url]: https://david-dm.org/broidhq/integrations?path=integrations/broid-twilio
+[twilio-dm]: https://david-dm.org/broidhq/integrations.svg?path=broid-twilio
+[twilio-dm-url]: https://david-dm.org/broidhq/integrations?path=broid-twilio
 [twilio-npm]: https://img.shields.io/npm/v/broid-twilio.svg
 
 [skype-url]: https://github.com/broidHQ/integrations/tree/master/broid-skype
-[skype-dm]: https://david-dm.org/broidhq/integrations.svg?path=integrations/broid-skype
-[skype-dm-url]: https://david-dm.org/broidhq/integrations?path=integrations/broid-skype
+[skype-dm]: https://david-dm.org/broidhq/integrations.svg?path=broid-skype
+[skype-dm-url]: https://david-dm.org/broidhq/integrations?path=broid-skype
 [skype-npm]: https://img.shields.io/npm/v/broid-skype.svg
 
 [discord-url]: https://github.com/broidHQ/integrations/tree/master/broid-discord
-[discord-dm]: https://david-dm.org/broidhq/integrations.svg?path=integrations/broid-discord
-[discord-dm-url]: https://david-dm.org/broidhq/integrations?path=integrations/broid-discord
+[discord-dm]: https://david-dm.org/broidhq/integrations.svg?path=broid-discord
+[discord-dm-url]: https://david-dm.org/broidhq/integrations?path=broid-discord
 [discord-npm]: https://img.shields.io/npm/v/broid-discord.svg
 
 [messenger-url]: https://github.com/broidHQ/integrations/tree/master/broid-messenger
-[messenger-dm]: https://david-dm.org/broidhq/integrations.svg?path=integrations/broid-messenger
-[messenger-dm-url]: https://david-dm.org/broidhq/integrations?path=integrations/broid-messenger
+[messenger-dm]: https://david-dm.org/broidhq/integrations.svg?path=broid-messenger
+[messenger-dm-url]: https://david-dm.org/broidhq/integrations?path=broid-messenger
 [messenger-npm]: https://img.shields.io/npm/v/broid-messenger.svg
 
 [telegram-url]: https://github.com/broidHQ/integrations/tree/master/broid-telegram
-[telegram-dm]: https://david-dm.org/broidhq/integrations.svg?path=integrations/broid-telegram
-[telegram-dm-url]: https://david-dm.org/broidhq/integrations?path=integrations/broid-telegram
+[telegram-dm]: https://david-dm.org/broidhq/integrations.svg?path=broid-telegram
+[telegram-dm-url]: https://david-dm.org/broidhq/integrations?path=broid-telegram
 [telegram-npm]: https://img.shields.io/npm/v/broid-telegram.svg
 
 [kik-url]: https://github.com/broidHQ/integrations/tree/master/broid-kik
-[kik-dm]: https://david-dm.org/broidhq/integrations.svg?path=integrations/broid-kik
-[kik-dm-url]: https://david-dm.org/broidhq/integrations?path=integrations/broid-kik
+[kik-dm]: https://david-dm.org/broidhq/integrations.svg?path=broid-kik
+[kik-dm-url]: https://david-dm.org/broidhq/integrations?path=broid-kik
 [kik-npm]: https://img.shields.io/npm/v/broid-kik.svg
 
 [flowdock-url]: https://github.com/broidHQ/integrations/tree/master/broid-flowdock
-[flowdock-dm]: https://david-dm.org/broidhq/integrations.svg?path=integrations/broid-flowdock
-[flowdock-dm-url]: https://david-dm.org/broidhq/integrations?path=integrations/broid-flowdock
+[flowdock-dm]: https://david-dm.org/broidhq/integrations.svg?path=broid-flowdock
+[flowdock-dm-url]: https://david-dm.org/broidhq/integrations?path=broid-flowdock
 [flowdock-npm]: https://img.shields.io/npm/v/broid-flowdock.svg
 
 [irc-url]: https://github.com/broidHQ/integrations/tree/master/broid-irc
-[irc-dm]: https://david-dm.org/broidhq/integrations.svg?path=integrations/broid-irc
-[irc-dm-url]: https://david-dm.org/broidhq/integrations?path=integrations/broid-irc
+[irc-dm]: https://david-dm.org/broidhq/integrations.svg?path=broid-irc
+[irc-dm-url]: https://david-dm.org/broidhq/integrations?path=broid-irc
 [irc-npm]: https://img.shields.io/npm/v/broid-irc.svg
 
 [google-assistant-url]: https://github.com/broidHQ/integrations/tree/master/broid-google-assistant
-[google-assistant-dm]: https://david-dm.org/broidhq/integrations.svg?path=integrations/broid-google-assistant
-[google-assistant-dm-url]: https://david-dm.org/broidhq/integrations?path=integrations/broid-google-assistant
+[google-assistant-dm]: https://david-dm.org/broidhq/integrations.svg?path=broid-google-assistant
+[google-assistant-dm-url]: https://david-dm.org/broidhq/integrations?path=broid-google-assistant
 [google-assistant-npm]: https://img.shields.io/npm/v/broid-google-assistant.svg
 
 [gitter-url]: https://github.com/broidHQ/integrations/tree/master/broid-gitter
-[gitter-dm]: https://david-dm.org/broidhq/integrations.svg?path=integrations/broid-gitter
-[gitter-dm-url]: https://david-dm.org/broidhq/integrations?path=integrations/broid-gitter
+[gitter-dm]: https://david-dm.org/broidhq/integrations.svg?path=broid-gitter
+[gitter-dm-url]: https://david-dm.org/broidhq/integrations?path=broid-gitter
 [gitter-npm]: https://img.shields.io/npm/v/broid-gitter.svg
 
 [nexmo-url]: https://github.com/broidHQ/integrations/tree/master/broid-nexmo
-[nexmo-dm]: https://david-dm.org/broidhq/integrations.svg?path=integrations/broid-nexmo
-[nexmo-dm-url]: https://david-dm.org/broidhq/integrations?path=integrations/broid-nexmo
+[nexmo-dm]: https://david-dm.org/broidhq/integrations.svg?path=broid-nexmo
+[nexmo-dm-url]: https://david-dm.org/broidhq/integrations?path=broid-nexmo
 [nexmo-npm]: https://img.shields.io/npm/v/broid-nexmo.svg
 
 [groupme-url]: https://github.com/broidHQ/integrations/tree/master/broid-groupme
-[groupme-dm]: https://david-dm.org/broidhq/integrations.svg?path=integrations/broid-groupme
-[groupme-dm-url]: https://david-dm.org/broidhq/integrations?path=integrations/broid-groupme
+[groupme-dm]: https://david-dm.org/broidhq/integrations.svg?path=broid-groupme
+[groupme-dm-url]: https://david-dm.org/broidhq/integrations?path=broid-groupme
 [groupme-npm]: https://img.shields.io/npm/v/broid-groupme.svg
 
 [alexa-url]: https://github.com/broidHQ/integrations/tree/master/broid-alexa
-[alexa-dm]: https://david-dm.org/broidhq/integrations.svg?path=integrations/broid-alexa
-[alexa-dm-url]: https://david-dm.org/broidhq/integrations?path=integrations/broid-alexa
+[alexa-dm]: https://david-dm.org/broidhq/integrations.svg?path=broid-alexa
+[alexa-dm-url]: https://david-dm.org/broidhq/integrations?path=broid-alexa
 [alexa-npm]: https://img.shields.io/npm/v/broid-alexa.svg
 
 ### Broid Formats
@@ -170,12 +170,10 @@ Broid integrations supports [Activity Streams 2.0](https://t.broid.ai/c/LSB12U?u
 |:--:|:----:|
 |broid-schemas |[![viber][schemas-npm]][schemas-url] [![schemas][schemas-dm]][schemas-dm-url] [![schemas][integration-doc]][schemas-url]|
 
-
 [schemas-url]: https://github.com/broidHQ/integrations/tree/master/broid-schemas
-[schemas-dm]: https://david-dm.org/broidhq/integrations.svg?path=integrations/broid-schemas
-[schemas-dm-url]: https://david-dm.org/broidhq/integrations?path=integrations/broid-schemas
+[schemas-dm]: https://david-dm.org/broidhq/integrations.svg?path=broid-schemas
+[schemas-dm-url]: https://david-dm.org/broidhq/integrations?path=broid-schemas
 [schemas-npm]: https://img.shields.io/npm/v/broid-schemas.svg
-
 
 ## Contributing
 

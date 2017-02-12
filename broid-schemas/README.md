@@ -1,8 +1,10 @@
-# [Broid Schemas Parser](https://github.com/broidhq/integrations) &middot; [![npm version](https://img.shields.io/npm/v/broid-schemas.svg?style=flat)](https://www.npmjs.com/package/broid-schemas) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/broidHQ/integrations) [![CLA assistant](https://cla-assistant.io/readme/badge/broidhq/integrations)](https://cla-assistant.io/broidhq/integrations)
+[![Build Status](https://travis-ci.org/broidHQ/integrations.svg?branch=master)](https://travis-ci.org/broidHQ/integrations) [![npm version](https://img.shields.io/npm/v/broid-schemas.svg?style=flat)](https://www.npmjs.com/package/broid-schemas) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/broidHQ/integrations)
 
-Broid _Integrations_ is an **open source project** providing a suite of [Activity Streams 2](https://www.w3.org/TR/activitystreams-core/) libraries for unified communications among a vast number of communication platforms.
+# Broid Schemas
 
-**Feeback or features request are welcome. Go to https://github.com/broidhq/integrations**
+Broid Integrations is an open source project providing a suite of Activity Streams 2 libraries for unified communications among a vast number of communication platforms.
+
+> Connect your App to Multiple Messaging Channels with  One OpenSource Language.
 
 ## Schemas
 
