@@ -43,7 +43,7 @@ export default class Parser {
     const normalized = cleanNulls(event);
     if (!normalized || R.isEmpty(normalized)) { return Promise.resolve(null); }
 
-    const activitystreams = this.createActivityStream(event);
+    const activitystreams = this.createActivityStream(normalized);
 
     activitystreams.actor = {
       id:  normalized.msisdn,
