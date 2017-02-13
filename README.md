@@ -168,7 +168,7 @@ Broid integrations supports [Activity Streams 2.0](https://t.broid.ai/c/LSB12U?u
 
 |Name|Status|
 |:--:|:----:|
-|broid-schemas |[![viber][schemas-npm]][schemas-url] [![schemas][schemas-dm]][schemas-dm-url] [![schemas][integration-doc]][schemas-url]|
+|broid-schemas |[![schemas][schemas-npm]][schemas-url] [![schemas][schemas-dm]][schemas-dm-url] [![schemas][integration-doc]][schemas-url]|
 
 [schemas-url]: https://github.com/broidHQ/integrations/tree/master/broid-schemas
 [schemas-dm]: https://david-dm.org/broidhq/integrations.svg?path=broid-schemas
