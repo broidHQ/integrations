@@ -18,7 +18,7 @@ Broid Integrations is an open source project providing a suite of Activity Strea
 
 | Simple   | Image    | Video  | Buttons  | Location  | Phone number |
 |:--------:|:--------:|:------:|:--------:|:---------:|:------------:|
-| ✅       | ✅      | ✅     | ✅          |        |              |
+| ✅       | ✅      | ✅     | ✅          | ✅        |              |
 
 _Phone number is platform limitation._
 
