@@ -51,7 +51,12 @@ class Parser {
             attachments = R.map((attachment) => this.parseAttachment(attachment), normalized.attachments);
             attachments = R.reject(R.isNil)(attachments);
         }
-        if (R.length(attachments) === 1) {
+        const places = R.filter((attachment) => attachment.type === "Place", attachments);
+        if (R.length(places) === 1) {
+            activitystreams.object = places[0];
+            activitystreams.object.id = normalized.mid;
+        }
+        else if (R.length(attachments) === 1) {
             const attachment = attachments[0];
             activitystreams.object = {
                 id: normalized.mid || this.createIdentifier(),
@@ -147,6 +152,16 @@ class Parser {
                 a.mediaType = mimetype.lookup(a.url.split("?")[0]);
                 return a;
             }
+        }
+        else if (attachment.type.toLowerCase() === "location") {
+            const p = {
+                id: this.createIdentifier(),
+                latitude: R.path(["payload", "coordinates", "lat"], attachment),
+                longitude: R.path(["payload", "coordinates", "long"], attachment),
+                name: attachment.title,
+                type: "Place",
+            };
+            return p;
         }
         return null;
     }

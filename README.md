@@ -20,7 +20,6 @@ Broid Integrations is an open source project providing a suite of Activity Strea
 <br>
 [![gitter](https://badges.gitter.im/broidHQ/broid.svg)](https://t.broid.ai/c/Blwjlw?utm_source=github&utm_medium=readme&utm_campaign=top&link=gitter)
 
-
 ## Install
 
 ```bash
@@ -168,7 +167,7 @@ Broid integrations supports [Activity Streams 2.0](https://t.broid.ai/c/LSB12U?u
 
 |Name|Status|
 |:--:|:----:|
-|broid-schemas |[![viber][schemas-npm]][schemas-url] [![schemas][schemas-dm]][schemas-dm-url] [![schemas][integration-doc]][schemas-url]|
+|broid-schemas |[![schemas][schemas-npm]][schemas-url] [![schemas][schemas-dm]][schemas-dm-url] [![schemas][integration-doc]][schemas-url]|
 
 [schemas-url]: https://github.com/broidHQ/integrations/tree/master/broid-schemas
 [schemas-dm]: https://david-dm.org/broidhq/integrations.svg?path=broid-schemas
@@ -202,8 +201,6 @@ You can digitally sign the [CLA online](https://cla-assistant.io/broidhq/integra
 
 [![Broid contributors](https://img.shields.io/badge/Broid%20contributors%20-broidy-%23FF0000.svg?style=flat)](https://github.com/broidy)
 [![Broid contributors](https://img.shields.io/badge/Broid%20contributors%20-killix-%23FF0000.svg?style=flat)](https://github.com/killix)
-
-
 
 [npm]: https://img.shields.io/badge/npm-broid-green.svg?style=flat
 [npm-url]: https://www.npmjs.com/~broid

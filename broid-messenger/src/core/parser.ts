@@ -1,11 +1,17 @@
 import * as Promise from "bluebird";
-import broidSchemas from "broid-schemas";
+import {
+  default as broidSchemas,
+  IActivityStream,
+  IASMedia,
+  IASObject,
+} from "broid-schemas";
+
 import { capitalizeFirstLetter, cleanNulls, concat, Logger } from "broid-utils";
 import * as mimetype from "mimetype";
 import * as uuid from "node-uuid";
 import * as R from "ramda";
 
-import { IActivityStream, IMediaObject, IWebHookEvent } from "./interfaces";
+import { IWebHookEvent } from "./interfaces";
 
 export default class Parser {
   public serviceID: string;
@@ -67,8 +73,14 @@ export default class Parser {
       attachments = R.reject(R.isNil)(attachments);
     }
 
-    if (R.length(attachments) === 1) {
-      const attachment: IMediaObject = attachments[0];
+    const places = R.filter((attachment) =>
+      attachment.type === "Place", attachments);
+
+    if (R.length(places) === 1) {
+      activitystreams.object = places[0];
+      activitystreams.object.id = normalized.mid;
+    } else if (R.length(attachments) === 1) {
+      const attachment: IASMedia = attachments[0];
       activitystreams.object = {
         id: normalized.mid || this.createIdentifier(),
         type: attachment.type,
@@ -162,10 +174,10 @@ export default class Parser {
     };
   }
 
-  private parseAttachment(attachment: any): Object | null {
+  private parseAttachment(attachment: any): IASMedia | IASObject | null {
     if (attachment.type.toLowerCase() === "image"
     || attachment.type.toLowerCase() === "video") {
-      const a: IMediaObject = {
+      const a: IASMedia = {
         type: capitalizeFirstLetter(attachment.type.toLowerCase()),
         url: R.path(["payload", "url"], attachment),
       };
@@ -174,6 +186,16 @@ export default class Parser {
         a.mediaType = mimetype.lookup(a.url.split("?")[0]);
         return a;
       }
+    } else if (attachment.type.toLowerCase() === "location") {
+      const p: IASObject = {
+        id: this.createIdentifier(),
+        latitude: R.path(["payload", "coordinates", "lat"], attachment),
+        longitude: R.path(["payload", "coordinates", "long"], attachment),
+        name: attachment.title,
+        type: "Place",
+      };
+
+      return p;
     }
     return null;
   }
