@@ -11,32 +11,7 @@ export interface IAdapterOptions {
   tokenSecret: string;
 }
 
-export interface IActivityStream {
-  actor?: {};
-  object?: IActivityStreamObject;
-  target?: {};
-  readonly "@context": string;
-  readonly generator: {};
-  readonly published: number;
-  readonly type: string;
-}
-
 export interface IWebHookEvent {
   response: any;
   request: any;
-}
-
-export interface IActivityStreamObject {
-  id: string;
-  content?: string;
-  mediaType?: string;
-  type: string;
-  url?: string;
-  attachment?: IMediaObject[];
-}
-
-export interface IMediaObject {
-  mediaType?: string;
-  type: string;
-  url: string;
 }

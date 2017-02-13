@@ -68,8 +68,11 @@ messenger.listen()
 | mediaType             | Action types  | Content of value property |
 | --------------------- |:-------------:| --------------------------|
 | text/html             | web_url       | URL to be opened in the built-in browser. |
+| application/vnd.geo+json | location   | Ask for the user location. |
 | audio/telephone-event | phone_number  | Destination for a call in following format: "tel:123123123123". |
 |                       | postback   | Text of message which client will sent back as ordinary chat message. |
+
+
 
 ### Not supported yet
 
