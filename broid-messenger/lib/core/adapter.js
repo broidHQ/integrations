@@ -79,6 +79,7 @@ class Adapter {
             const name = R.path(["object", "name"], data) || content;
             const attachments = R.path(["object", "attachment"], data) || [];
             const buttons = R.filter((attachment) => attachment.type === "Button", attachments);
+            const quickReplies = R.filter((button) => button.mediaType === "application/vnd.geo+json", buttons);
             let fButtons = R.map((button) => {
                 if (!button.mediaType) {
                     return {
@@ -104,6 +105,15 @@ class Adapter {
                 return null;
             }, buttons);
             fButtons = R.reject(R.isNil)(fButtons);
+            let fbQuickReplies = R.map((button) => {
+                if (button.mediaType === "application/vnd.geo+json") {
+                    return {
+                        content_type: "location",
+                    };
+                }
+                return null;
+            }, quickReplies);
+            fbQuickReplies = R.reject(R.isNil)(fbQuickReplies);
             const messageData = {
                 message: {
                     attachment: {},
@@ -111,6 +121,9 @@ class Adapter {
                 },
                 recipient: { id: toID },
             };
+            if (R.length(fbQuickReplies) > 0) {
+                messageData.message.quick_replies = fbQuickReplies;
+            }
             if (type === "Image") {
                 const attachment = {
                     payload: {

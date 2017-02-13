@@ -112,6 +112,8 @@ export default class Adapter {
         const attachments = R.path(["object", "attachment"], data) || [];
         const buttons = R.filter((attachment) =>
           attachment.type === "Button", attachments);
+        const quickReplies = R.filter((button) =>
+          button.mediaType === "application/vnd.geo+json", buttons);
 
         let fButtons = R.map((button) => {
           // facebook type: postback, element_share
@@ -141,7 +143,19 @@ export default class Adapter {
         }, buttons);
         fButtons = R.reject(R.isNil)(fButtons);
 
-        const messageData = {
+        let fbQuickReplies = R.map((button) => {
+          if (button.mediaType === "application/vnd.geo+json") {
+            // facebook type: location
+            return {
+              content_type: "location",
+            };
+          }
+
+          return null;
+        }, quickReplies);
+        fbQuickReplies = R.reject(R.isNil)(fbQuickReplies);
+
+        const messageData: any = {
           message: {
             attachment: {},
             text: "",
@@ -149,8 +163,13 @@ export default class Adapter {
           recipient: { id: toID },
         };
 
+        // Add Quick Reply
+        if (R.length(fbQuickReplies) > 0) {
+          messageData.message.quick_replies = fbQuickReplies;
+        }
+
         if (type === "Image") {
-          const attachment = {
+          const attachment: any = {
             payload: {
               elements: [{
                 buttons: !R.isEmpty(fButtons) ? fButtons : null,
@@ -166,7 +185,7 @@ export default class Adapter {
           messageData.message.attachment = attachment;
         } else if (type === "Video") {
           if (!R.isEmpty(fButtons)) {
-            const attachment = {
+            const attachment: any = {
               payload: {
                 elements: [{
                   buttons: fButtons,
@@ -189,7 +208,7 @@ export default class Adapter {
           }
         } else if (type === "Note") {
           if (!R.isEmpty(fButtons)) {
-            const attachment = {
+            const attachment: any = {
               payload: {
                 elements: [{
                   buttons: fButtons,
