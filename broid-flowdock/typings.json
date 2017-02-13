@@ -1,7 +1,6 @@
 {
   "name": "yourfukurou",
   "dependencies": {
-    "twit": "registry:npm/twit#2.0.0+20160422171648"
   },
   "globalDependencies": {
     "geojson": "registry:dt/geojson#0.0.0+20160726205300",
