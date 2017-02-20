@@ -10,7 +10,7 @@
 
 Broid Integrations is an open source project providing a suite of Activity Streams 2 libraries for unified communications among a vast number of communication platforms.
 
-> Connect your App to Multiple Messaging Channels with  One OpenSource Language.
+> Connect your App to Multiple Messaging Channels with the W3C Open standard.
 
 <br>
 <a href="https://github.com/broidHQ/integrations">
