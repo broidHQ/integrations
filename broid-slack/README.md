@@ -16,9 +16,9 @@ Broid Integrations is an open source project providing a suite of Activity Strea
 
 ## Message types supported
 
-| Simple   | Image    | Video  | Buttons  | Location  | Phone number |
-|:--------:|:--------:|:------:|:--------:|:---------:|:------------:|
-| ✅       | ✅      | ✅     | ✅        |        |              |
+| Simple | Image | Video | Buttons | Location | Phone number |
+|:------:|:-----:|:-----:|:-------:|:--------:|:------------:|
+|   ✅    |   ✅   |   ✅   |    ✅    |          |              |
 
 _Location, Phone number are platform limitations._
 
@@ -37,21 +37,21 @@ You can generate one for test with this command: ``node bin/oauth.js --new -c cl
 ### Connect to Slack
 
 ```javascript
-import broidSlack from 'broid-slack'
+const BroidSlack = require('broid-slack');
 
-const slack = new broidSlack({
+const slack = new BroidSlack({
   token: 'xxxxx'
-})
+});
 
 slack.connect()
   .subscribe({
     next: data => console.log(data),
     error: err => console.error(`Something went wrong: ${err.message}`),
     complete: () => console.log('complete'),
-  })
+  });
 ```
 
-**Options availables**
+**Options available**
 
 | name             | Type     | default    | Description  |
 | ---------------- |:--------:| :--------: | --------------------------|
@@ -67,7 +67,7 @@ slack.listen()
     next: data => console.log(`Received message: ${data}`),
     error: err => console.error(`Something went wrong: ${err.message}`),
     complete: () => console.log('complete'),
-  })
+  });
 ```
 
 ### Post a message
@@ -75,11 +75,27 @@ slack.listen()
 To send a message, the format should use the [broid-schemas](https://github.com/broidHQ/integrations/tree/master/integrations/broid-schemas).
 
 ```javascript
-const message_formated = '...'
+const formatted_message = {
+  "@context": "https://www.w3.org/ns/activitystreams",
+  "type": "Create",
+  "generator": {
+    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
+    "type": "Service",
+    "name": "slack"
+  },
+  "object": {
+    "type": "Note",
+    "content": "hello world"
+  },
+  "to": {
+    "type": "Person",
+    "id": "C1E3X0RRB"
+  }
+};
 
-slack.send(message_formated)
+slack.send(formatted_message)
   .then(() => console.log("ok"))
-  .catch(err => console.error(err))
+  .catch(err => console.error(err));
 ```
 
 ## Buttons supported

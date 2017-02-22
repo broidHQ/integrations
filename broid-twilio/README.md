@@ -16,9 +16,9 @@ Broid Integrations is an open source project providing a suite of Activity Strea
 
 ## Message types supported
 
-| Simple   | Image    | Video  | Buttons  | Location  | Phone number |
-|:--------:|:--------:|:------:|:--------:|:---------:|:------------:|
-| ✅       | ✅      | ✅     |       |        |              |
+| Simple | Image | Video | Buttons | Location | Phone number |
+|:------:|:-----:|:-----:|:-------:|:--------:|:------------:|
+|   ✅    |   ✅   |   ✅   |         |          |              |
 
 _Buttons, Location, Phone number are platform limitations._
 
@@ -27,23 +27,23 @@ _Buttons, Location, Phone number are platform limitations._
 ### Connect to Twilio
 
 ```javascript
-import broidTwilio from 'broid-twilio'
+const BroidTwilio = require('broid-twilio');
 
-const twilio = new broidTwilio({
+const twilio = new BroidTwilio({
   username: '<phone_number>',
   token: "<account_sid>",
   token_secret: "<auth_token>"
-})
+});
 
 twilio.connect()
   .subscribe({
     next: data => console.log(data),
     error: err => console.error(`Something went wrong: ${err.message}`),
     complete: () => console.log('complete'),
-  })
+  });
 ```
 
-**Options availables**
+**Options available**
 
 | name             | Type     | default    | Description  |
 | ---------------- |:--------:| :--------: | --------------------------|
@@ -62,7 +62,7 @@ twilio.listen()
     next: data => console.log(`Received message: ${data}`),
     error: err => console.error(`Something went wrong: ${err.message}`),
     complete: () => console.log('complete'),
-  })
+  });
 ```
 
 ### Post a message
@@ -70,11 +70,27 @@ twilio.listen()
 To send a message, the format should use the [broid-schemas](https://github.com/broidHQ/integrations/tree/master/integrations/broid-schemas).
 
 ```javascript
-const message_formated = '...'
+const formatted_message = {
+  "@context": "https://www.w3.org/ns/activitystreams",
+  "type": "Create",
+  "generator": {
+    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
+    "type": "Service",
+    "name": "twilio"
+  },
+  "object": {
+    "type": "Note",
+    "content": "hello world"
+  },
+  "to": {
+    "type": "Person",
+    "id": "+15437783737"
+  }
+};
 
-twilio.send(message_formated)
+twilio.send(formatted_message)
   .then(() => console.log("ok"))
-  .catch(err => console.error(err))
+  .catch(err => console.error(err));
 ```
 
 ## Examples of messages

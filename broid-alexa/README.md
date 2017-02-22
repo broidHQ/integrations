@@ -16,9 +16,9 @@ Broid Integrations is an open source project providing a suite of Activity Strea
 
 ## Message types supported
 
-| Simple   | Image    | Video  | Buttons  | Location  | Phone number |
-|:--------:|:--------:|:------:|:--------:|:---------:|:------------:|
-| ✅       | ✅      | ✅     |          |        |              |
+| Simple | Image | Video | Buttons | Location | Phone number |
+|:------:|:-----:|:-----:|:-------:|:--------:|:------------:|
+|   ✅    |   ✅   |   ✅   |         |          |              |
 
 _Buttons, Location, Phone number are platform limitations._
 
@@ -35,24 +35,24 @@ npm install --save broid-alexa
 ### Connect to Alexa
 
 ```javascript
-import broidAlexa from 'broid-alexa'
+const BroidAlexa = require('broid-alexa');
 
-const alexa = new broidAlexa({
+const alexa = new BroidAlexa({
   http: {
     port: 8080,
     host: "0.0.0.0"
   }
-})
+});
 
 alexa.connect()
   .subscribe({
     next: data => console.log(data),
     error: err => console.error(`Something went wrong: ${err.message}`),
     complete: () => console.log('complete'),
-  })
+  });
 ```
 
-**Options availables**
+**Options available**
 
 | name            | Type     | default    | Description  |
 | --------------- |:--------:| :--------: | --------------------------|
@@ -73,14 +73,30 @@ alexa.listen()
 
 ### Post a message
 
-To send a message, the format should use the [broid-schemas](https://github.com/broidhq/broid-schemas).
+To send a message, the format should use [broid-schemas](https://github.com/broidHQ/integrations/tree/master/broid-schemas).
 
 ```javascript
-const message_formated = '...'
+const formatted_message = {
+  "@context": "https://www.w3.org/ns/activitystreams",
+  "type": "Create",
+  "generator": {
+    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
+    "type": "Service",
+    "name": "alexa"
+  },
+  "object": {
+    "type": "Note",
+    "content": "What's the weather like today?"
+  },
+  "to": {
+    "id": "15146345659",
+    "type": "Person"
+  }
+}
 
-alexa.send(message_formated)
+alexa.send(formatted_message)
   .then(() => console.log("ok"))
-  .catch(err => console.error(err))
+  .catch(err => console.error(err));
 ```
 
 ## Examples of messages

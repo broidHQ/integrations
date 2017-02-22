@@ -16,9 +16,9 @@ Broid Integrations is an open source project providing a suite of Activity Strea
 
 ## Message types supported
 
-| Simple   | Image    | Video  | Buttons  | Location  | Phone number |
-|:--------:|:--------:|:------:|:--------:|:---------:|:------------:|
-| ✅       | ✅      | ✅     | ✅          | ✅        |              |
+| Simple | Image | Video | Buttons | Location | Phone number |
+|:------:|:-----:|:-----:|:-------:|:--------:|:------------:|
+|   ✅    |   ✅   |   ✅   |    ✅    |    ✅     |              |
 
 _Phone number is platform limitation._
 
@@ -27,22 +27,22 @@ _Phone number is platform limitation._
 ### Connect to Messenger
 
 ```javascript
-import broidMessenger from 'broid-messenger'
+const BroidMessenger = require('broid-messenger');
 
 const messenger = new broidMessenger({
   token: "<oauth_token>",
   tokenSecret: "<verify_token>"
-})
+});
 
 messenger.connect()
   .subscribe({
     next: data => console.log(data),
     error: err => console.error(`Something went wrong: ${err.message}`),
     complete: () => console.log('complete'),
-  })
+  });
 ```
 
-**Options availables**
+**Options available**
 
 | name             | Type     | default    | Description  |
 | ---------------- |:--------:| :--------: | --------------------------|
@@ -60,7 +60,7 @@ messenger.listen()
     next: data => console.log(`Received message: ${data}`),
     error: err => console.error(`Something went wrong: ${err.message}`),
     complete: () => console.log('complete'),
-  })
+  });
 ```
 
 ## Buttons supported
@@ -88,11 +88,27 @@ messenger.listen()
 To send a message, the format should use the [broid-schemas](https://github.com/broidHQ/integrations/tree/master/integrations/broid-schemas).
 
 ```javascript
-const message_formated = '...'
+const formatted_message = {
+  "@context": "https://www.w3.org/ns/activitystreams",
+  "type": "Create",
+  "generator": {
+    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
+    "type": "Service",
+    "name": "messenger"
+  },
+  "object": {
+    "type": "Note",
+    "content": "hello world"
+  },
+  "to": {
+    "type": "Person",
+    "id": "1396343657196792"
+  }
+};
 
-messenger.send(message_formated)
+messenger.send(formatted_message)
   .then(() => console.log("ok"))
-  .catch(err => console.error(err))
+  .catch(err => console.error(err));
 ```
 
 ## Examples of messages

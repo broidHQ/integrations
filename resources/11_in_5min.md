@@ -16,7 +16,7 @@ $ mkdir mynewapp
 $ cd mynewapp && npm init
 ```
 
-## Add the librairies
+## Add the libraries
 
 ```bash
 $ npm i --save broid-twitter \

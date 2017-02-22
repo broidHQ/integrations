@@ -16,9 +16,9 @@ Broid Integrations is an open source project providing a suite of Activity Strea
 
 ## Message types supported
 
-| Simple   | Image    | Video  | Buttons  | Location  | Phone number |
-|:--------:|:--------:|:------:|:--------:|:---------:|:------------:|
-| ✅       | ✅      | ✅     | ✅         | ✅        |              |
+| Simple | Image | Video | Buttons | Location | Phone number |
+|:------:|:-----:|:-----:|:-------:|:--------:|:------------:|
+|   ✅    |   ✅   |   ✅   |    ✅    |    ✅     |              |
 
 _Phone number is platform limitation._
 
@@ -27,23 +27,23 @@ _Phone number is platform limitation._
 ### Connect to Line
 
 ```javascript
-import broidLine from 'broid-line'
+const BroidLine = require('broid-line');
 
-const line = new broidLine({
+const line = new BroidLine({
   token: "<channel_secret>",
   tokenSecret: "<channel_access_token>",
   username: "<channel_id>"
-})
+});
 
 line.connect()
   .subscribe({
     next: data => console.log(data),
     error: err => console.error(`Something went wrong: ${err.message}`),
     complete: () => console.log('complete'),
-  })
+  });
 ```
 
-**Options availables**
+**Options available**
 
 | name             | Type     | default    | Description  |
 | ---------------- |:--------:| :--------: | --------------------------|
@@ -71,7 +71,7 @@ line.listen()
     next: data => console.log(`Received message: ${data}`),
     error: err => console.error(`Something went wrong: ${err.message}`),
     complete: () => console.log('complete'),
-  })
+  });
 ```
 
 ## Buttons supported
@@ -86,11 +86,31 @@ line.listen()
 To send a message, the format should use the [broid-schemas](https://github.com/broidHQ/integrations/tree/master/integrations/broid-schemas).
 
 ```javascript
-const message_formated = '...'
+const formatted_message = {
+  "@context": "https://www.w3.org/ns/activitystreams",
+  "type": "Create",
+  "generator": {
+    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
+    "type": "Service",
+    "name": "line"
+  },
+  "object": {
+    "type": "Note",
+    "content": "hello world",
+    "context": {
+      "type": "Object",
+      "content": "<reply_token>"
+    }    
+  },
+  "to": {
+    "type": "Person",
+    "id": "U1a2bb4a2fe413ea1c81ad6310c03d624"
+  }
+};
 
-line.send(message_formated)
+line.send(formatted_message)
   .then(() => console.log("ok"))
-  .catch(err => console.error(err))
+  .catch(err => console.error(err));
 ```
 
 ## Examples of messages
