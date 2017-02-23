@@ -50,7 +50,7 @@ skype.connect()
 | token_secret     | string   |      |  |
 | service_id       | string   | random     | Arbitrary identifier of the running instance |
 | log_level        | string   | `debug`    | Can be : `fatal`, `error`, `warn`, `info`, `debug`, `trace` |
-| http             | object   | `{ "port": 8080, "http": "0.0.0.0" }` | HTTP options (`host`, `port`) |
+| http             | object   | `{ "port": 8080, "http": "127.0.0.1" }` | HTTP options (`host`, `port`) |
 
 
 ### Receive a message
