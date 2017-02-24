@@ -16,9 +16,9 @@ Broid Integrations is an open source project providing a suite of Activity Strea
 
 ## Message types supported
 
-| Simple   | Image    | Video  | Buttons  | Location  | Phone number |
-|:--------:|:--------:|:------:|:--------:|:---------:|:------------:|
-| ✅       |       |      |          |        |              |
+| Simple | Image | Video | Buttons | Location | Phone number |
+|:------:|:-----:|:-----:|:-------:|:--------:|:------------:|
+|   ✅    |       |       |         |          |              |
 
 _Image, Video, Buttons, Location, Phone number are platform limitations._
 
@@ -33,25 +33,25 @@ npm install --save broid-google-assistant
 ### Connect to Google Assistant
 
 ```javascript
-import broidGoogleAssistant from 'broid-google-assistant'
+const BroidGoogleAssistant = require('broid-google-assistant');
 
-const googleAssistant = new broidGoogleAssistant({
+const googleAssistant = new BroidGoogleAssistant({
   username: '<your_action_name_here>',
   http: {
     port: 8080,
     host: "0.0.0.0"
   }
-})
+});
 
 googleAssistant.connect()
   .subscribe({
     next: data => console.log(data),
     error: err => console.error(`Something went wrong: ${err.message}`),
     complete: () => console.log('complete'),
-  })
+  });
 ```
 
-**Options availables**
+**Options available**
 
 | name            | Type     | default    | Description  |
 | --------------- |:--------:| :--------: | --------------------------|
@@ -68,19 +68,35 @@ googleAssistant.listen()
     next: data => console.log(`Received message: ${data}`),
     error: err => console.error(`Something went wrong: ${err.message}`),
     complete: () => console.log('complete'),
-  })
+  });
 ```
 
 ### Post a message
 
-To send a message, the format should use the [broid-schemas](https://github.com/broidhq/broid-schemas).
+To send a message, the format should use the [broid-schemas](https://github.com/broidHQ/integrations/tree/master/broid-schemas).
 
 ```javascript
-const message_formated = '...'
+const formatted_message = {
+  "@context": "https://www.w3.org/ns/activitystreams",
+  "type": "Create",
+  "generator": {
+    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
+    "type": "Service",
+    "name": "google-assistant"
+  },
+  "object": {
+    "type": "Note",
+    "content": "What is the weather like tomorrow?"
+  },
+  "to": {
+    "id": "IL12J7nWa/2zothSEg46DsY0q7o/H9FUis/YGdp64te=",
+    "type": "Person"
+  }
+};
 
-googleAssistant.send(message_formated)
+googleAssistant.send(formatted_message)
   .then(() => console.log("ok"))
-  .catch(err => console.error(err))
+  .catch(err => console.error(err));
 ```
 
 ## Examples of messages

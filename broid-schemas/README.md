@@ -9,7 +9,7 @@ Broid Integrations is an open source project providing a suite of Activity Strea
 ## Schemas
 
 Broid integrations support Simple, Rich, Video and Image messages.
-As  possible, theses schemas use [activitystreams 2.0](https://www.w3.org/TR/activitystreams-core/)  specifications.
+As possible, theses schemas use [activitystreams 2.0](https://www.w3.org/TR/activitystreams-core/) specifications. If using Typescript, you can use the interfaces supplied [here](https://github.com/broidHQ/integrations/blob/master/broid-schemas/src/index.ts) to simplify your work.
 
 ### Examples
 
@@ -43,7 +43,7 @@ As  possible, theses schemas use [activitystreams 2.0](https://www.w3.org/TR/act
 }
 ```
 
-In this case, `generator` field is use to inform that messaging plateform is `Slack` and the `target` field contain information about the Channel (_Group_ or _Person_). `actor` is the author of the message.
+In this case, `generator` field is use to inform that messaging platform is `Slack` and the `target` field contain information about the Channel (_Group_ or _Person_). `actor` is the author of the message.
 
 
 - A quick reply send to Messenger:

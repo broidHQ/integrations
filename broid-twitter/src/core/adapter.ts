@@ -212,7 +212,7 @@ export default class Adapter {
       });
   }
 
-  // Get the user information from the Plateform
+  // Get the user information from the platform
    // Ask the memory cache before make a external call
   private userById(key: string, cache: boolean = true): Promise {
     if (cache && this.storeUsers.get(key)) {

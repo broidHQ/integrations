@@ -16,9 +16,9 @@ Broid Integrations is an open source project providing a suite of Activity Strea
 
 ## Message types supported
 
-| Simple   | Image    | Video  | Buttons  | Location  | Phone number |
-|:--------:|:--------:|:------:|:--------:|:---------:|:------------:|
-| ✅       | ✅      | ✅     | ✅        |        |              |
+| Simple | Image | Video | Buttons | Location | Phone number |
+|:------:|:-----:|:-----:|:-------:|:--------:|:------------:|
+|   ✅    |   ✅   |   ✅   |    ✅    |          |              |
 
 _Location, Phone number are platform limitations._
 
@@ -27,22 +27,22 @@ _Location, Phone number are platform limitations._
 ### Connect to Skype
 
 ```javascript
-import broidSkype from 'broid-skype'
+const BroidSkype = require('broid-skype');
 
-const skype = new broidSkype({
+const skype = new BroidSkype({
   token: 'xxxxx',
   tokenSecret: 'xxxxxx',
-})
+});
 
 skype.connect()
   .subscribe({
     next: data => console.log(data),
     error: err => console.error(`Something went wrong: ${err.message}`),
     complete: () => console.log('complete'),
-  })
+  });
 ```
 
-**Options availables**
+**Options available**
 
 | name             | Type     | default    | Description  |
 | ---------------- |:--------:| :--------: | --------------------------|
@@ -50,7 +50,7 @@ skype.connect()
 | token_secret     | string   |      |  |
 | service_id       | string   | random     | Arbitrary identifier of the running instance |
 | log_level        | string   | `debug`    | Can be : `fatal`, `error`, `warn`, `info`, `debug`, `trace` |
-| http             | object   | `{ "port": 8080, "http": "0.0.0.0" }` | HTTP options (`host`, `port`) |
+| http             | object   | `{ "port": 8080, "http": "127.0.0.1" }` | HTTP options (`host`, `port`) |
 
 
 ### Receive a message
@@ -61,7 +61,7 @@ skype.listen()
     next: data => console.log(`Received message: ${data}`),
     error: err => console.error(`Something went wrong: ${err.message}`),
     complete: () => console.log('complete'),
-  })
+  });
 ```
 
 ## Buttons supported
@@ -77,11 +77,32 @@ skype.listen()
 To send a message, the format should use the [broid-schemas](https://github.com/broidHQ/integrations/tree/master/integrations/broid-schemas).
 
 ```javascript
-const message_formated = '...'
+const formatted_message = {
+  "@context": "https://www.w3.org/ns/activitystreams",
+  "type": "Create",
+  "generator": {
+    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
+    "type": "Service",
+    "name": "skype"
+  },
+  "object": {
+    "type": "Note",
+    "content": "hello world",
+    "context": {
+      "type": "Object",
+      "name": "address_id",
+      "content": "xxxxxxx#29:xxxxxxxxxxxx#skype#28:xxxxxxxxxxxx"
+    }
+  },
+  "to": {
+    "type": "Person",
+    "id": "2932680234"
+  }
+};
 
-skype.send(message_formated)
+skype.send(formatted_message)
   .then(() => console.log("ok"))
-  .catch(err => console.error(err))
+  .catch(err => console.error(err));
 ```
 
 ## Examples of messages
