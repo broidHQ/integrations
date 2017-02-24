@@ -16,9 +16,9 @@ Broid Integrations is an open source project providing a suite of Activity Strea
 
 ## Message types supported
 
-| Simple   | Image    | Video  | Buttons  | Location  | Phone number |
-|:--------:|:--------:|:------:|:--------:|:---------:|:------------:|
-| ✅       | ✅      | ✅     |          |        |              |
+| Simple | Image | Video | Buttons | Location | Phone number |
+|:------:|:-----:|:-----:|:-------:|:--------:|:------------:|
+|   ✅    |   ✅   |   ✅   |         |          |              |
 
 _Buttons, Location, Phone number are platform limitations._
 
@@ -31,19 +31,19 @@ _Buttons, Location, Phone number are platform limitations._
 ### Connect to Discord
 
 ```javascript
-import broidDiscord from 'broid-discord'
+const BroidDiscord = require('broid-discord');
 
-const discord = new broidDiscord({ token: "xoxp-xxxxxx" })
+const discord = new BroidDiscord({ token: "xoxp-xxxxxx" });
 
 discord.connect()
   .subscribe({
     next: data => console.log(data),
     error: err => console.error(`Something went wrong: ${err.message}`),
     complete: () => console.log('complete'),
-  })
+  });
 ```
 
-**Options availables**
+**Options available**
 
 | name             | Type     | default    | Description  |
 | ---------------- |:--------:| :--------: | --------------------------|
@@ -67,9 +67,25 @@ discord.listen()
 To send a message, the format should use the [broid-schemas](https://github.com/broidHQ/integrations/tree/master/integrations/broid-schemas).
 
 ```javascript
-const message_formated = '...'
+const formatted_message = {
+  "@context": "https://www.w3.org/ns/activitystreams",
+  "type": "Create",
+  "generator": {
+    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
+    "type": "Service",
+    "name": "discord"
+  },
+  "object": {
+    "type": "Note",
+    "content": "hello world"
+  },
+  "to": {
+    "type": "Person",
+    "id": "152486124831181614"
+  }
+};
 
-discord.send(message_formated)
+discord.send(formatted_message)
   .then(() => console.log("ok"))
   .catch(err => console.error(err))
 ```

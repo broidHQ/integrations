@@ -16,9 +16,9 @@ Broid Integrations is an open source project providing a suite of Activity Strea
 
 ## Message types supported
 
-| Simple   | Image    | Video  | Buttons  | Location  | Phone number |
-|:--------:|:--------:|:------:|:--------:|:---------:|:------------:|
-| ✅       | ✅      | ✅     |          | ✅        |              |
+| Simple | Image | Video | Buttons | Location | Phone number |
+|:------:|:-----:|:-----:|:-------:|:--------:|:------------:|
+|   ✅    |   ✅   |   ✅   |         |    ✅     |              |
 
 _Buttons, Phone number are platform limitations._
 
@@ -35,9 +35,9 @@ npm install --save broid-groupme
 ### Connect to Groupme
 
 ```javascript
-import broidGroupme from 'broid-groupme'
+const BroidGroupme = require('broid-groupme');
 
-const groupme = new broidGroupme({
+const groupme = new BroidGroupme({
   username: '<your_sender_number>',
   token: '<your_groupme_token>',
   tokenSecret: '<your_groupme_token_secret>',
@@ -45,17 +45,17 @@ const groupme = new broidGroupme({
     port: 8080,
     host: "0.0.0.0"
   }
-})
+});
 
 groupme.connect()
   .subscribe({
     next: data => console.log(data),
     error: err => console.error(`Something went wrong: ${err.message}`),
     complete: () => console.log('complete'),
-  })
+  });
 ```
 
-**Options availables**
+**Options available**
 
 | name            | Type     | default    | Description  |
 | --------------- |:--------:| :--------: | --------------------------|
@@ -74,19 +74,35 @@ groupme.listen()
     next: data => console.log(`Received message: ${data}`),
     error: err => console.error(`Something went wrong: ${err.message}`),
     complete: () => console.log('complete'),
-  })
+  });
 ```
 
 ### Post a message
 
-To send a message, the format should use the [broid-schemas](https://github.com/broidhq/broid-schemas).
+To send a message, the format should use the [broid-schemas](https://github.com/broidHQ/integrations/tree/master/broid-schemas).
 
 ```javascript
-const message_formated = '...'
+const formatted_message = {
+  "@context": "https://www.w3.org/ns/activitystreams",
+  "type": "Create",
+  "generator": {
+    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
+    "type": "Service",
+    "name": "groupme"
+  },
+  "object": {
+    "type": "Note",
+    "content": "hello world"
+  },
+  "to": {
+    "id": "28728284",
+    "type": "Person"
+  }
+};
 
-groupme.send(message_formated)
+groupme.send(formatted_message)
   .then(() => console.log("ok"))
-  .catch(err => console.error(err))
+  .catch(err => console.error(err));
 ```
 
 ## Examples of messages
