@@ -17,8 +17,8 @@
     "node": ">=6.0.0"
   },
   "scripts": {
-    "build": "npm run clean && typings install && npm run copy && tsc",
-    "clean": "rm -rf lib && rm -rf typings",
+    "build": "npm run clean && npm run copy && tsc",
+    "clean": "rm -rf lib",
     "copy": "copyfiles -u 1 src/**/*.json lib/",
     "lint": "tslint -c tslint.json src/*",
     "lint:watch": "watch 'tslint -c tslint.json src/*' src",
@@ -45,6 +45,7 @@
     "rxjs": "^5.0.2"
   },
   "devDependencies": {
+    "@types/node": "^7.0.5",
     "ava": "^0.17.0",
     "concurrently": "^3.1.0",
     "copyfiles": "^1.0.0",

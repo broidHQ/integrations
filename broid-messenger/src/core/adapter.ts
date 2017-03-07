@@ -243,7 +243,7 @@ export default class Adapter {
   }
 
   // Return user information
-  private user(id: string, fields: string = "name,first_name,last_name", cache: boolean = true): Promise {
+  private user(id: string, fields: string = "first_name,last_name", cache: boolean = true): Promise {
     const key: string = `${id}${fields}`;
     if (cache && this.storeUsers.get(key)) {
       const data = this.storeUsers.get(key);
