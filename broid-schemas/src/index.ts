@@ -49,11 +49,21 @@ export interface IActivityStream {
    object?: IASObject;
  }
 
- export interface IASTag {
-   id: string;
-   name: string;
-   type: string;
- }
+export interface IASTag {
+  id: string;
+  name: string;
+  type: string;
+}
+
+export interface ISendParameters {
+  readonly "@context": string;
+  readonly published: number;
+  readonly type: string;
+  readonly generator: {};
+  actor?: IASBase;
+  to: IASBase;
+  object: IASObject;
+}
 
 export default function(data: any, schema: string): Promise<any> {
   const BASE_URL = "http://schemas.broid.ai/";
