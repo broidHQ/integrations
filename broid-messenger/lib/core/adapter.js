@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const Promise = require("bluebird");
 const broid_schemas_1 = require("broid-schemas");
 const broid_utils_1 = require("broid-utils");
@@ -199,7 +200,7 @@ class Adapter {
             return Promise.reject(new Error("Only Note, Image, and Video are supported."));
         });
     }
-    user(id, fields = "name,first_name,last_name", cache = true) {
+    user(id, fields = "first_name,last_name", cache = true) {
         const key = `${id}${fields}`;
         if (cache && this.storeUsers.get(key)) {
             const data = this.storeUsers.get(key);
@@ -217,5 +218,4 @@ class Adapter {
         });
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = Adapter;

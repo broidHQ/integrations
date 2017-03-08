@@ -1,9 +1,10 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const bodyParser = require("body-parser");
 const broid_utils_1 = require("broid-utils");
-const EventEmitter = require("eventemitter3");
+const events_1 = require("events");
 const express = require("express");
-class WebHookServer extends EventEmitter {
+class WebHookServer extends events_1.EventEmitter {
     constructor(tokenSecret, options, logLevel) {
         super();
         this.host = options && options.host || "127.0.0.1";
@@ -46,5 +47,4 @@ class WebHookServer extends EventEmitter {
         this.express.use("/", router);
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = WebHookServer;
