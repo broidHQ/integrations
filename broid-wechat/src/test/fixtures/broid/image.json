@@ -1,4 +1,1 @@
 {"@context":"https://www.w3.org/ns/activitystreams","actor":{"id":"test_id","name":"My Name","type":"Person"},"generator":{"id":"test_wechat_service","name":"wechat","type":"Service"},"object":{"id":"6394947425011355184","type":"Image","url":"http://mmbiz.qpic.cn/mmbiz_jpg/AqnhFKzDorO8QTbHzrAehzXy1TMyCNEWThxvsQ9fhibEXEMhmkc2ZyLqWNXiavQpgOn8iaN0uxw0roawSjnojibGrQ/0"},"published":1488939725,"target":{"id":"test_account_id","name":"test_account_id","type":"Person"},"type":"Create"}
-
-
-

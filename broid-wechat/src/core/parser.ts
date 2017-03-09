@@ -14,7 +14,7 @@ export default class Parser {
     this.generatorName = "wechat";
     this.serviceID = serviceID;
     this.logger = new Logger("parser", logLevel);
-    this.userCache = {};
+    this.userCache = new Map();
     this.wechatClient = wechatClient;
   }
 

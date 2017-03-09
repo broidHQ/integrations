@@ -9,7 +9,7 @@ class Parser {
         this.generatorName = "wechat";
         this.serviceID = serviceID;
         this.logger = new broid_utils_1.Logger("parser", logLevel);
-        this.userCache = {};
+        this.userCache = new Map();
         this.wechatClient = wechatClient;
     }
     validate(event) {

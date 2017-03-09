@@ -50,7 +50,6 @@ export default class Adapter {
     }
 
     this.client = Promise.promisifyAll(new WeChat(this.appID, this.appSecret));
-    this.client.setEndpoint("api.wechat.com");
     this.parser = new Parser(this.client, this.serviceID, this.logLevel);
   }
 
@@ -105,17 +104,17 @@ export default class Adapter {
           case "Note":
             return this.client.sendTextAsync(data.to.id, data.object.content);
           case "Audio":
-            return this.uploadFile(data.object.url, "voice", "audio.amr")
+            return this.uploadFile(data.object.url, "voice", data.object.name || "audio.amr")
               .then((mediaID) => {
                 return this.client.sendVoiceAsync(data.to.id, mediaID);
               });
           case "Image":
-            return this.uploadFile(data.object.url, "image", "image.jpg")
+            return this.uploadFile(data.object.url, "image", data.object.name || "image.jpg")
               .then((mediaID) => {
                 return this.client.sendImageAsync(data.to.id, mediaID);
               });
           case "Video":
-            return this.uploadFile(data.object.url, "video", "video.mp4")
+            return this.uploadFile(data.object.url, "video", data.object.name || "video.mp4")
               .then((mediaID) => {
                 return this.client.sendVideoAsync(data.to.id, mediaID);
               });

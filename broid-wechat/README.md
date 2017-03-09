@@ -22,7 +22,7 @@ Broid Integrations is an open source project providing a suite of Activity Strea
 
 _Buttons, Location, Phone number are platform limitations._
 
-_Image, Video are supported as a simple message_
+_Image, Video, and Audio are supported as a simple message_.
 
 ## Getting started
 
@@ -50,7 +50,7 @@ wechat.connect()
 | ----------------- |:--------:| :--------: | --------------------------|
 | serviceID         | string   | random     | Arbitrary identifier of the running instance |
 | logLevel          | string   | `info`     | Can be : `fatal`, `error`, `warn`, `info`, `debug`, `trace` |
-
+| http              | object   | `{ "port": 8080, "http": "0.0.0.0" }` | WebServer options (`host`, `port`, `webhookURL`) |
 
 ### Receive a message
 
@@ -90,8 +90,6 @@ wechat.send(formatted_message)
   .then(() => console.log("ok"))
   .catch(err => console.error(err));
 ```
-
-
 
 ## Examples of messages
 
@@ -209,7 +207,7 @@ wechat.send(formatted_message)
     "name": "wechat"
   },
   "object": {
-    "type": "Video",
+    "type": "Audio",
     "content": "hello world",
     "url": "https://www.broid.ai/audio/audio.amr"
   },
