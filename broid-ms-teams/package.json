@@ -1,10 +1,10 @@
 {
-  "name": "broid-messenger",
-  "version": "1.1.6",
+  "name": "broid-ms-teams",
+  "version": "1.1.4",
   "main": "lib/core/index.js",
   "license": "AGPL-3.0+",
   "author": "Broid Team <opensource@broid.ai> (https://broid.ai)",
-  "description": "Convert Facebook Messenger messages into Activity Streams 2 with Broid Integration",
+  "description": "Convert Microsoft Teams messages into Activity Streams 2 with Broid Integration",
   "repository": {
     "type": "git",
     "url": "git@github.com:broidHQ/integrations.git"
@@ -12,7 +12,7 @@
   "bugs": {
     "url": "https://github.com/broidHQ/integrations/issues"
   },
-  "homepage": "https://github.com/broidHQ/integrations/tree/master/broid-messenger#readme",
+  "homepage": "https://github.com/broidHQ/integrations/tree/master/broid-ms-teams#readme",
   "engines": {
     "node": ">=6.0.0"
   },
@@ -33,19 +33,16 @@
   "dependencies": {
     "bluebird": "^3.4.7",
     "body-parser": "^1.15.2",
+    "botbuilder": "^3.5.1",
     "broid-schemas": "^1.1.4",
     "broid-utils": "^1.0.4",
-    "eventemitter3": "^2.0.2",
     "express": "^4.14.0",
     "mimetype": "^0.0.8",
     "node-uuid": "^1.4.7",
     "ramda": "^0.23.0",
-    "request": "^2.79.0",
-    "request-promise": "^4.1.1",
     "rxjs": "^5.0.2"
   },
   "devDependencies": {
-    "@types/node": "^7.0.5",
     "ava": "^0.17.0",
     "concurrently": "^3.1.0",
     "copyfiles": "^1.0.0",
@@ -53,7 +50,6 @@
     "tslint": "^4.3.1",
     "tslint-eslint-rules": "^3.2.3",
     "typescript": "^2.1.4",
-    "typings": "^2.1.0",
     "watch": "^1.0.1"
   },
   "ava": {
