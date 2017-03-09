@@ -91,6 +91,7 @@ This make Broid **flexible** and **useful** to use in your application.
 |<a href="https://github.com/broidHQ/integrations/tree/master/broid-twitter"><img width="35" src="https://t.broid.ai/i/s-twitter-color?utm_source=github&utm_medium=readme&utm_campaign=integrations"></a>| broid-twitter |[![viber][twitter-npm]][twitter-url] [![twitter][twitter-dm]][twitter-dm-url] [![twitter][integration-doc]][twitter-url]|
 |<a href="https://github.com/broidHQ/integrations/tree/master/broid-viber"><img width="35" src="https://t.broid.ai/i/p-viber-color?utm_source=github&utm_medium=readme&utm_campaign=integrations"></a>| broid-viber |[![viber][viber-npm]][viber-url] [![viber][viber-dm]][viber-dm-url] [![viber][integration-doc]][viber-url]|
 |<a href="https://github.com/broidHQ/integrations/tree/master/broid-wechat"><img width="35" src="https://t.broid.ai/i/p-wechat-color?utm_source=github&utm_medium=readme&utm_campaign=integrations"></a>| broid-wechat |[![wechat][wechat-npm]][wechat-url] [![wechat][wechat-dm]][wechat-dm-url] [![wechat][integration-doc]][wechat-url]|
+|<a href="https://github.com/broidHQ/integrations/tree/master/broid-ms-teams"><img width="35" src="https://t.broid.ai/i/p-ms-teams-color?utm_source=github&utm_medium=readme&utm_campaign=integrations"></a>| broid-ms-teams |[![ms-teams][ms-teams-npm]][ms-teams-url] [![ms-teams][ms-teams-dm]][ms-teams-dm-url] [![ms-teams][integration-doc]][ms-teams-url]|
 
 [integration-doc]: https://img.shields.io/badge/docs--green.svg?style=flat
 
@@ -188,6 +189,11 @@ This make Broid **flexible** and **useful** to use in your application.
 [wechat-dm]: https://david-dm.org/broidhq/integrations.svg?path=broid-wechat
 [wechat-dm-url]: https://david-dm.org/broidhq/integrations?path=broid-wechat
 [wechat-npm]: https://img.shields.io/npm/v/broid-wechat.svg
+
+[ms-teams-url]: https://github.com/broidHQ/integrations/tree/master/broid-ms-teams
+[ms-teams-dm]: https://david-dm.org/broidhq/integrations.svg?path=broid-ms-teams
+[ms-teams-dm-url]: https://david-dm.org/broidhq/integrations?path=broid-ms-teams
+[ms-teams-npm]: https://img.shields.io/npm/v/broid-ms-teams.svg
 
 ### Broid Formats
 

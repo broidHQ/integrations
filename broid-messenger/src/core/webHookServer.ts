@@ -1,6 +1,6 @@
 import * as bodyParser from "body-parser";
 import { Logger } from "broid-utils";
-import * as EventEmitter from "eventemitter3";
+import { EventEmitter } from "events";
 import * as express from "express";
 
 import { IAdapterHTTPOptions, IWebHookEvent } from "./interfaces";
