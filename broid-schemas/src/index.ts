@@ -57,7 +57,6 @@ export interface IASTag {
 
 export interface ISendParameters {
   readonly "@context": string;
-  readonly published: number;
   readonly type: string;
   readonly generator: {};
   actor?: IASBase;
