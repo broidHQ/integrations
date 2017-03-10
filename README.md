@@ -55,6 +55,12 @@ Rx.Observable.merge(...R.map(client => client.connect(), R.values(clients)))
 		next: data => console.log(JSON.stringify(data, null, 2)),
 		error: err => console.error(`Something went wrong: ${err.message}`),
 	});
+
+Rx.Observable.merge(...R.map(client => client.listen(), R.values(clients)))
+	.subscribe({
+		next: message => console.log(JSON.stringify(message, null, 2)),
+		error: err => console.error(`Something went wrong: ${err.message}`),
+	});
 ```
 
 ### Get Started
