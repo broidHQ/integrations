@@ -41,9 +41,9 @@ class Parser {
             case "text":
                 return this.parseText(normalized);
             case "video":
-                return this.parseMultiMedia(normalized, "Video");
+                return this.parseMultiMedia(normalized, "Video", "video/mp4");
             case "voice":
-                return this.parseMultiMedia(normalized, "Audio");
+                return this.parseMultiMedia(normalized, "Audio", "audio/amr");
             default:
                 return Promise.resolve(null);
         }
@@ -90,6 +90,7 @@ class Parser {
             .then((message) => {
             message.object = {
                 id: normalized.msgid[0],
+                mediaType: "image/jpeg",
                 type: "Image",
                 url: normalized.picurl[0],
             };
@@ -107,13 +108,14 @@ class Parser {
             return message;
         });
     }
-    parseMultiMedia(normalized, messageType) {
+    parseMultiMedia(normalized, messageType, mediaType) {
         const getAccessToken = this.wechatClient.getLatestTokenAsync()
             .then(R.prop("accessToken"));
         return Promise.join(getAccessToken, this.createActivityStream(normalized))
             .spread((accessToken, message) => {
             message.object = {
                 id: normalized.msgid[0],
+                mediaType,
                 type: messageType,
                 url: `http://file.api.wechat.com/cgi-bin/media/get?access_token=${accessToken}&media_id=${normalized.mediaid[0]}`,
             };
