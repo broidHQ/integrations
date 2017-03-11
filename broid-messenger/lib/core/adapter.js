@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const Promise = require("bluebird");
 const broid_schemas_1 = require("broid-schemas");
 const broid_utils_1 = require("broid-utils");
@@ -55,10 +56,7 @@ class Adapter {
             .mergeMap((event) => this.parser.normalize(event))
             .mergeMap((messages) => Rx_1.Observable.from(messages))
             .mergeMap((message) => this.user(message.author)
-            .then((author) => {
-            message.authorInformation = author;
-            return message;
-        }))
+            .then((author) => R.assoc("authorInformation", author, message)))
             .mergeMap((normalized) => this.parser.parse(normalized))
             .mergeMap((parsed) => this.parser.validate(parsed))
             .mergeMap((validated) => {
@@ -199,7 +197,7 @@ class Adapter {
             return Promise.reject(new Error("Only Note, Image, and Video are supported."));
         });
     }
-    user(id, fields = "name,first_name,last_name", cache = true) {
+    user(id, fields = "first_name,last_name", cache = true) {
         const key = `${id}${fields}`;
         if (cache && this.storeUsers.get(key)) {
             const data = this.storeUsers.get(key);
@@ -212,10 +210,10 @@ class Adapter {
             uri: `https://graph.facebook.com/v2.8/${id}`,
         })
             .then((data) => {
+            data.id = data.id || id;
             this.storeUsers.set(key, data);
             return data;
         });
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = Adapter;
