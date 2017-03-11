@@ -87,10 +87,7 @@ export default class Adapter {
       .mergeMap((event: IWebHookEvent) => this.parser.normalize(event))
       .mergeMap((messages: any) => Observable.from(messages))
       .mergeMap((message: any) => this.user(message.author)
-        .then((author) => {
-          message.authorInformation = author;
-          return message;
-      }))
+        .then((author) => R.assoc("authorInformation", author, message)))
       .mergeMap((normalized) => this.parser.parse(normalized))
       .mergeMap((parsed) => this.parser.validate(parsed))
       .mergeMap((validated) => {
@@ -256,7 +253,8 @@ export default class Adapter {
       qs: { access_token: this.token, fields },
       uri: `https://graph.facebook.com/v2.8/${id}`,
     })
-    .then((data) => {
+    .then((data: any) => {
+      data.id = data.id || id;
       this.storeUsers.set(key, data);
       return data;
     });

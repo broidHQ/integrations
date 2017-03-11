@@ -56,10 +56,7 @@ class Adapter {
             .mergeMap((event) => this.parser.normalize(event))
             .mergeMap((messages) => Rx_1.Observable.from(messages))
             .mergeMap((message) => this.user(message.author)
-            .then((author) => {
-            message.authorInformation = author;
-            return message;
-        }))
+            .then((author) => R.assoc("authorInformation", author, message)))
             .mergeMap((normalized) => this.parser.parse(normalized))
             .mergeMap((parsed) => this.parser.validate(parsed))
             .mergeMap((validated) => {
@@ -213,6 +210,7 @@ class Adapter {
             uri: `https://graph.facebook.com/v2.8/${id}`,
         })
             .then((data) => {
+            data.id = data.id || id;
             this.storeUsers.set(key, data);
             return data;
         });
