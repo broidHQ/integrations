@@ -36,7 +36,7 @@ export default class Adapter {
     this.webhookURL = obj && obj.webhookURL.replace(/\/?$/, "/") || "";
 
     this.emitter = new EventEmitter();
-    this.parser = new Parser(this.serviceID, this.logLevel);
+    this.parser = new Parser(this.serviceName(), this.serviceID, this.logLevel);
     this.logger = new Logger("adapter", this.logLevel);
     this.router = this.setupRouter();
 
@@ -55,8 +55,13 @@ export default class Adapter {
     return Promise.reject(new Error("Not supported"));
   }
 
+  // Return the name of the Service/Integration
+  public serviceName(): string {
+    return "callr";
+  }
+
   // Return the service ID of the current instance
-  public serviceId(): String {
+  public serviceId(): string {
     return this.serviceID;
   }
 

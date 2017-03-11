@@ -19,7 +19,7 @@ class Adapter {
         this.username = obj && obj.username || "SMS";
         this.webhookURL = obj && obj.webhookURL.replace(/\/?$/, "/") || "";
         this.emitter = new EventEmitter();
-        this.parser = new parser_1.default(this.serviceID, this.logLevel);
+        this.parser = new parser_1.default(this.serviceName(), this.serviceID, this.logLevel);
         this.logger = new broid_utils_1.Logger("adapter", this.logLevel);
         this.router = this.setupRouter();
         if (obj.http) {
@@ -31,6 +31,9 @@ class Adapter {
     }
     channels() {
         return Promise.reject(new Error("Not supported"));
+    }
+    serviceName() {
+        return "callr";
     }
     serviceId() {
         return this.serviceID;
@@ -44,9 +47,11 @@ class Adapter {
         }
         this.connected = true;
         if (!this.token
-            || !this.tokenSecret
-            || !this.webhookURL) {
+            || !this.tokenSecret) {
             return Rx_1.Observable.throw(new Error("Credentials should exist."));
+        }
+        if (!this.webhookURL) {
+            return Rx_1.Observable.throw(new Error("webhookURL should exist."));
         }
         this.session = new Callr.api(this.token, this.tokenSecret);
         if (this.webhookServer) {

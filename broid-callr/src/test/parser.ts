@@ -15,7 +15,7 @@ import * as broidMessageVideo from "./fixtures/broid/parsed/messageVideo.json";
 
 let parser: Parser;
 test.before(() => {
-  parser = new Parser("test_service", "info");
+  parser = new Parser("callr", "test_service", "info");
 });
 
 test("Parse a null", async(t) => {
