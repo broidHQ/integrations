@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const Ajv = require("ajv");
 const Promise = require("bluebird");
 function default_1(data, schema) {
@@ -20,5 +21,4 @@ function default_1(data, schema) {
         return resolve(true);
     });
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = default_1;
