@@ -55,6 +55,12 @@ Rx.Observable.merge(...R.map(client => client.connect(), R.values(clients)))
 		next: data => console.log(JSON.stringify(data, null, 2)),
 		error: err => console.error(`Something went wrong: ${err.message}`),
 	});
+
+Rx.Observable.merge(...R.map(client => client.listen(), R.values(clients)))
+	.subscribe({
+		next: message => console.log(JSON.stringify(message, null, 2)),
+		error: err => console.error(`Something went wrong: ${err.message}`),
+	});
 ```
 
 ### Get Started
@@ -90,6 +96,8 @@ This make Broid **flexible** and **useful** to use in your application.
 |<a href="https://github.com/broidHQ/integrations/tree/master/broid-twilio"><img width="35" src="https://t.broid.ai/i/p-twilio-color?utm_source=github&utm_medium=readme&utm_campaign=integrations"></a>| broid-twilio |[![twilio][twilio-npm]][twilio-url] [![twilio][twilio-dm]][twilio-dm-url] [![twilio][integration-doc]][twilio-url]|
 |<a href="https://github.com/broidHQ/integrations/tree/master/broid-twitter"><img width="35" src="https://t.broid.ai/i/s-twitter-color?utm_source=github&utm_medium=readme&utm_campaign=integrations"></a>| broid-twitter |[![viber][twitter-npm]][twitter-url] [![twitter][twitter-dm]][twitter-dm-url] [![twitter][integration-doc]][twitter-url]|
 |<a href="https://github.com/broidHQ/integrations/tree/master/broid-viber"><img width="35" src="https://t.broid.ai/i/p-viber-color?utm_source=github&utm_medium=readme&utm_campaign=integrations"></a>| broid-viber |[![viber][viber-npm]][viber-url] [![viber][viber-dm]][viber-dm-url] [![viber][integration-doc]][viber-url]|
+|<a href="https://github.com/broidHQ/integrations/tree/master/broid-ms-teams"><img width="35" src="https://t.broid.ai/i/p-ms-teams-color?utm_source=github&utm_medium=readme&utm_campaign=integrations"></a>| broid-ms-teams |[![ms-teams][ms-teams-npm]][ms-teams-url] [![ms-teams][ms-teams-dm]][ms-teams-dm-url] [![ms-teams][integration-doc]][ms-teams-url]|
+
 
 [integration-doc]: https://img.shields.io/badge/docs--green.svg?style=flat
 
@@ -182,6 +190,11 @@ This make Broid **flexible** and **useful** to use in your application.
 [alexa-dm]: https://david-dm.org/broidhq/integrations.svg?path=broid-alexa
 [alexa-dm-url]: https://david-dm.org/broidhq/integrations?path=broid-alexa
 [alexa-npm]: https://img.shields.io/npm/v/broid-alexa.svg
+
+[ms-teams-url]: https://github.com/broidHQ/integrations/tree/master/broid-ms-teams
+[ms-teams-dm]: https://david-dm.org/broidhq/integrations.svg?path=broid-ms-teams
+[ms-teams-dm-url]: https://david-dm.org/broidhq/integrations?path=broid-ms-teams
+[ms-teams-npm]: https://img.shields.io/npm/v/broid-ms-teams.svg
 
 ### Broid Formats
 
