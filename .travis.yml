@@ -17,6 +17,8 @@ cache:
     - integrations/broid-twitter/node_modules
     - integrations/broid-utils/node_modules
     - integrations/broid-viber/node_modules
+    - integrations/broid-wechat/node_modules
+    - integrations/broid-ms-team/node_modules
 node_js:
   - "6"
 before_install:
