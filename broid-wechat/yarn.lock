@@ -770,9 +770,9 @@ braces@^1.8.2:
     preserve "^0.2.0"
     repeat-element "^1.1.2"
 
-broid-schemas@^1.1.4:
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/broid-schemas/-/broid-schemas-1.1.5.tgz#d0956284e862719111479054a7ee91fa434615fc"
+broid-schemas@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/broid-schemas/-/broid-schemas-1.2.0.tgz#aac23294d2edd6dbc56671001d70c0907559e944"
   dependencies:
     ajv "^5.0.1-beta.1"
     bluebird "^3.4.6"
@@ -3720,9 +3720,9 @@ watch@^1.0.1:
     exec-sh "^0.2.0"
     minimist "^1.2.0"
 
-"wechat-api@git+ssh://git@github.com:node-webot/wechat-api.git#295ad45e199ef93610c4d3a9350de6992a932d8c":
+"wechat-api@git+https://git@github.com:node-webot/wechat-api.git#295ad45e199ef93610c4d3a9350de6992a932d8c":
   version "1.32.0"
-  resolved "git+ssh://git@github.com/node-webot/wechat-api.git#295ad45e199ef93610c4d3a9350de6992a932d8c"
+  resolved "git+https://git@github.com/node-webot/wechat-api.git#295ad45e199ef93610c4d3a9350de6992a932d8c"
   dependencies:
     formstream ">=1.0.0"
     urllib "2.21.0"
