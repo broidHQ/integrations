@@ -2,6 +2,10 @@
 # yarn lockfile v1
 
 
+"@types/node@^7.0.5":
+  version "7.0.8"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-7.0.8.tgz#25e4dd804b630c916ae671233e6d71f6ce18124a"
+
 abbrev@1:
   version "1.0.9"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.0.9.tgz#91b4792588a7738c25f35dd6f63752a2f8776135"
@@ -957,9 +961,9 @@ braces@^1.8.2:
     preserve "^0.2.0"
     repeat-element "^1.1.2"
 
-broid-schemas@^1.1.4:
-  version "1.1.4"
-  resolved "https://registry.yarnpkg.com/broid-schemas/-/broid-schemas-1.1.4.tgz#80afd377b1448a745a61421add7550dfa1bd9d0d"
+broid-schemas@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/broid-schemas/-/broid-schemas-1.2.0.tgz#aac23294d2edd6dbc56671001d70c0907559e944"
   dependencies:
     ajv "^5.0.1-beta.1"
     bluebird "^3.4.6"

@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const Promise = require("bluebird");
 const broid_schemas_1 = require("broid-schemas");
 const broid_utils_1 = require("broid-utils");
@@ -167,4 +166,5 @@ class Parser {
         return null;
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = Parser;
