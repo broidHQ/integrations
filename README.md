@@ -100,6 +100,11 @@
 
 [integration-doc-badge]:https://img.shields.io/badge/docs--green.svg?style=flat
 
+[schemas-url]: https://github.com/broidHQ/integrations/tree/master/broid-schemas
+[schemas-dm]: https://david-dm.org/broidhq/integrations.svg?path=broid-schemas
+[schemas-dm-url]: https://david-dm.org/broidhq/integrations?path=broid-schemas
+[schemas-npm]: https://img.shields.io/npm/v/broid-schemas.svg
+
 [npm]:https://img.shields.io/badge/npm-broid-green.svg?style=flat
 [npm-url]:https://www.npmjs.com/~broid
 
@@ -235,10 +240,7 @@ Broid integrations supports [Activity Streams 2.0](https://t.broid.ai/c/LSB12U?u
 |:--:|:----:|
 |broid-schemas |[![schemas][schemas-npm]][schemas-url] [![schemas][schemas-dm]][schemas-dm-url] [![schemas][integration-doc-badge]][schemas-url]|
 
-[schemas-url]: https://github.com/broidHQ/integrations/tree/master/broid-schemas
-[schemas-dm]: https://david-dm.org/broidhq/integrations.svg?path=broid-schemas
-[schemas-dm-url]: https://david-dm.org/broidhq/integrations?path=broid-schemas
-[schemas-npm]: https://img.shields.io/npm/v/broid-schemas.svg
+
 
 ## Contributing
 
