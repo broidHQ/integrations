@@ -18,9 +18,6 @@ prepare:
 	mkdir -p lib/schemas/embedded
 	mkdir -p lib/schemas/object
 
-dependencies:
-	npm install -g js-yaml json-minify
-
 %.json: %.yaml prepare
 	@echo Building $@
 	(echo "id: '$(BASE_URL)$(subst src/schemas/,,$@)'"; cat $<) | js-yaml | json-minify > lib/$(subst src/,,$@)

@@ -1,10 +1,10 @@
 {
-  "name": "broid-alexa",
-  "version": "1.0.1",
+  "name": "broid-wechat",
+  "version": "1.0.0",
   "main": "lib/core/index.js",
   "license": "AGPL-3.0+",
   "author": "Broid Team <opensource@broid.ai> (https://broid.ai)",
-  "description": "Convert Alexa messages into Activity Streams 2 with Broid Integration",
+  "description": "Convert WeChat messages into Activity Streams 2 with Broid Integration",
   "repository": {
     "type": "git",
     "url": "git@github.com:broidHQ/integrations.git"
@@ -12,14 +12,14 @@
   "bugs": {
     "url": "https://github.com/broidHQ/integrations/issues"
   },
-  "homepage": "https://github.com/broidHQ/integrations/tree/master/broid-alexa#readme",
+  "homepage": "https://github.com/broidHQ/integrations/tree/master/broid-wechat#readme",
   "engines": {
     "node": ">=6.0.0"
   },
   "scripts": {
     "test": "npm run lint && npm run build && nyc ava --verbose",
     "build": "npm run clean && npm run copy && tsc",
-    "clean": "rm -rf lib",
+    "clean": "rm -rf lib && rm -rf typings",
     "copy": "copyfiles -u 1 src/**/*.json lib/",
     "watch": "concurrently --kill-others \"npm run lint:watch\" \"npm run tsc:watch\"",
     "lint": "tslint -c tslint.json src/*",
@@ -29,13 +29,20 @@
     "release": "npm run travis && npm run build && npm publish"
   },
   "devDependencies": {
-    "@types/moment": "^2.13.0",
+    "@types/bluebird": "^3.0.37",
+    "@types/bluebird-global": "^3.0.1",
+    "@types/express": "^4.0.35",
+    "@types/fs-extra": "^0.0.37",
+    "@types/glob": "^5.0.30",
     "@types/node": "^7.0.5",
     "@types/node-uuid": "0.0.28",
     "@types/ramda": "0.0.3",
+    "@types/request": "^0.0.40",
+    "@types/tmp": "^0.0.32",
     "ava": "^0.18.1",
     "concurrently": "^3.1.0",
     "copyfiles": "^1.2.0",
+    "glob": "^7.1.1",
     "nyc": "^10.1.2",
     "sinon": "^1.17.7",
     "tslint": "^4.3.1",
@@ -45,13 +52,19 @@
   },
   "dependencies": {
     "bluebird": "^3.4.7",
-    "body-parser": "^1.16.0",
-    "broid-schemas": "^1.1.4",
+    "body-parser": "^1.16.1",
+    "broid-schemas": "^1.2.0",
     "broid-utils": "^1.0.4",
-    "express": "^4.14.0",
+    "express": "^4.14.1",
+    "express-xml-bodyparser": "^0.3.0",
+    "fs-extra": "^2.0.0",
+    "mimetype": "^0.0.8",
     "node-uuid": "^1.4.7",
     "ramda": "^0.23.0",
-    "rxjs": "^5.0.2"
+    "request": "^2.80.0",
+    "rxjs": "^5.0.2",
+    "tmp": "^0.0.31",
+    "wechat-api": "git+https://git@github.com:node-webot/wechat-api.git#295ad45e199ef93610c4d3a9350de6992a932d8c"
   },
   "ava": {
     "files": [

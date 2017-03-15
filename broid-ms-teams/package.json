@@ -1,6 +1,6 @@
 {
   "name": "broid-ms-teams",
-  "version": "1.1.4",
+  "version": "1.0.0",
   "main": "lib/core/index.js",
   "license": "AGPL-3.0+",
   "author": "Broid Team <opensource@broid.ai> (https://broid.ai)",
@@ -34,7 +34,7 @@
     "bluebird": "^3.4.7",
     "body-parser": "^1.15.2",
     "botbuilder": "^3.5.1",
-    "broid-schemas": "^1.1.4",
+    "broid-schemas": "^1.2.0",
     "broid-utils": "^1.0.4",
     "express": "^4.14.0",
     "mimetype": "^0.0.8",

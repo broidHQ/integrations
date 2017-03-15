@@ -1,6 +1,6 @@
 {
   "name": "broid-schemas",
-  "version": "1.1.5",
+  "version": "1.2.0",
   "main": "lib/index.js",
   "license": "AGPL-3.0+",
   "author": "Broid Team <opensource@broid.ai> (https://broid.ai)",
@@ -36,6 +36,8 @@
     "@types/bluebird": "^3.0.37",
     "@types/node": "^7.0.5",
     "concurrently": "^3.1.0",
+    "js-yaml": "^3.8.1",
+    "json-minify": "^1.0.0",
     "tslint": "^4.4.2",
     "tslint-eslint-rules": "^3.3.0",
     "typescript": "^2.1.5",
