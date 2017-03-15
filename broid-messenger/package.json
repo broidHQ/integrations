@@ -1,6 +1,6 @@
 {
   "name": "broid-messenger",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "main": "lib/core/index.js",
   "license": "AGPL-3.0+",
   "author": "Broid Team <opensource@broid.ai> (https://broid.ai)",
@@ -33,7 +33,7 @@
   "dependencies": {
     "bluebird": "^3.4.7",
     "body-parser": "^1.15.2",
-    "broid-schemas": "^1.1.4",
+    "broid-schemas": "^1.2.0",
     "broid-utils": "^1.0.4",
     "eventemitter3": "^2.0.2",
     "express": "^4.14.0",
