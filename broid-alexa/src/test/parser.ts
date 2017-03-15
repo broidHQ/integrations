@@ -12,7 +12,7 @@ import * as broidMessageSlots from "./fixtures/broid/messageSlots.json";
 let parser: Parser;
 test.before(() => {
   sinon.stub(Date, "now", () => 1483589416000);
-  parser = new Parser("testuser", "info");
+  parser = new Parser("alexa", "testuser", "info");
 });
 
 test("Parse a simple message", async(t) => {
