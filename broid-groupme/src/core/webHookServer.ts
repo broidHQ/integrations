@@ -1,60 +1,40 @@
+import * as Promise from "bluebird";
 import * as bodyParser from "body-parser";
 import { Logger } from "broid-utils";
-import * as EventEmitter from "events";
 import * as express from "express";
-import * as R from "ramda";
+import * as http from "http";
 
 import { IAdapterHTTPOptions } from "./interfaces";
 
-export default class WebHookServer extends EventEmitter {
+export default class WebHookServer {
   private express: express.Application;
   private logger: Logger;
+  private httpClient: http.Server;
   private host: string;
-  private username: string;
   private port: number;
 
   // Run configuration methods on the Express instance.
-  constructor(username: string, options?: IAdapterHTTPOptions, logLevel?: string) {
-    super();
-    this.username = username;
-    this.host = options && options.host || "127.0.0.1";
-    this.port = options && options.port || 8080;
+  constructor(options: IAdapterHTTPOptions, router: express.Router, logLevel?: string) {
+    this.host = options.host;
+    this.port = options.port;
     this.logger = new Logger("webhook_server", logLevel || "info");
-    this.express = express();
-    this.middleware();
-    this.routes();
+    this.setupExpress(router);
   }
 
   public listen() {
-    this.express.listen(this.port, this.host, () => {
-      this.logger.info(`Server listening at port ${this.host}:${this.port}...`);
+    this.httpClient = this.express.listen(this.port, this.host, () => {
+      this.logger.info(`Server listening on port ${this.host}:${this.port}...`);
     });
   }
 
-  // Configure Express middleware.
-  private middleware(): void {
-    this.express.use(bodyParser.json());
-    this.express.use(bodyParser.urlencoded({ extended: false }));
+  public close(): Promise<null> {
+    return Promise.fromCallback((cb) => this.httpClient.close(cb));
   }
 
-  // Configure API endpoints.
-  private routes(): void {
-    const router = express.Router();
-    const handle = (req, res) => {
-      if (!R.path(["body", "system"], req) && this.username !== R.path(["body", "name"], req)) {
-         this.emit("message", {
-           body: req.body,
-           headers: req.headers,
-         });
-      }
-
-      // Assume all went well.
-      res.sendStatus(200);
-    };
-
-    router.get("/", handle);
-    router.post("/", handle);
-
+  private setupExpress(router: express.Router) {
+    this.express = express();
+    this.express.use(bodyParser.json());
+    this.express.use(bodyParser.urlencoded({ extended: false  }));
     this.express.use("/", router);
   }
 }
