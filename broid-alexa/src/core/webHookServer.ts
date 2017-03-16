@@ -3,8 +3,6 @@ import * as bodyParser from "body-parser";
 import { Logger } from "broid-utils";
 import * as express from "express";
 import * as http from "http";
-import * as uuid from "node-uuid";
-import * as R from "ramda";
 
 import { IAdapterHTTPOptions } from "./interfaces";
 
@@ -40,42 +38,4 @@ export default class WebHookServer {
     this.express.use(bodyParser.urlencoded({ extended: false  }));
     this.express.use("/", router);
   }
-
-  // Configure API endpoints.
-  // private routes(): void {
-    // const router = express.Router();
-    // const handle: any = (req, res) => {
-
-      // const request = req.body.request;
-      // const session = req.body.session;
-
-      // const requestType = request.type;
-      // const intentName = requestType === "IntentRequest"
-        // ? R.path(["intent", "name"], request) : requestType;
-
-      // const messageID = uuid.v4();
-      // const message: any = {
-        // application: session.application,
-        // intentName,
-        // messageID,
-        // requestType,
-        // slots: R.path(["intent", "slots"], request) || {},
-        // user: session.user,
-      // };
-
-      // const responseListener = (data) => res.json(data);
-
-      // this.emit("message", message);
-      // this.once(`response:${messageID}`, responseListener);
-
-      // // Save memory
-      // setTimeout(() => this.removeListener(`response:${messageID}`, responseListener)
-        // , 60000);
-    // };
-
-    // router.get("/", handle);
-    // router.post("/", handle);
-
-    // this.express.use("/", router);
-  // }
 }

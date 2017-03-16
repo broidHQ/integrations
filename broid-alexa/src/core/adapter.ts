@@ -1,7 +1,7 @@
 import * as Promise from "bluebird";
 import broidSchemas from "broid-schemas";
 import { Logger } from "broid-utils";
-import * as EventEmitter from "eventemitter3";
+import { EventEmitter } from 'events';
 import { Router  } from "express";
 import * as uuid from "node-uuid";
 import * as R from "ramda";
@@ -87,10 +87,6 @@ export default class Adapter {
 
   // Listen "message" event from Nexmo
   public listen(): Observable<Object> {
-    if (!this.webhookServer) {
-      return Observable.throw(new Error("No webhookServer found."));
-    }
-
     return Observable.fromEvent(this.emitter, "message")
       .mergeMap((normalized: any) =>
         this.parser.parse(normalized))
@@ -169,18 +165,16 @@ export default class Adapter {
       this.emitter.once(`response:${messageID}`, responseListener);
 
       // save memory
-      setTimeout(() => 
-        this.emitter.removeListener(`response:${messageID}`,
-          responseListener)
-        , 60000);
+      setTimeout(() =>
+        this.emitter.removeListener(`response:${messageID}`, responseListener)
+      , 60000);
 
-      res.send("");
+      res.sendStatus(200);
     };
-    
+
     router.get("/", handle);
     router.post("/", handle);
 
     return router;
   }
 }
-
