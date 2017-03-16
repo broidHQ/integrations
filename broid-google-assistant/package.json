@@ -46,7 +46,7 @@
   "dependencies": {
     "actions-on-google": "^1.0.5",
     "bluebird": "^3.4.7",
-    "body-parser": "^1.16.0",
+    "body-parser": "^1.17.1",
     "broid-schemas": "^1.1.4",
     "broid-utils": "^1.0.4",
     "express": "^4.14.0",

@@ -11,9 +11,9 @@ export default class Parser {
   private logger: Logger;
   private username: string;
 
-  constructor(serviceID: string, username: string, logLevel: string) {
+  constructor(serviceName: string, serviceID: string, username: string, logLevel: string) {
     this.serviceID = serviceID;
-    this.generatorName = "google-assistant";
+    this.generatorName = serviceName;
     this.logger = new Logger("parser", logLevel);
     this.username = username;
   }

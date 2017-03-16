@@ -12,7 +12,7 @@ test.before(() => {
     return 1483589416000;
   });
 
-  parser = new Parser("testuser", "test_broid_service", "info");
+  parser = new Parser("google-assistant", "testuser", "test_broid_service", "info");
 });
 
 test("Parse a group message", async (t) => {
