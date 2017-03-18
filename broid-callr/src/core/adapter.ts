@@ -67,6 +67,10 @@ export default class Adapter {
 
   // Returns the intialized express router
   public getRouter(): Router {
+    if (this.webhookServer) {
+      return false;
+    }
+
     return this.router;
   }
 
