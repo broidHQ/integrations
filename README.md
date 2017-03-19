@@ -129,6 +129,8 @@
 [gitter]:https://badges.gitter.im/broidHQ/broid.svg
 [gitter-url]:https://t.broid.ai/c/Blwjlw?utm_source=github&utm_medium=readme&utm_campaign=top&link=gitter
 
+[join-slack]:https://img.shields.io/badge/chat-on_slack-lightgrey.svg?style=flat
+[join-slack-url]:http://slackin.broid.ai/
 
 [![npm][npm]][npm-url]
 [![node][node]][node-url]
@@ -151,7 +153,7 @@ Broid Integrations is an open source project providing a suite of Activity Strea
 <br>
 <br>
 
-[![gitter][gitter]][gitter-url]
+[![gitter][gitter]][gitter-url] [![join-slack][join-slack]][join-slack-url]
 
 ## Introduction
 
