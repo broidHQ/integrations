@@ -48,7 +48,7 @@ export default class Adapter {
     }
 
     this.client = Promise.promisifyAll(new WeChat(this.appID, this.appSecret));
-    this.parser = new Parser(this.client, this.serviceID, this.logLevel);
+    this.parser = new Parser(this.serviceName(), this.client, this.serviceID, this.logLevel);
     this.router = this.setupRouter();
 
     if (obj.http) {
@@ -57,8 +57,12 @@ export default class Adapter {
   }
 
   // Return the service ID of the current instance
-  public serviceId(): String {
+  public serviceId(): string {
     return this.serviceID;
+  }
+
+  public serviceName(): string {
+    return "wechat";
   }
 
   public connect(): Observable<Object> {

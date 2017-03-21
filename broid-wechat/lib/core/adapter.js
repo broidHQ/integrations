@@ -31,7 +31,7 @@ class Adapter {
             throw new Error("appSecret must be set");
         }
         this.client = Promise.promisifyAll(new WeChat(this.appID, this.appSecret));
-        this.parser = new parser_1.default(this.client, this.serviceID, this.logLevel);
+        this.parser = new parser_1.default(this.serviceName(), this.client, this.serviceID, this.logLevel);
         this.router = this.setupRouter();
         if (obj.http) {
             this.webhookServer = new webHookServer_1.default(obj.http, this.router, this.logLevel);
@@ -39,6 +39,9 @@ class Adapter {
     }
     serviceId() {
         return this.serviceID;
+    }
+    serviceName() {
+        return "wechat";
     }
     connect() {
         if (this.connected) {
