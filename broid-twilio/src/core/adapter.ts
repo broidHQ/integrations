@@ -33,7 +33,7 @@ export default class Adapter {
     this.tokenSecret = obj && obj.tokenSecret || null;
     this.username = obj && obj.username || "SMS";
 
-    this.parser = new Parser(this.serviceID, this.logLevel);
+    this.parser = new Parser(this.serviceName(), this.serviceID, this.logLevel);
     this.logger = new Logger("adapter", this.logLevel);
     this.emitter = new EventEmitter();
     this.router = this.setupRouter();
@@ -54,8 +54,12 @@ export default class Adapter {
   }
 
   // Return the service ID of the current instance
-  public serviceId(): String {
+  public serviceId(): string {
     return this.serviceID;
+  }
+
+  public serviceName(): string {
+    return "twilio";
   }
 
   public getRouter(): Router {

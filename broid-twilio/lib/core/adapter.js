@@ -17,7 +17,7 @@ class Adapter {
         this.token = obj && obj.token || null;
         this.tokenSecret = obj && obj.tokenSecret || null;
         this.username = obj && obj.username || "SMS";
-        this.parser = new parser_1.default(this.serviceID, this.logLevel);
+        this.parser = new parser_1.default(this.serviceName(), this.serviceID, this.logLevel);
         this.logger = new broid_utils_1.Logger("adapter", this.logLevel);
         this.emitter = new events_1.EventEmitter();
         this.router = this.setupRouter();
@@ -33,6 +33,9 @@ class Adapter {
     }
     serviceId() {
         return this.serviceID;
+    }
+    serviceName() {
+        return "twilio";
     }
     getRouter() {
         return this.router;
