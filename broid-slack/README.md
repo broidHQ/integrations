@@ -55,7 +55,7 @@ slack.connect()
   });
 ```
 
-Twilio can also be used with your existing express setup.
+Slack can also be used with your existing express setup.
 
 ```javascript
 const BroidSlack = require('broid-slack');

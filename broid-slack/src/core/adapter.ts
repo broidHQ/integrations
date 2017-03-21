@@ -43,7 +43,7 @@ export default class Adapter {
     this.storeUsers = new Map();
     this.storeChannels = new Map();
 
-    this.parser = new Parser(this.serviceID, this.logLevel);
+    this.parser = new Parser(this.serviceName(), this.serviceID, this.logLevel);
     this.logger = new Logger("adapter", this.logLevel);
     this.emitter = new EventEmitter();
     this.router = this.setupRoutes();
@@ -70,6 +70,10 @@ export default class Adapter {
 
   public getRouter(): Router {
     return this.router;
+  }
+
+  public serviceName(): string {
+    return "slack";
   }
 
   // Connect to Slack

@@ -19,7 +19,7 @@ class Adapter {
         this.asUser = obj && obj.asUser || true;
         this.storeUsers = new Map();
         this.storeChannels = new Map();
-        this.parser = new parser_1.default(this.serviceID, this.logLevel);
+        this.parser = new parser_1.default(this.serviceName(), this.serviceID, this.logLevel);
         this.logger = new broid_utils_1.Logger("adapter", this.logLevel);
         this.emitter = new events_1.EventEmitter();
         this.router = this.setupRoutes();
@@ -38,6 +38,9 @@ class Adapter {
     }
     getRouter() {
         return this.router;
+    }
+    serviceName() {
+        return "slack";
     }
     connect() {
         if (this.connected) {
