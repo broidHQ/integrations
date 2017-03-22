@@ -38,6 +38,9 @@ class Adapter {
         return "twilio";
     }
     getRouter() {
+        if (this.webhookServer) {
+            return null;
+        }
         return this.router;
     }
     connect() {

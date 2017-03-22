@@ -62,7 +62,10 @@ export default class Adapter {
     return "twilio";
   }
 
-  public getRouter(): Router {
+  public getRouter(): Router | null {
+    if (this.webhookServer) {
+      return null;
+    }
     return this.router;
   }
 
