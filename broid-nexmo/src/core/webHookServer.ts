@@ -1,67 +1,43 @@
+import * as Promise from "bluebird";
 import * as bodyParser from "body-parser";
 import { Logger } from "broid-utils";
 import * as EventEmitter from "events";
 import * as express from "express";
+import * as http from "http";
 
 import { IAdapterHTTPOptions } from "./interfaces";
 
 export default class WebHookServer extends EventEmitter {
   private express: express.Application;
   private logger: Logger;
+  private httpClient: http.Server;
   private host: string;
   private port: number;
 
   // Run configuration methods on the Express instance.
-  constructor(options?: IAdapterHTTPOptions, logLevel?: string) {
+  constructor(router: express.Router, options: IAdapterHTTPOptions, logLevel?: string) {
     super();
-    this.host = options && options.host || "127.0.0.1";
-    this.port = options && options.port || 8080;
+    this.host = options.host;
+    this.port = options.port;
     this.logger = new Logger("webhook_server", logLevel || "info");
-    this.express = express();
-    this.middleware();
-    this.routes();
+    this.express = this.setupExpress(router);
   }
 
   public listen() {
-    this.express.listen(this.port, this.host, () => {
-      this.logger.info(`Server listening at port ${this.host}:${this.port}...`);
+    this.httpClient = this.express.listen(this.port, this.host, () => {
+      this.logger.info(`Server listening on port ${this.host}:${this.port}...`);
     });
   }
 
-  // Configure Express middleware.
-  private middleware(): void {
-    this.express.use(bodyParser.json());
-    this.express.use(bodyParser.urlencoded({ extended: false }));
+  public close(): Promise<null> {
+    return Promise.fromCallback((cb) => this.httpClient.close(cb));
   }
 
   // Configure API endpoints.
-  private routes(): void {
-    const router = express.Router();
-    const handle = (req, res) => {
-      let query: any = {};
-      if (req.method === "GET") {
-        query = req.query;
-      } else if (req.method === "POST") {
-        query = req.body;
-      }
-
-      const message: any = {
-        keyword: query.keyword,
-        messageId: query.messageId,
-        msisdn: query.msisdn,
-        text: query.text,
-        timestamp: query["message-timestamp"],
-        to: query.to,
-      };
-
-      this.emit("message", message);
-      // Assume all went well.
-      res.sendStatus(200);
-    };
-
-    router.get("/", handle);
-    router.post("/", handle);
-
+  private setupExpress(router: express.Router): void {
+    this.express = express();
+    this.express.use(bodyParser.json());
+    this.express.use(bodyParser.urlencoded({ extended: false }));
     this.express.use("/", router);
   }
 }
