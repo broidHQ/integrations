@@ -68,7 +68,10 @@ export default class Adapter {
     return this.serviceID;
   }
 
-  public getRouter(): Router {
+  public getRouter(): Router | null {
+    if (this.webhookServer) {
+      return null;
+    }
     return this.router;
   }
 

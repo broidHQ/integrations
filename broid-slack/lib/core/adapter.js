@@ -37,6 +37,9 @@ class Adapter {
         return this.serviceID;
     }
     getRouter() {
+        if (this.webhookServer) {
+            return null;
+        }
         return this.router;
     }
     serviceName() {
