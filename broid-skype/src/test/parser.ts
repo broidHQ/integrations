@@ -10,7 +10,7 @@ import * as twilioMessageWithVideo from "./fixtures/skype/messageWithVideo.json"
 
 let parser: Parser;
 test.before(() => {
-  parser = new Parser("test_service", "info");
+  parser = new Parser("skype", "test_service", "info");
 });
 
 test("Parse a simple message", async(t) => {

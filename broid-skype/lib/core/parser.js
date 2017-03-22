@@ -6,9 +6,9 @@ const mimetype = require("mimetype");
 const uuid = require("node-uuid");
 const R = require("ramda");
 class Parser {
-    constructor(serviceID, logLevel) {
+    constructor(serviceName, serviceID, logLevel) {
         this.serviceID = serviceID;
-        this.generatorName = "skype";
+        this.generatorName = serviceName;
         this.logger = new broid_utils_1.Logger("parser", logLevel);
     }
     validate(event) {
