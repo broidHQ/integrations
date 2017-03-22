@@ -107,7 +107,10 @@ export default class Adapter {
       .then(R.prop("user_info_list"));
   }
 
-  public getRouter(): Router {
+  public getRouter(): Router | null {
+    if (this.webhookServer) {
+      return null;
+    }
     return this.router;
   }
 

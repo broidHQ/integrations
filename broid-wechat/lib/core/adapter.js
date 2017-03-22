@@ -80,6 +80,9 @@ class Adapter {
             .then(R.prop("user_info_list"));
     }
     getRouter() {
+        if (this.webhookServer) {
+            return null;
+        }
         return this.router;
     }
     send(data) {
