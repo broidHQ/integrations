@@ -28,10 +28,16 @@ _Thread as supported_
 
 ## Getting started
 
+### Install
+
+```bash
+npm install --save @broid/flowdock
+```
+
 ### Connect to Flowdock
 
 ```javascript
-const BroidFlowdock = require('broid-flowdock');
+const BroidFlowdock = require('@broid/flowdock');
 
 const flowdock = new broidFlowdock({
   token: "<access_token>"

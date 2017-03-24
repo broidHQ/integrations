@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const Promise = require("bluebird");
-const broid_schemas_1 = require("broid-schemas");
-const broid_utils_1 = require("broid-utils");
+const schemas_1 = require("@broid/schemas");
+const utils_1 = require("@broid/utils");
 const fs = require("fs-extra");
 const uuid = require("node-uuid");
 const path = require("path");
@@ -24,7 +24,7 @@ class Adapter {
         this.appID = obj && obj.appID;
         this.appSecret = obj && obj.appSecret;
         this.HTTPOptions = obj.http || HTTPOptions;
-        this.logger = new broid_utils_1.Logger("adapter", this.logLevel);
+        this.logger = new utils_1.Logger("adapter", this.logLevel);
         if (!this.appID) {
             throw new Error("appID must be set");
         }
@@ -71,7 +71,7 @@ class Adapter {
     }
     send(data) {
         this.logger.debug("sending", { message: data });
-        return broid_schemas_1.default(data, "send")
+        return schemas_1.default(data, "send")
             .then(() => {
             switch (data.object.type) {
                 case "Note":

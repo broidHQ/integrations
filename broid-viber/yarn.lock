@@ -2,6 +2,20 @@
 # yarn lockfile v1
 
 
+"@broid/schemas@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@broid/schemas/-/schemas-1.0.0.tgz#5c02678d9eff1ecc1f06661f1f92876736337274"
+  dependencies:
+    ajv "^5.0.1-beta.1"
+    bluebird "^3.4.6"
+
+"@broid/utils@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@broid/utils/-/utils-1.0.0.tgz#56473358c8ae255d950a4ed2be501eca9aceb20c"
+  dependencies:
+    pino "^3.0.5"
+    ramda "^0.22.1"
+
 abbrev@1:
   version "1.0.9"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.0.9.tgz#91b4792588a7738c25f35dd6f63752a2f8776135"
@@ -956,20 +970,6 @@ braces@^1.8.2:
     expand-range "^1.8.1"
     preserve "^0.2.0"
     repeat-element "^1.1.2"
-
-broid-schemas@^1.1.4:
-  version "1.1.4"
-  resolved "https://registry.yarnpkg.com/broid-schemas/-/broid-schemas-1.1.4.tgz#80afd377b1448a745a61421add7550dfa1bd9d0d"
-  dependencies:
-    ajv "^5.0.1-beta.1"
-    bluebird "^3.4.6"
-
-broid-utils@^1.0.4:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/broid-utils/-/broid-utils-1.0.6.tgz#59112cae783ba61eb65639de88c365b42ed0d814"
-  dependencies:
-    pino "^3.0.5"
-    ramda "^0.22.1"
 
 buf-compare@^1.0.0:
   version "1.0.1"

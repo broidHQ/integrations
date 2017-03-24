@@ -1,5 +1,5 @@
 import * as bodyParser from "body-parser";
-import { Logger } from "broid-utils";
+import { Logger } from "@broid/utils";
 import * as EventEmitter from "eventemitter3";
 import * as express from "express";
 

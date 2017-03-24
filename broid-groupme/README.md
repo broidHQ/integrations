@@ -29,13 +29,13 @@ _Videos is supported as a simple message_
 ### Install
 
 ```bash
-npm install --save broid-groupme
+npm install --save @broid/groupme
 ```
 
 ### Connect to Groupme
 
 ```javascript
-const BroidGroupme = require('broid-groupme');
+const BroidGroupme = require('@broid/groupme');
 
 const groupme = new BroidGroupme({
   username: '<your_sender_number>',

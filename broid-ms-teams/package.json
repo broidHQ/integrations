@@ -1,5 +1,5 @@
 {
-  "name": "broid-ms-teams",
+  "name": "@broid/ms-teams",
   "version": "1.0.0",
   "main": "lib/core/index.js",
   "license": "AGPL-3.0+",
@@ -7,12 +7,22 @@
   "description": "Convert Microsoft Teams messages into Activity Streams 2 with Broid Integration",
   "repository": {
     "type": "git",
-    "url": "git@github.com:broidHQ/integrations.git"
+    "url": "git+ssh://git@github.com/broidHQ/integrations.git"
   },
   "bugs": {
     "url": "https://github.com/broidHQ/integrations/issues"
   },
   "homepage": "https://github.com/broidHQ/integrations/tree/master/broid-ms-teams#readme",
+  "keywords": [
+    "microsoft teams",
+    "broid",
+    "activity",
+    "strams",
+    "activity streams 2",
+    "messaging",
+    "chat",
+    "bot"
+  ],
   "engines": {
     "node": ">=6.0.0"
   },
@@ -34,8 +44,8 @@
     "bluebird": "^3.4.7",
     "body-parser": "^1.15.2",
     "botbuilder": "^3.5.1",
-    "broid-schemas": "^1.2.0",
-    "broid-utils": "^1.0.4",
+    "@broid/schemas": "^1.0.0",
+    "@broid/utils": "^1.0.0",
     "express": "^4.14.0",
     "mimetype": "^0.0.8",
     "node-uuid": "^1.4.7",

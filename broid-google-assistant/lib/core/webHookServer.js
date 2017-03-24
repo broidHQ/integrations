@@ -2,7 +2,7 @@
 const actionsSdk = require("actions-on-google");
 const Promise = require("bluebird");
 const bodyParser = require("body-parser");
-const broid_utils_1 = require("broid-utils");
+const utils_1 = require("@broid/utils");
 const events_1 = require("events");
 const express = require("express");
 class WebHookServer extends events_1.EventEmitter {
@@ -11,7 +11,7 @@ class WebHookServer extends events_1.EventEmitter {
         this.actionsMap = new Map();
         this.host = options && options.host || "127.0.0.1";
         this.port = options && options.port || 8080;
-        this.logger = new broid_utils_1.Logger("webhook_server", logLevel || "info");
+        this.logger = new utils_1.Logger("webhook_server", logLevel || "info");
         this.express = express();
         this.middleware();
         this.routes();

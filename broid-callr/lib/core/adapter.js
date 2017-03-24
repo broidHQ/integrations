@@ -1,7 +1,7 @@
 "use strict";
 const Promise = require("bluebird");
-const broid_schemas_1 = require("broid-schemas");
-const broid_utils_1 = require("broid-utils");
+const schemas_1 = require("@broid/schemas");
+const utils_1 = require("@broid/utils");
 const Callr = require("callr");
 const uuid = require("node-uuid");
 const R = require("ramda");
@@ -27,7 +27,7 @@ class Adapter {
         this.HTTPOptions.webhookURL = this.HTTPOptions.webhookURL
             .replace(/\/?$/, "/");
         this.parser = new parser_1.default(this.serviceID, this.logLevel);
-        this.logger = new broid_utils_1.Logger("adapter", this.logLevel);
+        this.logger = new utils_1.Logger("adapter", this.logLevel);
     }
     users() {
         return Promise.reject(new Error("Not supported"));
@@ -84,7 +84,7 @@ class Adapter {
     }
     send(data) {
         this.logger.debug("sending", { message: data });
-        return broid_schemas_1.default(data, "send")
+        return schemas_1.default(data, "send")
             .then(() => {
             const toNumber = R.path(["to", "id"], data)
                 || R.path(["to", "name"], data);

@@ -24,10 +24,16 @@ _Location, Phone number are platform limitations._
 
 ## Getting started
 
+### Install
+
+```bash
+npm install --save @broid/telegram
+```
+
 ### Connect to Telegram
 
 ```javascript
-const BroidTelegram = require('broid-telegram');
+const BroidTelegram = require('@broid/telegram');
 
 const telegram = new BroidTelegram({
   token: "<api_key>",

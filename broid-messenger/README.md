@@ -24,10 +24,16 @@ _Phone number is platform limitation._
 
 ## Getting started
 
+### Install
+
+```bash
+npm install --save @broid/messenger
+```
+
 ### Connect to Messenger
 
 ```javascript
-const BroidMessenger = require('broid-messenger');
+const BroidMessenger = require('@broid/messenger');
 
 const messenger = new broidMessenger({
   token: "<oauth_token>",

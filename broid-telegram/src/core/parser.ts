@@ -1,6 +1,6 @@
 import * as Promise from "bluebird";
-import broidSchemas from "broid-schemas";
-import { cleanNulls, concat, Logger } from "broid-utils";
+import broidSchemas from "@broid/schemas";
+import { cleanNulls, concat, Logger } from "@broid/utils";
 import * as mimetype from "mimetype";
 import * as uuid from "node-uuid";
 import * as R from "ramda";

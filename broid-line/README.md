@@ -24,10 +24,16 @@ _Phone number is platform limitation._
 
 ## Getting started
 
+### Install
+
+```bash
+npm install --save @broid/line
+```
+
 ### Connect to Line
 
 ```javascript
-const BroidLine = require('broid-line');
+const BroidLine = require('@broid/line');
 
 const line = new BroidLine({
   token: "<channel_secret>",

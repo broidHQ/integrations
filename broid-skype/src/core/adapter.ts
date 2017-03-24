@@ -1,7 +1,7 @@
 import * as Promise from "bluebird";
 import * as botbuilder from "botbuilder";
-import broidSchemas from "broid-schemas";
-import { Logger } from "broid-utils";
+import broidSchemas from "@broid/schemas";
+import { Logger } from "@broid/utils";
 import * as mimetype from "mimetype";
 import * as uuid from "node-uuid";
 import * as R from "ramda";

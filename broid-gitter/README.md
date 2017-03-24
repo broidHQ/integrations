@@ -27,13 +27,13 @@ _Buttons, Location, Phone number are platform limitations._
 ### Install
 
 ```bash
-npm install --save broid-gitter
+npm install --save @broid/gitter
 ```
 
 ### Connect to Gitter
 
 ```javascript
-const BroidGitter = require('broid-gitter');
+const BroidGitter = require('@broid/gitter');
 
 const gitter = new BroidGitter({
   token: '<your_action_name_here>'

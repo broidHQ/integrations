@@ -1,7 +1,7 @@
 "use strict";
 const Promise = require("bluebird");
-const broid_schemas_1 = require("broid-schemas");
-const broid_utils_1 = require("broid-utils");
+const schemas_1 = require("@broid/schemas");
+const utils_1 = require("@broid/utils");
 const http = require("http");
 const uuid = require("node-uuid");
 const R = require("ramda");
@@ -28,7 +28,7 @@ class Adapter {
             .replace(/\/?$/, "/");
         this.storeUsers = new Map();
         this.parser = new parser_1.default(this.serviceID, this.logLevel);
-        this.logger = new broid_utils_1.Logger("adapter", this.logLevel);
+        this.logger = new utils_1.Logger("adapter", this.logLevel);
     }
     users() {
         return Promise.reject(this.storeUsers);
@@ -101,7 +101,7 @@ class Adapter {
     }
     send(data) {
         this.logger.debug("sending", { message: data });
-        return broid_schemas_1.default(data, "send")
+        return schemas_1.default(data, "send")
             .then(() => {
             if (R.path(["to", "type"], data) !== "Person") {
                 return Promise.reject(new Error("Message to a Person is only supported."));

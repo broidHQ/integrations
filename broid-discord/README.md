@@ -28,10 +28,16 @@ _Buttons, Location, Phone number are platform limitations._
 
 - Instructions to create **bot**, can be found [here](https://discordapp.com/developers/docs/intro).
 
+### Install
+
+```bash
+npm install --save @broid/discord
+```
+
 ### Connect to Discord
 
 ```javascript
-const BroidDiscord = require('broid-discord');
+const BroidDiscord = require('@broid/discord');
 
 const discord = new BroidDiscord({ token: "xoxp-xxxxxx" });
 

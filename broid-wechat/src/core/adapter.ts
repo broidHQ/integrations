@@ -1,6 +1,6 @@
 import * as Promise from "bluebird";
-import broidSchemas, { ISendParameters } from "broid-schemas";
-import { Logger } from "broid-utils";
+import broidSchemas, { ISendParameters } from "@broid/schemas";
+import { Logger } from "@broid/utils";
 import * as fs from "fs-extra";
 import * as uuid from "node-uuid";
 import * as path from "path";
