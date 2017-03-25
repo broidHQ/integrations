@@ -5,8 +5,8 @@ const broid_schemas_1 = require("broid-schemas");
 const broid_utils_1 = require("broid-utils");
 const R = require("ramda");
 class Parser {
-    constructor(wechatClient, serviceID, logLevel) {
-        this.generatorName = "wechat";
+    constructor(serviceName, wechatClient, serviceID, logLevel) {
+        this.generatorName = serviceName;
         this.serviceID = serviceID;
         this.logger = new broid_utils_1.Logger("parser", logLevel);
         this.userCache = new Map();
