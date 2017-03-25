@@ -34,7 +34,7 @@
     "nsp-check": "nsp check -o summary",
     "lint:watch": "watch 'tslint -c tslint.json src/*' src",
     "prepublish": "npm run test",
-    "release": "npm run travis && npm run build && npm publish",
+    "release": "npm run travis && npm run build && npm publish --access public",
     "test": "npm run lint && npm run nsp-check && npm run build && nyc ava --verbose",
     "travis": "npm run test",
     "tsc:watch": "tsc --watch",

@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/broidHQ/integrations.svg?branch=master)](https://travis-ci.org/broidHQ/integrations) [![npm version](https://img.shields.io/npm/v/broid-schemas.svg?style=flat)](https://www.npmjs.com/package/broid-schemas) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/broidHQ/integrations)
+[![Build Status](https://travis-ci.org/broidHQ/integrations.svg?branch=master)](https://travis-ci.org/broidHQ/integrations) [![npm version](https://img.shields.io/npm/v/@broid/schemas.svg?style=flat)](https://www.npmjs.com/package/@broid/schemas) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/broidHQ/integrations)
 
 # Broid Schemas
 
