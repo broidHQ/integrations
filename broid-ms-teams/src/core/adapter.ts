@@ -2,21 +2,22 @@ import * as Promise from "bluebird";
 import * as botbuilder from "botbuilder";
 import broidSchemas from "broid-schemas";
 import { Logger } from "broid-utils";
+import { Router } from "express";
 import * as mimetype from "mimetype";
 import * as uuid from "node-uuid";
 import * as R from "ramda";
 import { Observable } from "rxjs/Rx";
 
-import { IAdapterHTTPOptions, IAdapterOptions } from "./interfaces";
+import { IAdapterOptions } from "./interfaces";
 import Parser from "./parser";
 import WebHookServer from "./webHookServer";
 
 export default class Adapter {
   private connected: boolean;
-  private HTTPOptions: IAdapterHTTPOptions;
   private logLevel: string;
   private logger: Logger;
   private parser: Parser;
+  private router: Router;
   private serviceID: string;
   private storeUsers: Map<string, Object>;
   private storeAddresses: Map<string, Object>;
@@ -26,33 +27,30 @@ export default class Adapter {
   private session: botbuilder.UniversalBot;
   private sessionConnector: botbuilder.ChatConnector;
 
-  constructor(obj?: IAdapterOptions) {
+  constructor(obj: IAdapterOptions) {
     this.serviceID = obj && obj.serviceID || uuid.v4();
     this.logLevel = obj && obj.logLevel || "info";
+    this.router = Router();
     this.token = obj && obj.token || null;
     this.tokenSecret = obj && obj.tokenSecret || null;
     this.storeUsers = new Map();
     this.storeAddresses = new Map();
 
-    const HTTPOptions: IAdapterHTTPOptions = {
-      host: "127.0.0.1",
-      port: 8080,
-    };
-    this.HTTPOptions = obj && obj.http || HTTPOptions;
-    this.HTTPOptions.host = this.HTTPOptions.host || HTTPOptions.host;
-    this.HTTPOptions.port = this.HTTPOptions.port || HTTPOptions.port;
-
-    this.parser = new Parser(this.serviceID, this.logLevel);
+    this.parser = new Parser(this.serviceName(), this.serviceID, this.logLevel);
     this.logger = new Logger("adapter", this.logLevel);
+
+    if (obj.http) {
+      this.webhookServer = new WebHookServer(obj.http, this.router, this.logLevel);
+    }
   }
 
   // Return list of users information
-  public users(): Promise {
+  public users(): Promise<Map<string, Object>> {
     return Promise.resolve(this.storeUsers);
   }
 
   // Return list of channels information
-  public channels(): Promise {
+  public channels(): Promise<Error> {
     return Promise.reject(new Error("Not supported"));
   }
 
@@ -67,6 +65,17 @@ export default class Adapter {
   // Return the service ID of the current instance
   public serviceId(): String {
     return this.serviceID;
+  }
+
+  public serviceName(): string {
+    return "ms-teams";
+  }
+
+  public getRouter(): Router | null {
+    if (this.webhookServer) {
+      return null;
+    }
+    return this.router;
   }
 
   // Connect to Skype
@@ -89,15 +98,22 @@ export default class Adapter {
     this.session = new botbuilder.UniversalBot(this.sessionConnector);
     this.connected = true;
 
-    this.webhookServer = new WebHookServer(this.HTTPOptions, this.logLevel);
-    this.webhookServer.route(this.sessionConnector.listen());
-    this.webhookServer.listen();
+    // Router setup happens on connect, however getRouter can still be called before.
+    this.router.post("/", this.sessionConnector.listen());
+    if (this.webhookServer) {
+      this.webhookServer.listen();
+    }
 
     return Observable.of({ type: "connected", serviceID: this.serviceId() });
   }
 
-  public disconnect(): Promise {
-    return Promise.reject(new Error("Not supported"));
+  public disconnect(): Promise<null> {
+    this.connected = false;
+    if (this.webhookServer) {
+      return this.webhookServer.close();
+    }
+
+    return Promise.resolve(null);
   }
 
   // Listen "message" event from Messenger
@@ -127,7 +143,7 @@ export default class Adapter {
     });
   }
 
-  public send(data: Object): Promise {
+  public send(data: Object): Promise<Object> {
     this.logger.debug("sending", { message: data });
     return broidSchemas(data, "send")
       .then(() => {
