@@ -1,0 +1,13 @@
+---
+engines:
+  tslint:
+    enabled: true
+    channel: beta
+    config: .codeclimate/tslint.json
+ratings:
+  paths:
+  - "**/src/**.d.ts"
+  - "**/src/**.ts"
+exclude_paths:
+  - node_modules
+  - lib
