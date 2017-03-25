@@ -1,6 +1,6 @@
 {
   "name": "@broid/utils",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "main": "lib/index.js",
   "license": "AGPL-3.0+",
   "author": "Broid Team <opensource@broid.ai> (https://broid.ai)",
@@ -35,7 +35,7 @@
     "nsp-check": "nsp check -o summary",
     "clean": "rm -rf lib && rm -rf typings",
     "travis": "npm run lint && npm run nsp-check",
-    "release": "npm run clean && typings install && npm run build && npm publish"
+    "release": "npm run clean && typings install && npm run build && npm publish --access public"
   },
   "dependencies": {
     "pino": "^3.0.5",

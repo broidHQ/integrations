@@ -1,6 +1,6 @@
 {
   "name": "@broid/alexa",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "main": "lib/core/index.js",
   "license": "AGPL-3.0+",
   "author": "Broid Team <opensource@broid.ai> (https://broid.ai)",
@@ -36,7 +36,7 @@
     "lint:watch": "watch 'tslint -c tslint.json src/*' src",
     "tsc:watch": "tsc --watch",
     "travis": "npm run lint && npm run build && npm run test",
-    "release": "npm run travis && npm run build && npm publish"
+    "release": "npm run travis && npm run build && npm publish --access public"
   },
   "devDependencies": {
     "@types/moment": "^2.13.0",

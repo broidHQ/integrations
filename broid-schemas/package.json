@@ -1,6 +1,6 @@
 {
   "name": "@broid/schemas",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "lib/index.js",
   "license": "AGPL-3.0+",
   "author": "Broid Team <opensource@broid.ai> (https://broid.ai)",
@@ -31,7 +31,7 @@
     "lint": "tslint -c tslint.json src/*",
     "lint:watch": "watch 'tslint -c tslint.json src/*' src",
     "nsp-check": "nsp check -o summary",
-    "release": "npm run nsp-check && npm run build && npm publish",
+    "release": "npm run nsp-check && npm run build && npm publish --access public",
     "test": "echo \"Error: no test specified\" && exit 0",
     "travis": "npm run test",
     "tsc:watch": "tsc --watch",
