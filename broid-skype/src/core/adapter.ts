@@ -107,8 +107,13 @@ export default class Adapter {
     return Observable.of({ type: "connected", serviceID: this.serviceId() });
   }
 
-  public disconnect(): Promise {
-    return Promise.reject(new Error("Not supported"));
+  public disconnect(): Promise<null> {
+    this.connected = false;
+    if (this.webhookServer) {
+      return this.webhookServer.close();
+    }
+
+    return Promise.resolve(null);
   }
 
   // Listen "message" event from Messenger
