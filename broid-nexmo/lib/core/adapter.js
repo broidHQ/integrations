@@ -64,7 +64,11 @@ class Adapter {
         return Rx_1.Observable.of(({ type: "connected", serviceID: this.serviceId() }));
     }
     disconnect() {
-        return Promise.reject(new Error("Not supported"));
+        this.connected = false;
+        if (this.webhookServer) {
+            return this.webhookServer.close();
+        }
+        return Promise.resolve(null);
     }
     listen() {
         if (!this.webhookServer) {
