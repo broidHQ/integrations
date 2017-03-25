@@ -24,10 +24,17 @@ _Buttons, Location, Phone number are platform limitations._
 
 ## Getting started
 
+
+### Install
+
+```bash
+npm install --save @broid/callr
+```
+
 ### Connect to Callr
 
 ```javascript
-const BroidCallr = require('broid-callr');
+const BroidCallr = require('@broid/callr');
 
 const callr = new broidCallr({
   username: '<sender_name>',

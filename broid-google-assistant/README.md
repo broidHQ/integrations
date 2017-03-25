@@ -27,13 +27,13 @@ _Image, Video, Buttons, Location, Phone number are platform limitations._
 ### Install
 
 ```bash
-npm install --save broid-google-assistant
+npm install --save @broid/google-assistant
 ```
 
 ### Connect to Google Assistant
 
 ```javascript
-const BroidGoogleAssistant = require('broid-google-assistant');
+const BroidGoogleAssistant = require('@broid/google-assistant');
 
 const googleAssistant = new BroidGoogleAssistant({
   username: '<your_action_name_here>',

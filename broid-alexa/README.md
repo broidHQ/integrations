@@ -29,13 +29,13 @@ _Image, Video are supported as a simple message_
 ### Install
 
 ```bash
-npm install --save broid-alexa
+npm install --save @broid/alexa
 ```
 
 ### Connect to Alexa
 
 ```javascript
-const BroidAlexa = require('broid-alexa');
+const BroidAlexa = require('@broid/alexa');
 
 const alexa = new BroidAlexa({
   http: {

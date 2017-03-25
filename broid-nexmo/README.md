@@ -29,13 +29,13 @@ _Image, Video are supported as a simple message._
 ### Install
 
 ```bash
-npm install --save broid-nexmo
+npm install --save @broid/nexmo
 ```
 
 ### Connect to Nexmo
 
 ```javascript
-const BroidNexmo = require('broid-nexmo');
+const BroidNexmo = require('@broid/nexmo');
 
 const nexmo = new BroidNexmo({
   username: '<your_sender_number>',

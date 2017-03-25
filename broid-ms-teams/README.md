@@ -24,10 +24,16 @@ _Buttons, Location, Phone number are platform limitations._
 
 ## Getting started
 
+### Install
+
+```bash
+npm install --save @broid/ms-teams
+```
+
 ### Connect to Microsoft Teams
 
 ```javascript
-const BroidMsTeams = require('broid-ms-teams');
+const BroidMsTeams = require('@broid/ms-teams');
 
 const msTeams = new BroidMsTeams({
   token: 'xxxxx',

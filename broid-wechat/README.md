@@ -26,10 +26,16 @@ _Image, Video, and Audio are supported as a simple message_.
 
 ## Getting started
 
+### Install
+
+```bash
+npm install --save @broid/wechat
+```
+
 ### Connect to Twitter
 
 ```javascript
-const BroidWeChat = require('broid-wechat');
+const BroidWeChat = require('@broid/wechat');
 
 const wechat = new BroidWeChat({
   appID: ''

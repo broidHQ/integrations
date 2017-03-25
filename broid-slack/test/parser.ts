@@ -1,5 +1,5 @@
 import test from "ava";
-import broidSchemas from "broid-schemas";
+import broidSchemas from "@broid/schemas";
 import Parser from "../core/parser";
 
 import * as flowdockSimple from "./fixtures/flowdock/simple.json";

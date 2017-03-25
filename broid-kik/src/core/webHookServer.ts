@@ -1,4 +1,4 @@
-import { Logger } from "broid-utils";
+import { Logger } from "@broid/utils";
 import * as http from "http";
 
 import { IAdapterHTTPOptions } from "./interfaces";

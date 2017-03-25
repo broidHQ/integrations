@@ -1,8 +1,8 @@
 "use strict";
 const Promise = require("bluebird");
 const botbuilder = require("botbuilder");
-const broid_schemas_1 = require("broid-schemas");
-const broid_utils_1 = require("broid-utils");
+const schemas_1 = require("@broid/schemas");
+const utils_1 = require("@broid/utils");
 const mimetype = require("mimetype");
 const uuid = require("node-uuid");
 const R = require("ramda");
@@ -25,7 +25,7 @@ class Adapter {
         this.HTTPOptions.host = this.HTTPOptions.host || HTTPOptions.host;
         this.HTTPOptions.port = this.HTTPOptions.port || HTTPOptions.port;
         this.parser = new parser_1.default(this.serviceID, this.logLevel);
-        this.logger = new broid_utils_1.Logger("adapter", this.logLevel);
+        this.logger = new utils_1.Logger("adapter", this.logLevel);
     }
     users() {
         return Promise.resolve(this.storeUsers);
@@ -92,7 +92,7 @@ class Adapter {
     }
     send(data) {
         this.logger.debug("sending", { message: data });
-        return broid_schemas_1.default(data, "send")
+        return schemas_1.default(data, "send")
             .then(() => {
             const context = R.path(["object", "context", "content"], data);
             const content = R.path(["object", "content"], data);

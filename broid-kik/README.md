@@ -24,10 +24,16 @@ _Buttons, Location, Phone number are platform limitations._
 
 ## Getting started
 
+### Install
+
+```bash
+npm install --save @broid/kik
+```
+
 ### Connect to Kik
 
 ```javascript
-const BroidKik = require('broid-kik');
+const BroidKik = require('@broid/kik');
 
 const kik = new broidKik({
   username: '<not_name>',

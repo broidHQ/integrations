@@ -3,8 +3,8 @@ import {
   default as broidSchemas,
   IActivityStream,
   IASObject,
-} from "broid-schemas";
-import { cleanNulls, Logger } from "broid-utils";
+} from "@broid/schemas";
+import { cleanNulls, Logger } from "@broid/utils";
 import * as uuid from "node-uuid";
 import * as R from "ramda";
 

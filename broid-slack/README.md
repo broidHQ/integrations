@@ -34,10 +34,16 @@ _Notes:_ Interactive message are only supported on app (with Oauth bot token).
 
 You can generate one for test with this command: ``node bin/oauth.js --new -c client_id -s secret_id``
 
+### Install
+
+```bash
+npm install --save @broid/slack
+```
+
 ### Connect to Slack
 
 ```javascript
-const BroidSlack = require('broid-slack');
+const BroidSlack = require('@broid/slack');
 
 const slack = new BroidSlack({
   token: 'xxxxx'

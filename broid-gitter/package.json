@@ -1,5 +1,5 @@
 {
-  "name": "broid-gitter",
+  "name": "@broid/gitter",
   "version": "1.0.0",
   "main": "dist/index.js",
   "license": "AGPL-3.0+",
@@ -7,12 +7,22 @@
   "description": "Convert Gitter messages into Activity Streams 2 with Broid Integration",
   "repository": {
     "type": "git",
-    "url": "git@github.com:broidHQ/integrations.git"
+    "url": "git+ssh://git@github.com/broidHQ/integrations.git"
   },
   "bugs": {
     "url": "https://github.com/broidHQ/integrations/issues"
   },
   "homepage": "https://github.com/broidHQ/integrations/tree/master/broid-gitter#readme",
+  "keywords": [
+    "gitter",
+    "broid",
+    "activity",
+    "strams",
+    "activity streams 2",
+    "messaging",
+    "chat",
+    "bot"
+  ],
   "engines": {
     "node": ">=6.0.0"
   },
@@ -43,8 +53,8 @@
   },
   "dependencies": {
     "bluebird": "^3.4.7",
-    "broid-schemas": "^1.1.4",
-    "broid-utils": "^1.0.4",
+    "@broid/schemas": "^1.0.0",
+    "@broid/utils": "^1.0.0",
     "node-gitter": "^2.0.5",
     "node-uuid": "^1.4.7",
     "ramda": "^0.23.0",

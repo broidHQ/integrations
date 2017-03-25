@@ -24,10 +24,16 @@ _Buttons, Location, Phone number are platform limitations._
 
 ## Getting started
 
+### Install
+
+```bash
+npm install --save @broid/viber
+```
+
 ### Connect to Viber
 
 ```javascript
-const BroidViper = require('broid-viper');
+const BroidViper = require('@broid/viber');
 
 const viber = new BroidViper({
   username: '<sender_name>',

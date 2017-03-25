@@ -24,10 +24,16 @@ _Location, Phone number are platform limitations._
 
 ## Getting started
 
+### Install
+
+```bash
+npm install --save @broid/skype
+```
+
 ### Connect to Skype
 
 ```javascript
-const BroidSkype = require('broid-skype');
+const BroidSkype = require('@broid/skype');
 
 const skype = new BroidSkype({
   token: 'xxxxx',

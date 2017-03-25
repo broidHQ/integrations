@@ -1,6 +1,6 @@
 import * as Promise from "bluebird";
-import broidSchemas from "broid-schemas";
-import { Logger } from "broid-utils";
+import broidSchemas from "@broid/schemas";
+import { Logger } from "@broid/utils";
 import * as Nexmo from "nexmo";
 import * as uuid from "node-uuid";
 import * as R from "ramda";

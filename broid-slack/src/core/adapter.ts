@@ -1,7 +1,7 @@
 import { CLIENT_EVENTS, RTM_EVENTS, RtmClient, WebClient } from "@slack/client";
 import * as Promise from "bluebird";
-import broidSchemas from "broid-schemas";
-import { concat, Logger } from "broid-utils";
+import broidSchemas from "@broid/schemas";
+import { concat, Logger } from "@broid/utils";
 import * as uuid from "node-uuid";
 import * as R from "ramda";
 import * as rp from "request-promise";

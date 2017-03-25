@@ -34,6 +34,20 @@
     ansi-styles "^2.2.1"
     esutils "^2.0.2"
 
+"@broid/schemas@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@broid/schemas/-/schemas-1.0.0.tgz#5c02678d9eff1ecc1f06661f1f92876736337274"
+  dependencies:
+    ajv "^5.0.1-beta.1"
+    bluebird "^3.4.6"
+
+"@broid/utils@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@broid/utils/-/utils-1.0.0.tgz#56473358c8ae255d950a4ed2be501eca9aceb20c"
+  dependencies:
+    pino "^3.0.5"
+    ramda "^0.22.1"
+
 "@types/bluebird-global@^3.0.1":
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/@types/bluebird-global/-/bluebird-global-3.0.1.tgz#574689d53199ca6048e0c3c1568a5fc55e76a433"
@@ -769,20 +783,6 @@ braces@^1.8.2:
     expand-range "^1.8.1"
     preserve "^0.2.0"
     repeat-element "^1.1.2"
-
-broid-schemas@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/broid-schemas/-/broid-schemas-1.2.0.tgz#aac23294d2edd6dbc56671001d70c0907559e944"
-  dependencies:
-    ajv "^5.0.1-beta.1"
-    bluebird "^3.4.6"
-
-broid-utils@^1.0.4:
-  version "1.0.9"
-  resolved "https://registry.yarnpkg.com/broid-utils/-/broid-utils-1.0.9.tgz#62341f5ca6c7fc5e6b341ab75a8d48bd3ce92abf"
-  dependencies:
-    pino "^3.0.5"
-    ramda "^0.22.1"
 
 buf-compare@^1.0.0:
   version "1.0.1"

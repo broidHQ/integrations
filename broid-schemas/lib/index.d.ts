@@ -48,4 +48,12 @@ export interface IASTag {
     name: string;
     type: string;
 }
+export interface ISendParameters {
+    readonly "@context": string;
+    readonly type: string;
+    readonly generator: {};
+    actor?: IASBase;
+    to: IASBase;
+    object: IASObject;
+}
 export default function (data: any, schema: string): Promise<any>;

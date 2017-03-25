@@ -24,10 +24,16 @@ _Buttons, Location, Phone number are platform limitations._
 
 ## Getting started
 
+### Install
+
+```bash
+npm install --save @broid/twilio
+```
+
 ### Connect to Twilio
 
 ```javascript
-const BroidTwilio = require('broid-twilio');
+const BroidTwilio = require('@broid/twilio');
 
 const twilio = new BroidTwilio({
   username: '<phone_number>',

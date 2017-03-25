@@ -24,10 +24,16 @@ _Buttons, Location, Phone number are platform limitations._
 
 ## Getting started
 
+### Install
+
+```bash
+npm install --save @broid/twitter
+```
+
 ### Connect to Twitter
 
 ```javascript
-const BroidTwitter = require('broid-twitter');
+const BroidTwitter = require('@broid/twitter');
 
 const twitter = new BroidTwitter({
   username: '@mention',

@@ -26,10 +26,16 @@ _Image, Video are supported as a simple message_
 
 ## Getting started
 
+### Install
+
+```bash
+npm install --save @broid/irc
+```
+
 ### Connect to Twitter
 
 ```javascript
-const BroidIRC = require('broid-irc');
+const BroidIRC = require('@broid/irc');
 
 const irc = new broidIRC({
   address: 'irc.freenode.net'

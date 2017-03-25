@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const Promise = require("bluebird");
 const bodyParser = require("body-parser");
-const broid_utils_1 = require("broid-utils");
+const utils_1 = require("@broid/utils");
 const crypto = require("crypto");
 const events_1 = require("events");
 const express = require("express");
@@ -13,7 +13,7 @@ class WebHookServer extends events_1.EventEmitter {
         this.host = options.host;
         this.port = options.port;
         this.serviceID = serviceID;
-        this.logger = new broid_utils_1.Logger("webhook_server", logLevel);
+        this.logger = new utils_1.Logger("webhook_server", logLevel);
         this.setupExpress();
     }
     listen() {
