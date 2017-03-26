@@ -170,14 +170,14 @@ Broid Integrations provide a suite of libraries to convert all messaging platfor
 A quick example showing off listening for new messages on Facebook Messenger and Discord with Observables.
 
 ```shell
-npm i --save broid-messenger broid-discord rxjs ramda
+npm i --save @broid/messenger @broid/discord rxjs ramda
 ```
 
 ```javascript
 const Rx = require("rxjs/Rx");
 const R = require("ramda");
-const BroidDiscord = require("broid-discord");
-const BroidMessenger = require("broid-messenger");
+const BroidDiscord = require("@broid/discord");
+const BroidMessenger = require("@broid/messenger");
 
 const clients = {
 	discord: new BroidDiscord({token: 'DISCORD_TOKEN'}),
