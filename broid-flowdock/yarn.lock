@@ -16,16 +16,6 @@
     pino "^3.0.5"
     ramda "^0.22.1"
 
-"@types/bluebird-global@^3.5.1":
-  version "3.5.1"
-  resolved "https://registry.yarnpkg.com/@types/bluebird-global/-/bluebird-global-3.5.1.tgz#c63c0e18b861f2c6992e79af1f8e00c69a35805a"
-  dependencies:
-    "@types/bluebird" "*"
-
-"@types/bluebird@*", "@types/bluebird@^3.5.2":
-  version "3.5.2"
-  resolved "https://registry.yarnpkg.com/@types/bluebird/-/bluebird-3.5.2.tgz#ecf1104217495e50fe0b588d538146cd6f733b89"
-
 "@types/node-uuid@^0.0.28":
   version "0.0.28"
   resolved "https://registry.yarnpkg.com/@types/node-uuid/-/node-uuid-0.0.28.tgz#41655b5ce63b2f3374c4e826b4dd21e729058e3d"

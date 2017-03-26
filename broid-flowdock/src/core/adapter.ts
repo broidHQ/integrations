@@ -1,13 +1,32 @@
-import * as Promise from "bluebird";
-import broidSchemas from "@broid/schemas";
-import { Logger } from "@broid/utils";
-import * as flowdock from "flowdock";
-import * as uuid from "node-uuid";
-import * as R from "ramda";
-import { Observable } from "rxjs/Rx";
+/**
+ * @license
+ * Copyright 2017 Broid.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 
-import { IAdapterOptions } from "./interfaces";
-import Parser from "./parser";
+import schemas from '@broid/schemas';
+import { Logger } from '@broid/utils';
+
+import * as Promise from 'bluebird';
+import * as flowdock from 'flowdock';
+import * as uuid from 'node-uuid';
+import * as R from 'ramda';
+import { Observable } from 'rxjs/Rx';
+
+import { IAdapterOptions } from './interfaces';
+import { Parser } from './Parser';
 
 // Promisify the Flowdock Client
 const makeRequest = (session, method, ...args) =>
@@ -15,7 +34,7 @@ const makeRequest = (session, method, ...args) =>
     session[method](...args, (err, body) =>
       err ? reject(err) : resolve(body)));
 
-export default class Adapter {
+export class Adapter {
   private serviceID: string;
   private token: string | null;
   private session: any;
@@ -27,48 +46,48 @@ export default class Adapter {
 
   constructor(obj?: IAdapterOptions) {
     this.serviceID = obj && obj.serviceID || uuid.v4();
-    this.logLevel = obj && obj.logLevel || "info";
+    this.logLevel = obj && obj.logLevel || 'info';
     this.token = obj && obj.token || null;
 
     this.parser = new Parser(this.serviceID, this.logLevel);
-    this.logger = new Logger("adapter", this.logLevel);
+    this.logger = new Logger('adapter', this.logLevel);
 
     this.storeUsers = new Map();
     this.storeFlows = new Map();
   }
 
   // Return list of users information
-  public users(): Promise {
-    return Promise.resolve(R.map((user) => user, this.storeUsers.values()));
+  public users(): Promise<any> {
+    return Promise.resolve(this.storeUsers.values());
   }
 
   // Return list of channels information
-  public channels(): Promise {
-    return Promise.resolve(R.map((flow) => flow, this.storeFlows.values()));
+  public channels(): Promise<any> {
+    return Promise.resolve(this.storeFlows.values());
   }
 
   // Return the service ID of the current instance
-  public serviceId(): String {
+  public serviceId(): string {
     return this.serviceID;
   }
 
   // Connect to Flowdock
-  public connect(): Observable<Object> {
+  public connect(): Observable<object> {
     if (!this.token) {
-      return Observable.throw(new Error("Credentials should exist."));
+      return Observable.throw(new Error('Credentials should exist.'));
     }
 
     this.session = new flowdock.Session(this.token);
 
-    return Observable.of({ type: "connected", serviceID: this.serviceId() });
+    return Observable.of({ type: 'connected', serviceID: this.serviceId() });
   }
 
-  public disconnect(): Promise {
-    return Promise.reject(new Error("Not supported"));
+  public disconnect(): Promise<Error> {
+    return Promise.reject(new Error('Not supported'));
   }
 
-  // Listen "message" event from Flowdock
-  public listen(): Observable<Object> {
+  // Listen 'message' event from Flowdock
+  public listen(): Observable<object> {
     const getFlows = new Promise((resolve, reject) => {
         this.session.flows((err, flows) => {
           if (err) { return reject(err); }
@@ -78,26 +97,21 @@ export default class Adapter {
 
     return Observable.fromPromise(getFlows)
       .mergeMap((flows: any) => {
-        const users = R.flatten(R.map((flow) => flow.users, flows));
+        const users = R.flatten(R.map((flow: any) => flow.users, flows));
 
-        R.forEach((user) =>
-          this.storeUsers.set(user.id.toString(), user), users);
+        R.forEach((user: any) => this.storeUsers.set(user.id.toString(), user), users);
+        R.forEach((flow: any) => this.storeFlows.set(flow.id.toString(), R.dissoc('users', flow)), flows);
 
-        R.forEach((flow) =>
-          this.storeFlows.set(flow.id.toString(), R.dissoc("users", flow)), flows);
-
-        return Promise.resolve(R.map((flow) => flow.id.toString(), flows));
+        return Promise.resolve(R.map((flow: any) => flow.id.toString(), flows));
       })
       .mergeMap((flowIDs: string[]) => {
-        const streams = R.map((flowID) =>
-          this.session.stream(flowID, { user: 1 }), flowIDs);
-        const obs =  R.map((stream) =>
-          Observable.fromEvent(stream, "message"), streams);
+        const streams = R.map((flowID) => this.session.stream(flowID, { user: 1 }), flowIDs);
+        const obs =  R.map((stream) => Observable.fromEvent(stream, 'message'), streams);
         return Observable.merge(...obs);
       })
       .mergeMap((event: any) => {
-        this.logger.debug("Event received", event);
-        if (event.event !== "message" && event.event !== "message-edit") {
+        this.logger.debug('Event received', event);
+        if (event.event !== 'message' && event.event !== 'message-edit') {
           return Observable.empty();
         }
 
@@ -131,38 +145,38 @@ export default class Adapter {
       });
   }
 
-  public send(data: any): Promise {
-    this.logger.debug("sending", { message: data });
+  public send(data: any): Promise<any> {
+    this.logger.debug('sending', { message: data });
 
-    return broidSchemas(data, "send")
+    return schemas(data, 'send')
       .then(() => {
-        if (R.path(["object", "type"], data) !== "Note") {
-          return Promise.reject(new Error("Only Note is supported."));
+        if (R.path(['object', 'type'], data) !== 'Note') {
+          return Promise.reject(new Error('Only Note is supported.'));
         }
 
         return Promise.resolve(data)
           .then((result) => {
-            const type = data.type;
-            const flowID = R.path(["to", "id"], result);
-            const toType = R.path(["to", "type"], result);
-            const content = R.path(["object", "content"], result);
-            const contentID = R.path(["object", "id"], result);
-            const tags = R.map((tag) =>
-              tag.name, R.path(["object", "tag"], result) || []);
-            const context = R.path(["object", "context"], result);
+            const dataType = data.type;
+            const flowID: string = <string> R.path(['to', 'id'], result);
+            const toType: string = <string> R.path(['to', 'type'], result);
+            const content = R.path(['object', 'content'], result);
+            const contentID: string = <string> R.path(['object', 'id'], result);
+            const tags = R.map((tag: any) => tag.name, <any[]> R.path(['object', 'tag'], result) || []);
+            const context: any = R.path(['object', 'context'], result);
 
             if (context && context.content) { // Send a message on thread
               return Promise.fromCallback((cb) => this.session
                 .threadMessage(flowID, context.content, content, tags, cb));
-            } else if (toType === "Group" && (type === "Update" || type === "Delete")) {
+            } else if (toType === 'Group' && (dataType === 'Update' || dataType === 'Delete')) {
               // EDIT message, only Public message
               return this.flowByID(flowID)
-                .then((flow) =>
+                .then((flow: any) =>
                   Promise.fromCallback((cb) => this.session
-                    .editMessage(flow.parameterized_name,
-                      R.path(["organization", "parameterized_name"], flow),
+                    .editMessage(
+                      flow.parameterized_name,
+                      R.path(['organization', 'parameterized_name'], flow),
                       Number(contentID), { content, tags }, cb)));
-            } else if (toType === "Person") { // Private Message
+            } else if (toType === 'Person') { // Private Message
               return this.userByID(flowID)
                 .tap(console.log)
                 .then((user) =>
@@ -174,7 +188,7 @@ export default class Adapter {
               .message(flowID, content, tags, cb));
           });
       })
-      .then(({ type: "sent", serviceID: this.serviceId() }));
+      .then(({ type: 'sent', serviceID: this.serviceId() }));
   }
 
   private userByID(userID: string): Promise<any> {
@@ -183,8 +197,8 @@ export default class Adapter {
         if (!user) {
           // User is not saved in the store, so we will ask the info with
           // API call
-          return makeRequest(this.session, "users", { id: userID })
-            .then((body) => {
+          return makeRequest(this.session, 'users', { id: userID })
+            .then((body: any) => {
               this.storeUsers.set(body.id.toString(), body);
               return body;
             });
@@ -200,15 +214,13 @@ export default class Adapter {
         if (!flow) {
           // Flow is not saved in the store, so we will ask the info with
           // API call
-          return makeRequest(this.session, "/flows/find", { id: flowID })
-            .then((body) => {
-              R.forEach((user) =>
-                this.storeUsers.set(user.id.toString(), user),
-                  body.users);
+          return makeRequest(this.session, '/flows/find', { id: flowID })
+            .then((body: any) => {
+              R.forEach(
+                (user: any) => this.storeUsers.set(user.id.toString(), user),
+                body.users);
 
-              this.storeFlows.set(body.id.toString(),
-                R.dissoc("users", body));
-
+              this.storeFlows.set(body.id.toString(), R.dissoc('users', body));
               return body;
             });
         }
