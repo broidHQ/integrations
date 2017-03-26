@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-// Javascript import compatibility
-
-import { Adapter } from './Adapter';
-export = Adapter;
+declare module '*.json' {
+  const value: any;
+  export default value;
+}
