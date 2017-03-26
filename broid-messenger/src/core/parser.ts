@@ -1,12 +1,12 @@
-import * as Promise from "bluebird";
 import {
   default as broidSchemas,
   IActivityStream,
   IASMedia,
   IASObject,
 } from "@broid/schemas";
-
 import { capitalizeFirstLetter, cleanNulls, concat, Logger } from "@broid/utils";
+
+import * as Promise from "bluebird";
 import * as mimetype from "mimetype";
 import * as uuid from "node-uuid";
 import * as R from "ramda";
@@ -18,9 +18,9 @@ export default class Parser {
   public generatorName: string;
   private logger: Logger;
 
-  constructor(serviceID: string, logLevel: string) {
+  constructor(serviceName: string, serviceID: string, logLevel: string) {
     this.serviceID = serviceID;
-    this.generatorName = "messenger";
+    this.generatorName = serviceName;
     this.logger = new Logger("parser", logLevel);
   }
 
