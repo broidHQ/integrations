@@ -1,5 +1,5 @@
 import * as bodyParser from "body-parser";
-import { Logger } from "broid-utils";
+import { Logger } from "@broid/utils";
 import * as express from "express";
 
 import { IAdapterHTTPOptions } from "./interfaces";

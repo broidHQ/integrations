@@ -4,9 +4,9 @@ import {
   IActivityStream,
   IASMedia,
   IASObject,
-} from "broid-schemas";
+} from "@broid/schemas";
 
-import { capitalizeFirstLetter, cleanNulls, concat, Logger } from "broid-utils";
+import { capitalizeFirstLetter, cleanNulls, concat, Logger } from "@broid/utils";
 import * as mimetype from "mimetype";
 import * as uuid from "node-uuid";
 import * as R from "ramda";

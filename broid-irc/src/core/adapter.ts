@@ -1,6 +1,6 @@
 import * as Promise from "bluebird";
-import broidSchemas from "broid-schemas";
-import { Logger } from "broid-utils";
+import broidSchemas from "@broid/schemas";
+import { Logger } from "@broid/utils";
 import { EventEmitter } from "events";
 import * as irc from "irc";
 import * as uuid from "node-uuid";

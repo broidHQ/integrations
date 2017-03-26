@@ -1,6 +1,6 @@
 "use strict";
 const bodyParser = require("body-parser");
-const broid_utils_1 = require("broid-utils");
+const utils_1 = require("@broid/utils");
 const EventEmitter = require("eventemitter3");
 const express = require("express");
 const twilio = require("twilio");
@@ -9,7 +9,7 @@ class WebHookServer extends EventEmitter {
         super();
         this.host = options && options.host || "127.0.0.1";
         this.port = options && options.port || 8080;
-        this.logger = new broid_utils_1.Logger("webhook_server", logLevel || "info");
+        this.logger = new utils_1.Logger("webhook_server", logLevel || "info");
         this.express = express();
         this.middleware();
         this.routes();

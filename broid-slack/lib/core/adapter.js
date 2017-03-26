@@ -1,8 +1,8 @@
 "use strict";
 const client_1 = require("@slack/client");
 const Promise = require("bluebird");
-const broid_schemas_1 = require("broid-schemas");
-const broid_utils_1 = require("broid-utils");
+const schemas_1 = require("@broid/schemas");
+const utils_1 = require("@broid/utils");
 const uuid = require("node-uuid");
 const R = require("ramda");
 const rp = require("request-promise");
@@ -25,7 +25,7 @@ class Adapter {
         this.HTTPOptions.host = this.HTTPOptions.host || HTTPOptions.host;
         this.HTTPOptions.port = this.HTTPOptions.port || HTTPOptions.port;
         this.parser = new parser_1.default(this.serviceID, this.logLevel);
-        this.logger = new broid_utils_1.Logger("adapter", this.logLevel);
+        this.logger = new utils_1.Logger("adapter", this.logLevel);
     }
     users() {
         return Promise.resolve(this.storeUsers);
@@ -192,7 +192,7 @@ class Adapter {
     }
     send(data) {
         this.logger.debug("sending", { message: data });
-        return broid_schemas_1.default(data, "send")
+        return schemas_1.default(data, "send")
             .then(() => data)
             .then((message) => {
             const buttons = R.filter((attachment) => attachment.type === "Button", R.path(["object", "attachment"], data) || []);
@@ -268,7 +268,7 @@ class Adapter {
             else if (type === "Video" || type === "Note") {
                 let body = content || "";
                 if (type === "Video") {
-                    body = broid_utils_1.concat([name, "\n", url, "\n", content]);
+                    body = utils_1.concat([name, "\n", url, "\n", content]);
                 }
                 return {
                     attachments,

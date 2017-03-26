@@ -1,7 +1,7 @@
 "use strict";
 const Promise = require("bluebird");
-const broid_schemas_1 = require("broid-schemas");
-const broid_utils_1 = require("broid-utils");
+const schemas_1 = require("@broid/schemas");
+const utils_1 = require("@broid/utils");
 const mimetype = require("mimetype");
 const uuid = require("node-uuid");
 const R = require("ramda");
@@ -9,11 +9,11 @@ class Parser {
     constructor(serviceID, logLevel) {
         this.serviceID = serviceID;
         this.generatorName = "twitter";
-        this.logger = new broid_utils_1.Logger("parser", logLevel);
+        this.logger = new utils_1.Logger("parser", logLevel);
     }
     validate(event) {
         this.logger.debug("Validation process", { event });
-        const parsed = broid_utils_1.cleanNulls(event);
+        const parsed = utils_1.cleanNulls(event);
         if (!parsed || R.isEmpty(parsed)) {
             return Promise.resolve(null);
         }
@@ -21,7 +21,7 @@ class Parser {
             this.logger.debug("Type not found.", { parsed });
             return Promise.resolve(null);
         }
-        return broid_schemas_1.default(parsed, "activity")
+        return schemas_1.default(parsed, "activity")
             .then(() => parsed)
             .catch((err) => {
             this.logger.error(err);
@@ -30,7 +30,7 @@ class Parser {
     }
     parse(event) {
         this.logger.debug("Normalize process", { event });
-        const normalized = broid_utils_1.cleanNulls(event);
+        const normalized = utils_1.cleanNulls(event);
         if (!normalized || R.isEmpty(normalized)) {
             return Promise.resolve(null);
         }
@@ -87,7 +87,7 @@ class Parser {
     }
     normalize(raw) {
         this.logger.debug("Event received to normalize", { raw });
-        const event = broid_utils_1.cleanNulls(raw);
+        const event = utils_1.cleanNulls(raw);
         if (!event || R.isEmpty(event)) {
             return Promise.resolve(null);
         }
@@ -145,7 +145,7 @@ class Parser {
                 profile_image_url: authorInformation.profile_image_url_https,
                 username: authorInformation.screen_name,
             },
-            channel: broid_utils_1.cleanNulls({
+            channel: utils_1.cleanNulls({
                 id: R.path(["recipient", "id_str"], event),
                 is_mention: R.path(["recipient", "is_mention"], event),
                 name: R.path(["recipient", "name"], event),

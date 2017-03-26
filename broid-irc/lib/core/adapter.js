@@ -1,7 +1,7 @@
 "use strict";
 const Promise = require("bluebird");
-const broid_schemas_1 = require("broid-schemas");
-const broid_utils_1 = require("broid-utils");
+const schemas_1 = require("@broid/schemas");
+const utils_1 = require("@broid/utils");
 const events_1 = require("events");
 const irc = require("irc");
 const uuid = require("node-uuid");
@@ -17,7 +17,7 @@ class Adapter {
         this.channels = obj && obj.channels;
         this.ee = new events_1.EventEmitter();
         this.parser = new parser_1.default(this.username, this.serviceID, this.logLevel);
-        this.logger = new broid_utils_1.Logger("adapter", this.logLevel);
+        this.logger = new utils_1.Logger("adapter", this.logLevel);
     }
     serviceId() {
         return this.serviceID;
@@ -64,7 +64,7 @@ class Adapter {
     }
     send(data) {
         this.logger.debug("sending", { message: data });
-        return broid_schemas_1.default(data, "send")
+        return schemas_1.default(data, "send")
             .then(() => {
             const message = data.object.content;
             let to = data.to.id;
