@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const bodyParser = require("body-parser");
 const utils_1 = require("@broid/utils");
 const events_1 = require("events");
@@ -46,5 +47,4 @@ class WebHookServer extends events_1.EventEmitter {
         this.express.use("/", router);
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = WebHookServer;

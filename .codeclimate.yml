@@ -3,7 +3,7 @@ engines:
   tslint:
     enabled: true
     channel: beta
-    config: .codeclimate/tslint.json
+    config: .ci/ci_tslint.json
 ratings:
   paths:
   - "**/src/**.d.ts"

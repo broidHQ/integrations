@@ -61,3 +61,5 @@ typings
 .revelant_directories
 .integrations
 .changed_dirs
+broid-*/tslint.json
+broid-*/tsconfig.json

@@ -29,6 +29,6 @@ before_install:
   - sudo apt-get install -y -qq yarn
   - npm install -g nsp
 before_script:
-  - chmod +x ./.travis/test
-  - ./.travis/test install
-script: ./.travis/test
+  - chmod +x ./.ci/test
+  - ./.ci/test install
+script: ./.ci/test

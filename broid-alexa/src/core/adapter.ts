@@ -1,6 +1,6 @@
-import * as Promise from "bluebird";
 import broidSchemas from "@broid/schemas";
 import { Logger } from "@broid/utils";
+import * as Promise from "bluebird";
 import * as uuid from "node-uuid";
 import { Observable } from "rxjs/Rx";
 

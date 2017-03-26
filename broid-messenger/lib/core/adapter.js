@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const Promise = require("bluebird");
 const schemas_1 = require("@broid/schemas");
 const utils_1 = require("@broid/utils");
@@ -215,5 +216,4 @@ class Adapter {
         });
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = Adapter;
