@@ -1,27 +1,27 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Promise = require("bluebird");
 const schemas_1 = require("@broid/schemas");
 const utils_1 = require("@broid/utils");
+const Promise = require("bluebird");
 const mimetype = require("mimetype");
 const R = require("ramda");
 class Parser {
     constructor(serviceID, logLevel) {
         this.serviceID = serviceID;
-        this.generatorName = "discord";
-        this.logger = new utils_1.Logger("parser", logLevel);
+        this.generatorName = 'discord';
+        this.logger = new utils_1.Logger('parser', logLevel);
     }
     validate(event) {
-        this.logger.debug("Validation process", { event });
+        this.logger.debug('Validation process', { event });
         const parsed = utils_1.cleanNulls(event);
         if (!parsed || R.isEmpty(parsed)) {
             return Promise.resolve(null);
         }
         if (!parsed.type) {
-            this.logger.debug("Type not found.", { parsed });
+            this.logger.debug('Type not found.', { parsed });
             return Promise.resolve(null);
         }
-        return schemas_1.default(parsed, "activity")
+        return schemas_1.default(parsed, 'activity')
             .then(() => parsed)
             .catch((err) => {
             this.logger.error(err);
@@ -29,27 +29,27 @@ class Parser {
         });
     }
     parse(event) {
-        this.logger.debug("Normalized process");
+        this.logger.debug('Normalized process');
         const normalized = utils_1.cleanNulls(event);
         if (!normalized || R.isEmpty(normalized)) {
             return Promise.resolve(null);
         }
         const activitystreams = this.createActivityStream(normalized);
         activitystreams.actor = {
-            id: R.path(["author", "id"], normalized),
-            name: R.path(["author", "username"], normalized),
-            type: R.path(["author", "bot"], normalized) ? "Application" : "Person",
+            id: R.path(['author', 'id'], normalized),
+            name: R.path(['author', 'username'], normalized),
+            type: R.path(['author', 'bot'], normalized) ? 'Application' : 'Person',
         };
-        let targetType = "Group";
-        if (R.path(["channel", "isPrivate"], normalized)) {
-            targetType = "Person";
+        let targetType = 'Group';
+        if (R.path(['channel', 'isPrivate'], normalized)) {
+            targetType = 'Person';
         }
-        let targetName = R.path(["channel", "name"], normalized);
+        let targetName = R.path(['channel', 'name'], normalized);
         if (R.isEmpty(targetName)) {
-            targetName = R.path(["channel", "id"], normalized);
+            targetName = R.path(['channel', 'id'], normalized);
         }
         activitystreams.target = {
-            id: R.path(["channel", "id"], normalized),
+            id: R.path(['channel', 'id'], normalized),
             name: targetName,
             type: targetType,
         };
@@ -73,7 +73,7 @@ class Parser {
                     attachment: attachments,
                     content: normalized.content,
                     id: normalized.id,
-                    type: "Note",
+                    type: 'Note',
                 };
             }
         }
@@ -81,36 +81,36 @@ class Parser {
             activitystreams.object = {
                 content: normalized.content,
                 id: normalized.id,
-                type: "Note",
+                type: 'Note',
             };
         }
         return Promise.resolve(activitystreams);
     }
     parseMedia(media, content) {
-        let type = null;
+        let mediaType = null;
         const mimeType = mimetype.lookup(media.filename);
-        if (mimeType.startsWith("image")) {
-            type = "Image";
+        if (mimeType.startsWith('image')) {
+            mediaType = 'Image';
         }
-        if (mimeType.startsWith("video")) {
-            type = "Video";
+        if (mimeType.startsWith('video')) {
+            mediaType = 'Video';
         }
-        if (type && content) {
+        if (mediaType && content) {
             return {
                 content,
                 id: media.id,
                 mediaType: mimeType,
                 name: media.filename,
-                type,
+                type: mediaType,
                 url: media.url,
             };
         }
-        else if (type) {
+        else if (mediaType) {
             return {
                 id: media.id,
                 mediaType: mimeType,
                 name: media.filename,
-                type,
+                type: mediaType,
                 url: media.url,
             };
         }
@@ -118,17 +118,17 @@ class Parser {
     }
     createActivityStream(normalized) {
         return {
-            "@context": "https://www.w3.org/ns/activitystreams",
-            "generator": {
+            '@context': 'https://www.w3.org/ns/activitystreams',
+            'generator': {
                 id: this.serviceID,
                 name: this.generatorName,
-                type: "Service",
+                type: 'Service',
             },
-            "published": normalized.timestamp ?
+            'published': normalized.timestamp ?
                 Math.floor(new Date(normalized.timestamp).getTime() / 1000)
                 : Math.floor(Date.now() / 1000),
-            "type": "Create",
+            'type': 'Create',
         };
     }
 }
-exports.default = Parser;
+exports.Parser = Parser;

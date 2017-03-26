@@ -1,17 +1,36 @@
-import * as Promise from "bluebird";
-import broidSchemas from "@broid/schemas";
-import { Logger } from "@broid/utils";
-import * as Discordie from "discordie";
-import * as uuid from "node-uuid";
-import * as R from "ramda";
-import * as request from "request-promise";
-import { Observable } from "rxjs/Rx";
+/**
+ * @license
+ * Copyright 2017 Broid.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+
+import schemas from '@broid/schemas';
+import { Logger } from '@broid/utils';
+
+import * as Promise from 'bluebird';
+import * as Discordie from 'discordie';
+import * as uuid from 'node-uuid';
+import * as R from 'ramda';
+import * as request from 'request-promise';
+import { Observable } from 'rxjs/Rx';
 
 const Events: any = Discordie.Events;
-import { IAdapterOptions, IChannelInformations, IUserInformations } from "./interfaces";
-import Parser from "./parser";
+import { IAdapterOptions, IChannelInformations, IUserInformations } from './interfaces';
+import { Parser } from './Parser';
 
-export default class Adapter {
+export class Adapter {
   public serviceID: string;
   public token: string | null;
   private session: any;
@@ -21,28 +40,26 @@ export default class Adapter {
 
   constructor(obj?: IAdapterOptions) {
     this.serviceID = obj && obj.serviceID || uuid.v4();
-    this.logLevel = obj && obj.logLevel || "info";
+    this.logLevel = obj && obj.logLevel || 'info';
     this.token = obj && obj.token || null;
 
     this.session = new Discordie({
       autoReconnect: true,
     });
     this.parser = new Parser(this.serviceID, this.logLevel);
-    this.logger = new Logger("adapter", this.logLevel);
+    this.logger = new Logger('adapter', this.logLevel);
   }
 
   // Return list of users information
-  public users(): Promise {
+  public users(): Promise<any> {
     return new Promise((resolve) => {
       const users = this.session.Users.map((u) => {
-        const information: IUserInformations = {
+        return <IUserInformations> {
           avatar: u.avatar,
           id: u.id,
           is_bot: u.bot,
           username: u.username,
         };
-
-        return information;
       });
 
       resolve(users);
@@ -50,18 +67,16 @@ export default class Adapter {
   }
 
   // Return list of channels information
-  public channels(): Promise {
+  public channels(): Promise<any> {
     return new Promise((resolve) => {
       const channels = this.session.Channels.map((c) => {
         if (c.type !== 0) { return null; }
-        const information: IChannelInformations = {
+        return <IChannelInformations> {
           guildID: c.guild_id,
           id: c.id,
           name: c.name,
           topic: c.topic,
         };
-
-        return information;
       });
 
       resolve(R.reject(R.isNil)(channels));
@@ -69,25 +84,25 @@ export default class Adapter {
   }
 
   // Return the service ID of the current instance
-  public serviceId(): String {
+  public serviceId(): string {
     return this.serviceID;
   }
 
   // Connect to Discord
   public connect(): Observable<any> {
     if (!this.token) {
-      return Observable.throw(new Error("Token should exist."));
+      return Observable.throw(new Error('Token should exist.'));
     }
 
     this.session.connect({ token: this.token });
 
     const connected = Observable
       .fromEvent(this.session.Dispatcher, Events.GATEWAY_READY)
-      .map(() => ({ type: "connected", serviceID: this.serviceId() }));
+      .map(() => ({ type: 'connected', serviceID: this.serviceId() }));
 
     const disconnected = Observable
       .fromEvent(this.session.Dispatcher, Events.DISCONNECTED)
-      .map(() => ({ type: "disconnected", serviceID: this.serviceId() }));
+      .map(() => ({ type: 'disconnected', serviceID: this.serviceId() }));
 
     return Observable.merge(connected, disconnected);
   }
@@ -95,19 +110,19 @@ export default class Adapter {
   public disconnect(): Promise<any> {
     return new Promise((resolve) => {
       this.session.disconnect();
-      return resolve({ type: "disconnected", serviceID: this.serviceId() });
+      return resolve({ type: 'disconnected', serviceID: this.serviceId() });
     });
   }
 
-  // Listen "message" event from Discord
+  // Listen 'message' event from Discord
   public listen(): Observable<any> {
     return Observable.merge(
       Observable.fromEvent(this.session.Dispatcher, Events.MESSAGE_CREATE),
       Observable.fromEvent(this.session.Dispatcher, Events.MESSAGE_UPDATE))
       .mergeMap((e: any) => {
         // ignore message from me
-        if (R.path(["User", "id"], this.session)
-          && R.path(["message", "author", "id"], e) === this.session.User.id) {
+        if (R.path(['User', 'id'], this.session)
+          && R.path(['message', 'author', 'id'], e) === this.session.User.id) {
           return Promise.resolve(null);
         }
 
@@ -150,8 +165,8 @@ export default class Adapter {
       });
   }
 
-  public send(data: Object): Promise {
-    this.logger.debug("sending", { message: data });
+  public send(data: object): Promise<any> {
+    this.logger.debug('sending', { message: data });
 
     const updateMessage = (message) => {
       if (!R.isEmpty(message.content)) {
@@ -160,43 +175,43 @@ export default class Adapter {
       return this.session.Messages.deleteMessage(message);
     };
 
-    return broidSchemas(data, "send")
+    return schemas(data, 'send')
       .then(() => {
-        const targetType = R.path(["to", "type"], data);
-        const targetID = R.path(["to", "id"], data);
+        const targetType: string = <string> R.path(['to', 'type'], data);
+        const targetID: string = <string> R.path(['to', 'id'], data);
 
         let channel: any = this.session.Channels.get(targetID);
-        if (targetType === "Person") {
+        if (targetType === 'Person') {
           channel = this.session.DirectMessageChannels.get(targetID);
         }
 
-        if (!channel) { throw new Error("Channel not found."); }
+        if (!channel) { throw new Error('Channel not found.'); }
         return channel;
       })
       .then((channel) => {
-        const content = R.path(["object", "content"], data);
-        const type = R.path(["object", "type"], data);
+        const content = R.path(['object', 'content'], data);
+        const dataType = R.path(['object', 'type'], data);
 
-        if (type === "Note") {
-          const messageID = R.path(["object", "id"], data);
+        if (dataType === 'Note') {
+          const messageID = R.path(['object', 'id'], data);
           if (messageID) {
             return updateMessage({ id: messageID, channel_id: channel.id, content });
           }
           return channel.sendMessage(content);
-        } else if (type === "Image" || type === "Video") {
-          const url  = R.path(["object", "url"], data);
-          const name = R.path(["object", "name"], data);
+        } else if (dataType === 'Image' || dataType === 'Video') {
+          const url: string  = <string> R.path(['object', 'url'], data);
+          const name: string = <string> R.path(['object', 'name'], data);
 
-          if (url.startsWith("http://") || url.startsWith("https://")) {
+          if (url.startsWith('http://') || url.startsWith('https://')) {
             const stream = request(url);
             return channel.uploadFile(stream, name || content);
           }
         }
 
-        throw new Error("Image, Video and Note are only supported.");
+        throw new Error('Image, Video and Note are only supported.');
       })
       .then((r) => {
-        const d: any = { type: "sent", serviceID: this.serviceId() };
+        const d: any = { type: 'sent', serviceID: this.serviceId() };
         if (r && r.id) {
           d.id = r.id;
         }
