@@ -1,9 +1,9 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const Promise = require("bluebird");
 const botbuilder = require("botbuilder");
 const broid_schemas_1 = require("broid-schemas");
 const broid_utils_1 = require("broid-utils");
+const express_1 = require("express");
 const mimetype = require("mimetype");
 const uuid = require("node-uuid");
 const R = require("ramda");
@@ -14,19 +14,16 @@ class Adapter {
     constructor(obj) {
         this.serviceID = obj && obj.serviceID || uuid.v4();
         this.logLevel = obj && obj.logLevel || "info";
+        this.router = express_1.Router();
         this.token = obj && obj.token || null;
         this.tokenSecret = obj && obj.tokenSecret || null;
         this.storeUsers = new Map();
         this.storeAddresses = new Map();
-        const HTTPOptions = {
-            host: "127.0.0.1",
-            port: 8080,
-        };
-        this.HTTPOptions = obj && obj.http || HTTPOptions;
-        this.HTTPOptions.host = this.HTTPOptions.host || HTTPOptions.host;
-        this.HTTPOptions.port = this.HTTPOptions.port || HTTPOptions.port;
-        this.parser = new parser_1.default(this.serviceID, this.logLevel);
+        this.parser = new parser_1.default(this.serviceName(), this.serviceID, this.logLevel);
         this.logger = new broid_utils_1.Logger("adapter", this.logLevel);
+        if (obj.http) {
+            this.webhookServer = new webHookServer_1.default(obj.http, this.router, this.logLevel);
+        }
     }
     users() {
         return Promise.resolve(this.storeUsers);
@@ -43,6 +40,15 @@ class Adapter {
     serviceId() {
         return this.serviceID;
     }
+    serviceName() {
+        return "ms-teams";
+    }
+    getRouter() {
+        if (this.webhookServer) {
+            return null;
+        }
+        return this.router;
+    }
     connect() {
         if (this.connected) {
             return Rx_1.Observable.of({ type: "connected", serviceID: this.serviceId() });
@@ -57,13 +63,18 @@ class Adapter {
         });
         this.session = new botbuilder.UniversalBot(this.sessionConnector);
         this.connected = true;
-        this.webhookServer = new webHookServer_1.default(this.HTTPOptions, this.logLevel);
-        this.webhookServer.route(this.sessionConnector.listen());
-        this.webhookServer.listen();
+        this.router.post("/", this.sessionConnector.listen());
+        if (this.webhookServer) {
+            this.webhookServer.listen();
+        }
         return Rx_1.Observable.of({ type: "connected", serviceID: this.serviceId() });
     }
     disconnect() {
-        return Promise.reject(new Error("Not supported"));
+        this.connected = false;
+        if (this.webhookServer) {
+            return this.webhookServer.close();
+        }
+        return Promise.resolve(null);
     }
     listen() {
         return Rx_1.Observable.create((observer) => {
@@ -179,4 +190,5 @@ class Adapter {
         });
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = Adapter;

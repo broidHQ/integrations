@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const Promise = require("bluebird");
 const broid_schemas_1 = require("broid-schemas");
 const broid_utils_1 = require("broid-utils");
@@ -7,9 +6,9 @@ const mimetype = require("mimetype");
 const uuid = require("node-uuid");
 const R = require("ramda");
 class Parser {
-    constructor(serviceID, logLevel) {
+    constructor(serviceName, serviceID, logLevel) {
         this.serviceID = serviceID;
-        this.generatorName = "ms-teams";
+        this.generatorName = serviceName;
         this.logger = new broid_utils_1.Logger("parser", logLevel);
     }
     validate(event) {
@@ -111,4 +110,5 @@ class Parser {
         };
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = Parser;
