@@ -17,7 +17,7 @@ const twilioMessageWithImage = require("./fixtures/skype/messageWithImage.json")
 const twilioMessageWithVideo = require("./fixtures/skype/messageWithVideo.json");
 let parser;
 ava_1.default.before(() => {
-    parser = new parser_1.default("test_service", "info");
+    parser = new parser_1.default("skype", "test_service", "info");
 });
 ava_1.default("Parse a simple message", (t) => __awaiter(this, void 0, void 0, function* () {
     const data = parser.parse(twilioMessage);
