@@ -1,3 +1,5 @@
+/* tslint:disable */
+
 /**
  * @license
  * Copyright 2017 Broid.
@@ -16,21 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-export interface IAdapterHTTPOptions {
-  host: string;
-  port: number;
-}
-
-export interface IAdapterOptions {
-  logLevel: string;
-  http: IAdapterHTTPOptions;
-  serviceID: string;
-  token: string;
-  tokenSecret: string;
-  username: string;
-}
-
-export interface IWebHookEvent {
-  response: any;
-  request: any;
+declare module '*.json' {
+  const value: any;
+  export default value;
 }
