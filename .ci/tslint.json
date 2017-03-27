@@ -20,6 +20,7 @@
       "no-string-based-set-timeout": true,
       "react-no-dangerous-html": true,
 
+      "array-type": [true, "array"],
       "chai-vague-errors": true,
       "forin": true,
       "jquery-deferred-must-complete": true,
@@ -87,7 +88,7 @@
       "no-var-requires": true,
       "object-literal-sort-keys": false,
       "one-variable-per-declaration": true,
-      "prefer-array-literal": true,
+      "prefer-array-literal": false,
       "prefer-const": true,
       "typedef": [true, "callSignature", "indexSignature", "parameter", "propertySignature", "variableDeclarator", "memberVariableDeclarator"],
       "variable-name": true,

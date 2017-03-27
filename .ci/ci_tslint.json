@@ -90,7 +90,7 @@
       "no-var-requires": true,
       "object-literal-sort-keys": false,
       "one-variable-per-declaration": true,
-      "prefer-array-literal": true,
+      "prefer-array-literal": false,
       "prefer-const": true,
       "typedef": [true, "callSignature", "indexSignature", "parameter", "propertySignature", "variableDeclarator", "memberVariableDeclarator"],
       "variable-name": true,
