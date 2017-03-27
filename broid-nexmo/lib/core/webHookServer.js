@@ -1,14 +1,15 @@
 "use strict";
-const bodyParser = require("body-parser");
+Object.defineProperty(exports, "__esModule", { value: true });
 const utils_1 = require("@broid/utils");
+const bodyParser = require("body-parser");
 const EventEmitter = require("events");
 const express = require("express");
 class WebHookServer extends EventEmitter {
     constructor(options, logLevel) {
         super();
-        this.host = options && options.host || "127.0.0.1";
+        this.host = options && options.host || '127.0.0.1';
         this.port = options && options.port || 8080;
-        this.logger = new utils_1.Logger("webhook_server", logLevel || "info");
+        this.logger = new utils_1.Logger('webhook_server', logLevel || 'info');
         this.express = express();
         this.middleware();
         this.routes();
@@ -26,10 +27,10 @@ class WebHookServer extends EventEmitter {
         const router = express.Router();
         const handle = (req, res) => {
             let query = {};
-            if (req.method === "GET") {
+            if (req.method === 'GET') {
                 query = req.query;
             }
-            else if (req.method === "POST") {
+            else if (req.method === 'POST') {
                 query = req.body;
             }
             const message = {
@@ -37,16 +38,15 @@ class WebHookServer extends EventEmitter {
                 messageId: query.messageId,
                 msisdn: query.msisdn,
                 text: query.text,
-                timestamp: query["message-timestamp"],
+                timestamp: query['message-timestamp'],
                 to: query.to,
             };
-            this.emit("message", message);
+            this.emit('message', message);
             res.sendStatus(200);
         };
-        router.get("/", handle);
-        router.post("/", handle);
-        this.express.use("/", router);
+        router.get('/', handle);
+        router.post('/', handle);
+        this.express.use('/', router);
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = WebHookServer;
+exports.WebHookServer = WebHookServer;
