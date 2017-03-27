@@ -7,9 +7,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 const ava_1 = require("ava");
 const sinon = require("sinon");
-const parser_1 = require("../core/parser");
+const Parser_1 = require("../core/Parser");
 const broidMessageImage = require("./fixtures/broid/image.json");
 const broidMessageLocation = require("./fixtures/broid/location.json");
 const broidMessage = require("./fixtures/broid/message.json");
@@ -18,32 +19,32 @@ const groupmeMessageLocation = require("./fixtures/groupme/location.json");
 const groupmeMessage = require("./fixtures/groupme/message.json");
 let parser;
 ava_1.default.before(() => {
-    sinon.stub(Date, "now", () => {
+    sinon.stub(Date, 'now', () => {
         return 1483589416000;
     });
-    parser = new parser_1.default("testuser", "info");
+    parser = new Parser_1.Parser('testuser', 'info');
 });
-ava_1.default("Parse a simple message", (t) => __awaiter(this, void 0, void 0, function* () {
+ava_1.default('Parse a simple message', (t) => __awaiter(this, void 0, void 0, function* () {
     const data = yield parser.parse(groupmeMessage);
     t.deepEqual(data, broidMessage);
 }));
-ava_1.default("Parse a location message", (t) => __awaiter(this, void 0, void 0, function* () {
+ava_1.default('Parse a location message', (t) => __awaiter(this, void 0, void 0, function* () {
     const data = yield parser.parse(groupmeMessageLocation);
     t.deepEqual(data, broidMessageLocation);
 }));
-ava_1.default("Parse a  image message", (t) => __awaiter(this, void 0, void 0, function* () {
+ava_1.default('Parse a  image message', (t) => __awaiter(this, void 0, void 0, function* () {
     const data = yield parser.parse(groupmeMessageImage);
     t.deepEqual(data, broidMessageImage);
 }));
-ava_1.default("Validate a simple message", (t) => __awaiter(this, void 0, void 0, function* () {
+ava_1.default('Validate a simple message', (t) => __awaiter(this, void 0, void 0, function* () {
     const data = parser.validate(broidMessage);
     t.deepEqual(yield data, broidMessage);
 }));
-ava_1.default("Validate a location message", (t) => __awaiter(this, void 0, void 0, function* () {
+ava_1.default('Validate a location message', (t) => __awaiter(this, void 0, void 0, function* () {
     const data = parser.validate(broidMessageLocation);
     t.deepEqual(yield data, broidMessageLocation);
 }));
-ava_1.default("Validate a image message", (t) => __awaiter(this, void 0, void 0, function* () {
+ava_1.default('Validate a image message', (t) => __awaiter(this, void 0, void 0, function* () {
     const data = parser.validate(broidMessageImage);
     t.deepEqual(yield data, broidMessageImage);
 }));
