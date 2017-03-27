@@ -1,6 +1,6 @@
 import * as Promise from "bluebird";
 import * as bodyParser from "body-parser";
-import { Logger } from "broid-utils";
+import { Logger } from "@broid/utils";
 import * as EventEmitter from "events";
 import * as express from "express";
 import * as http from "http";

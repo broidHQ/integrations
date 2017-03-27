@@ -1,9 +1,14 @@
 "use strict";
 const Promise = require("bluebird");
+<<<<<<< HEAD
 const broid_schemas_1 = require("broid-schemas");
 const broid_utils_1 = require("broid-utils");
 const events_1 = require("events");
 const express_1 = require("express");
+=======
+const schemas_1 = require("@broid/schemas");
+const utils_1 = require("@broid/utils");
+>>>>>>> devel
 const Nexmo = require("nexmo");
 const uuid = require("node-uuid");
 const R = require("ramda");
@@ -17,6 +22,7 @@ class Adapter {
         this.token = obj && obj.token || null;
         this.tokenSecret = obj && obj.tokenSecret || null;
         this.username = obj && obj.username || null;
+<<<<<<< HEAD
         this.parser = new parser_1.default(this.serviceName(), this.serviceID, this.logLevel);
         this.logger = new broid_utils_1.Logger("adapter", this.logLevel);
         this.emitter = new events_1.EventEmitter();
@@ -24,6 +30,17 @@ class Adapter {
         if (obj.http) {
             this.webhookServer = new webHookServer_1.default(obj.http, this.router, this.logLevel);
         }
+=======
+        const HTTPOptions = {
+            host: "127.0.0.1",
+            port: 8080,
+        };
+        this.HTTPOptions = obj && obj.http || HTTPOptions;
+        this.HTTPOptions.host = this.HTTPOptions.host || HTTPOptions.host;
+        this.HTTPOptions.port = this.HTTPOptions.port || HTTPOptions.port;
+        this.parser = new parser_1.default(this.serviceID, this.logLevel);
+        this.logger = new utils_1.Logger("adapter", this.logLevel);
+>>>>>>> devel
     }
     users() {
         return Promise.reject(new Error("Not supported"));
@@ -86,7 +103,7 @@ class Adapter {
     }
     send(data) {
         this.logger.debug("sending", { message: data });
-        return broid_schemas_1.default(data, "send")
+        return schemas_1.default(data, "send")
             .then(() => {
             if (data.object.type !== "Note") {
                 return Promise.reject(new Error("Only Note is supported."));

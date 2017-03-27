@@ -1,7 +1,8 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const Promise = require("bluebird");
-const broid_schemas_1 = require("broid-schemas");
-const broid_utils_1 = require("broid-utils");
+const schemas_1 = require("@broid/schemas");
+const utils_1 = require("@broid/utils");
 const mimetype = require("mimetype");
 const uuid = require("node-uuid");
 const R = require("ramda");
@@ -9,11 +10,11 @@ class Parser {
     constructor(serviceID, logLevel) {
         this.serviceID = serviceID;
         this.generatorName = "messenger";
-        this.logger = new broid_utils_1.Logger("parser", logLevel);
+        this.logger = new utils_1.Logger("parser", logLevel);
     }
     validate(event) {
         this.logger.debug("Validation process", { event });
-        const parsed = broid_utils_1.cleanNulls(event);
+        const parsed = utils_1.cleanNulls(event);
         if (!parsed || R.isEmpty(parsed)) {
             return Promise.resolve(null);
         }
@@ -21,7 +22,7 @@ class Parser {
             this.logger.debug("Type not found.", { parsed });
             return Promise.resolve(null);
         }
-        return broid_schemas_1.default(parsed, "activity")
+        return schemas_1.default(parsed, "activity")
             .then(() => parsed)
             .catch((err) => {
             this.logger.error(err);
@@ -30,14 +31,14 @@ class Parser {
     }
     parse(event) {
         this.logger.debug("Parse process", { event });
-        const normalized = broid_utils_1.cleanNulls(event);
+        const normalized = utils_1.cleanNulls(event);
         if (!normalized || R.isEmpty(normalized)) {
             return Promise.resolve(null);
         }
         const activitystreams = this.createActivityStream(normalized);
         activitystreams.actor = {
             id: R.path(["authorInformation", "id"], normalized),
-            name: broid_utils_1.concat([R.path(["authorInformation", "first_name"], normalized),
+            name: utils_1.concat([R.path(["authorInformation", "first_name"], normalized),
                 R.path(["authorInformation", "last_name"], normalized)]),
             type: "Person",
         };
@@ -145,7 +146,7 @@ class Parser {
         if (attachment.type.toLowerCase() === "image"
             || attachment.type.toLowerCase() === "video") {
             const a = {
-                type: broid_utils_1.capitalizeFirstLetter(attachment.type.toLowerCase()),
+                type: utils_1.capitalizeFirstLetter(attachment.type.toLowerCase()),
                 url: R.path(["payload", "url"], attachment),
             };
             if (a.url) {
@@ -166,5 +167,4 @@ class Parser {
         return null;
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = Parser;

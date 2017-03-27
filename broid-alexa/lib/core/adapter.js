@@ -1,7 +1,7 @@
 "use strict";
 const Promise = require("bluebird");
-const broid_schemas_1 = require("broid-schemas");
-const broid_utils_1 = require("broid-utils");
+const schemas_1 = require("@broid/schemas");
+const utils_1 = require("@broid/utils");
 const uuid = require("node-uuid");
 const Rx_1 = require("rxjs/Rx");
 const parser_1 = require("./parser");
@@ -18,7 +18,7 @@ class Adapter {
         this.HTTPOptions.host = this.HTTPOptions.host || HTTPOptions.host;
         this.HTTPOptions.port = this.HTTPOptions.port || HTTPOptions.port;
         this.parser = new parser_1.default(this.serviceID, this.logLevel);
-        this.logger = new broid_utils_1.Logger("adapter", this.logLevel);
+        this.logger = new utils_1.Logger("adapter", this.logLevel);
     }
     users() {
         return Promise.reject(new Error("Not supported"));
@@ -57,7 +57,7 @@ class Adapter {
     }
     send(data) {
         this.logger.debug("sending", { message: data });
-        return broid_schemas_1.default(data, "send")
+        return schemas_1.default(data, "send")
             .then(() => {
             if (data.object.type !== "Note") {
                 return Promise.reject(new Error("Only Note is supported."));

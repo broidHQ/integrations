@@ -1,18 +1,27 @@
 {
-  "name": "broid-schemas",
-  "version": "1.2.0",
+  "name": "@broid/schemas",
+  "version": "1.0.1",
   "main": "lib/index.js",
   "license": "AGPL-3.0+",
   "author": "Broid Team <opensource@broid.ai> (https://broid.ai)",
   "description": "Validate Broid activity streams 2.0 messages",
   "repository": {
     "type": "git",
-    "url": "git@github.com:broidHQ/integrations.git"
+    "url": "git+ssh://git@github.com/broidHQ/integrations.git"
   },
   "bugs": {
     "url": "https://github.com/broidHQ/integrations/issues"
   },
   "homepage": "https://github.com/broidHQ/integrations/tree/master/broid-schemas#readme",
+  "keywords": [
+    "broid",
+    "activity",
+    "strams",
+    "activity streams 2",
+    "messaging",
+    "chat",
+    "bot"
+  ],
   "engines": {
     "node": ">=6.0.0"
   },
@@ -22,7 +31,7 @@
     "lint": "tslint -c tslint.json src/*",
     "lint:watch": "watch 'tslint -c tslint.json src/*' src",
     "nsp-check": "nsp check -o summary",
-    "release": "npm run nsp-check && npm run build && npm publish",
+    "release": "npm run nsp-check && npm run build && npm publish --access public",
     "test": "echo \"Error: no test specified\" && exit 0",
     "travis": "npm run test",
     "tsc:watch": "tsc --watch",

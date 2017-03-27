@@ -1,6 +1,6 @@
 import * as Promise from "bluebird";
-import broidSchemas, { ISendParameters } from "broid-schemas";
-import { Logger } from "broid-utils";
+import broidSchemas, { ISendParameters } from "@broid/schemas";
+import { Logger } from "@broid/utils";
 import * as crypto from "crypto";
 import { EventEmitter } from "events";
 import { Router } from "express";

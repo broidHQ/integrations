@@ -1,8 +1,9 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const Promise = require("bluebird");
 const botbuilder = require("botbuilder");
-const broid_schemas_1 = require("broid-schemas");
-const broid_utils_1 = require("broid-utils");
+const schemas_1 = require("@broid/schemas");
+const utils_1 = require("@broid/utils");
 const express_1 = require("express");
 const mimetype = require("mimetype");
 const uuid = require("node-uuid");
@@ -20,7 +21,7 @@ class Adapter {
         this.storeUsers = new Map();
         this.storeAddresses = new Map();
         this.parser = new parser_1.default(this.serviceName(), this.serviceID, this.logLevel);
-        this.logger = new broid_utils_1.Logger("adapter", this.logLevel);
+        this.logger = new utils_1.Logger("adapter", this.logLevel);
         if (obj.http) {
             this.webhookServer = new webHookServer_1.default(obj.http, this.router, this.logLevel);
         }
@@ -104,7 +105,7 @@ class Adapter {
     }
     send(data) {
         this.logger.debug("sending", { message: data });
-        return broid_schemas_1.default(data, "send")
+        return schemas_1.default(data, "send")
             .then(() => {
             const context = R.path(["object", "context", "content"], data);
             const content = R.path(["object", "content"], data);
@@ -190,5 +191,4 @@ class Adapter {
         });
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = Adapter;
