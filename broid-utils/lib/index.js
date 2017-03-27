@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const R = require("ramda");
 const Logger_1 = require("./Logger");
 exports.Logger = Logger_1.default;
@@ -10,5 +11,5 @@ function capitalizeFirstLetter(str) {
 exports.capitalizeFirstLetter = capitalizeFirstLetter;
 const defaults = R.flip(R.merge);
 exports.defaults = defaults;
-const concat = R.compose(R.join(" "), R.reject(R.isNil));
+const concat = R.compose(R.join(' '), R.reject(R.isNil));
 exports.concat = concat;
