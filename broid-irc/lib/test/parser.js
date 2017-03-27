@@ -7,43 +7,44 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 const ava_1 = require("ava");
 const uuid = require("node-uuid");
 const sinon = require("sinon");
-const parser_1 = require("../core/parser");
+const Parser_1 = require("../core/Parser");
 const groupMessage = require("./fixtures/group-message.json");
 const privateMessage = require("./fixtures/private-message.json");
 let parser;
 ava_1.default.before(() => {
-    sinon.stub(uuid, "v4", () => {
-        return "2eb3b34b-3b23-4488-9879-b03e094d250e";
+    sinon.stub(uuid, 'v4', () => {
+        return '2eb3b34b-3b23-4488-9879-b03e094d250e';
     });
-    sinon.stub(Date, "now", () => {
+    sinon.stub(Date, 'now', () => {
         return 1483589416000;
     });
-    parser = new parser_1.default("testuser", "test_irc_service", "info");
+    parser = new Parser_1.Parser('testuser', 'test_irc_service', 'info');
 });
-ava_1.default("Parse a group message", (t) => __awaiter(this, void 0, void 0, function* () {
+ava_1.default('Parse a group message', (t) => __awaiter(this, void 0, void 0, function* () {
     const data = parser.parse({
-        from: "SallyDude",
-        message: "hello world",
-        to: "#supersecretirc",
+        from: 'SallyDude',
+        message: 'hello world',
+        to: '#supersecretirc',
     });
     t.deepEqual(yield data, groupMessage);
 }));
-ava_1.default("Parse a private group message", (t) => __awaiter(this, void 0, void 0, function* () {
+ava_1.default('Parse a private group message', (t) => __awaiter(this, void 0, void 0, function* () {
     const data = parser.parse({
-        from: "SallyDude",
-        message: "hello world",
-        to: "JohnDow",
+        from: 'SallyDude',
+        message: 'hello world',
+        to: 'JohnDow',
     });
     t.deepEqual(yield data, privateMessage);
 }));
-ava_1.default("Validate a group message", (t) => __awaiter(this, void 0, void 0, function* () {
+ava_1.default('Validate a group message', (t) => __awaiter(this, void 0, void 0, function* () {
     const data = parser.validate(groupMessage);
     t.deepEqual(yield data, groupMessage);
 }));
-ava_1.default("Validate a private message", (t) => __awaiter(this, void 0, void 0, function* () {
+ava_1.default('Validate a private message', (t) => __awaiter(this, void 0, void 0, function* () {
     const data = parser.validate(privateMessage);
     t.deepEqual(yield data, privateMessage);
 }));

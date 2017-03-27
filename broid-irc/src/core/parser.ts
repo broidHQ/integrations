@@ -1,12 +1,29 @@
-import * as Promise from "bluebird";
-import broidSchemas from "@broid/schemas";
-import { cleanNulls, Logger } from "@broid/utils";
-import * as uuid from "node-uuid";
-import * as R from "ramda";
+/**
+ * @license
+ * Copyright 2017 Broid.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 
-import { IActivityStream } from "./interfaces";
+import { default as schemas, IActivityStream } from '@broid/schemas';
+import { cleanNulls, Logger } from '@broid/utils';
 
-export default class Parser {
+import * as Promise from 'bluebird';
+import * as uuid from 'node-uuid';
+import * as R from 'ramda';
+
+export class Parser {
   public serviceID: string;
   public generatorName: string;
   private logger: Logger;
@@ -14,24 +31,24 @@ export default class Parser {
 
   constructor(username: string, serviceID: string, logLevel: string) {
     this.serviceID = serviceID;
-    this.generatorName = "irc";
+    this.generatorName = 'irc';
     this.username = username;
-    this.logger = new Logger("parser", logLevel);
+    this.logger = new Logger('parser', logLevel);
   }
 
   // Validate parsed data with Broid schema validator
-  public validate(event: Object | null): Promise<Object | null> {
-    this.logger.debug("Validation process", { event });
+  public validate(event: object | null): Promise<object | null> {
+    this.logger.debug('Validation process', { event });
 
     const parsed = cleanNulls(event);
     if (!parsed || R.isEmpty(parsed)) { return Promise.resolve(null); }
 
     if (!parsed.type) {
-      this.logger.debug("Type not found.", { parsed });
+      this.logger.debug('Type not found.', { parsed });
       return Promise.resolve(null);
     }
 
-    return broidSchemas(parsed, "activity")
+    return schemas(parsed, 'activity')
       .return(parsed)
       .catch((err) => {
         this.logger.error(err);
@@ -40,36 +57,36 @@ export default class Parser {
   }
 
   // Convert normalized data to Broid schema
-  public parse(event: Object | null): Promise<Object | null> {
-    this.logger.debug("Normalized process");
+  public parse(event: object | null): Promise<object | null> {
+    this.logger.debug('Normalized process');
 
     const normalized = cleanNulls(event);
     if (!normalized || R.isEmpty(normalized)) { return Promise.resolve(null); }
 
     const activitystreams: IActivityStream = {
-      "@context": "https://www.w3.org/ns/activitystreams",
-      "actor": {
+      '@context': 'https://www.w3.org/ns/activitystreams',
+      'actor': {
         id: normalized.from,
         name: normalized.from,
-        type: "Person",
+        type: 'Person',
       },
-      "generator": {
+      'generator': {
         id: this.serviceID,
         name: this.generatorName,
-        type: "Service",
+        type: 'Service',
       },
-      "object": {
+      'object': {
         content: normalized.message,
         id: uuid.v4(),
-        type: "Note",
+        type: 'Note',
       },
-      "published": Math.floor(Date.now() / 1000),
-      "target": {
+      'published': Math.floor(Date.now() / 1000),
+      'target': {
         id: normalized.to,
         name: normalized.to,
-        type: normalized.to === this.username ? "Person" : "Group",
+        type: normalized.to === this.username ? 'Person' : 'Group',
       },
-      "type": "Create",
+      'type': 'Create',
     };
 
     return Promise.resolve(activitystreams);

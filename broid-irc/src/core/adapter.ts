@@ -1,15 +1,34 @@
-import * as Promise from "bluebird";
-import broidSchemas from "@broid/schemas";
-import { Logger } from "@broid/utils";
-import { EventEmitter } from "events";
-import * as irc from "irc";
-import * as uuid from "node-uuid";
-import { Observable } from "rxjs/Rx";
+/**
+ * @license
+ * Copyright 2017 Broid.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 
-import { IAdapterOptions, ISendParameters } from "./interfaces";
-import Parser from "./parser";
+import schemas from '@broid/schemas';
+import { Logger } from '@broid/utils';
 
-export default class Adapter {
+import * as Promise from 'bluebird';
+import { EventEmitter } from 'events';
+import * as irc from 'irc';
+import * as uuid from 'node-uuid';
+import { Observable } from 'rxjs/Rx';
+
+import { IAdapterOptions, ISendParameters } from './interfaces';
+import { Parser } from './Parser';
+
+export class Adapter {
   public serviceID: string;
 
   private address: string;
@@ -24,7 +43,7 @@ export default class Adapter {
 
   constructor(obj: IAdapterOptions) {
     this.serviceID = obj && obj.serviceID || uuid.v4();
-    this.logLevel = obj && obj.logLevel || "info";
+    this.logLevel = obj && obj.logLevel || 'info';
     this.connectTimeout = obj && obj.connectTimeout || 60000;
     this.address = obj && obj.address;
     this.username = obj && obj.username;
@@ -32,20 +51,20 @@ export default class Adapter {
     this.ee = new EventEmitter();
 
     this.parser = new Parser(this.username, this.serviceID, this.logLevel);
-    this.logger = new Logger("adapter", this.logLevel);
+    this.logger = new Logger('adapter', this.logLevel);
   }
 
   // Return the service ID of the current instance
-  public serviceId(): String {
+  public serviceId(): string {
     return this.serviceID;
   }
 
-  public connect(): Observable<Object> {
+  public connect(): Observable<object> {
     if (!this.address) {
-      return Observable.throw(new Error("IRC address is not set"));
+      return Observable.throw(new Error('IRC address is not set'));
     }
     if (!this.username) {
-      return Observable.throw(new Error("IRC username is not set"));
+      return Observable.throw(new Error('IRC username is not set'));
     }
 
     this.client = Promise.promisifyAll(new irc.Client(this.address, this.username, {
@@ -55,18 +74,18 @@ export default class Adapter {
 
     const connect = this.client.connectAsync()
       .catch((err) => {
-        if (err.rawCommand !== "001") {
+        if (err.rawCommand !== '001') {
           throw err;
         }
       })
       .then(() => {
         // RxJS doesn't like the event emitted that comes with node irc,
         // so we remake one instead.
-        this.client.addListener("message", (from, to, message) => {
-          this.ee.emit("message", {from, to, message});
-        });
+        this.client
+          .addListener('message', (from, to, message) =>  // tslint:disable-line:no-reserved-keywords
+            this.ee.emit('message', {from, to, message}));
 
-        return Observable.of({ type: "connected", serviceID: this.serviceId() });
+        return Observable.of({ type: 'connected', serviceID: this.serviceId() });
       });
 
     return Observable.fromPromise(connect)
@@ -77,29 +96,29 @@ export default class Adapter {
     return this.client.disconnectAsync();
   }
 
-  public listen(): Observable<Object> {
-    return Observable.fromEvent(this.ee, "message")
-      .map((normalized: Object | null) => this.parser.parse(normalized))
-      .map((parsed: Object | null) => this.parser.validate(parsed))
-      .map((validated: Object | null) => {
+  public listen(): Observable<object> {
+    return Observable.fromEvent(this.ee, 'message')
+      .map((normalized: object | null) => this.parser.parse(normalized))
+      .map((parsed: object | null) => this.parser.validate(parsed))
+      .map((validated: object | null) => {
         if (!validated) { return Observable.empty(); }
         return Promise.resolve(validated);
       });
   }
 
-  public send(data: ISendParameters): Promise<Object | Error> {
-    this.logger.debug("sending", { message: data });
+  public send(data: ISendParameters): Promise<object | Error> {
+    this.logger.debug('sending', { message: data });
 
-    return broidSchemas(data, "send")
+    return schemas(data, 'send')
       .then(() => {
         const message: string = data.object.content;
         let to: string = data.to.id;
-        if (data.to.type === "Group" && !to.includes("#")) {
+        if (data.to.type === 'Group' && !to.includes('#')) {
           to = `#${to}`;
         }
         this.client.say(to, message);
 
-        return { type: "sent", serviceID: this.serviceId() };
+        return { type: 'sent', serviceID: this.serviceId() };
       });
   }
 }
