@@ -1,13 +1,32 @@
-import * as actionsSdk from "actions-on-google";
-import * as Promise from "bluebird";
-import * as bodyParser from "body-parser";
-import { Logger } from "@broid/utils";
-import { EventEmitter } from "events";
-import * as express from "express";
+/**
+ * @license
+ * Copyright 2017 Broid.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 
-import { IAdapterHTTPOptions } from "./interfaces";
+import { Logger } from '@broid/utils';
 
-export default class WebHookServer extends EventEmitter {
+import * as actionsSdk from 'actions-on-google';
+import * as Promise from 'bluebird';
+import * as bodyParser from 'body-parser';
+import { EventEmitter } from 'events';
+import * as express from 'express';
+
+import { IAdapterHTTPOptions } from './interfaces';
+
+export class WebHookServer extends EventEmitter {
   private actionsMap: Map<string, actionsSdk.ActionHandler>;
   private assistant: actionsSdk.ActionsSdkAssistant;
   private express: express.Application;
@@ -19,15 +38,15 @@ export default class WebHookServer extends EventEmitter {
   constructor(options?: IAdapterHTTPOptions, logLevel?: string) {
     super();
     this.actionsMap = new Map();
-    this.host = options && options.host || "127.0.0.1";
+    this.host = options && options.host || '127.0.0.1';
     this.port = options && options.port || 8080;
-    this.logger = new Logger("webhook_server", logLevel || "info");
+    this.logger = new Logger('webhook_server', logLevel || 'info');
     this.express = express();
     this.middleware();
     this.routes();
   }
 
-  public addIntent(trigger): void {
+  public addIntent(trigger: any): void {
     this.actionsMap.set(trigger, () => {
       const body = this.assistant.body_;
       const conversationId = this.assistant.getConversationId();
@@ -74,12 +93,12 @@ export default class WebHookServer extends EventEmitter {
   private routes(): void {
     const router = express.Router();
     // placeholder route handler
-    router.post("/", (req, res) => {
+    router.post('/', (req, res) => {
       this.assistant = new actionsSdk
         .ActionsSdkAssistant({request: req, response: res});
       this.assistant.handleRequest(this.actionsMap);
     });
 
-    this.express.use("/", router);
+    this.express.use('/', router);
   }
 }

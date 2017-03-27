@@ -1,17 +1,18 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const utils_1 = require("@broid/utils");
 const actionsSdk = require("actions-on-google");
 const Promise = require("bluebird");
 const bodyParser = require("body-parser");
-const utils_1 = require("@broid/utils");
 const events_1 = require("events");
 const express = require("express");
 class WebHookServer extends events_1.EventEmitter {
     constructor(options, logLevel) {
         super();
         this.actionsMap = new Map();
-        this.host = options && options.host || "127.0.0.1";
+        this.host = options && options.host || '127.0.0.1';
         this.port = options && options.port || 8080;
-        this.logger = new utils_1.Logger("webhook_server", logLevel || "info");
+        this.logger = new utils_1.Logger('webhook_server', logLevel || 'info');
         this.express = express();
         this.middleware();
         this.routes();
@@ -54,13 +55,12 @@ class WebHookServer extends events_1.EventEmitter {
     }
     routes() {
         const router = express.Router();
-        router.post("/", (req, res) => {
+        router.post('/', (req, res) => {
             this.assistant = new actionsSdk
                 .ActionsSdkAssistant({ request: req, response: res });
             this.assistant.handleRequest(this.actionsMap);
         });
-        this.express.use("/", router);
+        this.express.use('/', router);
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = WebHookServer;
+exports.WebHookServer = WebHookServer;
