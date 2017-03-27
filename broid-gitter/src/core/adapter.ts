@@ -1,16 +1,35 @@
-import * as Promise from "bluebird";
-import broidSchemas from "@broid/schemas";
-import { Logger } from "@broid/utils";
-import { EventEmitter } from "events";
-import * as Gitter from "node-gitter";
-import * as uuid from "node-uuid";
-import * as R from "ramda";
-import { Observable } from "rxjs/Rx";
+/**
+ * @license
+ * Copyright 2017 Broid.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 
-import { IAdapterOptions } from "./interfaces";
-import Parser from "./parser";
+import schemas from '@broid/schemas';
+import { Logger } from '@broid/utils';
 
-const eventNames = ["chatMessages"]; // Event availables: "events", "users"
+import * as Promise from 'bluebird';
+import { EventEmitter } from 'events';
+import * as Gitter from 'node-gitter';
+import * as uuid from 'node-uuid';
+import * as R from 'ramda';
+import { Observable } from 'rxjs/Rx';
+
+import { IAdapterOptions } from './interfaces';
+import { Parser } from './parser';
+
+const eventNames = ['chatMessages']; // Event availables: 'events', 'users'
 
 // Extract only the information from room, we need
 const roomToInfos = (room: any) => ({
@@ -21,7 +40,7 @@ const roomToInfos = (room: any) => ({
   url: room.url,
 });
 
-export default class Adapter {
+export class Adapter {
   private ee: EventEmitter;
   private logLevel: string;
   private logger: Logger;
@@ -33,17 +52,17 @@ export default class Adapter {
 
   constructor(obj?: IAdapterOptions) {
     this.serviceID = obj && obj.serviceID || uuid.v4();
-    this.logLevel = obj && obj.logLevel || "info";
+    this.logLevel = obj && obj.logLevel || 'info';
     this.token = obj && obj.token || null;
 
     this.ee = new EventEmitter();
     this.parser = new Parser(this.serviceID, this.logLevel);
-    this.logger = new Logger("adapter", this.logLevel);
+    this.logger = new Logger('adapter', this.logLevel);
   }
 
   // Return list of users information
-  public users(): Promise<Error>{
-    return Promise.reject(new Error("Not supported"));
+  public users(): Promise<Error> {
+    return Promise.reject(new Error('Not supported'));
   }
 
   // Return list of channels information
@@ -57,29 +76,29 @@ export default class Adapter {
   }
 
   // Return the service ID of the current instance
-  public serviceId(): String {
+  public serviceId(): string {
     return this.serviceID;
   }
 
   // Connect to Gitter
   // Start the webhook server
-  public connect(): Observable<Object> {
-    if (!this.token || this.token === "") {
-      return Observable.throw(new Error("Token should exist."));
+  public connect(): Observable<object> {
+    if (!this.token || this.token === '') {
+      return Observable.throw(new Error('Token should exist.'));
     }
 
     this.session = new Gitter(this.token);
     const handler = (room, eventName) => {
       return (data) => {
-        if (data.operation === "create"
-          && this.me.username !== R.path(["model", "fromUser", "username"], data)) {
+        if (data.operation === 'create'
+          && this.me.username !== R.path(['model', 'fromUser', 'username'], data)) {
           return this.ee.emit(eventName, {
             data: data.model,
             room: roomToInfos(room),
           });
         }
         return null;
-      }
+      };
     };
     const currentUser = new Promise((resolve, reject) =>
       this.session.currentUser()
@@ -94,50 +113,50 @@ export default class Adapter {
         // RxJS doesn't like the event emitted that comes with node,
         // so we remake one instead.
         room.subscribe();
-        R.forEach((eventName) =>
-          room.on(eventName, handler(room, eventName))
-        , eventNames);
+        R.forEach(
+          (eventName) =>
+            room.on(eventName, handler(room, eventName)),
+          eventNames);
 
         return room;
       });
 
     return Observable.fromPromise(connect)
-      .map(() => ({ type: "connected", serviceID: this.serviceId() }));
+      .map(() => ({ type: 'connected', serviceID: this.serviceId() }));
   }
 
   public disconnect(): Promise<Error> {
-    return Promise.reject(new Error("Not supported"));
+    return Promise.reject(new Error('Not supported'));
   }
 
-  // Listen "message" event from Google
-  public listen(): Observable<Object> {
+  // Listen 'message' event from Google
+  public listen(): Observable<object> {
     if (!this.session) {
-      return Observable.throw(new Error("No session found."));
+      return Observable.throw(new Error('No session found.'));
     }
 
-    const fromEvents =  R.map((eventName) =>
-      Observable.fromEvent(this.ee, eventName), eventNames);
+    const fromEvents =  R.map((eventName) => Observable.fromEvent(this.ee, eventName), eventNames);
 
     return Observable.merge(...fromEvents)
-      .mergeMap((normalized: Object | null) => this.parser.parse(normalized))
-      .mergeMap((parsed: Object | null) => this.parser.validate(parsed))
-      .mergeMap((validated: Object | null) => {
+      .mergeMap((normalized: object | null) => this.parser.parse(normalized))
+      .mergeMap((parsed: object | null) => this.parser.validate(parsed))
+      .mergeMap((validated: object | null) => {
         if (!validated) { return Observable.empty(); }
         return Promise.resolve(validated);
       });
   }
 
-  public send(data: any): Promise<Object | Error> {
-    this.logger.debug("sending", { message: data });
-    return broidSchemas(data, "send")
+  public send(data: any): Promise<object | Error> {
+    this.logger.debug('sending', { message: data });
+    return schemas(data, 'send')
       .then(() => {
-        if (data.object.type !== "Note") {
-          return Promise.reject(new Error("Only Note is supported."));
+        if (data.object.type !== 'Note') {
+          return Promise.reject(new Error('Only Note is supported.'));
         }
 
         return Promise.resolve(data)
           .then((result: any) => {
-            const roomID = R.path(["to", "id"], result);
+            const roomID = R.path(['to', 'id'], result);
 
             return this.channels()
               .filter((room: any) => room.id === roomID)
@@ -147,23 +166,23 @@ export default class Adapter {
                 }
 
                 return this.joinRoom(rooms[0])
-                  .then((room) => [result, room])
+                  .then((room) => [result, room]);
               });
           })
           .spread((result: any, room: any) => {
-            const content = R.path(["object", "content"], result);
-            const contentID = R.path(["object", "id"], result);
+            const content = R.path(['object', 'content'], result);
+            const contentID = R.path(['object', 'id'], result);
 
             if (contentID) {
               // Edit the message
-              return this.session.client.put(`${room.path}/${room.id}/chatMessages/${contentID}`,
-                {body: {text: content}});
+              return this.session.client
+                .put(`${room.path}/${room.id}/chatMessages/${contentID}`, {body: {text: content}});
             }
 
             // Create the message
             return room.send(content);
           })
-          .then((response) => ({ type: "sent", serviceID: this.serviceId(), id: response.id }));
+          .then((response) => ({ type: 'sent', serviceID: this.serviceId(), id: response.id }));
       });
   }
 
@@ -174,7 +193,7 @@ export default class Adapter {
           .then(resolve)
           .catch(reject);
       } else if (room.url) {
-        return this.session.rooms.join(room.url.replace(/^\/|\/$/g, ""))
+        return this.session.rooms.join(room.url.replace(/^\/|\/$/g, ''))
           .then(resolve)
           .catch(reject);
       }

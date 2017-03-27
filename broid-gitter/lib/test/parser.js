@@ -7,29 +7,30 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 const ava_1 = require("ava");
-const parser_1 = require("../core/parser");
+const Parser_1 = require("../core/Parser");
 const gitterMessage = require("./fixtures/gitter/message.json");
 const gitterMessagePrivate = require("./fixtures/gitter/messagePrivate.json");
 const broidMessage = require("./fixtures/broid/message.json");
 const broidMessagePrivate = require("./fixtures/broid/messagePrivate.json");
 let parser;
 ava_1.default.before(() => {
-    parser = new parser_1.default("testuser", "info");
+    parser = new Parser_1.Parser('testuser', 'info');
 });
-ava_1.default("Parse a group message", (t) => __awaiter(this, void 0, void 0, function* () {
-    let data = yield parser.parse(gitterMessage);
+ava_1.default('Parse a group message', (t) => __awaiter(this, void 0, void 0, function* () {
+    const data = yield parser.parse(gitterMessage);
     t.deepEqual(data, broidMessage);
 }));
-ava_1.default("Parse a private message", (t) => __awaiter(this, void 0, void 0, function* () {
-    let data = yield parser.parse(gitterMessagePrivate);
+ava_1.default('Parse a private message', (t) => __awaiter(this, void 0, void 0, function* () {
+    const data = yield parser.parse(gitterMessagePrivate);
     t.deepEqual(data, broidMessagePrivate);
 }));
-ava_1.default("Validate a group message", (t) => __awaiter(this, void 0, void 0, function* () {
+ava_1.default('Validate a group message', (t) => __awaiter(this, void 0, void 0, function* () {
     const data = parser.validate(broidMessage);
     t.deepEqual(yield data, broidMessage);
 }));
-ava_1.default("Validate a private message", (t) => __awaiter(this, void 0, void 0, function* () {
+ava_1.default('Validate a private message', (t) => __awaiter(this, void 0, void 0, function* () {
     const data = parser.validate(broidMessagePrivate);
     t.deepEqual(yield data, broidMessagePrivate);
 }));

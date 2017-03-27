@@ -1,33 +1,52 @@
-import * as Promise from "bluebird";
-import { default as broidSchemas, IActivityStream } from "@broid/schemas";
-import { cleanNulls, Logger } from "@broid/utils";
-import * as uuid from "node-uuid";
-import * as R from "ramda";
+/**
+ * @license
+ * Copyright 2017 Broid.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 
-export default class Parser {
+import { default as schemas, IActivityStream } from '@broid/schemas';
+import { cleanNulls, Logger } from '@broid/utils';
+
+import * as Promise from 'bluebird';
+import * as uuid from 'node-uuid';
+import * as R from 'ramda';
+
+export class Parser {
   public serviceID: string;
   public generatorName: string;
   private logger: Logger;
 
   constructor(serviceID: string, logLevel: string) {
     this.serviceID = serviceID;
-    this.generatorName = "gitter";
-    this.logger = new Logger("parser", logLevel);
+    this.generatorName = 'gitter';
+    this.logger = new Logger('parser', logLevel);
   }
 
   // Validate parsed data with Broid schema validator
-  public validate(event: any): Promise<Object | null> {
-    this.logger.debug("Validation process", { event });
+  public validate(event: any): Promise<object | null> {
+    this.logger.debug('Validation process', { event });
 
     const parsed = cleanNulls(event);
     if (!parsed || R.isEmpty(parsed)) { return Promise.resolve(null); }
 
     if (!parsed.type) {
-      this.logger.debug("Type not found.", { parsed });
+      this.logger.debug('Type not found.', { parsed });
       return Promise.resolve(null);
     }
 
-    return broidSchemas(parsed, "activity")
+    return schemas(parsed, 'activity')
       .then(() => parsed)
       .catch((err) => {
         this.logger.error(err);
@@ -36,8 +55,8 @@ export default class Parser {
   }
 
   // Convert normalized data to Broid schema
-  public parse(event: any): Promise<Object | null> {
-    this.logger.debug("Normalize process", { event });
+  public parse(event: any): Promise<object | null> {
+    this.logger.debug('Normalize process', { event });
 
     const normalized: any = cleanNulls(event);
     if (!normalized || R.isEmpty(normalized)) { return Promise.resolve(null); }
@@ -45,21 +64,21 @@ export default class Parser {
     const activitystreams = this.createActivityStream(normalized);
 
     activitystreams.actor = {
-      id:  R.path(["data", "fromUser", "id"], normalized),
-      name: R.path(["data", "fromUser", "username"], normalized),
-      type: "Person",
+      id:  R.path(['data', 'fromUser', 'id'], normalized),
+      name: R.path(['data', 'fromUser', 'username'], normalized),
+      type: 'Person',
     };
 
     activitystreams.target = {
-      id: R.path(["room", "id"], normalized),
-      name: R.path(["room", "name"], normalized),
-      type: R.path(["room", "oneToOne"], normalized) ? "Person" : "Group",
+      id: R.path(['room', 'id'], normalized),
+      name: R.path(['room', 'name'], normalized),
+      type: R.path(['room', 'oneToOne'], normalized) ? 'Person' : 'Group',
     };
 
     activitystreams.object = {
-      content: R.path(["data", "text"], normalized),
-      id: R.path(["data", "id"], normalized) || this.createIdentifier(),
-      type: "Note",
+      content: R.path(['data', 'text'], normalized),
+      id: R.path(['data', 'id'], normalized) || this.createIdentifier(),
+      type: 'Note',
     };
 
     return Promise.resolve(activitystreams);
@@ -71,14 +90,16 @@ export default class Parser {
 
   private createActivityStream(normalized: any): IActivityStream {
     return {
-      "@context": "https://www.w3.org/ns/activitystreams",
-      "generator": {
+      '@context': 'https://www.w3.org/ns/activitystreams',
+      'generator': {
         id: this.serviceID,
         name: this.generatorName,
-        type: "Service",
+        type: 'Service',
       },
-      "published": R.path(["data", "sent"], normalized) ? Math.floor(new Date(R.path(["data", "sent"], normalized)).getTime() / 1000) : Math.floor(Date.now() / 1000),
-      "type": "Create",
+      'published': R.path(['data', 'sent'], normalized) ?
+        Math.floor(new Date(<string> R.path(['data', 'sent'], normalized)).getTime() / 1000) :
+        Math.floor(Date.now() / 1000),
+      'type': 'Create',
     };
   }
 }

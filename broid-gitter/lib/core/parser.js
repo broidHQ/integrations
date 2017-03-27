@@ -1,26 +1,27 @@
 "use strict";
-const Promise = require("bluebird");
+Object.defineProperty(exports, "__esModule", { value: true });
 const schemas_1 = require("@broid/schemas");
 const utils_1 = require("@broid/utils");
+const Promise = require("bluebird");
 const uuid = require("node-uuid");
 const R = require("ramda");
 class Parser {
     constructor(serviceID, logLevel) {
         this.serviceID = serviceID;
-        this.generatorName = "gitter";
-        this.logger = new utils_1.Logger("parser", logLevel);
+        this.generatorName = 'gitter';
+        this.logger = new utils_1.Logger('parser', logLevel);
     }
     validate(event) {
-        this.logger.debug("Validation process", { event });
+        this.logger.debug('Validation process', { event });
         const parsed = utils_1.cleanNulls(event);
         if (!parsed || R.isEmpty(parsed)) {
             return Promise.resolve(null);
         }
         if (!parsed.type) {
-            this.logger.debug("Type not found.", { parsed });
+            this.logger.debug('Type not found.', { parsed });
             return Promise.resolve(null);
         }
-        return schemas_1.default(parsed, "activity")
+        return schemas_1.default(parsed, 'activity')
             .then(() => parsed)
             .catch((err) => {
             this.logger.error(err);
@@ -28,26 +29,26 @@ class Parser {
         });
     }
     parse(event) {
-        this.logger.debug("Normalize process", { event });
+        this.logger.debug('Normalize process', { event });
         const normalized = utils_1.cleanNulls(event);
         if (!normalized || R.isEmpty(normalized)) {
             return Promise.resolve(null);
         }
         const activitystreams = this.createActivityStream(normalized);
         activitystreams.actor = {
-            id: R.path(["data", "fromUser", "id"], normalized),
-            name: R.path(["data", "fromUser", "username"], normalized),
-            type: "Person",
+            id: R.path(['data', 'fromUser', 'id'], normalized),
+            name: R.path(['data', 'fromUser', 'username'], normalized),
+            type: 'Person',
         };
         activitystreams.target = {
-            id: R.path(["room", "id"], normalized),
-            name: R.path(["room", "name"], normalized),
-            type: R.path(["room", "oneToOne"], normalized) ? "Person" : "Group",
+            id: R.path(['room', 'id'], normalized),
+            name: R.path(['room', 'name'], normalized),
+            type: R.path(['room', 'oneToOne'], normalized) ? 'Person' : 'Group',
         };
         activitystreams.object = {
-            content: R.path(["data", "text"], normalized),
-            id: R.path(["data", "id"], normalized) || this.createIdentifier(),
-            type: "Note",
+            content: R.path(['data', 'text'], normalized),
+            id: R.path(['data', 'id'], normalized) || this.createIdentifier(),
+            type: 'Note',
         };
         return Promise.resolve(activitystreams);
     }
@@ -56,16 +57,17 @@ class Parser {
     }
     createActivityStream(normalized) {
         return {
-            "@context": "https://www.w3.org/ns/activitystreams",
-            "generator": {
+            '@context': 'https://www.w3.org/ns/activitystreams',
+            'generator': {
                 id: this.serviceID,
                 name: this.generatorName,
-                type: "Service",
+                type: 'Service',
             },
-            "published": R.path(["data", "sent"], normalized) ? Math.floor(new Date(R.path(["data", "sent"], normalized)).getTime() / 1000) : Math.floor(Date.now() / 1000),
-            "type": "Create",
+            'published': R.path(['data', 'sent'], normalized) ?
+                Math.floor(new Date(R.path(['data', 'sent'], normalized)).getTime() / 1000) :
+                Math.floor(Date.now() / 1000),
+            'type': 'Create',
         };
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = Parser;
+exports.Parser = Parser;
