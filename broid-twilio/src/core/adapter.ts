@@ -20,14 +20,14 @@ import schemas from '@broid/schemas';
 import { Logger } from '@broid/utils';
 
 import * as Promise from 'bluebird';
-import { EventEmitter } from "events";
-import { Router } from "express";
+import { EventEmitter } from 'events';
+import { Router } from 'express';
 import * as uuid from 'node-uuid';
 import * as R from 'ramda';
 import { Observable } from 'rxjs/Rx';
 import * as twilio from 'twilio';
 
-import { IAdapterOptions, ITwilioWebHookEvent } from "./interfaces";
+import { IAdapterOptions, ITwilioWebHookEvent } from './interfaces';
 import { Parser } from './Parser';
 import { WebHookServer } from './WebHookServer';
 
@@ -53,7 +53,7 @@ export class Adapter {
     this.username = obj && obj.username || 'SMS';
 
     this.parser = new Parser(this.serviceName(), this.serviceID, this.logLevel);
-    this.logger = new Logger("adapter", this.logLevel);
+    this.logger = new Logger('adapter', this.logLevel);
     this.emitter = new EventEmitter();
     this.router = this.setupRouter();
 
@@ -78,7 +78,7 @@ export class Adapter {
   }
 
   public serviceName(): string {
-    return "twilio";
+    return 'twilio';
   }
 
   public getRouter(): Router | null {
@@ -124,7 +124,7 @@ export class Adapter {
       return Observable.throw(new Error('No session found.'));
     }
 
-    return Observable.fromEvent(this.emitter, "message")
+    return Observable.fromEvent(this.emitter, 'message')
       .mergeMap((event: ITwilioWebHookEvent) => this.parser.normalize(event))
       .mergeMap((normalized) => this.parser.parse(normalized))
       .mergeMap((parsed) => this.parser.validate(parsed))
@@ -173,16 +173,16 @@ export class Adapter {
   private setupRouter(): Router {
     const router = Router();
     // placeholder route handler
-    router.post("/", (req, res) => {
+    router.post('/', (req, res) => {
       const event: ITwilioWebHookEvent = {
         request: req,
         response: res,
       };
 
-      this.emitter.emit("message", event);
+      this.emitter.emit('message', event);
 
       const twiml = new twilio.TwimlResponse();
-      res.type("text/xml");
+      res.type('text/xml');
       res.send(twiml.toString());
     });
 

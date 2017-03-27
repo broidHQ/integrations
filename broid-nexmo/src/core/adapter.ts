@@ -20,14 +20,14 @@ import schemas from '@broid/schemas';
 import { Logger } from '@broid/utils';
 
 import * as Promise from 'bluebird';
-import { EventEmitter } from "events";
-import { Router } from "express";
+import { EventEmitter } from 'events';
+import { Router } from 'express';
 import * as Nexmo from 'nexmo';
 import * as uuid from 'node-uuid';
 import * as R from 'ramda';
 import { Observable } from 'rxjs/Rx';
 
-import { IAdapterOptions } from "./interfaces";
+import { IAdapterOptions } from './interfaces';
 import { Parser } from './Parser';
 import { WebHookServer } from './WebHookServer';
 
@@ -53,7 +53,7 @@ export class Adapter {
     this.username = obj && obj.username || null;
 
     this.parser = new Parser(this.serviceName(), this.serviceID, this.logLevel);
-    this.logger = new Logger("adapter", this.logLevel);
+    this.logger = new Logger('adapter', this.logLevel);
 
     this.emitter = new EventEmitter();
     this.router = this.setupRouter();
@@ -86,7 +86,7 @@ export class Adapter {
   }
 
   public serviceName(): string {
-    return "nexmo";
+    return 'nexmo';
   }
 
   // Connect to Nexmo
@@ -132,7 +132,7 @@ export class Adapter {
       return Observable.throw(new Error('No webhookServer found.'));
     }
 
-    return Observable.fromEvent(this.emitter, "message")
+    return Observable.fromEvent(this.emitter, 'message')
       .mergeMap((normalized: any) =>
         this.parser.parse(normalized))
       .mergeMap((parsed) => this.parser.validate(parsed))
@@ -168,9 +168,9 @@ export class Adapter {
     const router = Router();
     const handle = (req, res) => {
       let query: any = {};
-      if (req.method === "GET") {
+      if (req.method === 'GET') {
         query = req.query;
-      } else if (req.method === "POST") {
+      } else if (req.method === 'POST') {
         query = req.body;
       }
 
@@ -179,17 +179,17 @@ export class Adapter {
         messageId: query.messageId,
         msisdn: query.msisdn,
         text: query.text,
-        timestamp: query["message-timestamp"],
+        timestamp: query['message-timestamp'],
         to: query.to,
       };
 
-      this.emitter.emit("message", message);
+      this.emitter.emit('message', message);
       // Assume all went well.
       res.sendStatus(200);
     };
 
-    router.get("/", handle);
-    router.post("/", handle);
+    router.get('/', handle);
+    router.post('/', handle);
 
     return router;
   }

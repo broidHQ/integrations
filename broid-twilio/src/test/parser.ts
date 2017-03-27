@@ -31,7 +31,7 @@ import * as twilioMessageWithMedias from './fixtures/twilio/messageWithMedias.js
 
 let parser: Parser;
 ava.before(() => {
-  parser = new Parser("twilio", "test_service", "info");
+  parser = new Parser('twilio', 'test_service', 'info');
 });
 
 ava('Parse null', async (t) => {

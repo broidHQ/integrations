@@ -24,7 +24,7 @@ import * as nexmoMessage from './fixtures/nexmo/message.json';
 
 let parser: Parser;
 ava.before(() => {
-  parser = new Parser("nexmo", "testuser", "info");
+  parser = new Parser('nexmo', 'testuser', 'info');
 });
 
 ava('Parse a group message', async (t) => {

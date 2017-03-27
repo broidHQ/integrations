@@ -21,13 +21,13 @@ import { Logger } from '@broid/utils';
 
 import * as Promise from 'bluebird';
 import * as botbuilder from 'botbuilder';
-import { Router } from "express";
+import { Router } from 'express';
 import * as mimetype from 'mimetype';
 import * as uuid from 'node-uuid';
 import * as R from 'ramda';
 import { Observable } from 'rxjs/Rx';
 
-import { IAdapterOptions } from "./interfaces";
+import { IAdapterOptions } from './interfaces';
 import { Parser } from './Parser';
 import { WebHookServer } from './WebHookServer';
 
@@ -48,7 +48,7 @@ export class Adapter {
 
   constructor(obj: IAdapterOptions) {
     this.serviceID = obj && obj.serviceID || uuid.v4();
-    this.logLevel = obj && obj.logLevel || "info";
+    this.logLevel = obj && obj.logLevel || 'info';
     this.router = Router();
     this.token = obj && obj.token || null;
     this.tokenSecret = obj && obj.tokenSecret || null;
@@ -56,7 +56,7 @@ export class Adapter {
     this.storeAddresses = new Map();
 
     this.parser = new Parser(this.serviceName(), this.serviceID, this.logLevel);
-    this.logger = new Logger("adapter", this.logLevel);
+    this.logger = new Logger('adapter', this.logLevel);
 
     if (obj.http) {
       this.webhookServer = new WebHookServer(obj.http, this.router, this.logLevel);
@@ -88,7 +88,7 @@ export class Adapter {
   }
 
   public serviceName(): string {
-    return "ms-teams";
+    return 'ms-teams';
   }
 
   public getRouter(): Router | null {
@@ -119,7 +119,7 @@ export class Adapter {
     this.connected = true;
 
     // Router setup happens on connect, however getRouter can still be called before.
-    this.router.post("/", this.sessionConnector.listen());
+    this.router.post('/', this.sessionConnector.listen());
     if (this.webhookServer) {
       this.webhookServer.listen();
     }

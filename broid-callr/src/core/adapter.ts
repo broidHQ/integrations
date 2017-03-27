@@ -21,8 +21,8 @@ import { Logger } from '@broid/utils';
 
 import * as Promise from 'bluebird';
 import * as Callr from 'callr';
-import * as EventEmitter from "events";
-import { Router } from "express";
+import * as EventEmitter from 'events';
+import { Router } from 'express';
 import * as uuid from 'node-uuid';
 import * as R from 'ramda';
 import { Observable } from 'rxjs/Rx';
@@ -51,12 +51,12 @@ export class Adapter {
     this.logLevel = obj && obj.logLevel || 'info';
     this.token = obj && obj.token || null;
     this.tokenSecret = obj && obj.tokenSecret || null;
-    this.username = obj && obj.username || "SMS";
-    this.webhookURL = obj && obj.webhookURL.replace(/\/?$/, "/") || "";
+    this.username = obj && obj.username || 'SMS';
+    this.webhookURL = obj && obj.webhookURL.replace(/\/?$/, '/') || '';
 
     this.emitter = new EventEmitter();
     this.parser = new Parser(this.serviceName(), this.serviceID, this.logLevel);
-    this.logger = new Logger("adapter", this.logLevel);
+    this.logger = new Logger('adapter', this.logLevel);
     this.router = this.setupRouter();
 
     if (obj.http) {
@@ -76,7 +76,7 @@ export class Adapter {
 
   // Return the name of the Service/Integration
   public serviceName(): string {
-    return "callr";
+    return 'callr';
   }
 
   // Return the service ID of the current instance
@@ -104,7 +104,7 @@ export class Adapter {
     }
 
     if (!this.webhookURL) {
-      return Observable.throw(new Error("webhookURL should exist."));
+      return Observable.throw(new Error('webhookURL should exist.'));
     }
 
     this.connected = true;
@@ -116,7 +116,7 @@ export class Adapter {
 
     return Observable.fromPromise(new Promise((resolve, reject) => {
       this.session
-        .call("webhooks.subscribe", "sms.mo", this.webhookURL, null)
+        .call('webhooks.subscribe', 'sms.mo', this.webhookURL, null)
         .success(() => resolve(true))
         .error((error) => {
           this.logger.warning(error);
@@ -143,7 +143,7 @@ export class Adapter {
       return Observable.throw(new Error('No session found.'));
     }
 
-    return Observable.fromEvent(this.emitter, "message")
+    return Observable.fromEvent(this.emitter, 'message')
       .mergeMap((event: ICallrWebHookEvent) => this.parser.normalize(event))
       .mergeMap((normalized) => this.parser.parse(normalized))
       .mergeMap((parsed) => this.parser.validate(parsed))
@@ -182,14 +182,14 @@ export class Adapter {
 
   private setupRouter(): Router {
     const router = Router();
-    router.post("/", (req, res) => {
+    router.post('/', (req, res) => {
       const event: ICallrWebHookEvent = {
         request: req,
         response: res,
       };
 
-      this.emitter.emit("message", event);
-      res.send("");
+      this.emitter.emit('message', event);
+      res.send('');
     });
 
     return router;

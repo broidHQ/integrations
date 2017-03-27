@@ -40,7 +40,7 @@ const wechatClient = {
 
 let parser: Parser;
 ava.before(() => {
-  parser = new Parser("wechat", wechatClient, "test_wechat_service", "info");
+  parser = new Parser('wechat', wechatClient, 'test_wechat_service', 'info');
 });
 
 ava('Parse note message', async (t) => {

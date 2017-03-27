@@ -36,7 +36,7 @@ export class Parser {
   constructor(serviceName: string, serviceID: string, logLevel: string) {
     this.serviceID = serviceID;
     this.generatorName = serviceName;
-    this.logger = new Logger("parser", logLevel);
+    this.logger = new Logger('parser', logLevel);
   }
 
   // Validate parsed data with Broid schema validator

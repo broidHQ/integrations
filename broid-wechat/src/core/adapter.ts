@@ -20,9 +20,9 @@ import schemas, { ISendParameters } from '@broid/schemas';
 import { Logger } from '@broid/utils';
 
 import * as Promise from 'bluebird';
-import * as crypto from "crypto";
-import { EventEmitter } from "events";
-import { Router } from "express";
+import * as crypto from 'crypto';
+import { EventEmitter } from 'events';
+import { Router } from 'express';
 import * as fs from 'fs-extra';
 import * as uuid from 'node-uuid';
 import * as path from 'path';
@@ -57,7 +57,7 @@ export class Adapter {
     this.appSecret = obj && obj.appSecret;
 
     this.emitter = new EventEmitter();
-    this.logger = new Logger("adapter", this.logLevel);
+    this.logger = new Logger('adapter', this.logLevel);
 
     if (!this.appID) {
       throw new Error('appID must be set');
@@ -81,7 +81,7 @@ export class Adapter {
   }
 
   public serviceName(): string {
-    return "wechat";
+    return 'wechat';
   }
 
   public connect(): Observable<Object> {
@@ -94,7 +94,7 @@ export class Adapter {
     }
 
     this.connected = true;
-    return Observable.of(({ type: "connected", serviceID: this.serviceId() }));
+    return Observable.of(({ type: 'connected', serviceID: this.serviceId() }));
   }
 
   public disconnect(): Promise<null> {
@@ -111,7 +111,7 @@ export class Adapter {
       return Observable.throw(new Error('No webhookServer found.'));
     }
 
-    return Observable.fromEvent(this.emitter, "message")
+    return Observable.fromEvent(this.emitter, 'message')
       .mergeMap((event: Object) => this.parser.parse(event))
       .mergeMap((parsed: Object | null) => this.parser.validate(parsed))
       .mergeMap((validated: Object | null) => {
@@ -134,7 +134,7 @@ export class Adapter {
   }
 
   public send(data: ISendParameters): Promise<Object | Error> {
-    this.logger.debug("sending", { message: data });
+    this.logger.debug('sending', { message: data });
 
     return schemas(data, 'send')
       .then(() => {
@@ -192,10 +192,10 @@ export class Adapter {
   private setupRouter(): Router {
     const router = Router();
 
-    router.get("/", (req, res) => {
-      const shasum = crypto.createHash("sha1");
-      shasum.update([this.serviceID, req.query.timestamp, req.query.nonce].sort().join(""));
-      const signature = shasum.digest("hex");
+    router.get('/', (req, res) => {
+      const shasum = crypto.createHash('sha1');
+      shasum.update([this.serviceID, req.query.timestamp, req.query.nonce].sort().join(''));
+      const signature = shasum.digest('hex');
 
       if (signature !== req.query.signature) {
         return res.status(500).end();
@@ -203,8 +203,8 @@ export class Adapter {
       res.status(200).send(req.query.echostr);
     });
 
-    router.post("/", (req, res) => {
-      this.emitter.emit("message", req.body.xml);
+    router.post('/', (req, res) => {
+      this.emitter.emit('message', req.body.xml);
       res.status(200).end();
     });
 

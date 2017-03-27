@@ -21,7 +21,7 @@ import { Logger } from '@broid/utils';
 
 import * as Promise from 'bluebird';
 import * as botbuilder from 'botbuilder';
-import { Router } from "express";
+import { Router } from 'express';
 import * as mimetype from 'mimetype';
 import * as uuid from 'node-uuid';
 import * as R from 'ramda';
@@ -55,7 +55,7 @@ export class Adapter {
     this.storeAddresses = new Map();
 
     this.parser = new Parser(this.serviceName(), this.serviceID, this.logLevel);
-    this.logger = new Logger("adapter", this.logLevel);
+    this.logger = new Logger('adapter', this.logLevel);
     this.router = Router();
 
     if (obj.http) {
@@ -95,7 +95,7 @@ export class Adapter {
   }
 
   public serviceName(): string {
-    return "skype";
+    return 'skype';
   }
 
   // Connect to Skype
@@ -119,7 +119,7 @@ export class Adapter {
     this.connected = true;
 
     // Router setup happens on connect, however getRouter can still be called before.
-    this.router.post("/", this.sessionConnector.listen());
+    this.router.post('/', this.sessionConnector.listen());
     if (this.webhookServer) {
       this.webhookServer.listen();
     }

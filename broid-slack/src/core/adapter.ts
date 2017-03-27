@@ -21,8 +21,8 @@ import { Logger } from '@broid/utils';
 
 import { CLIENT_EVENTS, RTM_EVENTS, RtmClient, WebClient } from '@slack/client';
 import * as Promise from 'bluebird';
-import { EventEmitter } from "events";
-import { Router } from "express";
+import { EventEmitter } from 'events';
+import { Router } from 'express';
 import * as uuid from 'node-uuid';
 import * as R from 'ramda';
 import * as rp from 'request-promise';
@@ -62,7 +62,7 @@ export class Adapter {
     this.storeChannels = new Map();
 
     this.parser = new Parser(this.serviceName(), this.serviceID, this.logLevel);
-    this.logger = new Logger("adapter", this.logLevel);
+    this.logger = new Logger('adapter', this.logLevel);
     this.emitter = new EventEmitter();
     this.router = this.setupRoutes();
 
@@ -94,7 +94,7 @@ export class Adapter {
   }
 
   public serviceName(): string {
-    return "slack";
+    return 'slack';
   }
 
   // Connect to Slack
@@ -151,13 +151,13 @@ export class Adapter {
     return Promise.resolve(null);
   }
 
-  // Listen "message" event from Slack
+  // Listen 'message' event from Slack
   public listen(): Observable<Object> {
     const rtmEvents = R.pick(['MESSAGE'], RTM_EVENTS);
     const events = R.map(
       (key) => Observable.fromEvent(this.session, rtmEvents[key]),
       R.keys(rtmEvents));
-    const webHookEvent = Observable.fromEvent(this.emitter, "message")
+    const webHookEvent = Observable.fromEvent(this.emitter, 'message')
       .mergeMap(parseWebHookEvent);
     events.push(webHookEvent);
 
@@ -376,16 +376,16 @@ export class Adapter {
     const router = Router();
 
     // route handler
-    router.post("/", (req, res) => {
+    router.post('/', (req, res) => {
       const event: IWebHookEvent = {
         request: req,
         response: res,
       };
 
-      this.emitter.emit("message", event);
+      this.emitter.emit('message', event);
 
       // Assume all went well.
-      res.send("");
+      res.send('');
     });
 
     return router;

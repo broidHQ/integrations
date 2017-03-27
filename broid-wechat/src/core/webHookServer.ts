@@ -18,12 +18,12 @@
 
 import { Logger } from '@broid/utils';
 
-import * as Promise from "bluebird";
-import * as bodyParser from "body-parser";
-import { Logger } from "@broid/utils";
-import * as express from "express";
-import * as xmlParser from "express-xml-bodyparser";
-import * as http from "http";
+import * as Promise from 'bluebird';
+import * as bodyParser from 'body-parser';
+import { Logger } from '@broid/utils';
+import * as express from 'express';
+import * as xmlParser from 'express-xml-bodyparser';
+import * as http from 'http';
 
 import { IAdapterHTTPOptions } from './interfaces';
 
@@ -38,7 +38,7 @@ export class WebHookServer {
   constructor(options: IAdapterHTTPOptions, router: express.Router, logLevel: string) {
     this.host = options.host;
     this.port = options.port;
-    this.logger = new Logger("webhook_server", logLevel);
+    this.logger = new Logger('webhook_server', logLevel);
 
     this.setupExpress(router);
   }

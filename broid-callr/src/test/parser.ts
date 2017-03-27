@@ -33,7 +33,7 @@ import * as broidMessageVideo from './fixtures/broid/parsed/messageVideo.json';
 
 let parser: Parser;
 ava.before(() => {
-  parser = new Parser("callr", "test_service", "info");
+  parser = new Parser('callr', 'test_service', 'info');
 });
 
 ava('Parse a null', async (t) => {

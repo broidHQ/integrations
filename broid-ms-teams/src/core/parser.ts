@@ -65,7 +65,7 @@ export class Parser {
     this.logger.debug('Parse process', { event });
 =======
   public parse(event: any): Promise<IActivityStream | null> {
-    this.logger.debug("Parse process", { event });
+    this.logger.debug('Parse process', { event });
 >>>>>>> exposed-express-router
 
     const normalized = cleanNulls(event);
