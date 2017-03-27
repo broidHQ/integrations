@@ -33,9 +33,9 @@ export class Parser {
   public generatorName: string;
   private logger: Logger;
 
-  constructor(serviceID: string, logLevel: string) {
+  constructor(serviceName: string, serviceID: string, logLevel: string) {
     this.serviceID = serviceID;
-    this.generatorName = 'ms-teams';
+    this.generatorName = serviceName;
     this.logger = new Logger('parser', logLevel);
   }
 
@@ -60,8 +60,13 @@ export class Parser {
   }
 
   // Convert normalized data to Broid schema
+<<<<<<< HEAD
   public parse(event: any): Promise<IActivityStream> {
     this.logger.debug('Parse process', { event });
+=======
+  public parse(event: any): Promise<IActivityStream | null> {
+    this.logger.debug("Parse process", { event });
+>>>>>>> exposed-express-router
 
     const normalized = cleanNulls(event);
     if (!normalized || R.isEmpty(normalized)) { return Promise.resolve(null); }

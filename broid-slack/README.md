@@ -67,7 +67,11 @@ npm install --save @broid/slack
 const BroidSlack = require('@broid/slack');
 
 const slack = new BroidSlack({
-  token: 'xxxxx'
+  token: 'xxxxx',
+  http: {
+    host: '127.0.0.1',
+    port: 8080
+  }
 });
 
 slack.connect()
@@ -78,6 +82,29 @@ slack.connect()
   });
 ```
 
+Slack can also be used with your existing express setup.
+
+```javascript
+const BroidSlack = require('broid-slack');
+const express = require("express");
+
+const slack  = new BroidSlack({
+  token: 'xxxxx'
+});
+
+const app = express();
+app.use("/slack", slack.getRouter());
+
+slack.connect()
+  .subscribe({
+    next: data => console.log(data),
+    error: err => console.error(`Something went wrong: ${err.message}`),
+    complete: () => console.log('complete'),
+  });
+
+app.listen(8080);
+```
+
 **Options available**
 
 | name             | Type     | default    | Description  |
@@ -85,6 +112,7 @@ slack.connect()
 | serviceID       | string   | random     | Arbitrary identifier of the running instance |
 | logLevel        | string   | `info`     | Can be : `fatal`, `error`, `warn`, `info`, `debug`, `trace` |
 | token           | string   |            | Your access token |
+| http             | object   |            | WebServer options (`host`, `port`) |
 
 ### Receive a message
 

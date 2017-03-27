@@ -63,6 +63,7 @@
     "concurrently": "^3.1.0",
     "copyfiles": "^1.0.0",
     "nsp": "^2.6.3",
+    "glob": "^7.1.1",
     "nyc": "^10.1.2",
     "tslint": "^4.3.1",
     "tslint-eslint-rules": "^3.5.1",

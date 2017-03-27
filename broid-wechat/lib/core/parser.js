@@ -5,8 +5,13 @@ const utils_1 = require("@broid/utils");
 const Promise = require("bluebird");
 const R = require("ramda");
 class Parser {
+<<<<<<< HEAD
     constructor(wechatClient, serviceID, logLevel) {
         this.generatorName = 'wechat';
+=======
+    constructor(serviceName, wechatClient, serviceID, logLevel) {
+        this.generatorName = serviceName;
+>>>>>>> exposed-express-router
         this.serviceID = serviceID;
         this.logger = new utils_1.Logger('parser', logLevel);
         this.userCache = new Map();

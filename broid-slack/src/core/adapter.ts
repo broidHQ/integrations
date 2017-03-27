@@ -21,6 +21,8 @@ import { Logger } from '@broid/utils';
 
 import { CLIENT_EVENTS, RTM_EVENTS, RtmClient, WebClient } from '@slack/client';
 import * as Promise from 'bluebird';
+import { EventEmitter } from "events";
+import { Router } from "express";
 import * as uuid from 'node-uuid';
 import * as R from 'ramda';
 import * as rp from 'request-promise';
@@ -28,7 +30,6 @@ import { Observable } from 'rxjs/Rx';
 
 import { createActions, createSendMessage, parseWebHookEvent } from './helpers';
 import {
-  IAdapterHTTPOptions,
   IAdapterOptions,
   IMessage,
   ISlackMessage,
@@ -39,10 +40,11 @@ import { WebHookServer } from './WebHookServer';
 export class Adapter {
   private asUser: boolean;
   private connected: boolean;
-  private optionsHTTP: IAdapterHTTPOptions;
+  private emitter: EventEmitter;
   private logLevel: string;
   private logger: Logger;
   private parser: Parser;
+  private router: Router;
   private serviceID: string;
   private session: RtmClient;
   private sessionWeb: WebClient;
@@ -51,7 +53,7 @@ export class Adapter {
   private token: string | null;
   private webhookServer: WebHookServer;
 
-  constructor(obj?: IAdapterOptions) {
+  constructor(obj: IAdapterOptions) {
     this.serviceID = obj && obj.serviceID || uuid.v4();
     this.logLevel = obj && obj.logLevel || 'info';
     this.token = obj && obj.token || null;
@@ -59,31 +61,40 @@ export class Adapter {
     this.storeUsers = new Map();
     this.storeChannels = new Map();
 
-    const optionsHTTP: IAdapterHTTPOptions = {
-      host: '127.0.0.1',
-      port: 8080,
-    };
-    this.optionsHTTP = obj && obj.http || optionsHTTP;
-    this.optionsHTTP.host = this.optionsHTTP.host || optionsHTTP.host;
-    this.optionsHTTP.port = this.optionsHTTP.port || optionsHTTP.port;
+    this.parser = new Parser(this.serviceName(), this.serviceID, this.logLevel);
+    this.logger = new Logger("adapter", this.logLevel);
+    this.emitter = new EventEmitter();
+    this.router = this.setupRoutes();
 
-    this.parser = new Parser(this.serviceID, this.logLevel);
-    this.logger = new Logger('adapter', this.logLevel);
+    if (obj.http) {
+      this.webhookServer = new WebHookServer(obj.http, this.router, this.logLevel);
+    }
   }
 
   // Return list of users information
-  public users(): Promise {
+  public users(): Promise<Map<string, object>> {
     return Promise.resolve(this.storeUsers);
   }
 
   // Return list of channels information
-  public channels(): Promise {
+  public channels(): Promise<Map<string, object>> {
     return Promise.resolve(this.storeChannels);
   }
 
   // Return the service ID of the current instance
   public serviceId(): string {
     return this.serviceID;
+  }
+
+  public getRouter(): Router | null {
+    if (this.webhookServer) {
+      return null;
+    }
+    return this.router;
+  }
+
+  public serviceName(): string {
+    return "slack";
   }
 
   // Connect to Slack
@@ -99,8 +110,9 @@ export class Adapter {
 
     this.connected = true;
 
-    this.webhookServer = new WebHookServer(this.optionsHTTP, this.logLevel);
-    this.webhookServer.listen();
+    if (this.webhookServer) {
+      this.webhookServer.listen();
+    }
 
     this.session = new RtmClient(this.token, { autoReconnect: true });
     this.sessionWeb = new WebClient(this.token);
@@ -130,17 +142,22 @@ export class Adapter {
       .mergeAll();
   }
 
-  public disconnect(): Promise {
-    return Promise.reject(new Error('Not supported'));
+  public disconnect(): Promise<null> {
+    this.connected = false;
+    if (this.webhookServer) {
+      return this.webhookServer.close();
+    }
+
+    return Promise.resolve(null);
   }
 
-  // Listen 'message' event from Slack
-  public listen(): Observable<object> {
+  // Listen "message" event from Slack
+  public listen(): Observable<Object> {
     const rtmEvents = R.pick(['MESSAGE'], RTM_EVENTS);
     const events = R.map(
       (key) => Observable.fromEvent(this.session, rtmEvents[key]),
       R.keys(rtmEvents));
-    const webHookEvent = Observable.fromEvent(this.webhookServer, 'message')
+    const webHookEvent = Observable.fromEvent(this.emitter, "message")
       .mergeMap(parseWebHookEvent);
     events.push(webHookEvent);
 
@@ -352,5 +369,25 @@ export class Adapter {
         this.storeUsers.set(key, info.user);
         return resolve(info.user);
       }));
+  }
+
+  // Configure API endpoints.
+  private setupRoutes(): Router {
+    const router = Router();
+
+    // route handler
+    router.post("/", (req, res) => {
+      const event: IWebHookEvent = {
+        request: req,
+        response: res,
+      };
+
+      this.emitter.emit("message", event);
+
+      // Assume all went well.
+      res.send("");
+    });
+
+    return router;
   }
 }

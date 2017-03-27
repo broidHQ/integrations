@@ -17,46 +17,52 @@
  */
 
 import ava from 'ava';
+import * as glob from "glob";
+import * as path from "path";
+
 import { Parser } from '../core/Parser';
 
-import * as broidMessage from './fixtures/broid/message.json';
-import * as broidMessageWithImage from './fixtures/broid/messageWithImage.json';
-import * as broidMessageWithVideo from './fixtures/broid/messageWithVideo.json';
-import * as msTeamsMessage from './fixtures/ms-teams/message.json';
-import * as msTeamsMessageWithImage from './fixtures/ms-teams/messageWithImage.json';
-import * as msTeamsMessageWithVideo from './fixtures/ms-teams/messageWithVideo.json';
+const RESPONSE_FIXTURES: any = {};
+glob.sync(path.join(__dirname, "./fixtures/ms-teams/*.json")).forEach((file: string) => {
+  RESPONSE_FIXTURES[path.basename(file).replace(".json", "")] = require(file);
+});
+
+const RESULT_FIXTURES: any = {};
+glob.sync(path.join(__dirname, "./fixtures/broid/*.json")).forEach((file: string) => {
+  RESULT_FIXTURES[path.basename(file).replace(".json", "")] = require(file);
+});
 
 let parser: Parser;
 ava.before(() => {
-  parser = new Parser('test_service', 'info');
+  parser = new Parser("ms-teams", "test_service", "info");
 });
 
-ava('Parse a simple message', async (t) => {
-  const data = parser.parse(<any> msTeamsMessage);
-  t.deepEqual(await data, broidMessage);
+ava("Parse a simple message", async (t) => {
+  const data = parser.parse(RESPONSE_FIXTURES.message);
+  t.deepEqual(await data, RESULT_FIXTURES.message);
 });
 
-ava('Parse a message with media', async (t) => {
-  const data = parser.parse(<any> msTeamsMessageWithImage);
-  t.deepEqual(await data, broidMessageWithImage);
+ava("Parse a message with media", async (t) => {
+  const data = parser.parse(RESPONSE_FIXTURES.messageWithImage);
+  t.deepEqual(await data, RESULT_FIXTURES.messageWithImage);
 });
 
-ava('Parse a message with video', async (t) => {
-  const data = parser.parse(<any> msTeamsMessageWithVideo);
-  t.deepEqual(await data, broidMessageWithVideo);
+ava("Parse a message with video", async (t) => {
+  const data = parser.parse(RESPONSE_FIXTURES.messageWithVideo);
+  t.deepEqual(await data, RESULT_FIXTURES.messageWithVideo);
 });
 
-ava('Validate a simple message', async (t) => {
-  const data = parser.validate(broidMessage);
-  t.deepEqual(await data, broidMessage);
+ava("Validate a simple message", async (t) => {
+  const data = parser.validate(RESULT_FIXTURES.message);
+  t.deepEqual(await data, RESULT_FIXTURES.message);
 });
 
-ava('Validate a message with image', async (t) => {
-  const data = parser.validate(broidMessageWithImage);
-  t.deepEqual(await data, broidMessageWithImage);
+ava("Validate a message with image", async (t) => {
+  const data = parser.validate(RESULT_FIXTURES.messageWithImage);
+  t.deepEqual(await data, RESULT_FIXTURES.messageWithImage);
 });
 
-ava('Validate a message with video', async (t) => {
-  const data = parser.validate(broidMessageWithVideo);
-  t.deepEqual(await data, broidMessageWithVideo);
+ava("Validate a message with video", async (t) => {
+  const data = parser.validate(RESULT_FIXTURES.messageWithVideo);
+  t.deepEqual(await data, RESULT_FIXTURES.messageWithVideo);
 });

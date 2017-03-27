@@ -18,59 +18,45 @@
 
 import { Logger } from '@broid/utils';
 
+import * as Promise from "bluebird";
 import * as bodyParser from 'body-parser';
 import * as EventEmitter from 'events';
-import * as express from 'express';
+import * as express from "express";
+import * as http from "http";
 import * as twilio from 'twilio';
 
-import { IAdapterHTTPOptions, ITwilioWebHookEvent } from './interfaces';
+import { IAdapterHTTPOptions } from './interfaces';
 
-export class WebHookServer extends EventEmitter {
+export class WebHookServer {
   private express: express.Application;
   private logger: Logger;
+  private httpClient: http.Server;
   private host: string;
   private port: number;
 
   // Run configuration methods on the Express instance.
-  constructor(options?: IAdapterHTTPOptions, logLevel?: string) {
-    super();
-    this.host = options && options.host || '127.0.0.1';
-    this.port = options && options.port || 8080;
-    this.logger = new Logger('webhook_server', logLevel || 'info');
-    this.express = express();
-    this.middleware();
-    this.routes();
+  constructor(options: IAdapterHTTPOptions, router: express.Router, logLevel?: string) {
+    this.host = options.host;
+    this.port = options.port;
+    this.logger = new Logger("webhook_server", logLevel || "info");
+    this.setupExpress(router);
   }
 
-  public listen(): void  {
-    this.express.listen(this.port, this.host, () => {
-      this.logger.info(`Server listening at port ${this.host}:${this.port}...`);
+  public listen() {
+    this.httpClient = this.express.listen(this.port, this.host, () => {
+      this.logger.info(`Server listening on port ${this.host}:${this.port}...`);
     });
+  }
+
+  public close(): Promise<null> {
+    return Promise.fromCallback((cb) => this.httpClient.close(cb));
   }
 
   // Configure Express middleware.
-  private middleware(): void {
+  private setupExpress(router: express.Router) {
+    this.express = express();
     this.express.use(bodyParser.json());
     this.express.use(bodyParser.urlencoded({ extended: false }));
-  }
-
-  // Configure API endpoints.
-  private routes(): void {
-    const router = express.Router();
-    // placeholder route handler
-    router.post('/', (req, res) => {
-      const event: ITwilioWebHookEvent = {
-        request: req,
-        response: res,
-      };
-
-      this.emit('message', event);
-
-      const twiml = new twilio.TwimlResponse();
-      res.type('text/xml');
-      res.send(twiml.toString());
-    });
-
-    this.express.use('/', router);
+    this.express.use(router);
   }
 }

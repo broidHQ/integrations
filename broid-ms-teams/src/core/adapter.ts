@@ -21,21 +21,22 @@ import { Logger } from '@broid/utils';
 
 import * as Promise from 'bluebird';
 import * as botbuilder from 'botbuilder';
+import { Router } from "express";
 import * as mimetype from 'mimetype';
 import * as uuid from 'node-uuid';
 import * as R from 'ramda';
 import { Observable } from 'rxjs/Rx';
 
-import { IAdapterHTTPOptions, IAdapterOptions } from './interfaces';
+import { IAdapterOptions } from "./interfaces";
 import { Parser } from './Parser';
 import { WebHookServer } from './WebHookServer';
 
 export class Adapter {
   private connected: boolean;
-  private optionsHTTP: IAdapterHTTPOptions;
   private logLevel: string;
   private logger: Logger;
   private parser: Parser;
+  private router: Router;
   private serviceID: string;
   private storeUsers: Map<string, object>;
   private storeAddresses: Map<string, object>;
@@ -45,28 +46,25 @@ export class Adapter {
   private session: botbuilder.UniversalBot;
   private sessionConnector: botbuilder.ChatConnector;
 
-  constructor(obj?: IAdapterOptions) {
+  constructor(obj: IAdapterOptions) {
     this.serviceID = obj && obj.serviceID || uuid.v4();
-    this.logLevel = obj && obj.logLevel || 'info';
+    this.logLevel = obj && obj.logLevel || "info";
+    this.router = Router();
     this.token = obj && obj.token || null;
     this.tokenSecret = obj && obj.tokenSecret || null;
     this.storeUsers = new Map();
     this.storeAddresses = new Map();
 
-    const optionsHTTP: IAdapterHTTPOptions = {
-      host: '127.0.0.1',
-      port: 8080,
-    };
-    this.optionsHTTP = obj && obj.http || optionsHTTP;
-    this.optionsHTTP.host = this.optionsHTTP.host || optionsHTTP.host;
-    this.optionsHTTP.port = this.optionsHTTP.port || optionsHTTP.port;
+    this.parser = new Parser(this.serviceName(), this.serviceID, this.logLevel);
+    this.logger = new Logger("adapter", this.logLevel);
 
-    this.parser = new Parser(this.serviceID, this.logLevel);
-    this.logger = new Logger('adapter', this.logLevel);
+    if (obj.http) {
+      this.webhookServer = new WebHookServer(obj.http, this.router, this.logLevel);
+    }
   }
 
   // Return list of users information
-  public users(): Promise<Map<string, object>> {
+  public users(): Promise<Map<string, Object>> {
     return Promise.resolve(this.storeUsers);
   }
 
@@ -89,6 +87,17 @@ export class Adapter {
     return this.serviceID;
   }
 
+  public serviceName(): string {
+    return "ms-teams";
+  }
+
+  public getRouter(): Router | null {
+    if (this.webhookServer) {
+      return null;
+    }
+    return this.router;
+  }
+
   // Connect to Skype
   // Start the webhook server
   public connect(): Observable<object> {
@@ -109,15 +118,22 @@ export class Adapter {
     this.session = new botbuilder.UniversalBot(this.sessionConnector);
     this.connected = true;
 
-    this.webhookServer = new WebHookServer(this.optionsHTTP, this.logLevel);
-    this.webhookServer.route(this.sessionConnector.listen());
-    this.webhookServer.listen();
+    // Router setup happens on connect, however getRouter can still be called before.
+    this.router.post("/", this.sessionConnector.listen());
+    if (this.webhookServer) {
+      this.webhookServer.listen();
+    }
 
     return Observable.of({ type: 'connected', serviceID: this.serviceId() });
   }
 
-  public disconnect(): Promise<Error> {
-    return Promise.reject(new Error('Not supported'));
+  public disconnect(): Promise<null> {
+    this.connected = false;
+    if (this.webhookServer) {
+      return this.webhookServer.close();
+    }
+
+    return Promise.resolve(null);
   }
 
   // Listen 'message' event from Messenger

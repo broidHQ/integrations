@@ -28,7 +28,7 @@ import * as skypeMessageWithVideo from './fixtures/skype/messageWithVideo.json';
 
 let parser: Parser;
 ava.before(() => {
-  parser = new Parser('test_service', 'info');
+  parser = new Parser("skype", "test_service", "info");
 });
 
 ava('Parse a simple message', async (t) => {

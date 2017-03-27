@@ -7,10 +7,20 @@ const moment = require("moment");
 const uuid = require("node-uuid");
 const R = require("ramda");
 class Parser {
-    constructor(serviceID, logLevel) {
+    constructor(serviceName, serviceID, logLevel) {
         this.serviceID = serviceID;
+<<<<<<< HEAD
         this.generatorName = 'nexmo';
         this.logger = new utils_1.Logger('parser', logLevel);
+=======
+<<<<<<< HEAD
+        this.generatorName = serviceName;
+        this.logger = new broid_utils_1.Logger("parser", logLevel);
+=======
+        this.generatorName = "nexmo";
+        this.logger = new utils_1.Logger("parser", logLevel);
+>>>>>>> devel
+>>>>>>> exposed-express-router
     }
     validate(event) {
         this.logger.debug('Validation process', { event });

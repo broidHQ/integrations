@@ -20,6 +20,9 @@ import schemas, { ISendParameters } from '@broid/schemas';
 import { Logger } from '@broid/utils';
 
 import * as Promise from 'bluebird';
+import * as crypto from "crypto";
+import { EventEmitter } from "events";
+import { Router } from "express";
 import * as fs from 'fs-extra';
 import * as uuid from 'node-uuid';
 import * as path from 'path';
@@ -29,14 +32,9 @@ import { Observable } from 'rxjs/Rx';
 import * as tmp from 'tmp';
 import * as WeChat from 'wechat-api';
 
-import { IAdapterHTTPOptions, IAdapterOptions } from './interfaces';
+import { IAdapterOptions } from './interfaces';
 import { Parser } from './Parser';
 import { WebHookServer } from './WebHookServer';
-
-const optionsHTTP: IAdapterHTTPOptions = {
-  host: '127.0.0.1',
-  port: 8080,
-};
 
 export class Adapter {
   public serviceID: string;
@@ -45,10 +43,11 @@ export class Adapter {
   private appSecret: string;
   private client: any;
   private connected: boolean;
-  private optionsHTTP: IAdapterHTTPOptions;
+  private emitter: EventEmitter;
   private logLevel: string;
   private logger: Logger;
   private parser: Parser;
+  private router: Router;
   private webhookServer: WebHookServer;
 
   constructor(obj: IAdapterOptions) {
@@ -57,9 +56,8 @@ export class Adapter {
     this.appID = obj && obj.appID;
     this.appSecret = obj && obj.appSecret;
 
-    this.optionsHTTP = obj.http || optionsHTTP;
-
-    this.logger = new Logger('adapter', this.logLevel);
+    this.emitter = new EventEmitter();
+    this.logger = new Logger("adapter", this.logLevel);
 
     if (!this.appID) {
       throw new Error('appID must be set');
@@ -69,7 +67,12 @@ export class Adapter {
     }
 
     this.client = Promise.promisifyAll(new WeChat(this.appID, this.appSecret));
-    this.parser = new Parser(this.client, this.serviceID, this.logLevel);
+    this.parser = new Parser(this.serviceName(), this.client, this.serviceID, this.logLevel);
+    this.router = this.setupRouter();
+
+    if (obj.http) {
+      this.webhookServer = new WebHookServer(obj.http, this.router, this.logLevel);
+    }
   }
 
   // Return the service ID of the current instance
@@ -77,21 +80,30 @@ export class Adapter {
     return this.serviceID;
   }
 
-  public connect(): Observable<object> {
+  public serviceName(): string {
+    return "wechat";
+  }
+
+  public connect(): Observable<Object> {
     if (this.connected) {
       return Observable.of({ type: 'connected', serviceID: this.serviceId() });
     }
 
-    this.webhookServer = new WebHookServer(this.serviceID, this.optionsHTTP, this.logLevel);
-    this.webhookServer.listen();
-    this.connected = true;
+    if (this.webhookServer) {
+      this.webhookServer.listen();
+    }
 
-    return Observable.of(({ type: 'connected', serviceID: this.serviceId() }));
+    this.connected = true;
+    return Observable.of(({ type: "connected", serviceID: this.serviceId() }));
   }
 
   public disconnect(): Promise<null> {
     this.connected = false;
-    return this.webhookServer.close();
+    if (this.webhookServer) {
+      return this.webhookServer.close();
+    }
+
+    return Promise.resolve(null);
   }
 
   public listen(): Observable<object> {
@@ -99,10 +111,10 @@ export class Adapter {
       return Observable.throw(new Error('No webhookServer found.'));
     }
 
-    return Observable.fromEvent(this.webhookServer, 'message')
-      .mergeMap((event: object) => this.parser.parse(event))
-      .mergeMap((parsed: object | null) => this.parser.validate(parsed))
-      .mergeMap((validated: object | null) => {
+    return Observable.fromEvent(this.emitter, "message")
+      .mergeMap((event: Object) => this.parser.parse(event))
+      .mergeMap((parsed: Object | null) => this.parser.validate(parsed))
+      .mergeMap((validated: Object | null) => {
         if (!validated) { return Observable.empty(); }
         return Promise.resolve(validated);
       });
@@ -114,8 +126,15 @@ export class Adapter {
       .then(R.prop('user_info_list'));
   }
 
-  public send(data: ISendParameters): Promise<object | Error> {
-    this.logger.debug('sending', { message: data });
+  public getRouter(): Router | null {
+    if (this.webhookServer) {
+      return null;
+    }
+    return this.router;
+  }
+
+  public send(data: ISendParameters): Promise<Object | Error> {
+    this.logger.debug("sending", { message: data });
 
     return schemas(data, 'send')
       .then(() => {
@@ -168,5 +187,27 @@ export class Adapter {
       }
       return res.media_id;
     });
+  }
+
+  private setupRouter(): Router {
+    const router = Router();
+
+    router.get("/", (req, res) => {
+      const shasum = crypto.createHash("sha1");
+      shasum.update([this.serviceID, req.query.timestamp, req.query.nonce].sort().join(""));
+      const signature = shasum.digest("hex");
+
+      if (signature !== req.query.signature) {
+        return res.status(500).end();
+      }
+      res.status(200).send(req.query.echostr);
+    });
+
+    router.post("/", (req, res) => {
+      this.emitter.emit("message", req.body.xml);
+      res.status(200).end();
+    });
+
+    return router;
   }
 }

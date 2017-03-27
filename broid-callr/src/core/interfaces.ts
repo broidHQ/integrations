@@ -19,16 +19,16 @@
 export interface IAdapterHTTPOptions {
   host: string;
   port: number;
-  webhookURL: string;
 }
 
 export interface IAdapterOptions {
   logLevel: string;
-  http: IAdapterHTTPOptions;
   serviceID: string;
   token: string;
   tokenSecret: string;
   username: string;
+  webhookURL: string;
+  http?: IAdapterHTTPOptions;
 }
 
 export interface ICallrWebHookEvent {

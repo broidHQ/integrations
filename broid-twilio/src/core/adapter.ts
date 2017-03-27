@@ -20,12 +20,14 @@ import schemas from '@broid/schemas';
 import { Logger } from '@broid/utils';
 
 import * as Promise from 'bluebird';
+import { EventEmitter } from "events";
+import { Router } from "express";
 import * as uuid from 'node-uuid';
 import * as R from 'ramda';
 import { Observable } from 'rxjs/Rx';
 import * as twilio from 'twilio';
 
-import { IAdapterHTTPOptions, IAdapterOptions, ITwilioWebHookEvent } from './interfaces';
+import { IAdapterOptions, ITwilioWebHookEvent } from "./interfaces";
 import { Parser } from './Parser';
 import { WebHookServer } from './WebHookServer';
 
@@ -33,32 +35,31 @@ export class Adapter {
   private serviceID: string;
   private token: string | null;
   private tokenSecret: string | null;
-  private optionsHTTP: IAdapterHTTPOptions;
   private connected: boolean;
   private session: any;
   private parser: Parser;
   private logLevel: string;
   private username: string;
   private logger: Logger;
+  private emitter: EventEmitter;
+  private router: Router;
   private webhookServer: WebHookServer;
 
-  constructor(obj?: IAdapterOptions) {
+  constructor(obj: IAdapterOptions) {
     this.serviceID = obj && obj.serviceID || uuid.v4();
     this.logLevel = obj && obj.logLevel || 'info';
     this.token = obj && obj.token || null;
     this.tokenSecret = obj && obj.tokenSecret || null;
     this.username = obj && obj.username || 'SMS';
 
-    const optionsHTTP: IAdapterHTTPOptions = {
-      host: '127.0.0.1',
-      port: 8080,
-    };
-    this.optionsHTTP = obj && obj.http || optionsHTTP;
-    this.optionsHTTP.host = this.optionsHTTP.host || optionsHTTP.host;
-    this.optionsHTTP.port = this.optionsHTTP.port || optionsHTTP.port;
+    this.parser = new Parser(this.serviceName(), this.serviceID, this.logLevel);
+    this.logger = new Logger("adapter", this.logLevel);
+    this.emitter = new EventEmitter();
+    this.router = this.setupRouter();
 
-    this.parser = new Parser(this.serviceID, this.logLevel);
-    this.logger = new Logger('adapter', this.logLevel);
+    if (obj.http) {
+      this.webhookServer = new WebHookServer(obj.http, this.router, this.logLevel);
+    }
   }
 
   // Return list of users information
@@ -76,6 +77,17 @@ export class Adapter {
     return this.serviceID;
   }
 
+  public serviceName(): string {
+    return "twilio";
+  }
+
+  public getRouter(): Router | null {
+    if (this.webhookServer) {
+      return null;
+    }
+    return this.router;
+  }
+
   // Connect to Twilio
   // Start the webhook server
   public connect(): Observable<object> {
@@ -90,14 +102,20 @@ export class Adapter {
     }
 
     this.session = new twilio.RestClient(this.token, this.tokenSecret);
-    this.webhookServer = new WebHookServer(this.optionsHTTP, this.logLevel);
-    this.webhookServer.listen();
+    if (this.webhookServer) {
+      this.webhookServer.listen();
+    }
 
     return Observable.of({ type: 'connected', serviceID: this.serviceId() });
   }
 
-  public disconnect(): Promise<object> {
-    return Promise.reject(new Error('Not supported'));
+  public disconnect(): Promise<null> {
+    this.connected = false;
+    if (this.webhookServer) {
+      return this.webhookServer.close();
+    }
+
+    return Promise.resolve(null);
   }
 
   // Listen 'message' event from Twilio
@@ -106,7 +124,7 @@ export class Adapter {
       return Observable.throw(new Error('No session found.'));
     }
 
-    return Observable.fromEvent(this.webhookServer, 'message')
+    return Observable.fromEvent(this.emitter, "message")
       .mergeMap((event: ITwilioWebHookEvent) => this.parser.normalize(event))
       .mergeMap((normalized) => this.parser.parse(normalized))
       .mergeMap((parsed) => this.parser.validate(parsed))
@@ -150,5 +168,24 @@ export class Adapter {
 
         return Promise.reject(new Error('Only Note, Image, and Video are supported.'));
       });
+  }
+
+  private setupRouter(): Router {
+    const router = Router();
+    // placeholder route handler
+    router.post("/", (req, res) => {
+      const event: ITwilioWebHookEvent = {
+        request: req,
+        response: res,
+      };
+
+      this.emitter.emit("message", event);
+
+      const twiml = new twilio.TwimlResponse();
+      res.type("text/xml");
+      res.send(twiml.toString());
+    });
+
+    return router;
   }
 }
