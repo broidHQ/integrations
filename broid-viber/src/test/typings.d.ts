@@ -1,3 +1,5 @@
+/* tslint:disable */
+
 /**
  * @license
  * Copyright 2017 Broid.
@@ -15,18 +17,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-export interface IAdapterHTTPOptions {
-  host: string;
-  port: number;
-}
 
-export interface IAdapterOptions {
-  avatar: string;
-  http: IAdapterHTTPOptions;
-  logLevel: string;
-  serviceID: string;
-  token: string;
-  tokenSecret: string;
-  username: string;
-  webhookURL: string;
+declare module '*.json' {
+  const value: any;
+  export default value;
 }

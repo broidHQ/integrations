@@ -52,8 +52,6 @@
     "viber-bot": "^1.0.6"
   },
   "devDependencies": {
-    "@types/bluebird": "^3.5.2",
-    "@types/bluebird-global": "^3.5.1",
     "@types/node": "^7.0.11",
     "@types/node-uuid": "^0.0.28",
     "@types/ramda": "^0.0.5",
