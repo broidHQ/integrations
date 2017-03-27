@@ -1,17 +1,36 @@
-import * as Promise from "bluebird";
-import broidSchemas from "@broid/schemas";
-import { Logger } from "@broid/utils";
-import * as fs from "fs";
-import * as uuid from "node-uuid";
-import * as R from "ramda";
-import * as rp from "request-promise";
-import { Observable } from "rxjs/Rx";
-import * as Twit from "twit";
+/**
+ * @license
+ * Copyright 2017 Broid.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 
-import { IAdapterOptions, ISendParameters } from "./interfaces";
-import Parser from "./parser";
+import schemas from '@broid/schemas';
+import { Logger } from '@broid/utils';
 
-export default class Adapter {
+import * as Promise from 'bluebird';
+import * as fs from 'fs';
+import * as uuid from 'node-uuid';
+import * as R from 'ramda';
+import * as rp from 'request-promise';
+import { Observable } from 'rxjs/Rx';
+import * as Twit from 'twit';
+
+import { IAdapterOptions, ISendParameters } from './interfaces';
+import { Parser } from './Parser';
+
+export class Adapter {
   private serviceID: string;
   private username: string | null;
   private myid: string | null;
@@ -23,52 +42,52 @@ export default class Adapter {
   private parser: Parser;
   private logLevel: string;
   private logger: Logger;
-  private storeUsers: Map<string, Object>;
-  private sessionGET: Promise;
-  private sessionPOST: Promise;
+  private storeUsers: Map<string, object>;
+  private sessionGET: Promise<any>;
+  private sessionPOST: Promise<any>;
 
   constructor(obj?: IAdapterOptions) {
     this.serviceID = obj && obj.serviceID || uuid.v4();
-    this.logLevel = obj && obj.logLevel || "info";
+    this.logLevel = obj && obj.logLevel || 'info';
     this.token = obj && obj.token || null;
     this.tokenSecret = obj && obj.tokenSecret || null;
     this.consumerKey = obj && obj.consumerKey || null;
     this.consumerSecret = obj && obj.consumerSecret || null;
     this.username = obj && obj.username || null;
 
-    this.myid = this.token && this.token.split("-")[0];
-    if (this.username && !this.username.startsWith("@")) {
+    this.myid = this.token && this.token.split('-')[0];
+    if (this.username && !this.username.startsWith('@')) {
       this.username = `@${this.username}`;
     }
 
     this.parser = new Parser(this.serviceID, this.logLevel);
-    this.logger = new Logger("adapter", this.logLevel);
+    this.logger = new Logger('adapter', this.logLevel);
 
     this.storeUsers = new Map();
   }
 
   // Return list of users information
-  public users(): Promise {
-    return Promise.resolve(R.map((user) => user, this.storeUsers.values()));
+  public users(): Promise<any[]> {
+    return Promise.resolve(Array.from(this.storeUsers.values()));
   }
 
   // Return list of channels information
-  public channels(): Promise {
-    return Promise.reject(new Error("Not supported"));
+  public channels(): Promise<Error> {
+    return Promise.reject(new Error('Not supported'));
   }
 
   // Return the service ID of the current instance
-  public serviceId(): String {
+  public serviceId(): string {
     return this.serviceID;
   }
 
   // Connect to Twitter
-  public connect(): Observable<Object> {
+  public connect(): Observable<object> {
     if (!this.token
       || !this.tokenSecret
       || !this.consumerKey
       || !this.consumerSecret) {
-      return Observable.throw(new Error("Credentials should exist."));
+      return Observable.throw(new Error('Credentials should exist.'));
     }
 
     this.session = new Twit({
@@ -81,24 +100,23 @@ export default class Adapter {
     this.sessionGET = Promise.promisify(this.session.get.bind(this.session));
     this.sessionPOST = Promise.promisify(this.session.post.bind(this.session));
 
-    return Observable.of({ type: "connected", serviceID: this.serviceId() });
+    return Observable.of({ type: 'connected', serviceID: this.serviceId() });
   }
 
-  public disconnect(): Promise {
-    return Promise.reject(new Error("Not supported"));
+  public disconnect(): Promise<Error> {
+    return Promise.reject(new Error('Not supported'));
   }
 
-  // Listen "message" event from Twitter
-  public listen(): Observable<Object> {
-    const streamMention = this.session.stream("statuses/filter",
-      { track: this.username });
-    const streamDm = this.session.stream("user");
+  // Listen 'message' event from Twitter
+  public listen(): Observable<object> {
+    const streamMention = this.session.stream('statuses/filter', { track: this.username });
+    const streamDm = this.session.stream('user');
 
     return Observable.merge(
-      Observable.fromEvent(streamDm, "direct_message"),
-      Observable.fromEvent(streamMention, "tweet"))
+      Observable.fromEvent(streamDm, 'direct_message'),
+      Observable.fromEvent(streamMention, 'tweet'))
       .mergeMap((event: any) => {
-        this.logger.debug("Event received", event);
+        this.logger.debug('Event received', event);
         if (event.direct_message) { event = event.direct_message; }
         const authorInformation = event.user || event.sender;
 
@@ -114,7 +132,7 @@ export default class Adapter {
           // mention
           return this.userById(event.in_reply_to_user_id, true)
             .then((data) => {
-              event.recipient = R.assoc("is_mention", true, data);
+              event.recipient = R.assoc('is_mention', true, data);
               return event;
             });
         }
@@ -130,25 +148,25 @@ export default class Adapter {
       });
   }
 
-  public send(data: Object): Promise {
-    this.logger.debug("sending", { message: data });
+  public send(data: object): Promise<object | null> {
+    this.logger.debug('sending', { message: data });
 
-    return broidSchemas(data, "send")
+    return schemas(data, 'send')
       .then(() => {
-        const name = R.path(["object", "name"], data);
-        const content = R.path(["object", "content"], data);
-        const type = R.path(["object", "type"], data);
-        const toID = R.path(["to", "id"], data);
-        const options = {
+        const name: string = <string> R.path(['object', 'name'], data);
+        const content: string = <string> R.path(['object', 'content'], data);
+        const dataType: string = <string> R.path(['object', 'type'], data);
+        const toID: string = <string> R.path(['to', 'id'], data);
+        const options: any = {
           content,
-          screen_name: "",
-          to_channel: !(R.path(["to", "type"], data) === "Person"),
+          screen_name: '',
+          to_channel: !(R.path(['to', 'type'], data) === 'Person'),
           twit_options: { retry: true },
           user_id: null,
         };
 
-        let job = Promise.resolve(null);
-        if (!toID.startsWith("@") && !isNaN(Number(toID.charAt(0)))) {
+        let job: Promise<any> = Promise.resolve(null);
+        if (!toID.startsWith('@') && !isNaN(Number(toID.charAt(0)))) {
           options.user_id = toID;
 
           if (options.to_channel) {
@@ -166,33 +184,30 @@ export default class Adapter {
           job = Promise.resolve(options);
         }
 
-        return job.then((opts) => {
+        return job.then((opts: any) => {
           if (!opts) {
-            throw new Error("Only Note, Image, and Video are supported.");
+            throw new Error('Only Note, Image, and Video are supported.');
           }
 
-          if (type === "Image" || type === "Video") {
+          if (dataType === 'Image' || dataType === 'Video') {
             if (opts.to_channel) {
               return [
                 opts,
-                this.createMedia(R.path(["object", "url"], data), name),
+                this.createMedia(<string> R.path(['object', 'url'], data), name),
               ];
             }
 
-            opts.content = `${opts.content} ${R.path(["object", "url"], data)}`;
+            opts.content = `${opts.content} ${R.path(['object', 'url'], data)}`;
           }
 
           return [opts, null];
         })
-        .spread((opts, mediaID) => {
-          let path = "statuses/update";
-
-          const params: ISendParameters = {
-            twit_options: opts.twit_options,
-          };
+        .spread((opts: any, mediaIDs: any[]) => {
+          let path = 'statuses/update';
+          const params: ISendParameters = { twit_options: opts.twit_options };
 
           if (!opts.to_channel) {
-            path = "direct_messages/new";
+            path = 'direct_messages/new';
             params.text = opts.content;
 
             if (opts.screen_name) {
@@ -204,23 +219,26 @@ export default class Adapter {
             params.status = `${opts.screen_name}: ${opts.content}`;
           }
 
-          if (mediaID) { params.media_ids = R.values(mediaID); }
-
+          if (mediaIDs) {
+            params.media_ids = R.values(mediaIDs);
+          }
           return this.sessionPOST(path, params)
-            .then(() => ({ type: "sent", serviceID: this.serviceId() }));
+            .then(() => ({ type: 'sent', serviceID: this.serviceId() }));
         });
       });
   }
 
   // Get the user information from the platform
    // Ask the memory cache before make a external call
-  private userById(key: string, cache: boolean = true): Promise {
-    if (cache && this.storeUsers.get(key)) {
+  private userById(key: string, cache: boolean = true): Promise<object> {
+    if (cache) {
       const data = this.storeUsers.get(key);
-      return Promise.resolve(data);
+      if (data) {
+        return Promise.resolve(data);
+      }
     }
 
-    return this.sessionGET("users/show", { user_id: key })
+    return this.sessionGET('users/show', { user_id: key })
       .then((data) => {
         this.storeUsers.set(key, data);
         return data;
@@ -228,24 +246,25 @@ export default class Adapter {
   }
 
   // Twitter need some steps to update a Image or Videp
-  private createMedia(url, altText = "") {
-    let stream = Promise.resolve(null);
-    if (url.startsWith("http://") || url.startsWith("https://")) {
+  private createMedia(url: string, altText: string = ''): Promise<object | null> {
+    let stream: Promise<string | null> = Promise.resolve(null);
+    if (url.startsWith('http://') || url.startsWith('https://')) {
       stream = rp(url, { encoding: null })
-        .then((body) => new Buffer(body).toString("base64"));
+        .then((body) => new Buffer(body).toString('base64'));
     } else {
-      stream = Promise.resolve(fs.readFileSync(url, { encoding: "base64" }));
+      stream = Promise.resolve(fs.readFileSync(url, { encoding: 'base64' }));
     }
 
     return stream
       .then((b64) => {
         if (b64) { return b64; }
-        throw new Error("URL should a absolute path or http url.");
+        throw new Error('URL should a absolute path or http url.');
       })
-      .then((b64) => this.sessionPOST("media/upload", { media_data: b64 }))
-        .then((data) => {
+      .then((b64) => this.sessionPOST('media/upload', { media_data: b64 }))
+        .then((data: any) => {
           const mediaID = data.media_id_string;
-          return this.sessionPOST("media/metadata/create",
+          return this.sessionPOST(
+            'media/metadata/create',
             { media_id: mediaID, altText: { text: altText } })
             .then(() => ({ mediaID }));
         });
