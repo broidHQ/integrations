@@ -1,18 +1,28 @@
 {
-  "name": "broid-messenger",
-  "version": "1.1.7",
+  "name": "@broid/messenger",
+  "version": "1.0.0",
   "main": "lib/core/index.js",
   "license": "AGPL-3.0+",
   "author": "Broid Team <opensource@broid.ai> (https://broid.ai)",
   "description": "Convert Facebook Messenger messages into Activity Streams 2 with Broid Integration",
   "repository": {
     "type": "git",
-    "url": "git@github.com:broidHQ/integrations.git"
+    "url": "git+ssh://git@github.com/broidHQ/integrations.git"
   },
   "bugs": {
     "url": "https://github.com/broidHQ/integrations/issues"
   },
   "homepage": "https://github.com/broidHQ/integrations/tree/master/broid-messenger#readme",
+  "keywords": [
+    "messenger",
+    "broid",
+    "activity",
+    "strams",
+    "activity streams 2",
+    "messaging",
+    "chat",
+    "bot"
+  ],
   "engines": {
     "node": ">=6.0.0"
   },
@@ -24,7 +34,7 @@
     "lint:watch": "watch 'tslint -c tslint.json src/*' src",
     "nsp-check": "nsp check -o summary",
     "prepublish": "npm run test",
-    "release": "npm run travis && npm run build && npm publish",
+    "release": "npm run travis && npm run build && npm publish --access public",
     "test": "npm run lint && npm run nsp-check && npm run build && nyc ava --verbose",
     "travis": "npm run test",
     "tsc:watch": "tsc --watch",
@@ -33,8 +43,8 @@
   "dependencies": {
     "bluebird": "^3.4.7",
     "body-parser": "^1.15.2",
-    "broid-schemas": "^1.2.0",
-    "broid-utils": "^1.0.4",
+    "@broid/schemas": "^1.0.0",
+    "@broid/utils": "^1.0.0",
     "eventemitter3": "^2.0.2",
     "express": "^4.14.0",
     "mimetype": "^0.0.8",
