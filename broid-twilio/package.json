@@ -45,7 +45,6 @@
     "@broid/utils": "^1.0.0",
     "bluebird": "^3.4.7",
     "body-parser": "^1.15.2",
-    "eventemitter3": "^2.0.2",
     "express": "^4.14.0",
     "node-uuid": "^1.4.7",
     "ramda": "^0.23.0",
