@@ -22,7 +22,7 @@ const wechatClient = {
 
 let parser: Parser;
 test.before(() => {
-  parser = new Parser(wechatClient, "test_wechat_service", "info");
+  parser = new Parser("wechat", wechatClient, "test_wechat_service", "info");
 });
 
 test("Parse note message", async (t) => {

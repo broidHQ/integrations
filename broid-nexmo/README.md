@@ -1,3 +1,24 @@
+[npm]: https://img.shields.io/badge/npm-broid-green.svg?style=flat
+[npm-url]: https://www.npmjs.com/org/broid
+
+[node]: https://img.shields.io/node/v/@broid/nexmo.svg
+[node-url]: https://nodejs.org
+
+[deps]: https://img.shields.io/badge/dependencies-checked-green.svg?style=flat
+[deps-url]: #integrations
+
+[tests]: https://img.shields.io/travis/broidHQ/integrations/master.svg
+[tests-url]: https://travis-ci.org/broidHQ/integrations
+
+[bithound]: https://img.shields.io/bithound/code/github/broidHQ/integrations.svg
+[bithound-url]: https://www.bithound.io/github/broidHQ/integrations
+
+[bithoundscore]: https://www.bithound.io/github/broidHQ/integrations/badges/score.svg
+[bithoundscore-url]: https://www.bithound.io/github/broidHQ/integrations
+
+[nsp-checked]: https://img.shields.io/badge/nsp-checked-green.svg?style=flat
+[nsp-checked-url]: https://nodesecurity.io
+
 [![npm][npm]][npm-url]
 [![node][node]][node-url]
 [![deps][deps]][deps-url]
@@ -29,21 +50,21 @@ _Image, Video are supported as a simple message._
 ### Install
 
 ```bash
-npm install --save broid-nexmo
+npm install --save @broid/nexmo
 ```
 
 ### Connect to Nexmo
 
 ```javascript
-const BroidNexmo = require('broid-nexmo');
+const BroidNexmo = require('@broid/nexmo');
 
 const nexmo = new BroidNexmo({
   username: '<your_sender_number>',
   token: '<your_nexmo_token>',
   tokenSecret: '<your_nexmo_token_secret>',
   http: {
-    port: 8080,
-    host: "0.0.0.0"
+    host: '127.0.0.1',
+    port: 8080
   }
 });
 
@@ -55,6 +76,31 @@ nexmo.connect()
   });
 ```
 
+Nexmo can also be used with your existing express setup.
+
+```javascript
+const BroidNexmo = require('broid-nexmo');
+const express = require("express");
+
+const nexmo  = new BroidNexmo({
+  username: '<your_sender_number>',
+  token: '<your_nexmo_token>',
+  tokenSecret: '<your_nexmo_token_secret>',
+});
+
+const app = express();
+app.use("/nexmo", nexmo.getRouter());
+
+nexmo.connect()
+  .subscribe({
+    next: data => console.log(data),
+    error: err => console.error(`Something went wrong: ${err.message}`),
+    complete: () => console.log('complete'),
+  });
+
+app.listen(8080);
+```
+
 **Options available**
 
 | name            | Type     | default    | Description  |
@@ -64,7 +110,7 @@ nexmo.connect()
 | username        | string   |            | Your sender phone number |
 | token           | string   |            | Your nexmo token         |
 | tokenSecret     | string   |            | Your nexmo token secret  |
-| http            | object   | `{ "port": 8080, "http": "0.0.0.0" }` | WebServer options (`host`, `port`) |
+| http            | object   |            | WebServer options (`host`, `port`) |
 
 ### Receive a message
 
@@ -180,24 +226,3 @@ Copyright (c) 2016-2017 Broid.ai
 
 This project is licensed under the AGPL 3, which can be
 [found here](https://www.gnu.org/licenses/agpl-3.0.en.html).
-
-[npm]: https://img.shields.io/badge/npm-broid-green.svg?style=flat
-[npm-url]: https://www.npmjs.com/~broid
-
-[node]: https://img.shields.io/node/v/broid-nexmo.svg
-[node-url]: https://nodejs.org
-
-[deps]: https://img.shields.io/badge/dependencies-checked-green.svg?style=flat
-[deps-url]: #integrations
-
-[tests]: https://img.shields.io/travis/broidHQ/integrations/master.svg
-[tests-url]: https://travis-ci.org/broidHQ/integrations
-
-[bithound]: https://img.shields.io/bithound/code/github/broidHQ/integrations.svg
-[bithound-url]: https://www.bithound.io/github/broidHQ/integrations
-
-[bithoundscore]: https://www.bithound.io/github/broidHQ/integrations/badges/score.svg
-[bithoundscore-url]: https://www.bithound.io/github/broidHQ/integrations
-
-[nsp-checked]: https://img.shields.io/badge/nsp-checked-green.svg?style=flat
-[nsp-checked-url]: https://nodesecurity.io

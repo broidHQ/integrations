@@ -2,6 +2,7 @@
 const Promise = require("bluebird");
 const bodyParser = require("body-parser");
 const utils_1 = require("@broid/utils");
+<<<<<<< HEAD
 const express = require("express");
 class WebHookServer {
     constructor(options, router, logLevel) {
@@ -9,6 +10,21 @@ class WebHookServer {
         this.port = options.port;
         this.logger = new utils_1.Logger("webhook_server", logLevel || "info");
         this.setupExpress(router);
+=======
+const EventEmitter = require("events");
+const express = require("express");
+const R = require("ramda");
+class WebHookServer extends EventEmitter {
+    constructor(username, options, logLevel) {
+        super();
+        this.username = username;
+        this.host = options && options.host || "127.0.0.1";
+        this.port = options && options.port || 8080;
+        this.logger = new utils_1.Logger("webhook_server", logLevel || "info");
+        this.express = express();
+        this.middleware();
+        this.routes();
+>>>>>>> exposed-express-router
     }
     listen() {
         this.httpClient = this.express.listen(this.port, this.host, () => {

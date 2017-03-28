@@ -1,7 +1,8 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const Promise = require("bluebird");
-const broid_schemas_1 = require("broid-schemas");
-const broid_utils_1 = require("broid-utils");
+const schemas_1 = require("@broid/schemas");
+const utils_1 = require("@broid/utils");
 const Discordie = require("discordie");
 const uuid = require("node-uuid");
 const R = require("ramda");
@@ -18,7 +19,7 @@ class Adapter {
             autoReconnect: true,
         });
         this.parser = new parser_1.default(this.serviceID, this.logLevel);
-        this.logger = new broid_utils_1.Logger("adapter", this.logLevel);
+        this.logger = new utils_1.Logger("adapter", this.logLevel);
     }
     users() {
         return new Promise((resolve) => {
@@ -131,7 +132,7 @@ class Adapter {
             }
             return this.session.Messages.deleteMessage(message);
         };
-        return broid_schemas_1.default(data, "send")
+        return schemas_1.default(data, "send")
             .then(() => {
             const targetType = R.path(["to", "type"], data);
             const targetID = R.path(["to", "id"], data);
@@ -173,5 +174,4 @@ class Adapter {
         });
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = Adapter;

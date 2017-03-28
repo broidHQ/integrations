@@ -1,14 +1,15 @@
 import { CLIENT_EVENTS, RTM_EVENTS, RtmClient, WebClient } from "@slack/client";
 import * as Promise from "bluebird";
-import broidSchemas from "broid-schemas";
-import { concat, Logger } from "broid-utils";
+import broidSchemas from "@broid/schemas";
+import { concat, Logger } from "@broid/utils";
+import { EventEmitter } from "events";
+import { Router } from "express";
 import * as uuid from "node-uuid";
 import * as R from "ramda";
 import * as rp from "request-promise";
 import { Observable } from "rxjs/Rx";
 
 import {
-  IAdapterHTTPOptions,
   IAdapterOptions,
   IMessage,
   ISlackAction,
@@ -21,10 +22,11 @@ import WebHookServer from "./webHookServer.js";
 export default class Adapter {
   private asUser: boolean;
   private connected: boolean;
-  private HTTPOptions: IAdapterHTTPOptions;
+  private emitter: EventEmitter;
   private logLevel: string;
   private logger: Logger;
   private parser: Parser;
+  private router: Router;
   private serviceID: string;
   private session: RtmClient;
   private sessionWeb: WebClient;
@@ -33,7 +35,7 @@ export default class Adapter {
   private token: string | null;
   private webhookServer: WebHookServer;
 
-  constructor(obj?: IAdapterOptions) {
+  constructor(obj: IAdapterOptions) {
     this.serviceID = obj && obj.serviceID || uuid.v4();
     this.logLevel = obj && obj.logLevel || "info";
     this.token = obj && obj.token || null;
@@ -41,16 +43,14 @@ export default class Adapter {
     this.storeUsers = new Map();
     this.storeChannels = new Map();
 
-    const HTTPOptions: IAdapterHTTPOptions = {
-      host: "127.0.0.1",
-      port: 8080,
-    };
-    this.HTTPOptions = obj && obj.http || HTTPOptions;
-    this.HTTPOptions.host = this.HTTPOptions.host || HTTPOptions.host;
-    this.HTTPOptions.port = this.HTTPOptions.port || HTTPOptions.port;
-
-    this.parser = new Parser(this.serviceID, this.logLevel);
+    this.parser = new Parser(this.serviceName(), this.serviceID, this.logLevel);
     this.logger = new Logger("adapter", this.logLevel);
+    this.emitter = new EventEmitter();
+    this.router = this.setupRoutes();
+
+    if (obj.http) {
+      this.webhookServer = new WebHookServer(obj.http, this.router, this.logLevel);
+    }
   }
 
   // Return list of users information
@@ -68,6 +68,17 @@ export default class Adapter {
     return this.serviceID;
   }
 
+  public getRouter(): Router | null {
+    if (this.webhookServer) {
+      return null;
+    }
+    return this.router;
+  }
+
+  public serviceName(): string {
+    return "slack";
+  }
+
   // Connect to Slack
   // Start the webhook server
   public connect(): Observable<Object> {
@@ -81,8 +92,9 @@ export default class Adapter {
 
     this.connected = true;
 
-    this.webhookServer = new WebHookServer(this.HTTPOptions, this.logLevel);
-    this.webhookServer.listen();
+    if (this.webhookServer) {
+      this.webhookServer.listen();
+    }
 
     this.session = new RtmClient(this.token, { autoReconnect: true });
     this.sessionWeb = new WebClient(this.token);
@@ -113,8 +125,13 @@ export default class Adapter {
       .mergeAll();
   }
 
-  public disconnect(): Promise {
-    return Promise.reject(new Error("Not supported"));
+  public disconnect(): Promise<null> {
+    this.connected = false;
+    if (this.webhookServer) {
+      return this.webhookServer.close();
+    }
+
+    return Promise.resolve(null);
   }
 
   // Listen "message" event from Slack
@@ -125,7 +142,7 @@ export default class Adapter {
 
     const events = R.map((key) => Observable
       .fromEvent(this.session, rtmEvents[key]), R.keys(rtmEvents));
-    const webHookEvent = Observable.fromEvent(this.webhookServer, "message")
+    const webHookEvent = Observable.fromEvent(this.emitter, "message")
       .mergeMap((event: IWebHookEvent) => {
         const req = event.request;
         const payloadStr = R.path(["body", "payload"], req);
@@ -468,5 +485,25 @@ export default class Adapter {
         this.storeUsers.set(key, info.user);
         return resolve(info.user);
       }));
+  }
+
+  // Configure API endpoints.
+  private setupRoutes(): Router {
+    const router = Router();
+
+    // route handler
+    router.post("/", (req, res) => {
+      const event: IWebHookEvent = {
+        request: req,
+        response: res,
+      };
+
+      this.emitter.emit("message", event);
+
+      // Assume all went well.
+      res.send("");
+    });
+
+    return router;
   }
 }

@@ -1,6 +1,6 @@
 import * as Promise from "bluebird";
-import broidSchemas, { IActivityStream } from "broid-schemas";
-import { cleanNulls, Logger } from "broid-utils";
+import broidSchemas, { IActivityStream } from "@broid/schemas";
+import { cleanNulls, Logger } from "@broid/utils";
 import * as R from "ramda";
 
 export default class Parser {
@@ -10,8 +10,8 @@ export default class Parser {
   private userCache: Object;
   private wechatClient: any;
 
-  constructor(wechatClient: any, serviceID: string, logLevel: string) {
-    this.generatorName = "wechat";
+  constructor(serviceName: string, wechatClient: any, serviceID: string, logLevel: string) {
+    this.generatorName = serviceName;
     this.serviceID = serviceID;
     this.logger = new Logger("parser", logLevel);
     this.userCache = new Map();

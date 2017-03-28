@@ -1,5 +1,5 @@
 {
-  "name": "broid-groupme",
+  "name": "@broid/groupme",
   "version": "1.0.0",
   "main": "dist/index.js",
   "license": "AGPL-3.0+",
@@ -7,12 +7,22 @@
   "description": "Convert GroupMe messages into Activity Streams 2 with Broid Integration",
   "repository": {
     "type": "git",
-    "url": "git@github.com:broidHQ/integrations.git"
+    "url": "git+ssh://git@github.com/broidHQ/integrations.git"
   },
   "bugs": {
     "url": "https://github.com/broidHQ/integrations/issues"
   },
   "homepage": "https://github.com/broidHQ/integrations/tree/master/broid-groupme#readme",
+  "keywords": [
+    "groupme",
+    "broid",
+    "activity",
+    "strams",
+    "activity streams 2",
+    "messaging",
+    "chat",
+    "bot"
+  ],
   "engines": {
     "node": ">=6.0.0"
   },
@@ -26,7 +36,7 @@
     "lint:watch": "watch 'tslint -c tslint.json src/*' src",
     "tsc:watch": "tsc --watch",
     "travis": "npm run lint && npm run build && npm run test",
-    "release": "npm run travis && npm run build && npm publish"
+    "release": "npm run travis && npm run build && npm publish --access public"
   },
   "devDependencies": {
     "@types/moment": "^2.13.0",

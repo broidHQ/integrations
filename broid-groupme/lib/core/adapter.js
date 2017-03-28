@@ -2,8 +2,11 @@
 const Promise = require("bluebird");
 const schemas_1 = require("@broid/schemas");
 const utils_1 = require("@broid/utils");
+<<<<<<< HEAD
 const events_1 = require("events");
 const express_1 = require("express");
+=======
+>>>>>>> exposed-express-router
 const uuid = require("node-uuid");
 const PromiseMemoize = require("promise-memoize");
 const R = require("ramda");
@@ -27,6 +30,7 @@ class Adapter {
         if (this.username === "") {
             throw new Error("username should exist.");
         }
+<<<<<<< HEAD
         this.emitter = new events_1.EventEmitter();
         this.parser = new parser_1.default(this.serviceName(), this.serviceID, this.logLevel);
         this.logger = new utils_1.Logger("adapter", this.logLevel);
@@ -43,6 +47,10 @@ class Adapter {
             return null;
         }
         return this.router;
+=======
+        this.parser = new parser_1.default(this.serviceID, this.logLevel);
+        this.logger = new utils_1.Logger("adapter", this.logLevel);
+>>>>>>> exposed-express-router
     }
     users() {
         return Promise.reject(new Error("Not supported"));

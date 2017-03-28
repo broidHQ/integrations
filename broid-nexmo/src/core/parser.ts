@@ -1,6 +1,6 @@
 import * as Promise from "bluebird";
-import { default as broidSchemas, IActivityStream } from "broid-schemas";
-import { cleanNulls, Logger } from "broid-utils";
+import { default as broidSchemas, IActivityStream } from "@broid/schemas";
+import { cleanNulls, Logger } from "@broid/utils";
 import * as moment from "moment";
 import * as uuid from "node-uuid";
 import * as R from "ramda";
@@ -10,9 +10,9 @@ export default class Parser {
   public generatorName: string;
   private logger: Logger;
 
-  constructor(serviceID: string, logLevel: string) {
+  constructor(serviceName: string, serviceID: string, logLevel: string) {
     this.serviceID = serviceID;
-    this.generatorName = "nexmo";
+    this.generatorName = serviceName;
     this.logger = new Logger("parser", logLevel);
   }
 

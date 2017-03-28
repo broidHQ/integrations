@@ -1,6 +1,6 @@
 import * as Promise from "bluebird";
-import { default as broidSchemas, IActivityStream } from "broid-schemas";
-import { cleanNulls, Logger } from "broid-utils";
+import { default as broidSchemas, IActivityStream } from "@broid/schemas";
+import { cleanNulls, Logger } from "@broid/utils";
 import * as R from "ramda";
 
 export default class Parser {

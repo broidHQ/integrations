@@ -7,7 +7,11 @@ const R = require("ramda");
 class Parser {
     constructor(serviceName, serviceID, logLevel) {
         this.serviceID = serviceID;
+<<<<<<< HEAD
         this.generatorName = serviceName;
+=======
+        this.generatorName = "groupme";
+>>>>>>> exposed-express-router
         this.logger = new utils_1.Logger("parser", logLevel);
     }
     validate(event) {
