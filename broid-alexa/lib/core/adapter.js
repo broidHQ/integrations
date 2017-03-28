@@ -1,8 +1,12 @@
 "use strict";
-const Promise = require("bluebird");
+Object.defineProperty(exports, "__esModule", { value: true });
 const schemas_1 = require("@broid/schemas");
 const utils_1 = require("@broid/utils");
+const Promise = require("bluebird");
+const events_1 = require("events");
+const express_1 = require("express");
 const uuid = require("node-uuid");
+const R = require("ramda");
 const Rx_1 = require("rxjs/Rx");
 const parser_1 = require("./parser");
 const webHookServer_1 = require("./webHookServer");
@@ -10,15 +14,22 @@ class Adapter {
     constructor(obj) {
         this.serviceID = obj && obj.serviceID || uuid.v4();
         this.logLevel = obj && obj.logLevel || "info";
-        const HTTPOptions = {
-            host: "127.0.0.1",
-            port: 8080,
-        };
-        this.HTTPOptions = obj && obj.http || HTTPOptions;
-        this.HTTPOptions.host = this.HTTPOptions.host || HTTPOptions.host;
-        this.HTTPOptions.port = this.HTTPOptions.port || HTTPOptions.port;
-        this.parser = new parser_1.default(this.serviceID, this.logLevel);
+        this.emitter = new events_1.EventEmitter();
+        this.parser = new parser_1.default(this.serviceName(), this.serviceID, this.logLevel);
         this.logger = new utils_1.Logger("adapter", this.logLevel);
+        this.router = this.setupRouter();
+        if (obj && obj.http) {
+            this.webhookServer = new webHookServer_1.default(obj.http, this.router, this.logLevel);
+        }
+    }
+    serviceName() {
+        return "alexa";
+    }
+    getRouter() {
+        if (this.webhookServer) {
+            return null;
+        }
+        return this.router;
     }
     users() {
         return Promise.reject(new Error("Not supported"));
@@ -33,19 +44,20 @@ class Adapter {
         if (this.connected) {
             return Rx_1.Observable.of({ type: "connected", serviceID: this.serviceId() });
         }
-        this.connected = true;
-        this.webhookServer = new webHookServer_1.default(this.HTTPOptions, this.logLevel);
-        this.webhookServer.listen();
+        if (this.webhookServer) {
+            this.connected = true;
+            this.webhookServer.listen();
+        }
         return Rx_1.Observable.of(({ type: "connected", serviceID: this.serviceId() }));
     }
     disconnect() {
-        return Promise.reject(new Error("Not supported"));
+        if (this.webhookServer) {
+            return this.webhookServer.close();
+        }
+        return Promise.resolve(null);
     }
     listen() {
-        if (!this.webhookServer) {
-            return Rx_1.Observable.throw(new Error("No webhookServer found."));
-        }
-        return Rx_1.Observable.fromEvent(this.webhookServer, "message")
+        return Rx_1.Observable.fromEvent(this.emitter, "message")
             .mergeMap((normalized) => this.parser.parse(normalized))
             .mergeMap((parsed) => this.parser.validate(parsed))
             .mergeMap((validated) => {
@@ -86,10 +98,37 @@ class Adapter {
                     shouldEndSession: true,
                 },
             };
-            this.webhookServer.emit(`response:${to}`, response);
+            this.emitter.emit(`response:${to}`, response);
             return Promise.resolve({ type: "sent", serviceID: this.serviceId() });
         });
     }
+    setupRouter() {
+        const router = express_1.Router();
+        const handle = (req, res) => {
+            const request = req.body.request;
+            const session = req.body.session;
+            const requestType = request.type;
+            const intentName = requestType === "IntentRequest"
+                ? R.path(["intent", "name"], request) :
+                requestType;
+            const messageID = uuid.v4();
+            const message = {
+                application: session.application,
+                intentName,
+                messageID,
+                requestType,
+                slots: R.path(["intent", "slots"], request) || {},
+                user: session.user,
+            };
+            const responseListener = (data) => res.json(data);
+            this.emitter.emit("message", message);
+            this.emitter.once(`response:${messageID}`, responseListener);
+            setTimeout(() => this.emitter.removeListener(`response:${messageID}`, responseListener), 60000);
+            res.sendStatus(200);
+        };
+        router.get("/", handle);
+        router.post("/", handle);
+        return router;
+    }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = Adapter;

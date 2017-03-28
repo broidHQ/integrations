@@ -1,37 +1,52 @@
-import * as Promise from "bluebird";
 import broidSchemas from "@broid/schemas";
 import { Logger } from "@broid/utils";
+
+import * as Promise from "bluebird";
+import { EventEmitter } from 'events';
+import { Router  } from "express";
 import * as uuid from "node-uuid";
+import * as R from "ramda";
 import { Observable } from "rxjs/Rx";
 
-import { IAdapterHTTPOptions, IAdapterOptions } from "./interfaces";
+import { IAdapterOptions } from "./interfaces";
 import Parser from "./parser";
 import WebHookServer from "./webHookServer";
 
 export default class Adapter {
   private serviceID: string;
-  private HTTPOptions: IAdapterHTTPOptions;
   private connected: boolean;
+  private emitter: EventEmitter;
   private parser: Parser;
   private logLevel: string;
   private logger: Logger;
-  private webhookServer: WebHookServer;
-  // private session: any;
+  private router: Router;
+  private webhookServer: WebHookServer | null;
 
   constructor(obj?: IAdapterOptions) {
     this.serviceID = obj && obj.serviceID || uuid.v4();
     this.logLevel = obj && obj.logLevel || "info";
 
-    const HTTPOptions: IAdapterHTTPOptions = {
-      host: "127.0.0.1",
-      port: 8080,
-    };
-    this.HTTPOptions = obj && obj.http || HTTPOptions;
-    this.HTTPOptions.host = this.HTTPOptions.host || HTTPOptions.host;
-    this.HTTPOptions.port = this.HTTPOptions.port || HTTPOptions.port;
-
-    this.parser = new Parser(this.serviceID, this.logLevel);
+    this.emitter = new EventEmitter();
+    this.parser = new Parser(this.serviceName(), this.serviceID, this.logLevel);
     this.logger = new Logger("adapter", this.logLevel);
+    this.router = this.setupRouter();
+
+    if (obj && obj.http) {
+      this.webhookServer = new WebHookServer(obj.http, this.router, this.logLevel);
+    }
+  }
+
+  // Return the name of the Service/Integration
+  public serviceName(): string {
+    return "alexa";
+  }
+
+  // Returns the intialized express router
+  public getRouter(): Router | null {
+    if (this.webhookServer) {
+      return null;
+    }
+    return this.router;
   }
 
   // Return list of users information
@@ -45,7 +60,7 @@ export default class Adapter {
   }
 
   // Return the service ID of the current instance
-  public serviceId(): String {
+  public serviceId(): string {
     return this.serviceID;
   }
 
@@ -55,25 +70,25 @@ export default class Adapter {
     if (this.connected) {
       return Observable.of({ type: "connected", serviceID: this.serviceId() });
     }
-    this.connected = true;
 
-    this.webhookServer = new WebHookServer(this.HTTPOptions, this.logLevel);
-    this.webhookServer.listen();
+    if (this.webhookServer) {
+     this.connected = true;
+     this.webhookServer.listen();
+    }
 
     return Observable.of(({ type: "connected", serviceID: this.serviceId() }));
   }
 
-  public disconnect(): Promise<Error> {
-    return Promise.reject(new Error("Not supported"));
+  public disconnect(): Promise<null> {
+    if (this.webhookServer) {
+      return this.webhookServer.close();
+    }
+    return Promise.resolve(null);
   }
 
   // Listen "message" event from Nexmo
   public listen(): Observable<Object> {
-    if (!this.webhookServer) {
-      return Observable.throw(new Error("No webhookServer found."));
-    }
-
-    return Observable.fromEvent(this.webhookServer, "message")
+    return Observable.fromEvent(this.emitter, "message")
       .mergeMap((normalized: any) =>
         this.parser.parse(normalized))
       .mergeMap((parsed) => this.parser.validate(parsed))
@@ -120,8 +135,47 @@ export default class Adapter {
           },
         };
 
-        this.webhookServer.emit(`response:${to}`, response);
+        this.emitter.emit(`response:${to}`, response);
         return Promise.resolve({ type: "sent", serviceID: this.serviceId() });
       });
+  }
+
+  private setupRouter(): Router {
+    const router = Router();
+    const handle = (req, res) => {
+      const request = req.body.request;
+      const session = req.body.session;
+
+      const requestType = request.type;
+      const intentName = requestType === "IntentRequest"
+        ? R.path(["intent", "name"], request) :
+        requestType;
+
+      const messageID = uuid.v4();
+      const message: any = {
+        application: session.application,
+        intentName,
+        messageID,
+        requestType,
+        slots: R.path(["intent", "slots"], request) || {},
+        user: session.user,
+      };
+
+      const responseListener = (data) => res.json(data);
+      this.emitter.emit("message", message);
+      this.emitter.once(`response:${messageID}`, responseListener);
+
+      // save memory
+      setTimeout(() =>
+        this.emitter.removeListener(`response:${messageID}`, responseListener)
+      , 60000);
+
+      res.sendStatus(200);
+    };
+
+    router.get("/", handle);
+    router.post("/", handle);
+
+    return router;
   }
 }
