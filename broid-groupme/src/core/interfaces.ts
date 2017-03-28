@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
+
 export interface IAdapterHTTPOptions {
   host: string;
   port: number;
@@ -30,7 +31,7 @@ export interface IAdapterOptions {
 }
 
 export interface IAttachment {
-  type: string;
+  type: string; // tslint:disable-line:no-reserved-keywords
   url?: string;
   lat?: string;
   lng?: string;
@@ -72,6 +73,6 @@ export interface IGroupParsed {
   name: string;
   members: IMemberParsed[];
   updated_at: number;
-  type: string;
+  type: string; // tslint:disable-line:no-reserved-keywords
 
 }

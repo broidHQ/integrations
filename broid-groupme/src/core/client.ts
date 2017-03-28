@@ -15,12 +15,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
+
 import * as R from 'ramda';
 import * as request from 'request-promise';
 
 const baseURL = 'https://api.groupme.com/v3';
 
-export function getMessages(token, groupId): Promise<any> {
+export function getMessages(token: string, groupId: string): Promise<any> {
   return request({
     json: 'true',
     qs: {
@@ -32,7 +33,7 @@ export function getMessages(token, groupId): Promise<any> {
     .filter(((msg) => !msg.system)));
 }
 
-export function getMembers(token, groupId): Promise<any> {
+export function getMembers(token: string, groupId: string): Promise<any> {
   return request({
     json: 'true',
     qs: {
@@ -42,7 +43,7 @@ export function getMembers(token, groupId): Promise<any> {
   }).then((res) => res.response.members);
 }
 
-export function getGroups(token): Promise<any> {
+export function getGroups(token: string): Promise<any> {
   return request({
     json: 'true',
     qs: {
@@ -69,7 +70,8 @@ export function postMessage(token: string, payload: any): Promise<any> {
 
   if (payload.image) {
     return request.get(payload.image.url)
-      .pipe(request.post('https://image.groupme.com/pictures',
+      .pipe(request.post(
+        'https://image.groupme.com/pictures',
         { json: true, qs: { access_token: token } }))
       .then((res) => {
         const url = R.path(['payload', 'url'], res);

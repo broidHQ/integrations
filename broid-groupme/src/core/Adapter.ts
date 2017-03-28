@@ -15,9 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-import * as Promise from 'bluebird';
-import broidSchemas from '@broid/schemas';
+
+import schemas from '@broid/schemas';
 import { Logger } from '@broid/utils';
+
+import * as Promise from 'bluebird';
 import { EventEmitter } from 'events';
 import { Router  } from 'express';
 import * as uuid from 'node-uuid';
@@ -98,8 +100,8 @@ export class Adapter {
         return {
           created_at: channel.created_at,
           id: channel.id,
-          members: R.map((member: any) =>
-            ({
+          members: R.map(
+            (member: any) => ({
               avatar: member.image_url,
               id: member.user_id,
               username: member.nickname,
@@ -124,16 +126,18 @@ export class Adapter {
       return Observable.of({ type: 'connected', serviceID: this.serviceId() });
     }
 
-    this.connected = true;
-
     if (this.webhookServer) {
       this.webhookServer.listen();
     }
+
+    this.connected = true;
 
     return Observable.of(({ type: 'connected', serviceID: this.serviceId() }));
   }
 
   public disconnect(): Promise<null> {
+    this.connected = false;
+
     if (this.webhookServer) {
       return this.webhookServer.close();
     }
@@ -160,7 +164,7 @@ export class Adapter {
 
   public send(data: any): Promise<object | Error> {
     this.logger.debug('sending', { message: data });
-    return broidSchemas(data, 'send')
+    return schemas(data, 'send')
       .then(() => {
         if (data.object.type !== 'Note' && data.object.type !== 'Image') {
           return Promise.reject(new Error('Only Note or Image is supported.'));
@@ -168,7 +172,7 @@ export class Adapter {
 
         return Promise.resolve(data)
           .then((result: any) => {
-            const type: any = R.path(['object', 'type'], data);
+            const objectType: any = R.path(['object', 'type'], data);
             const content: any = R.path(['object', 'content'], result);
 
             const payload: any = {
@@ -176,7 +180,7 @@ export class Adapter {
               text: content,
             };
 
-            if (type === 'Image') {
+            if (objectType === 'Image') {
               payload.image = {
                 mediaType: R.path(['object', 'mediaType'], data),
                 url: R.path(['object', 'url'], data),
