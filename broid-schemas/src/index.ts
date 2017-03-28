@@ -1,5 +1,5 @@
-import * as Ajv from "ajv";
-import * as Promise from "bluebird";
+import * as Ajv from 'ajv';
+import * as Promise from 'bluebird';
 
 export interface IASBase {
   id: string;
@@ -40,7 +40,7 @@ export interface IASObject {
 }
 
 export interface IActivityStream {
-   readonly "@context": string;
+   readonly '@context': string;
    readonly published: number;
    readonly type: string;
    readonly generator: IASBase;
@@ -56,7 +56,7 @@ export interface IASTag {
 }
 
 export interface ISendParameters {
-  readonly "@context": string;
+  readonly '@context': string;
   readonly type: string;
   readonly generator: {};
   actor?: IASBase;
@@ -65,17 +65,17 @@ export interface ISendParameters {
 }
 
 export default function(data: any, schema: string): Promise<any> {
-  const BASE_URL = "http://schemas.broid.ai/";
+  const BASE_URL = 'http://schemas.broid.ai/';
   const ajv: any = new Ajv({
     allErrors: true,
     extendRefs: true,
   });
 
-  const schemas = require("./schemas");
+  const schemas = require('./schemas');
   schemas.forEach((schemaName) =>
     ajv.addSchema(require(`./schemas/${schemaName}`), schemaName));
 
-  if (schema.indexOf("http") < 0) {
+  if (schema.indexOf('http') < 0) {
     schema = `${BASE_URL}${schema}.json`;
   }
 

@@ -1,4 +1,4 @@
-import * as pino from "pino";
+import * as pino from 'pino';
 
 export default class Logger {
   private pino: any;

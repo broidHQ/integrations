@@ -1,11 +1,28 @@
-import * as R from "ramda";
-import * as request from "request-promise";
+/**
+ * @license
+ * Copyright 2017 Broid.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+import * as R from 'ramda';
+import * as request from 'request-promise';
 
-const baseURL = "https://api.groupme.com/v3";
+const baseURL = 'https://api.groupme.com/v3';
 
 export function getMessages(token, groupId): Promise<any> {
   return request({
-    json: "true",
+    json: 'true',
     qs: {
       token,
       limit: 100,
@@ -17,7 +34,7 @@ export function getMessages(token, groupId): Promise<any> {
 
 export function getMembers(token, groupId): Promise<any> {
   return request({
-    json: "true",
+    json: 'true',
     qs: {
       token,
     },
@@ -27,7 +44,7 @@ export function getMembers(token, groupId): Promise<any> {
 
 export function getGroups(token): Promise<any> {
   return request({
-    json: "true",
+    json: 'true',
     qs: {
       token,
     },
@@ -38,7 +55,7 @@ export function getGroups(token): Promise<any> {
 export function postMessage(token: string, payload: any): Promise<any> {
   const post = (data) => request({
     json: data,
-    method: "POST",
+    method: 'POST',
     qs: { token },
     resolveWithFullResponse: true,
     uri: `${baseURL}/bots/post`,
@@ -52,11 +69,11 @@ export function postMessage(token: string, payload: any): Promise<any> {
 
   if (payload.image) {
     return request.get(payload.image.url)
-      .pipe(request.post("https://image.groupme.com/pictures",
+      .pipe(request.post('https://image.groupme.com/pictures',
         { json: true, qs: { access_token: token } }))
       .then((res) => {
-        const url = R.path(["payload", "url"], res);
-        if (!url) { throw new Error("Image URL should exist."); }
+        const url = R.path(['payload', 'url'], res);
+        if (!url) { throw new Error('Image URL should exist.'); }
         return url;
       })
       .then((url) => {

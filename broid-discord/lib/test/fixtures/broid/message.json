@@ -1,1 +1,0 @@
-{"@context":"https://www.w3.org/ns/activitystreams","generator":{"id":"test_service","name":"discord","type":"Service"},"published":1485130399,"type":"Create","actor":{"id":"136206113908457473","name":"killix","type":"Person"},"target":{"id":"152483118161461248","name":"general","type":"Group"},"object":{"content":"hello world on public","id":"272881418009313280","type":"Note"}}

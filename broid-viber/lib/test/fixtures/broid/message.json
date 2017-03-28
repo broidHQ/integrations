@@ -1,1 +1,0 @@
-{"@context":"https://www.w3.org/ns/activitystreams","actor":{"id":"8GBa2nlCwfak8SQm3zmcAA==","name":"Killix","type":"Person"},"generator":{"id":"test_service","name":"viber","type":"Service"},"object":{"content":"Hello world","id":"5003840578961596000","type":"Note"},"published":1485066336,"target":{"id":"8GBa2nlCwfak8SQm3zmcAA==","name":"Killix","type":"Person"},"type":"Create"}

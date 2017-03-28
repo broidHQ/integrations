@@ -1,1 +1,0 @@
-{"@context":"https://www.w3.org/ns/activitystreams","generator":{"id":"test_service","name":"telegram","type":"Service"},"published":1485173144,"type":"Create","actor":{"id":"43418205","name":"Killix","type":"Person"},"target":{"id":"43418205","name":"Killix","type":"Person"},"object":{"content":"hello on private","id":"115","type":"Note"}}

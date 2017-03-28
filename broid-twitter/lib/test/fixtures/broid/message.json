@@ -1,1 +1,0 @@
-{"@context":"https://www.w3.org/ns/activitystreams","actor":{"id":"2932680926","name":"broid","type":"Person"},"generator":{"id":"test_service","name":"twitter","type":"Service"},"object":{"content":"hello world","id":"823034222432686081","type":"Note"},"published":1485061624,"target":{"id":"258891753","name":"Issam Hakimi","type":"Group"},"type":"Create"}

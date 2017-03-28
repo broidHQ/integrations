@@ -27,16 +27,18 @@
     "node": ">=6.0.0"
   },
   "scripts": {
-    "test": "npm run lint && npm run build && nyc ava --verbose",
-    "build": "npm run clean && npm run copy && tsc",
-    "clean": "rm -rf lib && rm -rf typings",
+    "build": "npm run clean && npm run copy && npm run copy:config && tsc",
+    "clean": "rm -rf lib && rm -rf tsconfig.json && rm -rf tslint.json",
     "copy": "copyfiles -u 1 src/**/*.json lib/",
-    "watch": "concurrently --kill-others \"npm run lint:watch\" \"npm run tsc:watch\"",
-    "lint": "tslint -c tslint.json src/*",
-    "lint:watch": "watch 'tslint -c tslint.json src/*' src",
-    "tsc:watch": "tsc --watch",
-    "travis": "npm run lint && npm run build && npm run test",
-    "release": "npm run travis && npm run build && npm publish --access public"
+    "copy:config": "cp ../.ci/tsconfig.json . && cp ../.ci/tslint.json .",
+    "lint": "npm run copy:config && tslint -c tslint.json src/**/*.ts",
+    "lint:watch": "watch 'npm run lint' src",
+    "nsp-check": "nsp check -o summary",
+    "test": "npm run lint && npm run build && nyc ava --verbose",
+    "travis": "npn run nsp-check && npm run test",
+    "tsc:watch": "npm run build && tsc --watch",
+    "release": "npm run travis && npm run build && npm publish --access public",
+    "watch": "concurrently --kill-others \"npm run lint:watch\" \"npm run tsc:watch\""
   },
   "devDependencies": {
     "@types/bluebird": "^3.0.37",

@@ -1,1 +1,0 @@
-{"@context":"https://www.w3.org/ns/activitystreams","actor":{"id":"test_id","name":"My Name","type":"Person"},"generator":{"id":"test_wechat_service","name":"wechat","type":"Service"},"object":{"content":"message","id":"6394946209535610389","type":"Note"},"published":1488939442,"target":{"id":"test_account_id","name":"test_account_id","type":"Person"},"type":"Create"}

@@ -42,13 +42,18 @@
     "bluebird": "^3.4.6"
   },
   "devDependencies": {
-    "@types/bluebird": "^3.0.37",
-    "@types/node": "^7.0.5",
+    "@types/bluebird": "^3.5.2",
+    "@types/bluebird-global": "^3.5.1",
+    "@types/node": "^7.0.12",
+    "@types/node-uuid": "^0.0.28",
+    "@types/ramda": "^0.0.5",
     "concurrently": "^3.1.0",
     "js-yaml": "^3.8.1",
     "json-minify": "^1.0.0",
+    "nsp": "^2.6.3",
     "tslint": "^4.4.2",
-    "tslint-eslint-rules": "^3.3.0",
+    "tslint-eslint-rules": "^3.5.1",
+    "tslint-microsoft-contrib": "^4.0.1",
     "typescript": "^2.1.5",
     "watch": "^1.0.1"
   }
