@@ -18,71 +18,43 @@
 
 import { Logger } from '@broid/utils';
 
+import * as Promise from 'bluebird';
 import * as bodyParser from 'body-parser';
-import { EventEmitter } from 'events';
 import * as express from 'express';
+import * as http from 'http';
 
-import { IAdapterHTTPOptions, IWebHookEvent } from './interfaces';
+import { IAdapterHTTPOptions } from './interfaces';
 
-export class WebHookServer extends EventEmitter {
+export class WebHookServer {
   private express: express.Application;
   private logger: Logger;
-  private tokenSecret: string;
+  private httpClient: http.Server;
   private host: string;
   private port: number;
 
   // Run configuration methods on the Express instance.
-  constructor(tokenSecret: string, options?: IAdapterHTTPOptions, logLevel?: string) {
-    super();
-    this.host = options && options.host || '127.0.0.1';
-    this.port = options && options.port || 8080;
-    this.tokenSecret = tokenSecret || '';
+  constructor(options: IAdapterHTTPOptions, router: express.Router,  logLevel?: string) {
+    this.host = options.host;
+    this.port = options.port;
     this.logger = new Logger('webhook_server', logLevel || 'info');
-    this.express = express();
-    this.middleware();
-    this.routes();
+    this.setupExpress(router);
   }
 
   public listen() {
-    this.express.listen(this.port, this.host, () => {
-      this.logger.info(`Server listening at port ${this.host}:${this.port}...`);
+    this.httpClient = this.express.listen(this.port, this.host, () => {
+      this.logger.info(`Server listening on port ${this.host}:${this.port}...`);
     });
   }
 
-  // Configure Express middleware.
-  private middleware(): void {
-    this.express.use(bodyParser.json());
-    this.express.use(bodyParser.urlencoded({ extended: false }));
+  public close(): Promise<null> {
+    return Promise.fromCallback((cb) => this.httpClient.close(cb));
   }
 
   // Configure API endpoints.
-  private routes(): void {
-    const router = express.Router();
-
-    // Endpoint to verify the trust
-    router.get('/', (req, res) => {
-      if (req.query['hub.mode'] === 'subscribe') {
-        if (req.query['hub.verify_token'] === this.tokenSecret) {
-          res.send(req.query['hub.challenge']);
-        } else {
-          res.send('OK');
-        }
-      }
-    });
-
-    // route handler
-    router.post('/', (req, res) => {
-      const event: IWebHookEvent = {
-        request: req,
-        response: res,
-      };
-
-      this.emit('message', event);
-
-      // Assume all went well.
-      res.sendStatus(200);
-    });
-
+  private setupExpress(router: express.Router) {
+    this.express = express();
+    this.express.use(bodyParser.json());
+    this.express.use(bodyParser.urlencoded({ extended: false }));
     this.express.use('/', router);
   }
 }
