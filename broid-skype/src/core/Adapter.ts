@@ -15,10 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
+
+import schemas from '@broid/schemas';
+import { Logger } from '@broid/utils';
+
 import * as Promise from 'bluebird';
 import * as botbuilder from 'botbuilder';
-import broidSchemas from '@broid/schemas';
-import { Logger } from '@broid/utils';
 import { Router } from 'express';
 import * as mimetype from 'mimetype';
 import * as uuid from 'node-uuid';
@@ -62,18 +64,19 @@ export class Adapter {
   }
 
   // Return list of users information
-  public users(): Promise {
+  public users(): Promise<Map<string, object>> {
     return Promise.resolve(this.storeUsers);
   }
 
   // Return list of channels information
-  public channels(): Promise {
+  public channels(): Promise<Error> {
     return Promise.reject(new Error('Not supported'));
   }
 
-  public addresses(id) {
-    if (this.storeAddresses.get(id)) {
-      return Promise.resolve(this.storeAddresses.get(id));
+  public addresses(id: string): Promise<object | Error> {
+    const data = this.storeAddresses.get(id);
+    if (data) {
+      return Promise.resolve(data);
     }
 
     return Promise.reject(new Error(`Address ${id} not found`));
@@ -102,8 +105,7 @@ export class Adapter {
       return Observable.of({ type: 'connected', serviceID: this.serviceId() });
     }
 
-    if (!this.token
-      || !this.tokenSecret) {
+    if (!this.token || !this.tokenSecret) {
       return Observable.throw(new Error('Credentials should exist.'));
     }
 
@@ -113,14 +115,13 @@ export class Adapter {
     });
 
     this.session = new botbuilder.UniversalBot(this.sessionConnector);
-    this.connected = true;
-
     // Router setup happens on connect, however getRouter can still be called before.
     this.router.post('/', this.sessionConnector.listen());
     if (this.webhookServer) {
       this.webhookServer.listen();
     }
 
+    this.connected = true;
     return Observable.of({ type: 'connected', serviceID: this.serviceId() });
   }
 
@@ -137,16 +138,12 @@ export class Adapter {
   public listen(): Observable<object> {
     return Observable.create((observer) => {
       this.session.dialog('/', (event) => {
-        this.storeAddresses.set(R.path([
-          'message',
-          'address',
-          'id',
-        ], event), R.path(['message', 'address'], event));
-        this.storeUsers.set(R.path([
-          'message',
-          'user',
-          'id',
-        ], event), R.path(['message', 'user'], event));
+        this.storeAddresses.set(
+          <string> R.path(['message', 'address', 'id'], event),
+          <object> R.path(['message', 'address'], event));
+        this.storeUsers.set(
+          <string> R.path(['message', 'user', 'id'], event),
+          <object> R.path(['message', 'user'], event));
 
         return Promise.resolve(event.message)
           .then((normalized) => this.parser.parse(normalized))
@@ -160,14 +157,15 @@ export class Adapter {
     });
   }
 
-  public send(data: object): Promise {
+  public send(data: object): Promise<object | Error> {
     this.logger.debug('sending', { message: data });
-    return broidSchemas(data, 'send')
+
+    return schemas(data, 'send')
       .then(() => {
-        const context = R.path(['object', 'context', 'content'], data);
-        const content = R.path(['object', 'content'], data);
-        const name = R.path(['object', 'name'], data);
-        const type = R.path(['object', 'type'], data);
+        const context: string = <string> R.path(['object', 'context', 'content'], data);
+        const content: string = <string> R.path(['object', 'content'], data);
+        const name: string = <string> R.path(['object', 'name'], data);
+        const dataType: string = <string> R.path(['object', 'type'], data);
         const contextArr = R.split('#', context);
         const addressID = contextArr[0];
 
@@ -184,72 +182,63 @@ export class Adapter {
           const userID = R.path(['to', 'id'], data);
 
           address = {
-            bot: {
-              id: botID,
-            },
+            bot: { id: botID },
             channelId: channelID,
-            conversation: {
-              id: conversationID,
-            },
+            conversation: { id: conversationID },
             id: addressID,
             serviceUrl: `https://${channelID}.botframework.com`,
             useAuth: true,
-            user: {
-              id: userID,
-            },
+            user: { id: userID },
           };
         }
 
         // Process attachment
-        const attachmentButtons = R.filter((attachment) =>
-          attachment.type === 'Button',
-          R.path(['object', 'attachment'], data) || []);
+        const attachmentButtons = R.filter(
+          (attachment: any) => attachment.type === 'Button',
+          <any[]> R.path(['object', 'attachment'], data) || []);
 
-        const messageButtons = R.map((button) => {
-          if (button.mediaType === 'text/html') {
+        const messageButtons = R.map(
+          (button: any) => {
+            if (button.mediaType === 'text/html') {
+              return new botbuilder.CardAction()
+                .type('openUrl')
+                .value(button.url)
+                .title(button.name || button.content || 'Click to open website in your browser');
+            } else if (button.mediaType === 'audio/telephone-event') {
+              return new botbuilder.CardAction()
+                .type('call')
+                .value(`tel:${button.url}`)
+                .title(button.name || button.content || 'Click to call');
+            }
             return new botbuilder.CardAction()
-              .type('openUrl')
+              .type('imBack')
               .value(button.url)
-              .title(button.name || button.content || 'Click to open website in your browser');
-          } else if (button.mediaType === 'audio/telephone-event') {
-            return new botbuilder.CardAction()
-              .type('call')
-              .value(`tel:${button.url}`)
-              .title(button.name || button.content || 'Click to call');
-          }
-          return new botbuilder.CardAction()
-            .type('imBack')
-            .value(button.url)
-            .title(button.name || button.content || 'Click to send response to bot');
-        }, attachmentButtons);
+              .title(button.name || button.content || 'Click to send response to bot');
+          },
+          attachmentButtons);
 
         let messageAttachments: any[] = [];
         const messageBuilder = new botbuilder.Message()
           .textFormat(botbuilder.TextFormat.markdown)
-          .address(address as botbuilder.IAddress);
+          .address(<botbuilder.IAddress> address);
 
-        if (type === 'Note') {
+        if (dataType === 'Note') {
           if (!messageButtons) {
             messageBuilder.text(content);
           } else {
             messageAttachments = [
-              new botbuilder.HeroCard()
-                .title(name)
-                .text(content)
-                .buttons(messageButtons),
+              new botbuilder.HeroCard().title(name).text(content).buttons(messageButtons),
             ];
           }
-        } else if (type === 'Image' || type === 'Video') {
-          const url = R.path(['object', 'url'], data);
-          const hero = new botbuilder.HeroCard()
-            .title(name)
-            .text(content);
+        } else if (dataType === 'Image' || dataType === 'Video') {
+          const url: string = <string> R.path(['object', 'url'], data);
+          const hero = new botbuilder.HeroCard().title(name).text(content);
 
           if (messageButtons) {
             hero.buttons(messageButtons);
           }
 
-          if (type === 'Image') {
+          if (dataType === 'Image') {
             hero.images([new botbuilder.CardImage().url(url)]);
             messageAttachments = [hero];
           } else {
@@ -258,27 +247,9 @@ export class Adapter {
               contentUrl: url,
             }, hero];
           }
-
-          // messageAttachments = hero;
-
-          // TODO
-          // Video Card not supported by Skype
-          // messageBuilder = new botbuilder.Message()
-          //   .textFormat(botbuilder.TextFormat.markdown)
-          //   .address(address)
-          //   .attachments([
-          //     new botbuilder.VideoCard()
-          //       .title(name)
-          //       .text(content)
-          //       .image(botbuilder.CardImage.create(null, preview))
-          //       .media([ botbuilder.CardMedia.create(null, url) ])
-          //       .autoloop(true)
-          //       .autostart(false)
-          //       .shareable(true)
-          //   ]);
         }
 
-        if (type === 'Note' || type === 'Image' || type === 'Video') {
+        if (dataType === 'Note' || dataType === 'Image' || dataType === 'Video') {
           messageBuilder.attachments(messageAttachments);
           return Promise.fromCallback((cb) => this.session.send(messageBuilder, cb))
             .then(() => ({ serviceID: this.serviceId(), type: 'sent' }));

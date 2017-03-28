@@ -15,47 +15,48 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-import test from 'ava';
-import Parser from '../core/parser';
+
+import ava from 'ava';
+import { Parser } from '../core/Parser';
 
 import * as broidMessage from './fixtures/broid/message.json';
 import * as broidMessageWithImage from './fixtures/broid/messageWithImage.json';
 import * as broidMessageWithVideo from './fixtures/broid/messageWithVideo.json';
-import * as twilioMessage from './fixtures/skype/message.json';
-import * as twilioMessageWithImage from './fixtures/skype/messageWithImage.json';
-import * as twilioMessageWithVideo from './fixtures/skype/messageWithVideo.json';
+import * as skypeMessage from './fixtures/skype/message.json';
+import * as skypeMessageWithImage from './fixtures/skype/messageWithImage.json';
+import * as skypeMessageWithVideo from './fixtures/skype/messageWithVideo.json';
 
 let parser: Parser;
-test.before(() => {
+ava.before(() => {
   parser = new Parser('skype', 'test_service', 'info');
 });
 
-test('Parse a simple message', async(t) => {
-  const data = parser.parse(twilioMessage as any);
+ava('Parse a simple message', async (t) => {
+  const data = parser.parse(skypeMessage);
   t.deepEqual(await data, broidMessage);
 });
 
-test('Parse a message with media', async(t) => {
-  const data = parser.parse(twilioMessageWithImage as any);
+ava('Parse a message with media', async (t) => {
+  const data = parser.parse(<any> skypeMessageWithImage);
   t.deepEqual(await data, broidMessageWithImage);
 });
 
-test('Parse a message with video', async(t) => {
-  const data = parser.parse(twilioMessageWithVideo as any);
+ava('Parse a message with video', async (t) => {
+  const data = parser.parse(<any> skypeMessageWithVideo);
   t.deepEqual(await data, broidMessageWithVideo);
 });
 
-test('Validate a simple message', async(t) => {
+ava('Validate a simple message', async (t) => {
   const data = parser.validate(broidMessage);
   t.deepEqual(await data, broidMessage);
 });
 
-test('Validate a message with image', async(t) => {
+ava('Validate a message with image', async (t) => {
   const data = parser.validate(broidMessageWithImage);
   t.deepEqual(await data, broidMessageWithImage);
 });
 
-test('Validate a message with video', async(t) => {
+ava('Validate a message with video', async (t) => {
   const data = parser.validate(broidMessageWithVideo);
   t.deepEqual(await data, broidMessageWithVideo);
 });
