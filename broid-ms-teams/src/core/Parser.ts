@@ -15,14 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-import * as Promise from 'bluebird';
-import broidSchemas from '@broid/schemas';
+
+import {
+  default as schemas,
+  IActivityStream,
+  IASContext,
+} from '@broid/schemas';
 import { cleanNulls, Logger } from '@broid/utils';
+
+import * as Promise from 'bluebird';
 import * as mimetype from 'mimetype';
 import * as uuid from 'node-uuid';
 import * as R from 'ramda';
-
-import { IActivityStream, IContextObject } from './interfaces';
 
 export class Parser {
   public serviceID: string;
@@ -47,7 +51,7 @@ export class Parser {
       return Promise.resolve(null);
     }
 
-    return broidSchemas(parsed, 'activity')
+    return schemas(parsed, 'activity')
       .then(() => parsed)
       .catch((err) => {
         this.logger.error(err);
@@ -79,18 +83,20 @@ export class Parser {
     const addressChannelID = R.path(['address', 'channelId'], normalized);
     const addressConversationID = R.path(['address', 'conversation', 'id'], normalized);
     const addressBotID = R.path(['address', 'conversation', 'id'], normalized);
-    const context: IContextObject = {
+    const context: IASContext = {
       content: `${addressID}#${addressConversationID}#${addressChannelID}#${addressBotID}`,
       name: 'address_id',
       type: 'Object',
     };
 
     // Process potentially media.
-    const attachmentImages = R.filter((attachment) =>
-      attachment.contentType.startsWith('image'), normalized.attachments);
-    const attachmentVideos = R.filter((attachment) =>
-      attachment.contentType.startsWith('video')
-      || attachment.contentType === 'application/octet-stream', normalized.attachments);
+    const attachmentImages = R.filter(
+      (attachment: any) => attachment.contentType.startsWith('image'),
+      normalized.attachments);
+    const attachmentVideos = R.filter(
+      (attachment: any) => attachment.contentType.startsWith('video')
+        || attachment.contentType === 'application/octet-stream',
+      normalized.attachments);
 
     if (!R.isEmpty(attachmentImages)) {
       activitystreams.object = {
@@ -130,7 +136,7 @@ export class Parser {
     return uuid.v4();
   }
 
-  private createActivityStream(normalized): IActivityStream {
+  private createActivityStream(normalized: any): IActivityStream {
     let timestamp = Math.floor(Date.now() / 1000);
     if (normalized.timestamp) {
       const dateCreatedAt = new Date(normalized.timestamp);
