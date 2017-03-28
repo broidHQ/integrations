@@ -4,6 +4,7 @@ const schemas_1 = require("@broid/schemas");
 const utils_1 = require("@broid/utils");
 const KikBot = require("@kikinteractive/kik");
 const Promise = require("bluebird");
+const express_1 = require("express");
 const uuid = require("node-uuid");
 const R = require("ramda");
 const Rx_1 = require("rxjs/Rx");
@@ -16,19 +17,16 @@ class Adapter {
         this.token = obj && obj.token || null;
         this.username = obj && obj.username || 'SMS';
         this.storeUsers = new Map();
-        const optionsHTTP = {
-            host: '127.0.0.1',
-            port: 8080,
-            webhookURL: 'http://127.0.0.1/',
-        };
-        this.optionsHTTP = obj && obj.http || optionsHTTP;
-        this.optionsHTTP.host = this.optionsHTTP.host || optionsHTTP.host;
-        this.optionsHTTP.port = this.optionsHTTP.port || optionsHTTP.port;
-        this.optionsHTTP.webhookURL = this.optionsHTTP.webhookURL || optionsHTTP.webhookURL;
-        this.optionsHTTP.webhookURL = this.optionsHTTP.webhookURL
-            .replace(/\/?$/, '/');
-        this.parser = new Parser_1.Parser(this.serviceID, this.logLevel);
+        if (this.token === '') {
+            throw new Error('Token should exist.');
+        }
+        this.webhookURL = obj.webhookURL.replace(/\/?$/, '/');
+        this.parser = new Parser_1.Parser(this.serviceName(), this.serviceID, this.logLevel);
         this.logger = new utils_1.Logger('adapter', this.logLevel);
+        this.router = this.setupRouter();
+        if (obj.http) {
+            this.webhookServer = new WebHookServer_1.WebHookServer(obj.http, this.router, this.logLevel);
+        }
     }
     users() {
         return Promise.resolve(this.storeUsers);
@@ -36,28 +34,41 @@ class Adapter {
     channels() {
         return Promise.reject(new Error('Not supported'));
     }
+    serviceName() {
+        return 'kik';
+    }
     serviceId() {
         return this.serviceID;
+    }
+    getRouter() {
+        if (this.webhookServer) {
+            return null;
+        }
+        return this.router;
     }
     connect() {
         if (this.connected) {
             return Rx_1.Observable.of({ type: 'connected', serviceID: this.serviceId() });
         }
-        this.connected = true;
-        if (!this.token || !this.username || !this.optionsHTTP.webhookURL) {
+        if (!this.token || !this.username || !this.webhookURL) {
             return Rx_1.Observable.throw(new Error('Credentials should exist.'));
         }
+        this.connected = true;
         this.session = new KikBot({
             apiKey: this.token,
-            baseUrl: this.optionsHTTP.webhookURL,
+            baseUrl: this.webhookURL,
             username: this.username,
         });
-        this.webhookServer = new WebHookServer_1.WebHookServer(this.optionsHTTP, this.logLevel);
-        this.webhookServer.listen(this.session.incoming());
+        if (this.webhookServer) {
+            this.webhookServer.listen();
+        }
         return Rx_1.Observable.of({ type: 'connected', serviceID: this.serviceId() });
     }
     disconnect() {
-        return Promise.reject(new Error('Not supported'));
+        if (this.webhookServer) {
+            return this.webhookServer.close();
+        }
+        return Promise.resolve(null);
     }
     listen() {
         if (!this.session) {
@@ -147,6 +158,16 @@ class Adapter {
             this.storeUsers.set(key, data);
             return data;
         });
+    }
+    setupRouter() {
+        const router = express_1.Router();
+        router.get('/', (req, res) => {
+            const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+            this.logger.info(`Request to home from ${ip}`);
+            res.send('Hello. This is a Broid Kik bot server. Got to www.broid.aid to get more details.');
+        });
+        router.use(this.session.incoming());
+        return router;
     }
 }
 exports.Adapter = Adapter;

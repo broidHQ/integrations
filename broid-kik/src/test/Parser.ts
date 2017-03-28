@@ -46,7 +46,7 @@ const userInformation: any = {
 
 let parser: Parser;
 ava.before(() => {
-  parser = new Parser('test_service', 'info');
+  parser = new Parser('kik', 'test_service', 'info');
 });
 
 ava('Parse a null', async (t) => {

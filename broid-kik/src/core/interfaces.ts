@@ -19,7 +19,6 @@
 export interface IAdapterHTTPOptions {
   host: string;
   port: number;
-  webhookURL: string;
 }
 
 export interface IAdapterOptions {
@@ -28,4 +27,5 @@ export interface IAdapterOptions {
   serviceID: string;
   token: string;
   username: string;
+  webhookURL: string;
 }

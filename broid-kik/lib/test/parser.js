@@ -33,7 +33,7 @@ const userInformation = {
 };
 let parser;
 ava_1.default.before(() => {
-    parser = new Parser_1.Parser('test_service', 'info');
+    parser = new Parser_1.Parser('kik', 'test_service', 'info');
 });
 ava_1.default('Parse a null', (t) => __awaiter(this, void 0, void 0, function* () {
     const data = parser.parse(null);
