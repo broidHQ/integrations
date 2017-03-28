@@ -15,8 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-import test from 'ava';
-import Parser from '../core/parser';
+
+import ava from 'ava';
+import { Parser } from '../core/Parser';
 
 import * as callrMessage from './fixtures/callr/message.json';
 import * as callrMessageImage from './fixtures/callr/messageImage.json';
@@ -31,61 +32,61 @@ import * as broidMessageImage from './fixtures/broid/parsed/messageImage.json';
 import * as broidMessageVideo from './fixtures/broid/parsed/messageVideo.json';
 
 let parser: Parser;
-test.before(() => {
+ava.before(() => {
   parser = new Parser('callr', 'test_service', 'info');
 });
 
-test('Parse a null', async(t) => {
+ava('Parse a null', async (t) => {
   const data = parser.parse(null);
   t.deepEqual(await data, null);
 });
 
-test('Normalize a null', async(t) => {
-  const data = parser.normalize({} as any);
+ava('Normalize a null', async (t) => {
+  const data = parser.normalize(<any> {});
   t.deepEqual(await data, null);
 });
 
-test('Normalize a simple message', async(t) => {
-  const data = parser.normalize(callrMessage as any);
+ava('Normalize a simple message', async (t) => {
+  const data = parser.normalize(<any> callrMessage);
   t.deepEqual(await data, broidMessageNormalized);
 });
 
-test('Normalize a message with image', async(t) => {
-  const data = parser.normalize(callrMessageImage as any);
+ava('Normalize a message with image', async (t) => {
+  const data = parser.normalize(<any> callrMessageImage);
   t.deepEqual(await data, broidMessageNormalizedImage);
 });
 
-test('Normalize a message with video', async(t) => {
-  const data = parser.normalize(callrMessageVideo as any);
+ava('Normalize a message with video', async (t) => {
+  const data = parser.normalize(<any> callrMessageVideo);
   t.deepEqual(await data, broidMessageNormalizedVideo);
 });
 
-test('Parse a simple message', async(t) => {
+ava('Parse a simple message', async (t) => {
   const data = parser.parse(broidMessageNormalized);
   t.deepEqual(await data, broidMessage);
 });
 
-test('Parse a message with image', async(t) => {
+ava('Parse a message with image', async (t) => {
   const data = parser.parse(broidMessageNormalizedImage);
   t.deepEqual(await data, broidMessageImage);
 });
 
-test('Parse a message with video', async(t) => {
+ava('Parse a message with video', async (t) => {
   const data = parser.parse(broidMessageNormalizedVideo);
   t.deepEqual(await data, broidMessageVideo);
 });
 
-test('Validate a simple message', async(t) => {
+ava('Validate a simple message', async (t) => {
   const data = parser.validate(broidMessage);
   t.deepEqual(await data, broidMessage);
 });
 
-test('Validate a message with image', async(t) => {
+ava('Validate a message with image', async (t) => {
   const data = parser.validate(broidMessageImage);
   t.deepEqual(await data, broidMessageImage);
 });
 
-test('Validate a message with video', async(t) => {
+ava('Validate a message with video', async (t) => {
   const data = parser.validate(broidMessageVideo);
   t.deepEqual(await data, broidMessageVideo);
 });

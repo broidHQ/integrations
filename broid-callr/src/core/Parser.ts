@@ -15,15 +15,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-import * as Promise from 'bluebird';
-import broidSchemas from '@broid/schemas';
+
+import {
+  default as schemas,
+  IActivityStream
+} from '@broid/schemas';
 import { cleanNulls, Logger } from '@broid/utils';
+
+import * as Promise from 'bluebird';
 import * as mimetype from 'mimetype';
 import * as uuid from 'node-uuid';
 import * as R from 'ramda';
 import * as validUrl from 'valid-url';
 
-import { IActivityStream, ICallrWebHookEvent } from './interfaces';
+import { ICallrWebHookEvent } from './interfaces';
 
 export class Parser {
   public serviceID: string;
@@ -48,7 +53,7 @@ export class Parser {
       return Promise.resolve(null);
     }
 
-    return broidSchemas(parsed, 'activity')
+    return schemas(parsed, 'activity')
       .then(() => parsed)
       .catch((err) => {
         this.logger.error(err);
@@ -111,12 +116,12 @@ export class Parser {
   public normalize(event: ICallrWebHookEvent): Promise<any> {
     this.logger.debug('Event received to normalize');
 
-    const body = R.path(['request', 'body'], event);
+    const body: any = <any> R.path(['request', 'body'], event);
 
     if (!body || R.isEmpty(body)) { return Promise.resolve(null); }
 
-    const type = body.type;
-    if (type !== 'sms.mo') { return Promise.resolve(null); }
+    const bodyType: string = body.type;
+    if (bodyType !== 'sms.mo') { return Promise.resolve(null); }
 
     const senderPhoneNumber = R.path(['data', 'from'], body);
     const toPhoneNumber = R.path(['data', 'to'], body);
@@ -130,7 +135,7 @@ export class Parser {
       text,
       timestamp: new Date(eventAt).getTime(),
       toPhoneNumber,
-      type,
+      type: bodyType,
     };
 
     return Promise.resolve(data);
@@ -140,7 +145,7 @@ export class Parser {
     return uuid.v4();
   }
 
-  private createActivityStream(normalized): IActivityStream {
+  private createActivityStream(normalized: any): IActivityStream {
     return {
       '@context': 'https://www.w3.org/ns/activitystreams',
       'actor': {},

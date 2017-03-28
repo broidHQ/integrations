@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
+
 export interface IAdapterHTTPOptions {
   host: string;
   port: number;
@@ -28,16 +29,6 @@ export interface IAdapterOptions {
   username: string;
   webhookURL: string;
   http?: IAdapterHTTPOptions;
-}
-
-export interface IActivityStream {
-  actor: {};
-  object: {};
-  target: {};
-  readonly '@context': string;
-  readonly published: number;
-  readonly type: string;
-  readonly generator: {};
 }
 
 export interface ICallrWebHookEvent {
