@@ -15,9 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-import * as Promise from 'bluebird';
-import { default as broidSchemas, IActivityStream } from '@broid/schemas';
+
+import { default as schemas, IActivityStream } from '@broid/schemas';
 import { cleanNulls, Logger } from '@broid/utils';
+
+import * as Promise from 'bluebird';
 import * as R from 'ramda';
 
 export class Parser {
@@ -43,7 +45,7 @@ export class Parser {
       return Promise.resolve(null);
     }
 
-    return broidSchemas(parsed, 'activity')
+    return schemas(parsed, 'activity')
       .then(() => parsed)
       .catch((err) => {
         this.logger.error(err);
@@ -83,19 +85,21 @@ export class Parser {
     if (!R.isEmpty(normalized.slots)) {
       const slots = normalized.slots;
 
-      let context = R.map((key) => {
-        const name = R.path([key, 'name'], slots);
-        const value = R.path([key, 'value'], slots);
-        if (!value) {
-          return null;
-        }
+      let context = R.map(
+        (key) => {
+          const name = R.path([key, 'name'], slots);
+          const value = R.path([key, 'value'], slots);
+          if (!value) {
+            return null;
+          }
 
-        return {
-          content: value,
-          name,
-          type: 'Object',
-        };
-      }, R.keys(slots));
+          return {
+            content: value,
+            name,
+            type: 'Object',
+          };
+        },
+        R.keys(slots));
       context = R.reject(R.isNil)(context);
 
       if (R.length(context) > 0) {

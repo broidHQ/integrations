@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
+
 import { Logger } from '@broid/utils';
 
 import * as Promise from 'bluebird';
@@ -40,7 +41,7 @@ export class WebHookServer {
     this.setupExpress(router);
   }
 
-  public listen() {
+  public listen(): void {
     this.httpClient = this.express.listen(this.port, this.host, () => {
       this.logger.info(`Server listening on port ${this.host}:${this.port}...`);
     });
@@ -50,7 +51,7 @@ export class WebHookServer {
     return Promise.fromCallback((cb) => this.httpClient.close(cb));
   }
 
-  private setupExpress(router: express.Router) {
+  private setupExpress(router: express.Router): void {
     this.express = express();
     this.express.use(bodyParser.json());
     this.express.use(bodyParser.urlencoded({ extended: false  }));

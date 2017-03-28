@@ -15,7 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-import broidSchemas from '@broid/schemas';
+
+import schemas from '@broid/schemas';
 import { Logger } from '@broid/utils';
 
 import * as Promise from 'bluebird';
@@ -88,8 +89,8 @@ export class Adapter {
       return Observable.of({ type: 'connected', serviceID: this.serviceId() });
     }
 
+    this.connected = true;
     if (this.webhookServer) {
-     this.connected = true;
      this.webhookServer.listen();
     }
 
@@ -97,6 +98,7 @@ export class Adapter {
   }
 
   public disconnect(): Promise<null> {
+    this.connected = false;
     if (this.webhookServer) {
       return this.webhookServer.close();
     }
@@ -117,7 +119,7 @@ export class Adapter {
 
   public send(data: any): Promise<object | Error> {
     this.logger.debug('sending', { message: data });
-    return broidSchemas(data, 'send')
+    return schemas(data, 'send')
       .then(() => {
         if (data.object.type !== 'Note') {
           return Promise.reject(new Error('Only Note is supported.'));
@@ -183,9 +185,9 @@ export class Adapter {
       this.emitter.once(`response:${messageID}`, responseListener);
 
       // save memory
-      setTimeout(() =>
-        this.emitter.removeListener(`response:${messageID}`, responseListener)
-      , 60000);
+      setTimeout(
+        () => this.emitter.removeListener(`response:${messageID}`, responseListener),
+        60000);
 
       res.sendStatus(200);
     };
