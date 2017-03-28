@@ -51,6 +51,29 @@ googleAssistant.connect()
   });
 ```
 
+Google Assitant can also be used with your existing express setup.
+
+```javascript
+const BroidGoogleAssistant = require('broid-google-assistant');
+const express = require("express");
+
+const googleAssistant = new BroidGoogleAssistant({
+  username: '<your_action_name_here>',
+});
+
+const app = express();
+app.use("/googleAssistant", googleAssistant.getRouter());
+
+googleAssistant.connect()
+  .subscribe({
+    next: data => console.log(data),
+    error: err => console.error(`Something went wrong: ${err.message}`),
+    complete: () => console.log('complete'),
+  });
+
+app.listen(8080);
+```
+
 **Options available**
 
 | name            | Type     | default    | Description  |

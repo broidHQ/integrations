@@ -45,7 +45,7 @@ export default class Adapter {
     this.parser = new Parser(this.serviceName(), this.serviceID, this.username, this.logLevel);
     this.logger = new Logger("adapter", this.logLevel);
     this.router = this.setupRouter();
-    
+
     if (obj.http) {
      this.webhookServer = new WebHookServer(obj.http, this.router, this.logLevel);
     }
@@ -72,9 +72,9 @@ export default class Adapter {
   }
 
   // Returns the intialized express router
-  public getRouter(): Router {
+  public getRouter(): Router | null {
     if (this.webhookServer) {
-      return false;
+      return null;
     }
 
     return this.router;
@@ -101,11 +101,11 @@ export default class Adapter {
     return Observable.of(({ type: "connected", serviceID: this.serviceId() }));
   }
 
-  public disconnect(): Promise<boolean> {
+  public disconnect(): Promise<null> {
     if (this.webhookServer) {
-      return this.webhookServer.close().then(() => true);
+      return this.webhookServer.close();
     }
-    return Promise.resolve(true);
+    return Promise.resolve(null);
   }
 
   // Listen "message" event from Google
