@@ -15,9 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-import * as Promise from 'bluebird';
-import broidSchemas, { ISendParameters } from '@broid/schemas';
+
+import schemas, { ISendParameters } from '@broid/schemas';
 import { Logger } from '@broid/utils';
+
+import * as Promise from 'bluebird';
 import * as crypto from 'crypto';
 import { EventEmitter } from 'events';
 import { Router } from 'express';
@@ -36,7 +38,6 @@ import { WebHookServer } from './WebHookServer';
 
 export class Adapter {
   public serviceID: string;
-
   private appID: string;
   private appSecret: string;
   private client: any;
@@ -118,6 +119,7 @@ export class Adapter {
       });
   }
 
+  // TODO: https://github.com/broidHQ/integrations/issues/114
   public users(): Promise<any | Error> {
     return this.client.getFollowersAsync()
       .then((res) => this.client.batchGetUsersAsync(res.data.openid))
@@ -134,7 +136,7 @@ export class Adapter {
   public send(data: ISendParameters): Promise<object | Error> {
     this.logger.debug('sending', { message: data });
 
-    return broidSchemas(data, 'send')
+    return schemas(data, 'send')
       .then(() => {
         switch (data.object.type) {
           case 'Note':
@@ -161,7 +163,7 @@ export class Adapter {
       .then(() => ({ type: 'sent', serviceID: this.serviceId() }));
   }
 
-  private uploadFile(url: string, type: string, file: string): Promise<string> {
+  private uploadFile(url: string, fType: string, file: string): Promise<string> {
     const tmpdir: string = tmp.dirSync().name;
     const filePath: string = path.join(tmpdir, file);
     const fileStream = fs.createWriteStream(filePath);
@@ -177,7 +179,7 @@ export class Adapter {
           resolve();
         });
     })
-    .then(() => this.client.uploadMediaAsync(filePath, type))
+    .then(() => this.client.uploadMediaAsync(filePath, fType))
     .then((res) => {
       fs.removeSync(tmpdir);
       if (res.errcode) {
