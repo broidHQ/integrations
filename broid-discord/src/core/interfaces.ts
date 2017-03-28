@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
+
 export interface IAdapterOptions {
   token: string;
   serviceID: string;
@@ -33,14 +34,4 @@ export interface IChannelInformations {
   readonly id: string;
   readonly name: string;
   readonly topic: string;
-}
-
-export interface IActivityStream {
-  readonly '@context': string;
-  readonly published: number;
-  readonly type: string;
-  readonly generator: any;
-  actor?: any;
-  target?: any;
-  object?: any;
 }

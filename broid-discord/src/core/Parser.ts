@@ -15,13 +15,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-import * as Promise from 'bluebird';
-import broidSchemas from '@broid/schemas';
+
+import {
+ default as schemas,
+ IActivityStream
+} from '@broid/schemas';
 import { cleanNulls, Logger } from '@broid/utils';
+
+import * as Promise from 'bluebird';
 import * as mimetype from 'mimetype';
 import * as R from 'ramda';
-
-import { IActivityStream } from './interfaces';
 
 export class Parser {
   public serviceID: string;
@@ -35,7 +38,7 @@ export class Parser {
   }
 
   // Validate parsed data with Broid schema validator
-  public validate(event: any): Promise<object> {
+  public validate(event: any): Promise<object | null> {
     this.logger.debug('Validation process', { event });
 
     const parsed = cleanNulls(event);
@@ -46,7 +49,7 @@ export class Parser {
       return Promise.resolve(null);
     }
 
-    return broidSchemas(parsed, 'activity')
+    return schemas(parsed, 'activity')
       .then(() => parsed)
       .catch((err) => {
         this.logger.error(err);
@@ -88,11 +91,13 @@ export class Parser {
       const m = this.parseMedia(normalized.attachments[0], normalized.content);
       if (m) { activitystreams.object = m; }
     } else if (R.length(normalized.attachments) > 1) {
-      let attachments = R.map((mediaURL) => {
-        const m = this.parseMedia(mediaURL, null);
-        if (m) { return m; }
-        return null;
-      }, normalized.attachments);
+      let attachments = R.map(
+        (mediaURL) => {
+          const m = this.parseMedia(mediaURL, null);
+          if (m) { return m; }
+          return null;
+        },
+        normalized.attachments);
 
       attachments = R.reject(R.isNil)(attachments);
       if (!R.isEmpty(attachments) && !R.isEmpty(normalized.content)) {
@@ -117,26 +122,26 @@ export class Parser {
   }
 
   private parseMedia(media: any, content: string | null): object | null {
-    let type: string | null = null;
+    let mediaType: string | null = null;
     const mimeType = mimetype.lookup(media.filename);
-    if (mimeType.startsWith('image')) { type = 'Image'; }
-    if (mimeType.startsWith('video')) { type = 'Video'; }
+    if (mimeType.startsWith('image')) { mediaType = 'Image'; }
+    if (mimeType.startsWith('video')) { mediaType = 'Video'; }
 
-    if (type && content) {
+    if (mediaType && content) {
       return {
         content,
         id: media.id,
         mediaType: mimeType,
         name: media.filename,
-        type,
+        type: mediaType,
         url: media.url,
       };
-    } else if (type) {
+    } else if (mediaType) {
       return {
         id: media.id,
         mediaType: mimeType,
         name: media.filename,
-        type,
+        type: mediaType,
         url: media.url,
       };
     }
@@ -144,7 +149,7 @@ export class Parser {
     return null;
   }
 
-  private createActivityStream(normalized): IActivityStream {
+  private createActivityStream(normalized: any): IActivityStream {
     return {
       '@context': 'https://www.w3.org/ns/activitystreams',
       'generator': {

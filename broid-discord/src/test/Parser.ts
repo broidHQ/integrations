@@ -15,8 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-import test from 'ava';
-import Parser from '../core/parser';
+
+import ava from 'ava';
+import { Parser } from '../core/Parser';
 
 import * as broidMessage from './fixtures/broid/message.json';
 import * as broidMessageEdited from './fixtures/broid/messageEdited.json';
@@ -33,66 +34,66 @@ import * as discordMessagePrivateWithMedia from './fixtures/discord/messagePriva
 import * as discordMessageWithMedia from './fixtures/discord/messageWithMedia.json';
 
 let parser: Parser;
-test.before(() => {
+ava.before(() => {
   parser = new Parser('test_service', 'info');
 });
 
-test('Parse a simple message', async(t) => {
+ava('Parse a simple message', async (t) => {
   const data = parser.parse(discordMessage);
   t.deepEqual(await data, broidMessage);
 });
 
-test('Parse a message with media', async(t) => {
+ava('Parse a message with media', async (t) => {
   const data = parser.parse(discordMessageWithMedia);
   t.deepEqual(await data, broidMessageWithMedia);
 });
 
-test('Parse a edited message', async(t) => {
+ava('Parse a edited message', async (t) => {
   const data = parser.parse(discordMessageEdited);
   t.deepEqual(await data, broidMessageEdited);
 });
 
-test('Parse a private message', async(t) => {
+ava('Parse a private message', async (t) => {
   const data = parser.parse(discordMessagePrivate);
   t.deepEqual(await data, broidMessagePrivate);
 });
 
-test('Parse a privatemessage with media', async(t) => {
+ava('Parse a privatemessage with media', async (t) => {
   const data = parser.parse(discordMessagePrivateWithMedia);
   t.deepEqual(await data, broidMessagePrivateWithMedia);
 });
 
-test('Parse a private edited message', async(t) => {
+ava('Parse a private edited message', async (t) => {
   const data = parser.parse(discordMessagePrivateEdited);
   t.deepEqual(await data, broidMessagePrivateEdited);
 });
 
-test('Validate a simple message', async(t) => {
+ava('Validate a simple message', async (t) => {
   const data = parser.validate(broidMessage);
   t.deepEqual(await data, broidMessage);
 });
 
-test('Validate a message with media', async(t) => {
+ava('Validate a message with media', async (t) => {
   const data = parser.validate(broidMessageWithMedia);
   t.deepEqual(await data, broidMessageWithMedia);
 });
 
-test('Validate a edited message', async(t) => {
+ava('Validate a edited message', async (t) => {
   const data = parser.validate(broidMessageEdited);
   t.deepEqual(await data, broidMessageEdited);
 });
 
-test('Validate a private message', async(t) => {
+ava('Validate a private message', async (t) => {
   const data = parser.validate(broidMessagePrivate);
   t.deepEqual(await data, broidMessagePrivate);
 });
 
-test('Validate a privatemessage with media', async(t) => {
+ava('Validate a privatemessage with media', async (t) => {
   const data = parser.validate(broidMessagePrivateWithMedia);
   t.deepEqual(await data, broidMessagePrivateWithMedia);
 });
 
-test('Validate a private edited message', async(t) => {
+ava('Validate a private edited message', async (t) => {
   const data = parser.validate(broidMessagePrivateEdited);
   t.deepEqual(await data, broidMessagePrivateEdited);
 });

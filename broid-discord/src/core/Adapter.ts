@@ -15,9 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-import * as Promise from 'bluebird';
-import broidSchemas from '@broid/schemas';
+
+import schemas from '@broid/schemas';
 import { Logger } from '@broid/utils';
+
+import * as Promise from 'bluebird';
 import * as Discordie from 'discordie';
 import * as uuid from 'node-uuid';
 import * as R from 'ramda';
@@ -31,6 +33,7 @@ import { Parser } from './Parser';
 export class Adapter {
   public serviceID: string;
   public token: string | null;
+  private connected: boolean;
   private session: any;
   private parser: Parser;
   private logLevel: string;
@@ -48,18 +51,17 @@ export class Adapter {
     this.logger = new Logger('adapter', this.logLevel);
   }
 
-  // Return list of users information
-  public users(): Promise {
+  // Return list of users information\
+  // TODO: https://github.com/broidHQ/integrations/issues/114
+  public users(): Promise<any> {
     return new Promise((resolve) => {
       const users = this.session.Users.map((u) => {
-        const information: IUserInformations = {
+        return <IUserInformations> {
           avatar: u.avatar,
           id: u.id,
           is_bot: u.bot,
           username: u.username,
         };
-
-        return information;
       });
 
       resolve(users);
@@ -67,18 +69,17 @@ export class Adapter {
   }
 
   // Return list of channels information
-  public channels(): Promise {
+  // TODO: https://github.com/broidHQ/integrations/issues/114
+  public channels(): Promise<any> {
     return new Promise((resolve) => {
       const channels = this.session.Channels.map((c) => {
         if (c.type !== 0) { return null; }
-        const information: IChannelInformations = {
+        return <IChannelInformations> {
           guildID: c.guild_id,
           id: c.id,
           name: c.name,
           topic: c.topic,
         };
-
-        return information;
       });
 
       resolve(R.reject(R.isNil)(channels));
@@ -96,6 +97,11 @@ export class Adapter {
       return Observable.throw(new Error('Token should exist.'));
     }
 
+    if (this.connected) {
+      return Observable.of({ type: 'connected', serviceID: this.serviceId() });
+    }
+
+    this.connected = true;
     this.session.connect({ token: this.token });
 
     const connected = Observable
@@ -109,11 +115,9 @@ export class Adapter {
     return Observable.merge(connected, disconnected);
   }
 
-  public disconnect(): Promise<any> {
-    return new Promise((resolve) => {
-      this.session.disconnect();
-      return resolve({ type: 'disconnected', serviceID: this.serviceId() });
-    });
+  public disconnect(): Promise<null> {
+    this.connected = false;
+    return Promise.resolve(null);
   }
 
   // Listen 'message' event from Discord
@@ -167,7 +171,7 @@ export class Adapter {
       });
   }
 
-  public send(data: object): Promise {
+  public send(data: object): Promise<object | Error> {
     this.logger.debug('sending', { message: data });
 
     const updateMessage = (message) => {
@@ -177,7 +181,7 @@ export class Adapter {
       return this.session.Messages.deleteMessage(message);
     };
 
-    return broidSchemas(data, 'send')
+    return schemas(data, 'send')
       .then(() => {
         const targetType = R.path(['to', 'type'], data);
         const targetID = R.path(['to', 'id'], data);
@@ -192,16 +196,16 @@ export class Adapter {
       })
       .then((channel) => {
         const content = R.path(['object', 'content'], data);
-        const type = R.path(['object', 'type'], data);
+        const objectType = R.path(['object', 'type'], data);
 
-        if (type === 'Note') {
+        if (objectType === 'Note') {
           const messageID = R.path(['object', 'id'], data);
           if (messageID) {
             return updateMessage({ id: messageID, channel_id: channel.id, content });
           }
           return channel.sendMessage(content);
-        } else if (type === 'Image' || type === 'Video') {
-          const url  = R.path(['object', 'url'], data);
+        } else if (objectType === 'Image' || objectType === 'Video') {
+          const url: string  = <string> R.path(['object', 'url'], data);
           const name = R.path(['object', 'name'], data);
 
           if (url.startsWith('http://') || url.startsWith('https://')) {
