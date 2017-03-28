@@ -1,28 +1,28 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Promise = require("bluebird");
 const schemas_1 = require("@broid/schemas");
 const utils_1 = require("@broid/utils");
+const Promise = require("bluebird");
 const R = require("ramda");
 class Parser {
     constructor(serviceName, wechatClient, serviceID, logLevel) {
         this.generatorName = serviceName;
         this.serviceID = serviceID;
-        this.logger = new utils_1.Logger("parser", logLevel);
+        this.logger = new utils_1.Logger('parser', logLevel);
         this.userCache = new Map();
         this.wechatClient = wechatClient;
     }
     validate(event) {
-        this.logger.debug("Validation process", { event });
+        this.logger.debug('Validation process', { event });
         const parsed = utils_1.cleanNulls(event);
         if (!parsed || R.isEmpty(parsed)) {
             return Promise.resolve(null);
         }
         if (!parsed.type) {
-            this.logger.debug("Type not found.", { parsed });
+            this.logger.debug('Type not found.', { parsed });
             return Promise.resolve(null);
         }
-        return schemas_1.default(parsed, "activity")
+        return schemas_1.default(parsed, 'activity')
             .return(parsed)
             .catch((err) => {
             this.logger.error(err);
@@ -30,20 +30,20 @@ class Parser {
         });
     }
     parse(event) {
-        this.logger.debug("Normalized process");
+        this.logger.debug('Normalized process');
         const normalized = utils_1.cleanNulls(event);
         if (!normalized || R.isEmpty(normalized)) {
             return Promise.resolve(null);
         }
         switch (normalized.msgtype[0]) {
-            case "image":
+            case 'image':
                 return this.parseImage(normalized);
-            case "text":
+            case 'text':
                 return this.parseText(normalized);
-            case "video":
-                return this.parseMultiMedia(normalized, "Video", "video/mp4");
-            case "voice":
-                return this.parseMultiMedia(normalized, "Audio", "audio/amr");
+            case 'video':
+                return this.parseMultiMedia(normalized, 'Video', 'video/mp4');
+            case 'voice':
+                return this.parseMultiMedia(normalized, 'Audio', 'audio/amr');
             default:
                 return Promise.resolve(null);
         }
@@ -61,28 +61,27 @@ class Parser {
     createActivityStream(normalized) {
         return this.getUserName(normalized.fromusername[0])
             .then((nickname) => {
-            const message = {
-                "@context": "https://www.w3.org/ns/activitystreams",
-                "actor": {
+            return {
+                '@context': 'https://www.w3.org/ns/activitystreams',
+                'actor': {
                     id: normalized.fromusername[0],
                     name: nickname,
-                    type: "Person",
+                    type: 'Person',
                 },
-                "generator": {
+                'generator': {
                     id: this.serviceID,
                     name: this.generatorName,
-                    type: "Service",
+                    type: 'Service',
                 },
-                "object": {},
-                "published": parseInt(normalized.createtime[0], 10),
-                "target": {
+                'object': {},
+                'published': parseInt(normalized.createtime[0], 10),
+                'target': {
                     id: normalized.tousername[0],
                     name: normalized.tousername[0],
-                    type: "Person",
+                    type: 'Person',
                 },
-                "type": "Create",
+                'type': 'Create',
             };
-            return message;
         });
     }
     parseImage(normalized) {
@@ -90,8 +89,8 @@ class Parser {
             .then((message) => {
             message.object = {
                 id: normalized.msgid[0],
-                mediaType: "image/jpeg",
-                type: "Image",
+                mediaType: 'image/jpeg',
+                type: 'Image',
                 url: normalized.picurl[0],
             };
             return message;
@@ -103,14 +102,14 @@ class Parser {
             message.object = {
                 content: normalized.content[0],
                 id: normalized.msgid[0],
-                type: "Note",
+                type: 'Note',
             };
             return message;
         });
     }
     parseMultiMedia(normalized, messageType, mediaType) {
         const getAccessToken = this.wechatClient.getLatestTokenAsync()
-            .then(R.prop("accessToken"));
+            .then(R.prop('accessToken'));
         return Promise.join(getAccessToken, this.createActivityStream(normalized))
             .spread((accessToken, message) => {
             message.object = {
@@ -123,4 +122,4 @@ class Parser {
         });
     }
 }
-exports.default = Parser;
+exports.Parser = Parser;

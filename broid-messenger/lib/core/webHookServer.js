@@ -8,7 +8,7 @@ class WebHookServer {
     constructor(options, router, logLevel) {
         this.host = options.host;
         this.port = options.port;
-        this.logger = new utils_1.Logger("webhook_server", logLevel || "info");
+        this.logger = new utils_1.Logger('webhook_server', logLevel || 'info');
         this.setupExpress(router);
     }
     listen() {
@@ -23,7 +23,7 @@ class WebHookServer {
         this.express = express();
         this.express.use(bodyParser.json());
         this.express.use(bodyParser.urlencoded({ extended: false }));
-        this.express.use("/", router);
+        this.express.use('/', router);
     }
 }
-exports.default = WebHookServer;
+exports.WebHookServer = WebHookServer;

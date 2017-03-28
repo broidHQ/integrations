@@ -1,14 +1,15 @@
 "use strict";
-const Promise = require("bluebird");
+Object.defineProperty(exports, "__esModule", { value: true });
 const schemas_1 = require("@broid/schemas");
 const utils_1 = require("@broid/utils");
+const Promise = require("bluebird");
 const events_1 = require("events");
 const Gitter = require("node-gitter");
 const uuid = require("node-uuid");
 const R = require("ramda");
 const Rx_1 = require("rxjs/Rx");
 const parser_1 = require("./parser");
-const eventNames = ["chatMessages"];
+const eventNames = ['chatMessages'];
 const roomToInfos = (room) => ({
     id: room.id,
     name: room.name,
@@ -19,14 +20,14 @@ const roomToInfos = (room) => ({
 class Adapter {
     constructor(obj) {
         this.serviceID = obj && obj.serviceID || uuid.v4();
-        this.logLevel = obj && obj.logLevel || "info";
+        this.logLevel = obj && obj.logLevel || 'info';
         this.token = obj && obj.token || null;
         this.ee = new events_1.EventEmitter();
-        this.parser = new parser_1.default(this.serviceID, this.logLevel);
-        this.logger = new utils_1.Logger("adapter", this.logLevel);
+        this.parser = new parser_1.Parser(this.serviceID, this.logLevel);
+        this.logger = new utils_1.Logger('adapter', this.logLevel);
     }
     users() {
-        return Promise.reject(new Error("Not supported"));
+        return Promise.reject(new Error('Not supported'));
     }
     channels() {
         return new Promise((resolve, reject) => {
@@ -40,14 +41,14 @@ class Adapter {
         return this.serviceID;
     }
     connect() {
-        if (!this.token || this.token === "") {
-            return Rx_1.Observable.throw(new Error("Token should exist."));
+        if (!this.token || this.token === '') {
+            return Rx_1.Observable.throw(new Error('Token should exist.'));
         }
         this.session = new Gitter(this.token);
         const handler = (room, eventName) => {
             return (data) => {
-                if (data.operation === "create"
-                    && this.me.username !== R.path(["model", "fromUser", "username"], data)) {
+                if (data.operation === 'create'
+                    && this.me.username !== R.path(['model', 'fromUser', 'username'], data)) {
                     return this.ee.emit(eventName, {
                         data: data.model,
                         room: roomToInfos(room),
@@ -69,14 +70,14 @@ class Adapter {
             return room;
         });
         return Rx_1.Observable.fromPromise(connect)
-            .map(() => ({ type: "connected", serviceID: this.serviceId() }));
+            .map(() => ({ type: 'connected', serviceID: this.serviceId() }));
     }
     disconnect() {
-        return Promise.reject(new Error("Not supported"));
+        return Promise.reject(new Error('Not supported'));
     }
     listen() {
         if (!this.session) {
-            return Rx_1.Observable.throw(new Error("No session found."));
+            return Rx_1.Observable.throw(new Error('No session found.'));
         }
         const fromEvents = R.map((eventName) => Rx_1.Observable.fromEvent(this.ee, eventName), eventNames);
         return Rx_1.Observable.merge(...fromEvents)
@@ -90,15 +91,15 @@ class Adapter {
         });
     }
     send(data) {
-        this.logger.debug("sending", { message: data });
-        return schemas_1.default(data, "send")
+        this.logger.debug('sending', { message: data });
+        return schemas_1.default(data, 'send')
             .then(() => {
-            if (data.object.type !== "Note") {
-                return Promise.reject(new Error("Only Note is supported."));
+            if (data.object.type !== 'Note') {
+                return Promise.reject(new Error('Only Note is supported.'));
             }
             return Promise.resolve(data)
                 .then((result) => {
-                const roomID = R.path(["to", "id"], result);
+                const roomID = R.path(['to', 'id'], result);
                 return this.channels()
                     .filter((room) => room.id === roomID)
                     .then((rooms) => {
@@ -110,14 +111,15 @@ class Adapter {
                 });
             })
                 .spread((result, room) => {
-                const content = R.path(["object", "content"], result);
-                const contentID = R.path(["object", "id"], result);
+                const content = R.path(['object', 'content'], result);
+                const contentID = R.path(['object', 'id'], result);
                 if (contentID) {
-                    return this.session.client.put(`${room.path}/${room.id}/chatMessages/${contentID}`, { body: { text: content } });
+                    return this.session.client
+                        .put(`${room.path}/${room.id}/chatMessages/${contentID}`, { body: { text: content } });
                 }
                 return room.send(content);
             })
-                .then((response) => ({ type: "sent", serviceID: this.serviceId(), id: response.id }));
+                .then((response) => ({ type: 'sent', serviceID: this.serviceId(), id: response.id }));
         });
     }
     joinRoom(room) {
@@ -128,7 +130,7 @@ class Adapter {
                     .catch(reject);
             }
             else if (room.url) {
-                return this.session.rooms.join(room.url.replace(/^\/|\/$/g, ""))
+                return this.session.rooms.join(room.url.replace(/^\/|\/$/g, ''))
                     .then(resolve)
                     .catch(reject);
             }
@@ -136,5 +138,4 @@ class Adapter {
         });
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = Adapter;
+exports.Adapter = Adapter;

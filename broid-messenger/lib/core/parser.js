@@ -10,19 +10,19 @@ class Parser {
     constructor(serviceName, serviceID, logLevel) {
         this.serviceID = serviceID;
         this.generatorName = serviceName;
-        this.logger = new utils_1.Logger("parser", logLevel);
+        this.logger = new utils_1.Logger('parser', logLevel);
     }
     validate(event) {
-        this.logger.debug("Validation process", { event });
+        this.logger.debug('Validation process', { event });
         const parsed = utils_1.cleanNulls(event);
         if (!parsed || R.isEmpty(parsed)) {
             return Promise.resolve(null);
         }
         if (!parsed.type) {
-            this.logger.debug("Type not found.", { parsed });
+            this.logger.debug('Type not found.', { parsed });
             return Promise.resolve(null);
         }
-        return schemas_1.default(parsed, "activity")
+        return schemas_1.default(parsed, 'activity')
             .then(() => parsed)
             .catch((err) => {
             this.logger.error(err);
@@ -30,29 +30,29 @@ class Parser {
         });
     }
     parse(event) {
-        this.logger.debug("Parse process", { event });
+        this.logger.debug('Parse process', { event });
         const normalized = utils_1.cleanNulls(event);
         if (!normalized || R.isEmpty(normalized)) {
             return Promise.resolve(null);
         }
         const activitystreams = this.createActivityStream(normalized);
         activitystreams.actor = {
-            id: R.path(["authorInformation", "id"], normalized),
-            name: utils_1.concat([R.path(["authorInformation", "first_name"], normalized),
-                R.path(["authorInformation", "last_name"], normalized)]),
-            type: "Person",
+            id: R.path(['authorInformation', 'id'], normalized),
+            name: utils_1.concat([R.path(['authorInformation', 'first_name'], normalized),
+                R.path(['authorInformation', 'last_name'], normalized)]),
+            type: 'Person',
         };
         activitystreams.target = {
             id: normalized.channel,
             name: normalized.channel,
-            type: "Person",
+            type: 'Person',
         };
         let attachments = [];
         if (normalized.attachments) {
             attachments = R.map((attachment) => this.parseAttachment(attachment), normalized.attachments);
             attachments = R.reject(R.isNil)(attachments);
         }
-        const places = R.filter((attachment) => attachment.type === "Place", attachments);
+        const places = R.filter((attachment) => attachment.type === 'Place', attachments);
         if (R.length(places) === 1) {
             activitystreams.object = places[0];
             activitystreams.object.id = normalized.mid;
@@ -71,22 +71,22 @@ class Parser {
         else if (R.length(attachments) > 1) {
             activitystreams.object = {
                 attachment: attachments,
-                content: normalized.content || "",
+                content: normalized.content || '',
                 id: normalized.mid || this.createIdentifier(),
-                type: "Note",
+                type: 'Note',
             };
         }
         if (!activitystreams.object && !R.isEmpty(normalized.content)) {
             activitystreams.object = {
                 content: normalized.content,
                 id: normalized.mid || this.createIdentifier(),
-                type: "Note",
+                type: 'Note',
             };
         }
         return Promise.resolve(activitystreams);
     }
     normalize(event) {
-        this.logger.debug("Event received to normalize");
+        this.logger.debug('Event received to normalize');
         const req = event.request;
         const body = req.body;
         if (!body || R.isEmpty(body)) {
@@ -130,41 +130,40 @@ class Parser {
     }
     createActivityStream(normalized) {
         return {
-            "@context": "https://www.w3.org/ns/activitystreams",
-            "generator": {
+            '@context': 'https://www.w3.org/ns/activitystreams',
+            'generator': {
                 id: this.serviceID,
                 name: this.generatorName,
-                type: "Service",
+                type: 'Service',
             },
-            "published": normalized.createdTimestamp ?
+            'published': normalized.createdTimestamp ?
                 Math.floor(normalized.createdTimestamp / 1000)
                 : Math.floor(Date.now() / 1000),
-            "type": "Create",
+            'type': 'Create',
         };
     }
     parseAttachment(attachment) {
-        if (attachment.type.toLowerCase() === "image"
-            || attachment.type.toLowerCase() === "video") {
+        if (attachment.type.toLowerCase() === 'image'
+            || attachment.type.toLowerCase() === 'video') {
             const a = {
                 type: utils_1.capitalizeFirstLetter(attachment.type.toLowerCase()),
-                url: R.path(["payload", "url"], attachment),
+                url: R.path(['payload', 'url'], attachment),
             };
             if (a.url) {
-                a.mediaType = mimetype.lookup(a.url.split("?")[0]);
+                a.mediaType = mimetype.lookup(a.url.split('?')[0]);
                 return a;
             }
         }
-        else if (attachment.type.toLowerCase() === "location") {
-            const p = {
+        else if (attachment.type.toLowerCase() === 'location') {
+            return {
                 id: this.createIdentifier(),
-                latitude: R.path(["payload", "coordinates", "lat"], attachment),
-                longitude: R.path(["payload", "coordinates", "long"], attachment),
+                latitude: R.path(['payload', 'coordinates', 'lat'], attachment),
+                longitude: R.path(['payload', 'coordinates', 'long'], attachment),
                 name: attachment.title,
-                type: "Place",
+                type: 'Place',
             };
-            return p;
         }
         return null;
     }
 }
-exports.default = Parser;
+exports.Parser = Parser;

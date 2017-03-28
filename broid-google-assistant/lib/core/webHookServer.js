@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const utils_1 = require("@broid/utils");
 const Promise = require("bluebird");
 const bodyParser = require("body-parser");
-const utils_1 = require("@broid/utils");
 const express = require("express");
 class WebHookServer {
     constructor(options, router, logLevel) {
-        this.logger = new utils_1.Logger("webhook_server", logLevel || "info");
+        this.logger = new utils_1.Logger('webhook_server', logLevel || 'info');
         this.host = options.host;
         this.port = options.port;
         this.setupExpress(router);
@@ -23,7 +23,7 @@ class WebHookServer {
         this.express = express();
         this.express.use(bodyParser.json());
         this.express.use(bodyParser.urlencoded({ extended: false }));
-        this.express.use("/", router);
+        this.express.use('/', router);
     }
 }
-exports.default = WebHookServer;
+exports.WebHookServer = WebHookServer;

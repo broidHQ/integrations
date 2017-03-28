@@ -1,7 +1,0 @@
-{
-  "extends": "tslint:latest",
-  "rulesDirectory": "node_modules/tslint-eslint-rules/dist/rules",
-  "rules": {
-    "max-line-length": [true, 200]
-  }
-}

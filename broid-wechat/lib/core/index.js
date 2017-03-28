@@ -1,3 +1,3 @@
 "use strict";
-const adapter_1 = require("./adapter");
-module.exports = adapter_1.default;
+const Adapter_1 = require("./Adapter");
+module.exports = Adapter_1.Adapter;

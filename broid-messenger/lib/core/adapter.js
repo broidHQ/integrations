@@ -8,33 +8,34 @@ const uuid = require("node-uuid");
 const R = require("ramda");
 const rp = require("request-promise");
 const Rx_1 = require("rxjs/Rx");
-const parser_1 = require("./parser");
-const webHookServer_1 = require("./webHookServer");
+const helpers_1 = require("./helpers");
+const Parser_1 = require("./Parser");
+const WebHookServer_1 = require("./WebHookServer");
 class Adapter {
     constructor(obj) {
         this.serviceID = obj && obj.serviceID || uuid.v4();
-        this.logLevel = obj && obj.logLevel || "info";
+        this.logLevel = obj && obj.logLevel || 'info';
         this.token = obj && obj.token || null;
         this.tokenSecret = obj && obj.tokenSecret || null;
         this.storeUsers = new Map();
-        this.parser = new parser_1.default(this.serviceName(), this.serviceID, this.logLevel);
-        this.logger = new utils_1.Logger("adapter", this.logLevel);
+        this.parser = new Parser_1.Parser(this.serviceName(), this.serviceID, this.logLevel);
+        this.logger = new utils_1.Logger('adapter', this.logLevel);
         this.router = this.setupRouter();
         if (obj.http) {
-            this.webhookServer = new webHookServer_1.default(obj.http, this.router, this.logLevel);
+            this.webhookServer = new WebHookServer_1.WebHookServer(obj.http, this.router, this.logLevel);
         }
     }
     users() {
         return Promise.resolve(this.storeUsers);
     }
     channels() {
-        return Promise.reject(new Error("Not supported"));
+        return Promise.reject(new Error('Not supported'));
     }
     serviceId() {
         return this.serviceID;
     }
     serviceName() {
-        return "messenger";
+        return 'messenger';
     }
     getRouter() {
         if (this.webhookServer) {
@@ -44,27 +45,27 @@ class Adapter {
     }
     connect() {
         if (this.connected) {
-            return Rx_1.Observable.of({ type: "connected", serviceID: this.serviceId() });
+            return Rx_1.Observable.of({ type: 'connected', serviceID: this.serviceId() });
         }
         if (!this.token
             || !this.tokenSecret) {
-            return Rx_1.Observable.throw(new Error("Credentials should exist."));
+            return Rx_1.Observable.throw(new Error('Credentials should exist.'));
         }
         this.connected = true;
         if (this.webhookServer) {
             this.webhookServer.listen();
         }
-        return Rx_1.Observable.of({ type: "connected", serviceID: this.serviceId() });
+        return Rx_1.Observable.of({ type: 'connected', serviceID: this.serviceId() });
     }
     disconnect() {
-        return Promise.reject(new Error("Not supported"));
+        return Promise.reject(new Error('Not supported'));
     }
     listen() {
-        return Rx_1.Observable.fromEvent(this.emitter, "message")
+        return Rx_1.Observable.fromEvent(this.emitter, 'message')
             .mergeMap((event) => this.parser.normalize(event))
             .mergeMap((messages) => Rx_1.Observable.from(messages))
             .mergeMap((message) => this.user(message.author)
-            .then((author) => R.assoc("authorInformation", author, message)))
+            .then((author) => R.assoc('authorInformation', author, message)))
             .mergeMap((normalized) => this.parser.parse(normalized))
             .mergeMap((parsed) => this.parser.validate(parsed))
             .mergeMap((validated) => {
@@ -75,145 +76,70 @@ class Adapter {
         });
     }
     send(data) {
-        this.logger.debug("sending", { message: data });
-        return schemas_1.default(data, "send")
+        this.logger.debug('sending', { message: data });
+        return schemas_1.default(data, 'send')
             .then(() => {
-            const toID = R.path(["to", "id"], data)
-                || R.path(["to", "name"], data);
-            const type = R.path(["object", "type"], data);
-            const content = R.path(["object", "content"], data);
-            const name = R.path(["object", "name"], data) || content;
-            const attachments = R.path(["object", "attachment"], data) || [];
-            const buttons = R.filter((attachment) => attachment.type === "Button", attachments);
-            const quickReplies = R.filter((button) => button.mediaType === "application/vnd.geo+json", buttons);
-            let fButtons = R.map((button) => {
-                if (!button.mediaType) {
-                    return {
-                        payload: button.url,
-                        title: button.name,
-                        type: "postback",
-                    };
-                }
-                else if (button.mediaType === "text/html") {
-                    return {
-                        title: button.name,
-                        type: "web_url",
-                        url: button.url,
-                    };
-                }
-                else if (button.mediaType === "audio/telephone-event") {
-                    return {
-                        payload: button.url,
-                        title: button.name,
-                        type: "phone_number",
-                    };
-                }
-                return null;
-            }, buttons);
-            fButtons = R.reject(R.isNil)(fButtons);
-            let fbQuickReplies = R.map((button) => {
-                if (button.mediaType === "application/vnd.geo+json") {
-                    return {
-                        content_type: "location",
-                    };
-                }
-                return null;
-            }, quickReplies);
-            fbQuickReplies = R.reject(R.isNil)(fbQuickReplies);
+            const toID = R.path(['to', 'id'], data) ||
+                R.path(['to', 'name'], data);
+            const dataType = R.path(['object', 'type'], data);
+            const content = R.path(['object', 'content'], data);
+            const name = R.path(['object', 'name'], data) || content;
+            const attachments = R.path(['object', 'attachment'], data) || [];
+            const buttons = R.filter((attachment) => attachment.type === 'Button', attachments);
+            const quickReplies = R.filter((button) => button.mediaType === 'application/vnd.geo+json', buttons);
+            const fButtons = helpers_1.createButtons(buttons);
+            const fbQuickReplies = helpers_1.parseQuickReplies(quickReplies);
             const messageData = {
-                message: {
-                    attachment: {},
-                    text: "",
-                },
+                message: { attachment: {}, text: '', },
                 recipient: { id: toID },
             };
             if (R.length(fbQuickReplies) > 0) {
                 messageData.message.quick_replies = fbQuickReplies;
             }
-            if (type === "Image") {
-                const attachment = {
-                    payload: {
-                        elements: [{
-                                buttons: !R.isEmpty(fButtons) ? fButtons : null,
-                                image_url: R.path(["object", "url"], data),
-                                item_url: "",
-                                subtitle: content !== name ? content : "",
-                                title: name || "",
-                            }],
-                        template_type: "generic",
-                    },
-                    type: "template",
-                };
-                messageData.message.attachment = attachment;
-            }
-            else if (type === "Video") {
-                if (!R.isEmpty(fButtons)) {
-                    const attachment = {
-                        payload: {
-                            elements: [{
-                                    buttons: fButtons,
-                                    image_url: R.path(["object", "url"], data),
-                                    item_url: "",
-                                    subtitle: content !== name ? content : "",
-                                    title: name || "",
-                                }],
-                            template_type: "generic",
-                        },
-                        type: "template",
-                    };
-                    messageData.message.attachment = attachment;
-                }
-                else {
+            if (dataType === 'Image' || dataType === 'Video') {
+                if (dataType === 'Video' && R.isEmpty(fButtons)) {
                     messageData.message.text = utils_1.concat([
-                        R.path(["object", "name"], data) || "",
-                        R.path(["object", "content"], data) || "",
-                        R.path(["object", "url"], data),
+                        R.path(['object', 'name'], data) || '',
+                        R.path(['object', 'content'], data) || '',
+                        R.path(['object', 'url'], data),
                     ]);
                 }
+                else {
+                    messageData.message.attachment = helpers_1.createAttachment(name, content, fButtons, R.path(['object', 'url'], data));
+                }
             }
-            else if (type === "Note") {
+            else if (dataType === 'Note') {
                 if (!R.isEmpty(fButtons)) {
-                    const attachment = {
-                        payload: {
-                            elements: [{
-                                    buttons: fButtons,
-                                    image_url: "",
-                                    item_url: "",
-                                    subtitle: content || "",
-                                    title: name || "",
-                                }],
-                            template_type: "generic",
-                        },
-                        type: "template",
-                    };
-                    messageData.message.attachment = attachment;
+                    messageData.message.attachment = helpers_1.createAttachment(name, content, fButtons);
                 }
                 else {
-                    messageData.message.text = R.path(["object", "content"], data);
+                    messageData.message.text = R.path(['object', 'content'], data);
                     delete messageData.message.attachment;
                 }
             }
-            if (type === "Note" || type === "Image" || type === "Video") {
+            if (dataType === 'Note' || dataType === 'Image' || dataType === 'Video') {
                 return rp({
                     json: messageData,
-                    method: "POST",
+                    method: 'POST',
                     qs: { access_token: this.token },
-                    uri: "https://graph.facebook.com/v2.8/me/messages",
+                    uri: 'https://graph.facebook.com/v2.8/me/messages',
                 })
-                    .then(() => ({ type: "sent", serviceID: this.serviceId() }));
+                    .then(() => ({ type: 'sent', serviceID: this.serviceId() }));
             }
-            return Promise.reject(new Error("Only Note, Image, and Video are supported."));
+            return Promise.reject(new Error('Only Note, Image, and Video are supported.'));
         });
     }
-    user(id, fields = "first_name,last_name", cache = true) {
+    user(id, fields = 'first_name,last_name', cache = true) {
         const key = `${id}${fields}`;
-        if (cache && this.storeUsers.get(key)) {
+        if (cache) {
             const data = this.storeUsers.get(key);
-            return Promise.resolve(data);
+            if (data) {
+                return Promise.resolve(data);
+            }
         }
         return rp({
             json: true,
-            method: "GET",
+            method: 'GET',
             qs: { access_token: this.token, fields },
             uri: `https://graph.facebook.com/v2.8/${id}`,
         })
@@ -225,25 +151,25 @@ class Adapter {
     }
     setupRouter() {
         const router = express_1.Router();
-        router.get("/", (req, res) => {
-            if (req.query["hub.mode"] === "subscribe") {
-                if (req.query["hub.verify_token"] === this.tokenSecret) {
-                    res.send(req.query["hub.challenge"]);
+        router.get('/', (req, res) => {
+            if (req.query['hub.mode'] === 'subscribe') {
+                if (req.query['hub.verify_token'] === this.tokenSecret) {
+                    res.send(req.query['hub.challenge']);
                 }
                 else {
-                    res.send("OK");
+                    res.send('OK');
                 }
             }
         });
-        router.post("/", (req, res) => {
+        router.post('/', (req, res) => {
             const event = {
                 request: req,
                 response: res,
             };
-            this.emitter.emit("message", event);
+            this.emitter.emit('message', event);
             res.sendStatus(200);
         });
         return router;
     }
 }
-exports.default = Adapter;
+exports.Adapter = Adapter;
