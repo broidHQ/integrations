@@ -15,9 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-import * as Promise from 'bluebird';
-import broidSchemas from '@broid/schemas';
+
+import schemas from '@broid/schemas';
 import { Logger } from '@broid/utils';
+
+import * as Promise from 'bluebird';
 import * as fs from 'fs';
 import * as uuid from 'node-uuid';
 import * as R from 'ramda';
@@ -25,10 +27,11 @@ import * as rp from 'request-promise';
 import { Observable } from 'rxjs/Rx';
 import * as Twit from 'twit';
 
-import { IAdapterOptions, ISendParameters } from './interfaces';
+import { IAdapterOptions, ITwitterSendParameters } from './interfaces';
 import { Parser } from './Parser';
 
 export class Adapter {
+  private connected: boolean;
   private serviceID: string;
   private username: string | null;
   private myid: string | null;
@@ -41,8 +44,8 @@ export class Adapter {
   private logLevel: string;
   private logger: Logger;
   private storeUsers: Map<string, object>;
-  private sessionGET: Promise;
-  private sessionPOST: Promise;
+  private sessionGET: Promise<any>;
+  private sessionPOST: Promise<any>;
 
   constructor(obj?: IAdapterOptions) {
     this.serviceID = obj && obj.serviceID || uuid.v4();
@@ -58,19 +61,19 @@ export class Adapter {
       this.username = `@${this.username}`;
     }
 
-    this.parser = new Parser(this.serviceID, this.logLevel);
+    this.parser = new Parser(this.serviceName(), this.serviceID, this.logLevel);
     this.logger = new Logger('adapter', this.logLevel);
 
     this.storeUsers = new Map();
   }
 
   // Return list of users information
-  public users(): Promise {
-    return Promise.resolve(R.map((user) => user, this.storeUsers.values()));
+  public users(): Promise<Map<string, object>> {
+    return Promise.resolve(this.storeUsers);
   }
 
   // Return list of channels information
-  public channels(): Promise {
+  public channels(): Promise<Error> {
     return Promise.reject(new Error('Not supported'));
   }
 
@@ -79,12 +82,18 @@ export class Adapter {
     return this.serviceID;
   }
 
+  // Return the service Name of the current instance
+  public serviceName(): string {
+    return 'twitter';
+  }
+
   // Connect to Twitter
   public connect(): Observable<object> {
-    if (!this.token
-      || !this.tokenSecret
-      || !this.consumerKey
-      || !this.consumerSecret) {
+    if (this.connected) {
+      return Observable.of({ type: 'connected', serviceID: this.serviceId() });
+    }
+
+    if (!this.token || !this.tokenSecret || !this.consumerKey || !this.consumerSecret) {
       return Observable.throw(new Error('Credentials should exist.'));
     }
 
@@ -98,17 +107,18 @@ export class Adapter {
     this.sessionGET = Promise.promisify(this.session.get.bind(this.session));
     this.sessionPOST = Promise.promisify(this.session.post.bind(this.session));
 
+    this.connected = true;
     return Observable.of({ type: 'connected', serviceID: this.serviceId() });
   }
 
-  public disconnect(): Promise {
-    return Promise.reject(new Error('Not supported'));
+  public disconnect(): Promise<null> {
+    this.connected = false;
+    return Promise.resolve(null);
   }
 
   // Listen 'message' event from Twitter
   public listen(): Observable<object> {
-    const streamMention = this.session.stream('statuses/filter',
-      { track: this.username });
+    const streamMention = this.session.stream('statuses/filter', { track: this.username });
     const streamDm = this.session.stream('user');
 
     return Observable.merge(
@@ -147,16 +157,16 @@ export class Adapter {
       });
   }
 
-  public send(data: object): Promise {
+  public send(data: object): Promise<object | null> {
     this.logger.debug('sending', { message: data });
 
-    return broidSchemas(data, 'send')
+    return schemas(data, 'send')
       .then(() => {
-        const name = R.path(['object', 'name'], data);
-        const content = R.path(['object', 'content'], data);
-        const type = R.path(['object', 'type'], data);
-        const toID = R.path(['to', 'id'], data);
-        const options = {
+        const name: string = <string> R.path(['object', 'name'], data);
+        const content: string = <string> R.path(['object', 'content'], data);
+        const dataType: string = <string> R.path(['object', 'type'], data);
+        const toID: string = <string> R.path(['to', 'id'], data);
+        const options: any = {
           content,
           screen_name: '',
           to_channel: !(R.path(['to', 'type'], data) === 'Person'),
@@ -164,7 +174,7 @@ export class Adapter {
           user_id: null,
         };
 
-        let job = Promise.resolve(null);
+        let job: Promise<any> = Promise.resolve(null);
         if (!toID.startsWith('@') && !isNaN(Number(toID.charAt(0)))) {
           options.user_id = toID;
 
@@ -183,16 +193,16 @@ export class Adapter {
           job = Promise.resolve(options);
         }
 
-        return job.then((opts) => {
+        return job.then((opts: any) => {
           if (!opts) {
             throw new Error('Only Note, Image, and Video are supported.');
           }
 
-          if (type === 'Image' || type === 'Video') {
+          if (dataType === 'Image' || dataType === 'Video') {
             if (opts.to_channel) {
               return [
                 opts,
-                this.createMedia(R.path(['object', 'url'], data), name),
+                this.createMedia(<string> R.path(['object', 'url'], data), name),
               ];
             }
 
@@ -201,10 +211,10 @@ export class Adapter {
 
           return [opts, null];
         })
-        .spread((opts, mediaID) => {
+        .spread((opts: any, mediaIDs: any[]) => {
           let path = 'statuses/update';
 
-          const params: ISendParameters = {
+          const params: ITwitterSendParameters = {
             twit_options: opts.twit_options,
           };
 
@@ -221,7 +231,9 @@ export class Adapter {
             params.status = `${opts.screen_name}: ${opts.content}`;
           }
 
-          if (mediaID) { params.media_ids = R.values(mediaID); }
+          if (mediaIDs) {
+            params.media_ids = R.values(mediaIDs);
+          }
 
           return this.sessionPOST(path, params)
             .then(() => ({ type: 'sent', serviceID: this.serviceId() }));
@@ -231,10 +243,12 @@ export class Adapter {
 
   // Get the user information from the platform
    // Ask the memory cache before make a external call
-  private userById(key: string, cache: boolean = true): Promise {
-    if (cache && this.storeUsers.get(key)) {
+  private userById(key: string, cache: boolean = true): Promise<object> {
+    if (cache) {
       const data = this.storeUsers.get(key);
-      return Promise.resolve(data);
+      if (data) {
+        return Promise.resolve(data);
+      }
     }
 
     return this.sessionGET('users/show', { user_id: key })
@@ -245,7 +259,7 @@ export class Adapter {
   }
 
   // Twitter need some steps to update a Image or Videp
-  private createMedia(url, altText = '') {
+  private createMedia(url: string, altText: string = ''): Promise<string> {
     let stream = Promise.resolve(null);
     if (url.startsWith('http://') || url.startsWith('https://')) {
       stream = rp(url, { encoding: null })
@@ -262,7 +276,8 @@ export class Adapter {
       .then((b64) => this.sessionPOST('media/upload', { media_data: b64 }))
         .then((data) => {
           const mediaID = data.media_id_string;
-          return this.sessionPOST('media/metadata/create',
+          return this.sessionPOST(
+            'media/metadata/create',
             { media_id: mediaID, altText: { text: altText } })
             .then(() => ({ mediaID }));
         });

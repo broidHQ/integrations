@@ -15,23 +15,26 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-import * as Promise from 'bluebird';
-import broidSchemas from '@broid/schemas';
+
+import {
+  default as schemas,
+  IActivityStream,
+} from '@broid/schemas';
 import { cleanNulls, Logger } from '@broid/utils';
+
+import * as Promise from 'bluebird';
 import * as mimetype from 'mimetype';
 import * as uuid from 'node-uuid';
 import * as R from 'ramda';
-
-import { IActivityStream } from './interfaces';
 
 export class Parser {
   public serviceID: string;
   public generatorName: string;
   private logger: Logger;
 
-  constructor(serviceID: string, logLevel: string) {
+  constructor(serviceName: string, serviceID: string, logLevel: string) {
     this.serviceID = serviceID;
-    this.generatorName = 'twitter';
+    this.generatorName = serviceName;
     this.logger = new Logger('parser', logLevel);
   }
 
@@ -47,7 +50,7 @@ export class Parser {
       return Promise.resolve(null);
     }
 
-    return broidSchemas(parsed, 'activity')
+    return schemas(parsed, 'activity')
       .then(() => parsed)
       .catch((err) => {
         this.logger.error(err);
@@ -77,20 +80,22 @@ export class Parser {
 
     // Process attachment.
     // Twitter doesn't allow to send multiple media in one tweet
-    const images = R.filter((attachment) => attachment.type === 'Image',
+    const images = R.filter(
+      (attachment: any) => attachment.type === 'Image',
       normalized.attachments);
-    const videos = R.filter((attachment) => attachment.type === 'Video',
+    const videos = R.filter(
+      (attachment: any) => attachment.type === 'Video',
       normalized.attachments);
 
     if (!R.isEmpty(images) || !R.isEmpty(videos)) {
       let attachmentType = 'Image';
-      let url = null;
+      let url: string | null = null;
 
       if (!R.isEmpty(images)) {
-        url = R.prop('url', images[0]);
+        url = <string> R.prop('url', images[0]);
       } else {
         attachmentType = 'Video';
-        url = R.prop('url', videos[0]);
+        url = <string> R.prop('url', videos[0]);
       }
 
       if (url) {
@@ -115,18 +120,20 @@ export class Parser {
 
     if (activitystreams.object && normalized.hashtags
       && !R.isEmpty(normalized.hashtags)) {
-        activitystreams.object.tag = R.map(tag => ({
-          id: tag.text,
-          name: tag.text,
-          type: 'Object',
-        }), normalized.hashtags)
+        activitystreams.object.tag = R.map(
+          (tag: any) => ({
+            id: tag.text,
+            name: tag.text,
+            type: 'Object',
+          }),
+          normalized.hashtags);
     }
 
     return Promise.resolve(activitystreams);
   }
 
   // Normalize the raw event
-  public normalize(raw: any): Promise {
+  public normalize(raw: any): Promise<object | null> {
     this.logger.debug('Event received to normalize', { raw });
 
     const event = cleanNulls(raw);
@@ -137,8 +144,11 @@ export class Parser {
       let text = txt.replace(regex, '');
 
       if (!R.isEmpty(attachments)) {
-        R.forEach((attachment) =>
-          text = text.replace(`${attachment._url}`, ''), attachments);
+        R.forEach(
+          (attachment: any) => {
+            text = text.replace(`${attachment._url}`, '');
+          },
+          attachments);
       }
 
       text = text.replace(/\s\s+/g, ' ');
@@ -148,42 +158,47 @@ export class Parser {
     const extractBestVideoURL = (variants: object[]) => {
       // It is assumed that Messenger quality url is expected
       // to be good but the not necessarily best.
-      const eligible = R.filter((variant) => !R.isNil(variant.bitrate), variants);
+      const eligible = R.filter((variant: any) => !R.isNil(variant.bitrate), variants);
       if (R.isEmpty(eligible)) { return null; }
 
       const bitrateLimit = 832001;
-      const selected = R.reduce((prev, curr) => {
-        if (prev) {
-          if (prev.bitrate > bitrateLimit
-              && curr.bitrate < prev.bitrate) {
-            return curr;
-          }
+      const selected = R.reduce(
+        (prev: any, curr: any) => {
+          if (prev) {
+            if (prev.bitrate > bitrateLimit
+                && curr.bitrate < prev.bitrate) {
+              return curr;
+            }
 
-          if (curr.bitrate > prev.bitrate
-              && curr.bitrate < bitrateLimit) {
-            return curr;
-          }
+            if (curr.bitrate > prev.bitrate
+                && curr.bitrate < bitrateLimit) {
+              return curr;
+            }
 
-          return prev;
-        }
-        return curr;
-      }, null, eligible);
+            return prev;
+          }
+          return curr;
+        },
+        null,
+        eligible);
 
       return selected.url;
     };
 
     const authorInformation = event.user || event.sender;
     const dateCreatedAt = new Date(event.created_at);
-    const attachments: object[] = R.reject(R.isNil)(R.map((media) => {
-      if (media.type === 'photo') {
-        return { type: 'Image', url: media.media_url_https, _url: media.url };
-      } else if (media.type === 'video' || media.type === 'animated_gif') {
-        const url = extractBestVideoURL(R.path(['video_info', 'variants'], media));
-        if (!url) { return null; }
-        return { type: 'Video', url, _url: media.url };
-      }
-      return null;
-    }, R.path(['entities', 'media'], event) || []));
+    const attachments: object[] = R.reject(R.isNil)(R.map(
+      (media: any) => {
+        if (media.type === 'photo') {
+          return { type: 'Image', url: media.media_url_https, _url: media.url };
+        } else if (media.type === 'video' || media.type === 'animated_gif') {
+          const url = extractBestVideoURL(<object[]> R.path(['video_info', 'variants'], media));
+          if (!url) { return null; }
+          return { type: 'Video', url, _url: media.url };
+        }
+        return null;
+      },
+      <any[]> R.path(['entities', 'media'], event) || []));
 
     const data: object = {
       attachments,
@@ -200,9 +215,9 @@ export class Parser {
         profile_image_url: R.path(['recipient', 'profile_image_url_https'], event),
         username: R.path(['recipient', 'screen_name'], event),
       }),
-      hashtags: R.map((hashtag) => {
-        return { text: hashtag.text };
-      }, R.path(['entities', 'hashtags'], event) || []),
+      hashtags: R.map(
+        (hashtag: any) => ({ text: hashtag.text }),
+        <any[]> R.path(['entities', 'hashtags'], event) || []),
       id: event.id_str,
       text: extractText(event.text, event._username, attachments),
       timestamp: dateCreatedAt.getTime(),
