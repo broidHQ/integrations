@@ -24,12 +24,12 @@ import { Parser } from '../core/Parser';
 
 const RESPONSE_FIXTURES: any = {};
 glob.sync(path.join(__dirname, './fixtures/ms-teams/*.json')).forEach((file: string) => {
-  RESPONSE_FIXTURES[path.basename(file).replace('.json', '')] = require(file);
+  RESPONSE_FIXTURES[path.basename(file).replace('.json', '')] = require(file); // tslint:disable-line:no-require-imports
 });
 
 const RESULT_FIXTURES: any = {};
 glob.sync(path.join(__dirname, './fixtures/broid/*.json')).forEach((file: string) => {
-  RESULT_FIXTURES[path.basename(file).replace('.json', '')] = require(file);
+  RESULT_FIXTURES[path.basename(file).replace('.json', '')] = require(file); // tslint:disable-line:no-require-imports
 });
 
 let parser: Parser;

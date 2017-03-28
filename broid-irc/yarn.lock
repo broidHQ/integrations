@@ -71,8 +71,8 @@
     "@types/node" "*"
 
 "@types/node@*", "@types/node@^7.0.11":
-  version "7.0.11"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-7.0.11.tgz#55680189f2335f080f0aeb57871f0b9823646d89"
+  version "7.0.12"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-7.0.12.tgz#ae5f67a19c15f752148004db07cbbb372e69efc9"
 
 "@types/ramda@^0.0.5":
   version "0.0.5"
@@ -1653,8 +1653,8 @@ invert-kv@^1.0.0:
   resolved "https://registry.yarnpkg.com/invert-kv/-/invert-kv-1.0.0.tgz#104a8e4aaca6d3d8cd157a8ef8bfab2d7a3ffdb6"
 
 irc-colors@^1.1.0:
-  version "1.3.2"
-  resolved "https://registry.yarnpkg.com/irc-colors/-/irc-colors-1.3.2.tgz#80ce1c549b8de8d4170b3280f8424c50f3ceb10d"
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/irc-colors/-/irc-colors-1.3.3.tgz#16f8fa6130a3882fdf4fab801c5b4f58328a3391"
 
 irc@^0.5.2:
   version "0.5.2"

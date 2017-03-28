@@ -21,7 +21,7 @@ const twilioMessageWithMedia = require("./fixtures/twilio/messageWithMedia.json"
 const twilioMessageWithMedias = require("./fixtures/twilio/messageWithMedias.json");
 let parser;
 ava_1.default.before(() => {
-    parser = new Parser_1.Parser('test_service', 'info');
+    parser = new Parser_1.Parser('twilio', 'test_service', 'info');
 });
 ava_1.default('Parse null', (t) => __awaiter(this, void 0, void 0, function* () {
     const data = parser.parse(null);

@@ -14,11 +14,7 @@ const broidMessage = require("./fixtures/broid/message.json");
 const nexmoMessage = require("./fixtures/nexmo/message.json");
 let parser;
 ava_1.default.before(() => {
-<<<<<<< HEAD
-    parser = new Parser_1.Parser('testuser', 'info');
-=======
-    parser = new parser_1.default("nexmo", "testuser", "info");
->>>>>>> exposed-express-router
+    parser = new Parser_1.Parser('nexmo', 'testuser', 'info');
 });
 ava_1.default('Parse a group message', (t) => __awaiter(this, void 0, void 0, function* () {
     const data = yield parser.parse(nexmoMessage);

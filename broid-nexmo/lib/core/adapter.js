@@ -1,21 +1,10 @@
 "use strict";
-<<<<<<< HEAD
 Object.defineProperty(exports, "__esModule", { value: true });
 const schemas_1 = require("@broid/schemas");
 const utils_1 = require("@broid/utils");
 const Promise = require("bluebird");
-=======
-const Promise = require("bluebird");
-<<<<<<< HEAD
-const broid_schemas_1 = require("broid-schemas");
-const broid_utils_1 = require("broid-utils");
 const events_1 = require("events");
 const express_1 = require("express");
-=======
-const schemas_1 = require("@broid/schemas");
-const utils_1 = require("@broid/utils");
->>>>>>> devel
->>>>>>> exposed-express-router
 const Nexmo = require("nexmo");
 const uuid = require("node-uuid");
 const R = require("ramda");
@@ -29,37 +18,13 @@ class Adapter {
         this.token = obj && obj.token || null;
         this.tokenSecret = obj && obj.tokenSecret || null;
         this.username = obj && obj.username || null;
-<<<<<<< HEAD
-        const optionsHTTP = {
-            host: '127.0.0.1',
-            port: 8080,
-        };
-        this.optionsHTTP = obj && obj.http || optionsHTTP;
-        this.optionsHTTP.host = this.optionsHTTP.host || optionsHTTP.host;
-        this.optionsHTTP.port = this.optionsHTTP.port || optionsHTTP.port;
-        this.parser = new Parser_1.Parser(this.serviceID, this.logLevel);
+        this.parser = new Parser_1.Parser(this.serviceName(), this.serviceID, this.logLevel);
         this.logger = new utils_1.Logger('adapter', this.logLevel);
-=======
-<<<<<<< HEAD
-        this.parser = new parser_1.default(this.serviceName(), this.serviceID, this.logLevel);
-        this.logger = new broid_utils_1.Logger("adapter", this.logLevel);
         this.emitter = new events_1.EventEmitter();
         this.router = this.setupRouter();
         if (obj.http) {
-            this.webhookServer = new webHookServer_1.default(obj.http, this.router, this.logLevel);
+            this.webhookServer = new WebHookServer_1.WebHookServer(obj.http, this.router, this.logLevel);
         }
-=======
-        const HTTPOptions = {
-            host: "127.0.0.1",
-            port: 8080,
-        };
-        this.HTTPOptions = obj && obj.http || HTTPOptions;
-        this.HTTPOptions.host = this.HTTPOptions.host || HTTPOptions.host;
-        this.HTTPOptions.port = this.HTTPOptions.port || HTTPOptions.port;
-        this.parser = new parser_1.default(this.serviceID, this.logLevel);
-        this.logger = new utils_1.Logger("adapter", this.logLevel);
->>>>>>> devel
->>>>>>> exposed-express-router
     }
     users() {
         return Promise.reject(new Error('Not supported'));
@@ -77,7 +42,7 @@ class Adapter {
         return this.router;
     }
     serviceName() {
-        return "nexmo";
+        return 'nexmo';
     }
     connect() {
         if (this.connected) {
@@ -94,18 +59,10 @@ class Adapter {
             apiKey: this.token,
             apiSecret: this.tokenSecret,
         });
-<<<<<<< HEAD
-        this.webhookServer = new WebHookServer_1.WebHookServer(this.optionsHTTP, this.logLevel);
-        this.webhookServer.listen();
-        return Rx_1.Observable.of(({ type: 'connected', serviceID: this.serviceId() }));
-    }
-    disconnect() {
-        return Promise.reject(new Error('Not supported'));
-=======
         if (this.webhookServer) {
             this.webhookServer.listen();
         }
-        return Rx_1.Observable.of(({ type: "connected", serviceID: this.serviceId() }));
+        return Rx_1.Observable.of(({ type: 'connected', serviceID: this.serviceId() }));
     }
     disconnect() {
         this.connected = false;
@@ -113,17 +70,12 @@ class Adapter {
             return this.webhookServer.close();
         }
         return Promise.resolve(null);
->>>>>>> exposed-express-router
     }
     listen() {
         if (!this.webhookServer) {
             return Rx_1.Observable.throw(new Error('No webhookServer found.'));
         }
-<<<<<<< HEAD
-        return Rx_1.Observable.fromEvent(this.webhookServer, 'message')
-=======
-        return Rx_1.Observable.fromEvent(this.emitter, "message")
->>>>>>> exposed-express-router
+        return Rx_1.Observable.fromEvent(this.emitter, 'message')
             .mergeMap((normalized) => this.parser.parse(normalized))
             .mergeMap((parsed) => this.parser.validate(parsed))
             .mergeMap((validated) => {
@@ -156,10 +108,10 @@ class Adapter {
         const router = express_1.Router();
         const handle = (req, res) => {
             let query = {};
-            if (req.method === "GET") {
+            if (req.method === 'GET') {
                 query = req.query;
             }
-            else if (req.method === "POST") {
+            else if (req.method === 'POST') {
                 query = req.body;
             }
             const message = {
@@ -167,14 +119,14 @@ class Adapter {
                 messageId: query.messageId,
                 msisdn: query.msisdn,
                 text: query.text,
-                timestamp: query["message-timestamp"],
+                timestamp: query['message-timestamp'],
                 to: query.to,
             };
-            this.emitter.emit("message", message);
+            this.emitter.emit('message', message);
             res.sendStatus(200);
         };
-        router.get("/", handle);
-        router.post("/", handle);
+        router.get('/', handle);
+        router.post('/', handle);
         return router;
     }
 }

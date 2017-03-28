@@ -4,6 +4,7 @@ const schemas_1 = require("@broid/schemas");
 const utils_1 = require("@broid/utils");
 const Promise = require("bluebird");
 const botbuilder = require("botbuilder");
+const express_1 = require("express");
 const mimetype = require("mimetype");
 const uuid = require("node-uuid");
 const R = require("ramda");
@@ -18,15 +19,12 @@ class Adapter {
         this.tokenSecret = obj && obj.tokenSecret || null;
         this.storeUsers = new Map();
         this.storeAddresses = new Map();
-        const optionsHTTP = {
-            host: '127.0.0.1',
-            port: 8080,
-        };
-        this.optionsHTTP = obj && obj.http || optionsHTTP;
-        this.optionsHTTP.host = this.optionsHTTP.host || optionsHTTP.host;
-        this.optionsHTTP.port = this.optionsHTTP.port || optionsHTTP.port;
-        this.parser = new Parser_1.Parser(this.serviceID, this.logLevel);
+        this.parser = new Parser_1.Parser(this.serviceName(), this.serviceID, this.logLevel);
         this.logger = new utils_1.Logger('adapter', this.logLevel);
+        this.router = express_1.Router();
+        if (obj.http) {
+            this.webhookServer = new WebHookServer_1.WebHookServer(obj.http, this.router, this.logLevel);
+        }
     }
     users() {
         return Promise.resolve(this.storeUsers);
@@ -44,6 +42,15 @@ class Adapter {
     serviceId() {
         return this.serviceID;
     }
+    getRouter() {
+        if (this.webhookServer) {
+            return null;
+        }
+        return this.router;
+    }
+    serviceName() {
+        return 'skype';
+    }
     connect() {
         if (this.connected) {
             return Rx_1.Observable.of({ type: 'connected', serviceID: this.serviceId() });
@@ -58,13 +65,18 @@ class Adapter {
         });
         this.session = new botbuilder.UniversalBot(this.sessionConnector);
         this.connected = true;
-        this.webhookServer = new WebHookServer_1.WebHookServer(this.optionsHTTP, this.logLevel);
-        this.webhookServer.route(this.sessionConnector.listen());
-        this.webhookServer.listen();
+        this.router.post('/', this.sessionConnector.listen());
+        if (this.webhookServer) {
+            this.webhookServer.listen();
+        }
         return Rx_1.Observable.of({ type: 'connected', serviceID: this.serviceId() });
     }
     disconnect() {
-        return Promise.reject(new Error('Not supported'));
+        this.connected = false;
+        if (this.webhookServer) {
+            return this.webhookServer.close();
+        }
+        return Promise.resolve(null);
     }
     listen() {
         return Rx_1.Observable.create((observer) => {

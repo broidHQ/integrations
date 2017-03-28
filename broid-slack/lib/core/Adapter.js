@@ -4,6 +4,8 @@ const schemas_1 = require("@broid/schemas");
 const utils_1 = require("@broid/utils");
 const client_1 = require("@slack/client");
 const Promise = require("bluebird");
+const events_1 = require("events");
+const express_1 = require("express");
 const uuid = require("node-uuid");
 const R = require("ramda");
 const rp = require("request-promise");
@@ -19,15 +21,13 @@ class Adapter {
         this.asUser = obj && obj.asUser || true;
         this.storeUsers = new Map();
         this.storeChannels = new Map();
-        const optionsHTTP = {
-            host: '127.0.0.1',
-            port: 8080,
-        };
-        this.optionsHTTP = obj && obj.http || optionsHTTP;
-        this.optionsHTTP.host = this.optionsHTTP.host || optionsHTTP.host;
-        this.optionsHTTP.port = this.optionsHTTP.port || optionsHTTP.port;
-        this.parser = new Parser_1.Parser(this.serviceID, this.logLevel);
+        this.parser = new Parser_1.Parser(this.serviceName(), this.serviceID, this.logLevel);
         this.logger = new utils_1.Logger('adapter', this.logLevel);
+        this.emitter = new events_1.EventEmitter();
+        this.router = this.setupRoutes();
+        if (obj.http) {
+            this.webhookServer = new WebHookServer_1.WebHookServer(obj.http, this.router, this.logLevel);
+        }
     }
     users() {
         return Promise.resolve(this.storeUsers);
@@ -38,6 +38,15 @@ class Adapter {
     serviceId() {
         return this.serviceID;
     }
+    getRouter() {
+        if (this.webhookServer) {
+            return null;
+        }
+        return this.router;
+    }
+    serviceName() {
+        return 'slack';
+    }
     connect() {
         if (this.connected) {
             return Rx_1.Observable.of({ type: 'connected', serviceID: this.serviceId() });
@@ -46,8 +55,9 @@ class Adapter {
             return Rx_1.Observable.throw(new Error('Credential should exist.'));
         }
         this.connected = true;
-        this.webhookServer = new WebHookServer_1.WebHookServer(this.optionsHTTP, this.logLevel);
-        this.webhookServer.listen();
+        if (this.webhookServer) {
+            this.webhookServer.listen();
+        }
         this.session = new client_1.RtmClient(this.token, { autoReconnect: true });
         this.sessionWeb = new client_1.WebClient(this.token);
         this.session.start();
@@ -71,12 +81,16 @@ class Adapter {
             .mergeAll();
     }
     disconnect() {
-        return Promise.reject(new Error('Not supported'));
+        this.connected = false;
+        if (this.webhookServer) {
+            return this.webhookServer.close();
+        }
+        return Promise.resolve(null);
     }
     listen() {
         const rtmEvents = R.pick(['MESSAGE'], client_1.RTM_EVENTS);
         const events = R.map((key) => Rx_1.Observable.fromEvent(this.session, rtmEvents[key]), R.keys(rtmEvents));
-        const webHookEvent = Rx_1.Observable.fromEvent(this.webhookServer, 'message')
+        const webHookEvent = Rx_1.Observable.fromEvent(this.emitter, 'message')
             .mergeMap(helpers_1.parseWebHookEvent);
         events.push(webHookEvent);
         return Rx_1.Observable.merge(...events)
@@ -256,6 +270,18 @@ class Adapter {
             this.storeUsers.set(key, info.user);
             return resolve(info.user);
         }));
+    }
+    setupRoutes() {
+        const router = express_1.Router();
+        router.post('/', (req, res) => {
+            const event = {
+                request: req,
+                response: res,
+            };
+            this.emitter.emit('message', event);
+            res.send('');
+        });
+        return router;
     }
 }
 exports.Adapter = Adapter;

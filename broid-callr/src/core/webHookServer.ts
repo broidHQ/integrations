@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /**
  * @license
  * Copyright 2017 Broid.

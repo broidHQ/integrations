@@ -1,9 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-<<<<<<< HEAD
-=======
-const Promise = require("bluebird");
->>>>>>> exposed-express-router
 const schemas_1 = require("@broid/schemas");
 const utils_1 = require("@broid/utils");
 const Promise = require("bluebird");
@@ -135,8 +131,4 @@ class Parser {
         };
     }
 }
-<<<<<<< HEAD
 exports.Parser = Parser;
-=======
-exports.default = Parser;
->>>>>>> exposed-express-router

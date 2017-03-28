@@ -47,7 +47,7 @@ class Adapter {
     }
     getRouter() {
         if (this.webhookServer) {
-            return false;
+            return null;
         }
         return this.router;
     }

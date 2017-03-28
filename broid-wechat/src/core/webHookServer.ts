@@ -20,7 +20,6 @@ import { Logger } from '@broid/utils';
 
 import * as Promise from 'bluebird';
 import * as bodyParser from 'body-parser';
-import { Logger } from '@broid/utils';
 import * as express from 'express';
 import * as xmlParser from 'express-xml-bodyparser';
 import * as http from 'http';

@@ -20,10 +20,8 @@ import { Logger } from '@broid/utils';
 
 import * as Promise from 'bluebird';
 import * as bodyParser from 'body-parser';
-import * as EventEmitter from 'events';
 import * as express from 'express';
 import * as http from 'http';
-import * as twilio from 'twilio';
 
 import { IAdapterHTTPOptions } from './interfaces';
 

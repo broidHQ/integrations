@@ -8,9 +8,9 @@ const uuid = require("node-uuid");
 const R = require("ramda");
 const validUrl = require("valid-url");
 class Parser {
-    constructor(serviceID, logLevel) {
+    constructor(serviceName, serviceID, logLevel) {
         this.serviceID = serviceID;
-        this.generatorName = 'slack';
+        this.generatorName = serviceName;
         this.logger = new utils_1.Logger('parser', logLevel);
     }
     validate(event) {

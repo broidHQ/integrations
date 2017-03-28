@@ -20,7 +20,7 @@ const slackMessagePrivate = require("./fixtures/slack/messagePrivate.json");
 const slackMessageWithMedia = require("./fixtures/slack/messageWithMedia.json");
 let parser;
 ava_1.default.before(() => {
-    parser = new Parser_1.Parser('test_service', 'info');
+    parser = new Parser_1.Parser('slack', 'test_service', 'info');
 });
 ava_1.default('Parse null', (t) => __awaiter(this, void 0, void 0, function* () {
     const data = parser.parse(null);

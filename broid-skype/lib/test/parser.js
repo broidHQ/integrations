@@ -18,7 +18,7 @@ const skypeMessageWithImage = require("./fixtures/skype/messageWithImage.json");
 const skypeMessageWithVideo = require("./fixtures/skype/messageWithVideo.json");
 let parser;
 ava_1.default.before(() => {
-    parser = new Parser_1.Parser('test_service', 'info');
+    parser = new Parser_1.Parser('skype', 'test_service', 'info');
 });
 ava_1.default('Parse a simple message', (t) => __awaiter(this, void 0, void 0, function* () {
     const data = parser.parse(skypeMessage);

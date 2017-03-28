@@ -85,9 +85,9 @@ export class Adapter {
   }
 
   // Returns the intialized express router
-  public getRouter(): Router {
+  public getRouter(): Router | null {
     if (this.webhookServer) {
-      return false;
+      return null;
     }
 
     return this.router;

@@ -33,6 +33,7 @@ import {
   IAdapterOptions,
   IMessage,
   ISlackMessage,
+  IWebHookEvent,
 } from './interfaces';
 import { Parser } from './Parser';
 import { WebHookServer } from './WebHookServer';
@@ -152,7 +153,7 @@ export class Adapter {
   }
 
   // Listen 'message' event from Slack
-  public listen(): Observable<Object> {
+  public listen(): Observable<object> {
     const rtmEvents = R.pick(['MESSAGE'], RTM_EVENTS);
     const events = R.map(
       (key) => Observable.fromEvent(this.session, rtmEvents[key]),

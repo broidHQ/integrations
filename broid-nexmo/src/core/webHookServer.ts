@@ -20,7 +20,6 @@ import { Logger } from '@broid/utils';
 
 import * as Promise from 'bluebird';
 import * as bodyParser from 'body-parser';
-import * as EventEmitter from 'events';
 import * as express from 'express';
 import * as http from 'http';
 
@@ -34,11 +33,11 @@ export class WebHookServer {
   private port: number;
 
   // Run configuration methods on the Express instance.
-  constructor(router: express.Router, options: IAdapterHTTPOptions, logLevel?: string) {
+  constructor(options: IAdapterHTTPOptions, router: express.Router, logLevel?: string) {
     this.host = options.host;
     this.port = options.port;
     this.logger = new Logger('webhook_server', logLevel || 'info');
-    this.express = this.setupExpress(router);
+    this.setupExpress(router);
   }
 
   public listen() {

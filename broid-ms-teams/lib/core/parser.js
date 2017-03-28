@@ -1,9 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-<<<<<<< HEAD
-=======
-const Promise = require("bluebird");
->>>>>>> exposed-express-router
 const schemas_1 = require("@broid/schemas");
 const utils_1 = require("@broid/utils");
 const Promise = require("bluebird");
@@ -13,13 +9,8 @@ const R = require("ramda");
 class Parser {
     constructor(serviceName, serviceID, logLevel) {
         this.serviceID = serviceID;
-<<<<<<< HEAD
-        this.generatorName = 'ms-teams';
-        this.logger = new utils_1.Logger('parser', logLevel);
-=======
         this.generatorName = serviceName;
-        this.logger = new utils_1.Logger("parser", logLevel);
->>>>>>> exposed-express-router
+        this.logger = new utils_1.Logger('parser', logLevel);
     }
     validate(event) {
         this.logger.debug('Validation process', { event });
@@ -120,8 +111,4 @@ class Parser {
         };
     }
 }
-<<<<<<< HEAD
 exports.Parser = Parser;
-=======
-exports.default = Parser;
->>>>>>> exposed-express-router

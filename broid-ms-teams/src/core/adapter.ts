@@ -64,7 +64,7 @@ export class Adapter {
   }
 
   // Return list of users information
-  public users(): Promise<Map<string, Object>> {
+  public users(): Promise<Map<string, object>> {
     return Promise.resolve(this.storeUsers);
   }
 
