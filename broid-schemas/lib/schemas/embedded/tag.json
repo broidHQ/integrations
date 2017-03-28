@@ -1,0 +1,1 @@
+{"id":"http://schemas.broid.ai/embedded/tag.json","type":"object","properties":{"id":{"type":"string"},"name":{"type":"string"},"type":{"type":"string"}},"required":["id","type","name"]}

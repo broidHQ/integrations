@@ -1,0 +1,1 @@
+{"id":"http://schemas.broid.ai/embedded/actor.json","type":"object","properties":{"id":{"type":"string"},"type":{"type":"string","enum":["Person","Bot","Application"]},"name":{"type":"string"}},"required":["type"]}
