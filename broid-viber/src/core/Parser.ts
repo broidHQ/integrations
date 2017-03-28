@@ -15,23 +15,26 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-import * as Promise from 'bluebird';
-import broidSchemas from '@broid/schemas';
+
+import {
+  default as schemas,
+  IActivityStream,
+} from '@broid/schemas';
 import { cleanNulls, Logger } from '@broid/utils';
+
+import * as Promise from 'bluebird';
 import * as mimetype from 'mimetype';
 import * as uuid from 'node-uuid';
 import * as R from 'ramda';
-
-import { IActivityStream } from './interfaces';
 
 export class Parser {
   public serviceID: string;
   public generatorName: string;
   private logger: Logger;
 
-  constructor(serviceID: string, logLevel: string) {
+  constructor(serviceName: string, serviceID: string, logLevel: string) {
     this.serviceID = serviceID;
-    this.generatorName = 'viber';
+    this.generatorName = serviceName;
     this.logger = new Logger('parser', logLevel);
   }
 
@@ -47,7 +50,7 @@ export class Parser {
       return Promise.resolve(null);
     }
 
-    return broidSchemas(parsed, 'activity')
+    return schemas(parsed, 'activity')
       .then(() => parsed)
       .catch((err: any) => {
         this.logger.error(err);
@@ -129,7 +132,7 @@ export class Parser {
     const text = R.path(['message', 'text'], event);
     const timestamp = R.path(['message', 'timestamp'], event);
     const token = R.path(['message', 'token'], event);
-    const url = R.path(['message', 'url'], event);
+    const url: string = <string> R.path(['message', 'url'], event);
 
     const data: any = {
       author,
@@ -141,13 +144,12 @@ export class Parser {
     if (text) { data.text = text; }
 
     if (url) {
-      const u: string = url as string;
-      let type: string = '';
-      if (u.indexOf('sig/video') !== -1) { type = 'Video'; }
-      if (u.indexOf('sig/image') !== -1) { type = 'Image'; }
+      let mType: string = '';
+      if (url.indexOf('sig/video') !== -1) { mType = 'Video'; }
+      if (url.indexOf('sig/image') !== -1) { mType = 'Image'; }
 
-      data.type = type;
-      data.url = u;
+      data.type = mType;
+      data.url = url;
     } else if (latitude && longitude) {
       data.type = 'Place';
       data.latitude = latitude;

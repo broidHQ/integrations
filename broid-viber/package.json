@@ -41,9 +41,9 @@
     "watch": "concurrently --kill-others \"npm run lint:watch\" \"npm run tsc:watch\""
   },
   "dependencies": {
-    "bluebird": "^3.4.7",
     "@broid/schemas": "^1.0.0",
     "@broid/utils": "^1.0.0",
+    "bluebird": "^3.4.7",
     "mimetype": "^0.0.8",
     "node-uuid": "^1.4.7",
     "ramda": "^0.23.0",
@@ -52,12 +52,17 @@
     "viber-bot": "^1.0.6"
   },
   "devDependencies": {
+    "@types/node": "^7.0.12",
+    "@types/node-uuid": "^0.0.28",
+    "@types/ramda": "^0.0.5",
     "ava": "^0.17.0",
     "concurrently": "^3.1.0",
     "copyfiles": "^1.0.0",
+    "nsp": "^2.6.3",
     "nyc": "^10.1.2",
     "tslint": "^4.3.1",
-    "tslint-eslint-rules": "^3.2.3",
+    "tslint-eslint-rules": "^3.5.1",
+    "tslint-microsoft-contrib": "^4.0.1",
     "typescript": "^2.1.4",
     "watch": "^1.0.1"
   },

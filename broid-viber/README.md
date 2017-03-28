@@ -59,8 +59,10 @@ const BroidViper = require('@broid/viber');
 const viber = new BroidViper({
   username: '<sender_name>',
   token: "<app_key>",
+  webhookURL: "http://127.0.0.1/",
   http: {
-    webhookURL: "http://127.0.0.1/"
+    host: "127.0.0.1",
+    port: 8080
   }
 });
 
@@ -72,15 +74,41 @@ viber.connect()
   });
 ```
 
+Viber can also be used with your existing express setup.
+
+```javascript
+const BroidViper = require('@broid/viber');
+const express = require("express");
+
+const viber = new BroidViper({
+  username: '<sender_name>',
+  token: "<app_key>",
+  webhookURL: "http://127.0.0.1/"
+});
+
+const app = express();
+app.use("/callr", callr.getRouter());
+
+viber.connect()
+ .subscribe({
+   next: data => console.log(data),
+   error: err => console.error(`Something went wrong: ${err.message}`),
+   complete: () => console.log('complete'),
+ });
+
+app.listen(8080);
+```
+
 **Options available**
 
 | name             | Type     | default    | Description  |
 | ---------------- |:--------:| :--------: | --------------------------|
 | serviceID       | string   | random     | Arbitrary identifier of the running instance |
 | logLevel        | string   | `info`     | Can be : `fatal`, `error`, `warn`, `info`, `debug`, `trace` |
-| token            | string   |            | Your application key |
-| username         | string   |            | Your public page name |
-| http             | object   | `{ "port": 8080, "http": "0.0.0.0", "webhookURL": "127.0.0.1" }` | WebServer options (`host`, `port`, `webhookURL`) |
+| token            | string   |           | Your application key  |
+| username         | string   |           | Your public page name |
+| webhookURL       | string   |           | Full webhook URL to be passed to Viber web services |
+| http             | object   | `{ "port": 8080, "http": "0.0.0.0" }` | WebServer options (`host`, `port`) |
 
 ### Receive a message
 

@@ -15,8 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-import test from 'ava';
-import Parser from '../core/parser';
+
+import ava from 'ava';
+import { Parser } from '../core/Parser';
 
 import * as broidMessage from './fixtures/broid/message.json';
 import * as broidMessageInteractiveCallback from './fixtures/broid/messageInteractiveCallback.json';
@@ -43,7 +44,9 @@ const targetMe = {
     'message',
     'seen',
   ],
-  icon: 'https://media-direct.cdn.viber.com/pg_download?pgtp=icons&dlid=0-04-01-f6683bfa60198d661e0ed02c81065b7825b069a0c5c3aaae106248292653f704&fltp=jpg&imsz=0000',
+  icon: 'https://media-direct.cdn.viber.com/pg_download?' +
+    'pgtp=icons&dlid=0-04-01-f6683bfa60198d661e0ed02c81065' +
+    'b7825b069a0c5c3aaae106248292653f704&fltp=jpg&imsz=0000',
   id: 'pa:4995190299521361547',
   location: {
     lat: 45.5308397,
@@ -66,84 +69,84 @@ const targetMe = {
 };
 
 let parser: Parser;
-test.before(() => {
-  parser = new Parser('test_service', 'info');
+ava.before(() => {
+  parser = new Parser('viber', 'test_service', 'info');
 });
 
-test('Parse null', async(t) => {
+ava('Parse null', async (t) => {
   const data = parser.parse(null);
   t.is(await data, null);
 });
 
-test('Normalize null', async(t) => {
+ava('Normalize null', async (t) => {
   const data = parser.normalize(null);
   t.is(await data, null);
 });
 
-test('Normalize a simple message', async(t) => {
-  const data = parser.normalize(viberMessage as any);
+ava('Normalize a simple message', async (t) => {
+  const data = parser.normalize(<any> viberMessage);
   t.deepEqual(await data, broidMessageNormalized);
 });
 
-test('Normalize a location message', async(t) => {
-  const data = parser.normalize(viberMessageLocation as any);
+ava('Normalize a location message', async (t) => {
+  const data = parser.normalize(<any> viberMessageLocation);
   t.deepEqual(await data, broidMessageNormalizedLocation);
 });
 
-test('Normalize a interactive message callback', async(t) => {
-  const data = parser.normalize(viberMessageInteractiveCallback as any);
+ava('Normalize a interactive message callback', async (t) => {
+  const data = parser.normalize(<any> viberMessageInteractiveCallback);
   t.deepEqual(await data, broidMessageNormalizedInteractiveCallback);
 });
 
-test('Normalize a message with media', async(t) => {
-  const data = parser.normalize(viberMessageWithMedia as any);
+ava('Normalize a message with media', async (t) => {
+  const data = parser.normalize(<any> viberMessageWithMedia);
   t.deepEqual(await data, broidMessageNormalizedWithMedia);
 });
 
-test('Parse a simple message', async(t) => {
+ava('Parse a simple message', async (t) => {
   const broidWithTarget: any = Object.assign({}, broidMessageNormalized);
   broidWithTarget.target = targetMe;
   const data = parser.parse(broidWithTarget);
   t.deepEqual(await data, broidMessage);
 });
 
-test('Parse a location message', async(t) => {
+ava('Parse a location message', async (t) => {
   const broidWithTarget: any = Object.assign({}, broidMessageNormalizedLocation);
   broidWithTarget.target = targetMe;
   const data = parser.parse(broidWithTarget);
   t.deepEqual(await data, broidMessageLocation);
 });
 
-test('Parse a interactive message callback', async(t) => {
+ava('Parse a interactive message callback', async (t) => {
   const broidWithTarget: any = Object.assign({}, broidMessageNormalizedInteractiveCallback);
   broidWithTarget.target = targetMe;
   const data = parser.parse(broidWithTarget);
   t.deepEqual(await data, broidMessageInteractiveCallback);
 });
 
-test('Parse a message with media', async(t) => {
+ava('Parse a message with media', async (t) => {
   const broidWithTarget: any = Object.assign({}, broidMessageNormalizedWithMedia);
   broidWithTarget.target = targetMe;
   const data = parser.parse(broidWithTarget);
   t.deepEqual(await data, broidMessageWithMedia);
 });
 
-test('Validate a simple message', async(t) => {
+ava('Validate a simple message', async (t) => {
   const data = parser.validate(broidMessage);
   t.deepEqual(await data, broidMessage);
 });
 
-test('Validate a location message', async(t) => {
+ava('Validate a location message', async (t) => {
   const data = parser.validate(broidMessageLocation);
   t.deepEqual(await data, broidMessageLocation);
 });
 
-test('Validate a interactive message callback', async(t) => {
+ava('Validate a interactive message callback', async (t) => {
   const data = parser.validate(broidMessageInteractiveCallback);
   t.deepEqual(await data, broidMessageInteractiveCallback);
 });
 
-test('Validate a message  with media', async(t) => {
+ava('Validate a message  with media', async (t) => {
   const data = parser.validate(broidMessageWithMedia);
   t.deepEqual(await data, broidMessageWithMedia);
 });
