@@ -15,9 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-import * as Promise from 'bluebird';
-import { default as broidSchemas, IActivityStream } from '@broid/schemas';
+
+import { default as schemas, IActivityStream } from '@broid/schemas';
 import { cleanNulls, Logger } from '@broid/utils';
+
+import * as Promise from 'bluebird';
 import * as uuid from 'node-uuid';
 import * as R from 'ramda';
 
@@ -44,7 +46,7 @@ export class Parser {
       return Promise.resolve(null);
     }
 
-    return broidSchemas(parsed, 'activity')
+    return schemas(parsed, 'activity')
       .then(() => parsed)
       .catch((err) => {
         this.logger.error(err);
@@ -94,7 +96,9 @@ export class Parser {
         name: this.generatorName,
         type: 'Service',
       },
-      'published': R.path(['data', 'sent'], normalized) ? Math.floor(new Date(R.path(['data', 'sent'], normalized)).getTime() / 1000) : Math.floor(Date.now() / 1000),
+      'published': R.path(['data', 'sent'], normalized) ?
+        Math.floor(new Date(R.path(['data', 'sent'], normalized)).getTime() / 1000) :
+        Math.floor(Date.now() / 1000),
       'type': 'Create',
     };
   }

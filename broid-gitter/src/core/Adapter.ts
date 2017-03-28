@@ -15,9 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-import * as Promise from 'bluebird';
-import broidSchemas from '@broid/schemas';
+
+import schemas from '@broid/schemas';
 import { Logger } from '@broid/utils';
+
+import * as Promise from 'bluebird';
 import { EventEmitter } from 'events';
 import * as Gitter from 'node-gitter';
 import * as uuid from 'node-uuid';
@@ -42,6 +44,7 @@ export class Adapter {
   private ee: EventEmitter;
   private logLevel: string;
   private logger: Logger;
+  private connected: boolean;
   private me: any;
   private parser: Parser;
   private serviceID: string;
@@ -59,11 +62,12 @@ export class Adapter {
   }
 
   // Return list of users information
-  public users(): Promise<Error>{
+  public users(): Promise<Error> {
     return Promise.reject(new Error('Not supported'));
   }
 
   // Return list of channels information
+  // TODO: https://github.com/broidHQ/integrations/issues/114
   public channels(): Promise<any> {
     return new Promise((resolve, reject) => {
       return this.session.rooms.findAll()
@@ -85,6 +89,10 @@ export class Adapter {
       return Observable.throw(new Error('Token should exist.'));
     }
 
+    if (this.connected) {
+      return Observable.of({ type: 'connected', serviceID: this.serviceId() });
+    }
+
     this.session = new Gitter(this.token);
     const handler = (room, eventName) => {
       return (data) => {
@@ -96,7 +104,7 @@ export class Adapter {
           });
         }
         return null;
-      }
+      };
     };
     const currentUser = new Promise((resolve, reject) =>
       this.session.currentUser()
@@ -111,19 +119,21 @@ export class Adapter {
         // RxJS doesn't like the event emitted that comes with node,
         // so we remake one instead.
         room.subscribe();
-        R.forEach((eventName) =>
-          room.on(eventName, handler(room, eventName))
-        , eventNames);
+        R.forEach(
+          (eventName) => room.on(eventName, handler(room, eventName)),
+          eventNames);
 
         return room;
       });
 
+    this.connected = true;
     return Observable.fromPromise(connect)
       .map(() => ({ type: 'connected', serviceID: this.serviceId() }));
   }
 
-  public disconnect(): Promise<Error> {
-    return Promise.reject(new Error('Not supported'));
+  public disconnect(): Promise<null> {
+    this.connected = false;
+    return Promise.resolve(null);
   }
 
   // Listen 'message' event from Google
@@ -132,8 +142,9 @@ export class Adapter {
       return Observable.throw(new Error('No session found.'));
     }
 
-    const fromEvents =  R.map((eventName) =>
-      Observable.fromEvent(this.ee, eventName), eventNames);
+    const fromEvents =  R.map(
+      (eventName) => Observable.fromEvent(this.ee, eventName),
+      eventNames);
 
     return Observable.merge(...fromEvents)
       .mergeMap((normalized: object | null) => this.parser.parse(normalized))
@@ -146,7 +157,7 @@ export class Adapter {
 
   public send(data: any): Promise<object | Error> {
     this.logger.debug('sending', { message: data });
-    return broidSchemas(data, 'send')
+    return schemas(data, 'send')
       .then(() => {
         if (data.object.type !== 'Note') {
           return Promise.reject(new Error('Only Note is supported.'));
@@ -164,7 +175,7 @@ export class Adapter {
                 }
 
                 return this.joinRoom(rooms[0])
-                  .then((room) => [result, room])
+                  .then((room) => [result, room]);
               });
           })
           .spread((result: any, room: any) => {
@@ -173,8 +184,9 @@ export class Adapter {
 
             if (contentID) {
               // Edit the message
-              return this.session.client.put(`${room.path}/${room.id}/chatMessages/${contentID}`,
-                {body: {text: content}});
+              return this.session.client.put(
+                  `${room.path}/${room.id}/chatMessages/${contentID}`,
+                  {body: {text: content}});
             }
 
             // Create the message
