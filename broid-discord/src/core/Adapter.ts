@@ -47,7 +47,7 @@ export class Adapter {
     this.session = new Discordie({
       autoReconnect: true,
     });
-    this.parser = new Parser(this.serviceID, this.logLevel);
+    this.parser = new Parser(this.serviceName(), this.serviceID, this.logLevel);
     this.logger = new Logger('adapter', this.logLevel);
   }
 
@@ -89,6 +89,11 @@ export class Adapter {
   // Return the service ID of the current instance
   public serviceId(): string {
     return this.serviceID;
+  }
+
+  // Return the service Name of the current instance
+  public serviceName(): string {
+    return 'discord';
   }
 
   // Connect to Discord

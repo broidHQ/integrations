@@ -6,9 +6,9 @@ const Promise = require("bluebird");
 const uuid = require("node-uuid");
 const R = require("ramda");
 class Parser {
-    constructor(username, serviceID, logLevel) {
+    constructor(serviceName, username, serviceID, logLevel) {
         this.serviceID = serviceID;
-        this.generatorName = 'irc';
+        this.generatorName = serviceName;
         this.username = username;
         this.logger = new utils_1.Logger('parser', logLevel);
     }

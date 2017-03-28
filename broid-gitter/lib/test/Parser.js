@@ -16,7 +16,7 @@ const broidMessage = require("./fixtures/broid/message.json");
 const broidMessagePrivate = require("./fixtures/broid/messagePrivate.json");
 let parser;
 ava_1.default.before(() => {
-    parser = new Parser_1.Parser('testuser', 'info');
+    parser = new Parser_1.Parser('gitter', 'testuser', 'info');
 });
 ava_1.default('Parse a group message', (t) => __awaiter(this, void 0, void 0, function* () {
     const data = yield parser.parse(gitterMessage);

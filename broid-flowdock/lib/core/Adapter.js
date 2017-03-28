@@ -14,7 +14,7 @@ class Adapter {
         this.serviceID = obj && obj.serviceID || uuid.v4();
         this.logLevel = obj && obj.logLevel || 'info';
         this.token = obj && obj.token || null;
-        this.parser = new Parser_1.Parser(this.serviceID, this.logLevel);
+        this.parser = new Parser_1.Parser(this.serviceName(), this.serviceID, this.logLevel);
         this.logger = new utils_1.Logger('adapter', this.logLevel);
         this.storeUsers = new Map();
         this.storeFlows = new Map();
@@ -27,6 +27,9 @@ class Adapter {
     }
     serviceId() {
         return this.serviceID;
+    }
+    serviceName() {
+        return 'flowdock';
     }
     connect() {
         if (!this.token) {

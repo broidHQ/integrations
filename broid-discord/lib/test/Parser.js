@@ -24,7 +24,7 @@ const discordMessagePrivateWithMedia = require("./fixtures/discord/messagePrivat
 const discordMessageWithMedia = require("./fixtures/discord/messageWithMedia.json");
 let parser;
 ava_1.default.before(() => {
-    parser = new Parser_1.Parser('test_service', 'info');
+    parser = new Parser_1.Parser('discord', 'test_service', 'info');
 });
 ava_1.default('Parse a simple message', (t) => __awaiter(this, void 0, void 0, function* () {
     const data = parser.parse(discordMessage);

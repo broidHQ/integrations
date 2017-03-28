@@ -17,8 +17,11 @@ class Adapter {
         this.username = obj && obj.username;
         this.channels = obj && obj.channels;
         this.ee = new events_1.EventEmitter();
-        this.parser = new Parser_1.Parser(this.username, this.serviceID, this.logLevel);
+        this.parser = new Parser_1.Parser(this.serviceName(), this.username, this.serviceID, this.logLevel);
         this.logger = new utils_1.Logger('adapter', this.logLevel);
+    }
+    serviceName() {
+        return 'irc';
     }
     serviceId() {
         return this.serviceID;

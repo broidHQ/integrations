@@ -6,9 +6,9 @@ const Promise = require("bluebird");
 const mimetype = require("mimetype");
 const R = require("ramda");
 class Parser {
-    constructor(serviceID, logLevel) {
+    constructor(serviceName, serviceID, logLevel) {
         this.serviceID = serviceID;
-        this.generatorName = 'discord';
+        this.generatorName = serviceName;
         this.logger = new utils_1.Logger('parser', logLevel);
     }
     validate(event) {

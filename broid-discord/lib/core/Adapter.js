@@ -18,7 +18,7 @@ class Adapter {
         this.session = new Discordie({
             autoReconnect: true,
         });
-        this.parser = new Parser_1.Parser(this.serviceID, this.logLevel);
+        this.parser = new Parser_1.Parser(this.serviceName(), this.serviceID, this.logLevel);
         this.logger = new utils_1.Logger('adapter', this.logLevel);
     }
     users() {
@@ -52,6 +52,9 @@ class Adapter {
     }
     serviceId() {
         return this.serviceID;
+    }
+    serviceName() {
+        return 'discord';
     }
     connect() {
         if (!this.token) {

@@ -24,7 +24,7 @@ const flowdockSimplePrivateWithHashtag = require("./fixtures/flowdock/simplePriv
 const flowdockWithHashtag = require("./fixtures/flowdock/withHashtag.json");
 let parser;
 ava_1.default.before(() => {
-    parser = new Parser_1.Parser('test_service', 'info');
+    parser = new Parser_1.Parser('flowdock', 'test_service', 'info');
 });
 ava_1.default('Parse null', (t) => __awaiter(this, void 0, void 0, function* () {
     const data = parser.parse({});
