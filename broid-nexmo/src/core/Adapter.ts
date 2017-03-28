@@ -15,9 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-import * as Promise from 'bluebird';
-import broidSchemas from '@broid/schemas';
+
+import schemas from '@broid/schemas';
 import { Logger } from '@broid/utils';
+
+import * as Promise from 'bluebird';
 import { EventEmitter } from 'events';
 import { Router } from 'express';
 import * as Nexmo from 'nexmo';
@@ -93,8 +95,6 @@ export class Adapter {
     if (this.connected) {
       return Observable.of({ type: 'connected', serviceID: this.serviceId() });
     }
-    this.connected = true;
-
     if (!this.token || this.token === '') {
       return Observable.throw(new Error('Token should exist.'));
     }
@@ -112,6 +112,7 @@ export class Adapter {
       this.webhookServer.listen();
     }
 
+    this.connected = true;
     return Observable.of(({ type: 'connected', serviceID: this.serviceId() }));
   }
 
@@ -142,7 +143,7 @@ export class Adapter {
 
   public send(data: any): Promise<object | Error> {
     this.logger.debug('sending', { message: data });
-    return broidSchemas(data, 'send')
+    return schemas(data, 'send')
       .then(() => {
         if (data.object.type !== 'Note') {
           return Promise.reject(new Error('Only Note is supported.'));
