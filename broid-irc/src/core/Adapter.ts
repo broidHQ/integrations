@@ -15,20 +15,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-import * as Promise from 'bluebird';
-import broidSchemas from '@broid/schemas';
+
+import {
+  default as schemas,
+  ISendParameters
+} from '@broid/schemas';
 import { Logger } from '@broid/utils';
+
+import * as Promise from 'bluebird';
 import { EventEmitter } from 'events';
 import * as irc from 'irc';
 import * as uuid from 'node-uuid';
 import { Observable } from 'rxjs/Rx';
 
-import { IAdapterOptions, ISendParameters } from './interfaces';
+import { IAdapterOptions } from './interfaces';
 import { Parser } from './Parser';
 
 export class Adapter {
   public serviceID: string;
-
+  private connected: boolean;
   private address: string;
   private username: string;
   private channels: string[];
@@ -58,9 +63,14 @@ export class Adapter {
   }
 
   public connect(): Observable<object> {
+    if (this.connected) {
+      return Observable.of({ type: 'connected', serviceID: this.serviceId() });
+    }
+
     if (!this.address) {
       return Observable.throw(new Error('IRC address is not set'));
     }
+
     if (!this.username) {
       return Observable.throw(new Error('IRC username is not set'));
     }
@@ -79,10 +89,11 @@ export class Adapter {
       .then(() => {
         // RxJS doesn't like the event emitted that comes with node irc,
         // so we remake one instead.
-        this.client.addListener('message', (from, to, message) => {
-          this.ee.emit('message', {from, to, message});
-        });
+        this.client
+          .addListener('message', (from, to, message) =>  // tslint:disable-line:no-reserved-keywords
+            this.ee.emit('message', {from, to, message}));
 
+        this.connected = true;
         return Observable.of({ type: 'connected', serviceID: this.serviceId() });
       });
 
@@ -91,6 +102,7 @@ export class Adapter {
   }
 
   public disconnect(): Promise<null> {
+    this.connected = false;
     return this.client.disconnectAsync();
   }
 
@@ -107,7 +119,7 @@ export class Adapter {
   public send(data: ISendParameters): Promise<object | Error> {
     this.logger.debug('sending', { message: data });
 
-    return broidSchemas(data, 'send')
+    return schemas(data, 'send')
       .then(() => {
         const message: string = data.object.content;
         let to: string = data.to.id;

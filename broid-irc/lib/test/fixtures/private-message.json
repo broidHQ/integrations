@@ -1,0 +1,1 @@
+{"target":{"type":"Group","id":"JohnDow","name":"JohnDow"},"generator":{"type":"Service","id":"test_irc_service","name":"irc"},"object":{"content":"hello world","type":"Note","id":"2eb3b34b-3b23-4488-9879-b03e094d250e"},"actor":{"type":"Person","id":"SallyDude","name":"SallyDude"},"published":1483589416,"@context":"https://www.w3.org/ns/activitystreams","type":"Create"}

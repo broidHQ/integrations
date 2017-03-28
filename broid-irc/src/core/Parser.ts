@@ -15,13 +15,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-import * as Promise from 'bluebird';
-import broidSchemas from '@broid/schemas';
+
+import {
+  default as schemas,
+  IActivityStream
+} from '@broid/schemas';
 import { cleanNulls, Logger } from '@broid/utils';
+
+import * as Promise from 'bluebird';
 import * as uuid from 'node-uuid';
 import * as R from 'ramda';
-
-import { IActivityStream } from './interfaces';
 
 export class Parser {
   public serviceID: string;
@@ -48,7 +51,7 @@ export class Parser {
       return Promise.resolve(null);
     }
 
-    return broidSchemas(parsed, 'activity')
+    return schemas(parsed, 'activity')
       .return(parsed)
       .catch((err) => {
         this.logger.error(err);
