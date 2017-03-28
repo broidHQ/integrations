@@ -3,6 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const schemas_1 = require("@broid/schemas");
 const utils_1 = require("@broid/utils");
 const Promise = require("bluebird");
+const events_1 = require("events");
+const express_1 = require("express");
 const uuid = require("node-uuid");
 const PromiseMemoize = require("promise-memoize");
 const R = require("ramda");
@@ -17,13 +19,6 @@ class Adapter {
         this.token = obj && obj.token || '';
         this.tokenSecret = obj && obj.tokenSecret || '';
         this.username = obj && obj.username || '';
-        const optionsHTTP = {
-            host: '127.0.0.1',
-            port: 8080,
-        };
-        this.optionsHTTP = obj && obj.http || optionsHTTP;
-        this.optionsHTTP.host = this.optionsHTTP.host || optionsHTTP.host;
-        this.optionsHTTP.port = this.optionsHTTP.port || optionsHTTP.port;
         if (this.token === '') {
             throw new Error('Token should exist.');
         }
@@ -33,8 +28,22 @@ class Adapter {
         if (this.username === '') {
             throw new Error('username should exist.');
         }
-        this.parser = new Parser_1.Parser(this.serviceID, this.logLevel);
+        this.emitter = new events_1.EventEmitter();
+        this.parser = new Parser_1.Parser(this.serviceName(), this.serviceID, this.logLevel);
         this.logger = new utils_1.Logger('adapter', this.logLevel);
+        this.router = this.setupRouter();
+        if (obj.http) {
+            this.webhookServer = new WebHookServer_1.WebHookServer(obj.http, this.router, this.logLevel);
+        }
+    }
+    serviceName() {
+        return 'groupme';
+    }
+    getRouter() {
+        if (this.webhookServer) {
+            return null;
+        }
+        return this.router;
     }
     users() {
         return Promise.reject(new Error('Not supported'));
@@ -65,18 +74,19 @@ class Adapter {
             return Rx_1.Observable.of({ type: 'connected', serviceID: this.serviceId() });
         }
         this.connected = true;
-        this.webhookServer = new WebHookServer_1.WebHookServer(this.username, this.optionsHTTP, this.logLevel);
-        this.webhookServer.listen();
+        if (this.webhookServer) {
+            this.webhookServer.listen();
+        }
         return Rx_1.Observable.of(({ type: 'connected', serviceID: this.serviceId() }));
     }
     disconnect() {
-        return Promise.reject(new Error('Not supported'));
+        if (this.webhookServer) {
+            return this.webhookServer.close();
+        }
+        return Promise.resolve(null);
     }
     listen() {
-        if (!this.webhookServer) {
-            return Rx_1.Observable.throw(new Error('No webhookServer found.'));
-        }
-        return Rx_1.Observable.fromEvent(this.webhookServer, 'message')
+        return Rx_1.Observable.fromEvent(this.emitter, 'message')
             .mergeMap((event) => {
             return this.channels()
                 .filter((group) => group.id === R.path(['body', 'group_id'], event))
@@ -116,6 +126,22 @@ class Adapter {
             })
                 .then(() => ({ type: 'sent', serviceID: this.serviceId() }));
         });
+    }
+    setupRouter() {
+        const router = express_1.Router();
+        const handle = (req, res) => {
+            if (!R.path(['body', 'system'], req) &&
+                this.username !== R.path(['body', 'name'], req)) {
+                this.emitter.emit('message', {
+                    body: req.body,
+                    headers: req.headers,
+                });
+            }
+            res.sendStatus(200);
+        };
+        router.get('/', handle);
+        router.post('/', handle);
+        return router;
     }
 }
 exports.Adapter = Adapter;

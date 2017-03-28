@@ -2,7 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const schemas_1 = require("@broid/schemas");
 const utils_1 = require("@broid/utils");
+const actionsSdk = require("actions-on-google");
 const Promise = require("bluebird");
+const events_1 = require("events");
+const express_1 = require("express");
 const uuid = require("node-uuid");
 const R = require("ramda");
 const Rx_1 = require("rxjs/Rx");
@@ -20,15 +23,17 @@ class Adapter {
         this.token = obj && obj.token || null;
         this.tokenSecret = obj && obj.tokenSecret || null;
         this.username = obj && obj.username || '';
-        const optionsHTTP = {
-            host: '127.0.0.1',
-            port: 8080,
-        };
-        this.optionsHTTP = obj && obj.http || optionsHTTP;
-        this.optionsHTTP.host = this.optionsHTTP.host || optionsHTTP.host;
-        this.optionsHTTP.port = this.optionsHTTP.port || optionsHTTP.port;
-        this.parser = new Parser_1.Parser(this.serviceID, this.username, this.logLevel);
+        this.actionsMap = new Map();
+        this.emitter = new events_1.EventEmitter();
+        this.parser = new Parser_1.Parser(this.serviceName(), this.serviceID, this.username, this.logLevel);
         this.logger = new utils_1.Logger('adapter', this.logLevel);
+        this.router = this.setupRouter();
+        if (obj.http) {
+            this.webhookServer = new WebHookServer_1.WebHookServer(obj.http, this.router, this.logLevel);
+        }
+    }
+    serviceName() {
+        return 'google-assistant';
     }
     users() {
         return Promise.reject(new Error('Not supported'));
@@ -39,27 +44,35 @@ class Adapter {
     serviceId() {
         return this.serviceID;
     }
+    getRouter() {
+        if (this.webhookServer) {
+            return null;
+        }
+        return this.router;
+    }
     connect() {
         if (this.connected) {
             return Rx_1.Observable.of({ type: 'connected', serviceID: this.serviceId() });
         }
-        this.connected = true;
         if (!this.username || this.username === '') {
             return Rx_1.Observable.throw(new Error('Username should exist.'));
         }
-        this.webhookServer = new WebHookServer_1.WebHookServer(this.optionsHTTP, this.logLevel);
-        R.forEach((event) => this.webhookServer.addIntent(event), events);
-        this.webhookServer.listen();
+        this.connected = true;
+        R.forEach((event) => this.addIntent(event), events);
+        if (this.webhookServer) {
+            this.webhookServer.listen();
+        }
         return Rx_1.Observable.of(({ type: 'connected', serviceID: this.serviceId() }));
     }
     disconnect() {
-        return Promise.reject(new Error('Not supported'));
+        this.connected = false;
+        if (this.webhookServer) {
+            return this.webhookServer.close();
+        }
+        return Promise.resolve(null);
     }
     listen() {
-        if (!this.webhookServer) {
-            return Rx_1.Observable.throw(new Error('No webhookServer found.'));
-        }
-        const fromEvents = R.map((event) => Rx_1.Observable.fromEvent(this.webhookServer, event), events);
+        const fromEvents = R.map((event) => Rx_1.Observable.fromEvent(this.emitter, event), events);
         return Rx_1.Observable.merge(...fromEvents)
             .mergeMap((normalized) => this.parser.parse(normalized))
             .mergeMap((parsed) => this.parser.validate(parsed))
@@ -83,11 +96,46 @@ class Adapter {
             }
             const noInputs = [];
             if (dataType === 'Note') {
-                return this.webhookServer.send(ssml, content, noInputs)
+                return this.sendMessage(ssml, content, noInputs)
                     .then(() => ({ type: 'sent', serviceID: this.serviceId() }));
             }
             return Promise.reject(new Error('Note is only supported.'));
         });
+    }
+    addIntent(trigger) {
+        this.actionsMap.set(trigger, () => {
+            const body = this.assistant.body_;
+            const conversationId = this.assistant.getConversationId();
+            let deviceLocation = null;
+            const intent = this.assistant.getIntent();
+            const user = this.assistant.getUser();
+            const userInput = this.assistant.getRawInput();
+            if (this.assistant.isPermissionGranted()) {
+                deviceLocation = this.assistant.getDeviceLocation();
+            }
+            this.emitter.emit(trigger, {
+                body,
+                conversationId,
+                deviceLocation,
+                intent,
+                user,
+                userInput,
+            });
+        });
+    }
+    setupRouter() {
+        const router = express_1.Router();
+        router.post('/', (req, res) => {
+            this.assistant = new actionsSdk.ActionsSdkAssistant({ request: req, response: res });
+            this.assistant.handleRequest(this.actionsMap);
+            res.sendStatus(200);
+        });
+        return router;
+    }
+    sendMessage(isSSML, content, noInputs) {
+        const inputPrompt = this.assistant.buildInputPrompt(isSSML, content, noInputs);
+        this.assistant.ask(inputPrompt);
+        return Promise.resolve(true);
     }
 }
 exports.Adapter = Adapter;

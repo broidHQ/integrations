@@ -1,43 +1,28 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const utils_1 = require("@broid/utils");
+const Promise = require("bluebird");
 const bodyParser = require("body-parser");
-const EventEmitter = require("events");
 const express = require("express");
-const R = require("ramda");
-class WebHookServer extends EventEmitter {
-    constructor(username, options, logLevel) {
-        super();
-        this.username = username;
-        this.host = options && options.host || '127.0.0.1';
-        this.port = options && options.port || 8080;
+class WebHookServer {
+    constructor(options, router, logLevel) {
+        this.host = options.host;
+        this.port = options.port;
         this.logger = new utils_1.Logger('webhook_server', logLevel || 'info');
-        this.express = express();
-        this.middleware();
-        this.routes();
+        this.setupExpress(router);
     }
     listen() {
-        this.express.listen(this.port, this.host, () => {
-            this.logger.info(`Server listening at port ${this.host}:${this.port}...`);
+        this.httpClient = this.express.listen(this.port, this.host, () => {
+            this.logger.info(`Server listening on port ${this.host}:${this.port}...`);
         });
     }
-    middleware() {
+    close() {
+        return Promise.fromCallback((cb) => this.httpClient.close(cb));
+    }
+    setupExpress(router) {
+        this.express = express();
         this.express.use(bodyParser.json());
         this.express.use(bodyParser.urlencoded({ extended: false }));
-    }
-    routes() {
-        const router = express.Router();
-        const handle = (req, res) => {
-            if (!R.path(['body', 'system'], req) && this.username !== R.path(['body', 'name'], req)) {
-                this.emit('message', {
-                    body: req.body,
-                    headers: req.headers,
-                });
-            }
-            res.sendStatus(200);
-        };
-        router.get('/', handle);
-        router.post('/', handle);
         this.express.use('/', router);
     }
 }

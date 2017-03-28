@@ -6,9 +6,9 @@ const Promise = require("bluebird");
 const uuid = require("node-uuid");
 const R = require("ramda");
 class Parser {
-    constructor(serviceID, username, logLevel) {
+    constructor(serviceName, serviceID, username, logLevel) {
         this.serviceID = serviceID;
-        this.generatorName = 'google-assistant';
+        this.generatorName = serviceName;
         this.logger = new utils_1.Logger('parser', logLevel);
         this.username = username;
     }

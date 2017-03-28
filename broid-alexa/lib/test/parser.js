@@ -18,7 +18,7 @@ const broidMessageSlots = require("./fixtures/broid/messageSlots.json");
 let parser;
 ava_1.default.before(() => {
     sinon.stub(Date, 'now', () => 1483589416000);
-    parser = new Parser_1.Parser('testuser', 'info');
+    parser = new Parser_1.Parser('alexa', 'testuser', 'info');
 });
 ava_1.default('Parse a simple message', (t) => __awaiter(this, void 0, void 0, function* () {
     const data = yield parser.parse(alexaMessage);

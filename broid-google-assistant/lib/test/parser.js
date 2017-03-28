@@ -18,7 +18,7 @@ ava_1.default.before(() => {
     sinon.stub(Date, 'now', () => {
         return 1483589416000;
     });
-    parser = new Parser_1.Parser('testuser', 'test_broid_service', 'info');
+    parser = new Parser_1.Parser('google-assistant', 'testuser', 'test_broid_service', 'info');
 });
 ava_1.default('Parse a group message', (t) => __awaiter(this, void 0, void 0, function* () {
     let data = yield parser.parse(googleMessage);
