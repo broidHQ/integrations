@@ -15,15 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-import * as Promise from 'bluebird';
-import broidSchemas from '@broid/schemas';
+
+ import {
+   default as schemas,
+   IActivityStream,
+   IASMedia,
+ } from '@broid/schemas';
 import { cleanNulls, Logger } from '@broid/utils';
+
+import * as Promise from 'bluebird';
 import * as mimetype from 'mimetype';
 import * as uuid from 'node-uuid';
 import * as R from 'ramda';
 import * as validUrl from 'valid-url';
 
-import { IActivityStream, IMediaObject, IMessage } from './interfaces';
+import { IMessage } from './interfaces';
 
 export class Parser {
   public serviceID: string;
@@ -48,7 +54,7 @@ export class Parser {
       return Promise.resolve(null);
     }
 
-    return broidSchemas(parsed, 'activity')
+    return schemas(parsed, 'activity')
       .then(() => parsed)
       .catch((err) => {
         this.logger.error(err);
@@ -139,7 +145,7 @@ export class Parser {
     return uuid.v4();
   }
 
-  private createActivityStream(normalized): IActivityStream {
+  private createActivityStream(normalized: any): IActivityStream {
     return {
       '@context': 'https://www.w3.org/ns/activitystreams',
       'generator': {
@@ -159,15 +165,15 @@ export class Parser {
     return new Date(n * 1000).getTime() / 1000;
   }
 
-  private parseFile(attachment: any): IMediaObject | null {
-    if (attachment.mimetype.startsWith('image')
-    || attachment.mimetype.startsWith('video')) {
-      let type = 'Image';
-      if (attachment.mimetype.startsWith('video')) { type = 'Video'; }
-      const a: IMediaObject = {
+  private parseFile(attachment: any): IASMedia | null {
+    if (attachment.mimetype.startsWith('image') || attachment.mimetype.startsWith('video')) {
+      let mediaType = 'Image';
+      if (attachment.mimetype.startsWith('video')) { mediaType = 'Video'; }
+
+      const a: IASMedia = {
         mediaType: attachment.mimetype,
         name: attachment.name,
-        type,
+        type: mediaType,
         url: attachment.permalink_public,
       };
 

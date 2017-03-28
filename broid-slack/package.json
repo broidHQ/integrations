@@ -56,8 +56,6 @@
     "valid-url": "^1.0.9"
   },
   "devDependencies": {
-    "@types/bluebird": "^3.5.2",
-    "@types/bluebird-global": "^3.5.1",
     "@types/node": "^7.0.12",
     "@types/node-uuid": "^0.0.28",
     "@types/ramda": "^0.0.5",

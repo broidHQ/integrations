@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
+
 export interface IAdapterHTTPOptions {
   host: string;
   port: number;
@@ -28,50 +29,13 @@ export interface IAdapterOptions {
   asUser: boolean;
 }
 
-export interface IActivityStream {
-  actor?: {};
-  object?: IActivityStreamObject;
-  target?: {};
-  readonly '@context': string;
-  readonly generator: {};
-  readonly published: number;
-  readonly type: string;
-}
-
 export interface IWebHookEvent {
   response: any;
   request: any;
 }
 
-export interface IActivityStreamObject {
-  attachment?: IMediaObject | IMediaObject[] | null;
-  content?: string;
-  context?: IContextObject;
-  id: string;
-  mediaType?: string;
-  name?: string;
-  preview?: string;
-  type: string;
-  url?: string;
-}
-
-export interface IContextObject {
-  content: string;
-  name: string;
-  type: string;
-}
-
-export interface IMediaObject {
-  content?: string;
-  mediaType?: string;
-  name?: string;
-  preview?: string;
-  type: string;
-  url: string;
-}
-
 export interface IMessage {
-  type: string;
+  type: string; // tslint:disable-line:no-reserved-keywords
   channel: ISlackGroup | ISlackDirectMessage | ISlackChannel;
   user: ISlackUser;
   text: string;
@@ -174,7 +138,7 @@ interface ISlackGroup {
 }
 
 export interface ISlackMessage {
-  type: string;
+  type: string; // tslint:disable-line:no-reserved-keywords
   subtype?: string;
   file?: any;
   channel: string;
@@ -187,6 +151,6 @@ export interface ISlackAction {
   confirm?: any;
   name: string;
   text: string;
-  type: string;
+  type: string; // tslint:disable-line:no-reserved-keywords
   value: string;
 }
