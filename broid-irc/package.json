@@ -1,5 +1,5 @@
 {
-  "name": "broid-irc",
+  "name": "@broid/irc",
   "version": "1.0.0",
   "main": "lib/core/index.js",
   "license": "AGPL-3.0+",
@@ -7,12 +7,22 @@
   "description": "Convert IRC messages into Activity Streams 2 with Broid Integration",
   "repository": {
     "type": "git",
-    "url": "git@github.com:broidHQ/integrations.git"
+    "url": "git+ssh://git@github.com/broidHQ/integrations.git"
   },
   "bugs": {
     "url": "https://github.com/broidHQ/integrations/issues"
   },
   "homepage": "https://github.com/broidHQ/integrations/tree/master/broid-irc#readme",
+  "keywords": [
+    "irc",
+    "broid",
+    "activity",
+    "strams",
+    "activity streams 2",
+    "messaging",
+    "chat",
+    "bot"
+  ],
   "engines": {
     "node": ">=6.0.0"
   },
@@ -26,7 +36,7 @@
     "lint:watch": "watch 'tslint -c tslint.json src/*' src",
     "tsc:watch": "tsc --watch",
     "travis": "npm run lint && npm run build && npm run test",
-    "release": "npm run travis && npm run build && npm publish"
+    "release": "npm run travis && npm run build && npm publish --access public"
   },
   "devDependencies": {
     "@types/bluebird": "^3.0.37",
@@ -45,8 +55,8 @@
   },
   "dependencies": {
     "bluebird": "^3.4.7",
-    "broid-schemas": "^1.1.4",
-    "broid-utils": "^1.0.4",
+    "@broid/schemas": "^1.0.0",
+    "@broid/utils": "^1.0.0",
     "irc": "^0.5.2",
     "mimetype": "^0.0.8",
     "node-uuid": "^1.4.7",

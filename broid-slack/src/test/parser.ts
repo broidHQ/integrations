@@ -12,7 +12,7 @@ import * as slackMessageWithMedia from "./fixtures/slack/messageWithMedia.json";
 
 let parser: Parser;
 test.before(() => {
-  parser = new Parser("test_service", "info");
+  parser = new Parser("slack", "test_service", "info");
 });
 
 test("Parse null", async(t) => {

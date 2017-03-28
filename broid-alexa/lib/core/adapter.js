@@ -1,7 +1,8 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const schemas_1 = require("@broid/schemas");
+const utils_1 = require("@broid/utils");
 const Promise = require("bluebird");
-const broid_schemas_1 = require("broid-schemas");
-const broid_utils_1 = require("broid-utils");
 const events_1 = require("events");
 const express_1 = require("express");
 const uuid = require("node-uuid");
@@ -15,9 +16,9 @@ class Adapter {
         this.logLevel = obj && obj.logLevel || "info";
         this.emitter = new events_1.EventEmitter();
         this.parser = new parser_1.default(this.serviceName(), this.serviceID, this.logLevel);
-        this.logger = new broid_utils_1.Logger("adapter", this.logLevel);
+        this.logger = new utils_1.Logger("adapter", this.logLevel);
         this.router = this.setupRouter();
-        if (obj.http) {
+        if (obj && obj.http) {
             this.webhookServer = new webHookServer_1.default(obj.http, this.router, this.logLevel);
         }
     }
@@ -26,7 +27,7 @@ class Adapter {
     }
     getRouter() {
         if (this.webhookServer) {
-            return false;
+            return null;
         }
         return this.router;
     }
@@ -53,7 +54,7 @@ class Adapter {
         if (this.webhookServer) {
             return this.webhookServer.close();
         }
-        return Promise.resolve();
+        return Promise.resolve(null);
     }
     listen() {
         return Rx_1.Observable.fromEvent(this.emitter, "message")
@@ -68,7 +69,7 @@ class Adapter {
     }
     send(data) {
         this.logger.debug("sending", { message: data });
-        return broid_schemas_1.default(data, "send")
+        return schemas_1.default(data, "send")
             .then(() => {
             if (data.object.type !== "Note") {
                 return Promise.reject(new Error("Only Note is supported."));
@@ -130,5 +131,4 @@ class Adapter {
         return router;
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = Adapter;

@@ -1,6 +1,7 @@
+import broidSchemas from "@broid/schemas";
+import { Logger } from "@broid/utils";
+
 import * as Promise from "bluebird";
-import broidSchemas from "broid-schemas";
-import { Logger } from "broid-utils";
 import { EventEmitter } from 'events';
 import { Router  } from "express";
 import * as uuid from "node-uuid";

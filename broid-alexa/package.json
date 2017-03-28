@@ -1,17 +1,27 @@
 {
-  "name": "broid-alexa",
-  "version": "1.0.1",
+  "name": "@broid/alexa",
+  "version": "1.0.2",
   "main": "lib/core/index.js",
   "license": "AGPL-3.0+",
   "author": "Broid Team <opensource@broid.ai> (https://broid.ai)",
   "description": "Convert Alexa messages into Activity Streams 2 with Broid Integration",
   "repository": {
     "type": "git",
-    "url": "git@github.com:broidHQ/integrations.git"
+    "url": "git+ssh://git@github.com/broidHQ/integrations.git"
   },
   "bugs": {
     "url": "https://github.com/broidHQ/integrations/issues"
   },
+  "keywords": [
+    "alexa",
+    "broid",
+    "activity",
+    "strams",
+    "activity streams 2",
+    "messaging",
+    "chat",
+    "bot"
+  ],
   "homepage": "https://github.com/broidHQ/integrations/tree/master/broid-alexa#readme",
   "engines": {
     "node": ">=6.0.0"
@@ -26,7 +36,7 @@
     "lint:watch": "watch 'tslint -c tslint.json src/*' src",
     "tsc:watch": "tsc --watch",
     "travis": "npm run lint && npm run build && npm run test",
-    "release": "npm run travis && npm run build && npm publish"
+    "release": "npm run travis && npm run build && npm publish --access public"
   },
   "devDependencies": {
     "@types/moment": "^2.13.0",
@@ -44,10 +54,10 @@
     "watch": "^1.0.1"
   },
   "dependencies": {
+    "@broid/schemas": "^1.0.0",
+    "@broid/utils": "^1.0.0",
     "bluebird": "^3.4.7",
     "body-parser": "^1.16.0",
-    "broid-schemas": "^1.1.4",
-    "broid-utils": "^1.0.4",
     "express": "^4.14.0",
     "node-uuid": "^1.4.7",
     "ramda": "^0.23.0",
