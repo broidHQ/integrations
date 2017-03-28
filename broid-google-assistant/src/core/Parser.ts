@@ -15,10 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
+
+import { default as schemas, IActivityStream } from '@broid/schemas';
+import { cleanNulls, Logger } from '@broid/utils';
+
 import * as actionsSdk from 'actions-on-google';
 import * as Promise from 'bluebird';
-import { default as broidSchemas, IActivityStream } from '@broid/schemas';
-import { cleanNulls, Logger } from '@broid/utils';
 import * as uuid from 'node-uuid';
 import * as R from 'ramda';
 
@@ -47,7 +49,7 @@ export class Parser {
       return Promise.resolve(null);
     }
 
-    return broidSchemas(parsed, 'activity')
+    return schemas(parsed, 'activity')
       .then(() => parsed)
       .catch((err) => {
         this.logger.error(err);
@@ -85,13 +87,15 @@ export class Parser {
     let input: any = R.path(['body', 'inputs'], normalized) || [];
     input = input[0] || {};
 
-    const context = R.map((arg) => {
-      return {
-        content: R.prop('raw_text', arg),
-        name: R.prop('name', arg),
-        type: 'Object',
-      };
-    }, input.arguments || []);
+    const context = R.map(
+      (arg) => {
+        return {
+          content: R.prop('raw_text', arg),
+          name: R.prop('name', arg),
+          type: 'Object',
+        };
+      },
+      input.arguments || []);
 
     activitystreams.object = {
       content: normalized.userInput,

@@ -15,9 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
+
+import { Logger } from '@broid/utils';
+
 import * as Promise from 'bluebird';
 import * as bodyParser from 'body-parser';
-import { Logger } from '@broid/utils';
 import * as express from 'express';
 import * as http from 'http';
 
@@ -52,6 +54,6 @@ export class WebHookServer {
     this.express = express();
     this.express.use(bodyParser.json());
     this.express.use(bodyParser.urlencoded({ extended: false  }));
-		this.express.use('/', router);
+    this.express.use('/', router);
   }
 }

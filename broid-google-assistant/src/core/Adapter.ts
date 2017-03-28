@@ -15,10 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
+
+import schemas from '@broid/schemas';
+import { Logger } from '@broid/utils';
+
 import * as actionsSdk from 'actions-on-google';
 import * as Promise from 'bluebird';
-import broidSchemas from '@broid/schemas';
-import { Logger } from '@broid/utils';
 import { EventEmitter  } from 'events';
 import { Router   } from 'express';
 import * as uuid from 'node-uuid';
@@ -74,7 +76,7 @@ export class Adapter {
   }
 
   // Return list of users information
-  public users(): Promise<Error>{
+  public users(): Promise<Error> {
     return Promise.reject(new Error('Not supported'));
   }
 
@@ -108,17 +110,19 @@ export class Adapter {
       return Observable.throw(new Error('Username should exist.'));
     }
 
-    this.connected = true;
     R.forEach((event) => this.addIntent(event), events);
 
     if (this.webhookServer) {
       this.webhookServer.listen();
     }
 
+    this.connected = true;
     return Observable.of(({ type: 'connected', serviceID: this.serviceId() }));
   }
 
   public disconnect(): Promise<null> {
+    this.connected = false;
+
     if (this.webhookServer) {
       return this.webhookServer.close();
     }
@@ -127,9 +131,7 @@ export class Adapter {
 
   // Listen 'message' event from Google
   public listen(): Observable<object> {
-    const fromEvents =  R.map((event) =>
-      Observable.fromEvent(this.emitter, event), events);
-
+    const fromEvents =  R.map((event) => Observable.fromEvent(this.emitter, event), events);
     return Observable.merge(...fromEvents)
       .mergeMap((normalized: actionsSdk.ActionsSdkAssistant) =>
         this.parser.parse(normalized))
@@ -142,12 +144,12 @@ export class Adapter {
 
   public send(data: object): Promise<object | Error> {
     this.logger.debug('sending', { message: data });
-    return broidSchemas(data, 'send')
+    return schemas(data, 'send')
       .then(() => {
         let ssml = false;
         const content: any = R.path(['object', 'content'], data)
           || R.path(['object', 'name'], data);
-        const type: any = R.path(['object', 'type'], data);
+        const objectType: any = R.path(['object', 'type'], data);
 
         // <speak><say-as interpret-as='cardinal'>12345</say-as></speak>
         if (content.startsWith('<speak>') && content.endsWith('</speak>')) {
@@ -159,7 +161,7 @@ export class Adapter {
         // https://github.com/broidHQ/feedhack/issues/19
         const noInputs = [];
 
-        if (type === 'Note') {
+        if (objectType === 'Note') {
           return this.sendMessage(ssml, content, noInputs)
             .then(() => ({ type: 'sent', serviceID: this.serviceId() }));
         }
@@ -168,7 +170,7 @@ export class Adapter {
       });
   }
 
-  private addIntent(trigger): void {
+  private addIntent(trigger: any): void {
     this.actionsMap.set(trigger, () => {
       const body = this.assistant.body_;
       const conversationId = this.assistant.getConversationId();
