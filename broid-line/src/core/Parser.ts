@@ -15,22 +15,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-import * as Promise from 'bluebird';
-import broidSchemas from '@broid/schemas';
+
+import {
+   default as schemas,
+   IActivityStream,
+   IASContext,
+} from '@broid/schemas';
 import { cleanNulls, Logger } from '@broid/utils';
+
+import * as Promise from 'bluebird';
+
 import * as uuid from 'node-uuid';
 import * as R from 'ramda';
-
-import { IActivityStream, IContextObject } from './interfaces';
 
 export class Parser {
   public serviceID: string;
   public generatorName: string;
   private logger: Logger;
 
-  constructor(serviceID: string, logLevel: string) {
+  constructor(serviceName: string, serviceID: string, logLevel: string) {
     this.serviceID = serviceID;
-    this.generatorName = 'line';
+    this.generatorName = serviceName;
     this.logger = new Logger('parser', logLevel);
   }
 
@@ -46,7 +51,7 @@ export class Parser {
       return Promise.resolve(null);
     }
 
-    return broidSchemas(parsed, 'activity')
+    return schemas(parsed, 'activity')
       .then(() => parsed)
       .catch((err) => {
         this.logger.error(err);
@@ -65,26 +70,26 @@ export class Parser {
     activitystreams.actor = this.createAuthor(normalized.source);
     activitystreams.target = this.createTarget(normalized.source);
 
-    const type = R.path(['message', 'type'], normalized);
-    if (!type) {
+    const messageType: string = <string> R.path(['message', 'type'], normalized);
+    if (!messageType) {
       return Promise.reject(new Error('Line message should contain type information.'));
     }
 
     const id = R.path(['message', 'id'], normalized) || this.createIdentifier();
-    const context: IContextObject = {
+    const context: IASContext = {
       content: normalized.replyToken,
       name: 'reply_token',
       type: 'Object',
     };
 
-    if (type.toLowerCase() === 'image' || type.toLowerCase() === 'video') {
+    if (messageType.toLowerCase() === 'image' || messageType.toLowerCase() === 'video') {
       activitystreams.object = {
         context,
         id,
         type: 'Image',
         url: 'https://buffer_not_supported.broid.ai',
       };
-    } else if (type.toLowerCase() === 'location') {
+    } else if (messageType.toLowerCase() === 'location') {
       activitystreams.object = {
         content: R.path(['message', 'address'], normalized),
         context,
@@ -132,7 +137,7 @@ export class Parser {
     return uuid.v4();
   }
 
-  private createActivityStream(normalized): IActivityStream {
+  private createActivityStream(normalized: any): IActivityStream {
     return {
       '@context': 'https://www.w3.org/ns/activitystreams',
       'generator': {

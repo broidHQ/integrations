@@ -15,31 +15,61 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-import * as Promise from 'bluebird';
-import broidSchemas from '@broid/schemas';
+
+import schemas from '@broid/schemas';
 import { Logger } from '@broid/utils';
+
+import * as Promise from 'bluebird';
+import { Router  } from 'express';
 import * as LineBot from 'line-messaging';
 import * as uuid from 'node-uuid';
 import * as R from 'ramda';
 import { Observable } from 'rxjs/Rx';
 
-import { IAdapterHTTPOptions, IAdapterOptions } from './interfaces';
+import { IAdapterOptions } from './interfaces';
 import { Parser } from './Parser';
+import { WebHookServer } from './WebHookServer';
+
+// Create a Line Button with AS2 Attachments
+const createButtons = (attachments, tpl: null): any => {
+  const template = tpl || new LineBot.ButtonTemplateBuilder();
+
+  R.forEach(
+    (attachment: any) => {
+      let actionType: string = LineBot.Action.POSTBACK;
+      if (attachment.mediaType === 'text/html') { actionType = LineBot.Action.URI; }
+      template.addAction(attachment.content || attachment.name, attachment.url, actionType);
+      return;
+    },
+    attachments);
+
+  return template;
+};
+
+// Create a Line Confirme Button with AS2 Attachment
+const createConfirmButton = (attachment): any => {
+  const template = new LineBot.ConfirmTemplateBuilder();
+  template.setMessage(attachment.content || attachment.name);
+  template.setPositiveAction(attachment.yesLabel, attachment.yesLabel);
+  template.setNegativeAction(attachment.noLabel, attachment.noLabel);
+  return template;
+};
 
 export class Adapter {
   private connected: boolean;
-  private HTTPOptions: IAdapterHTTPOptions;
   private logLevel: string;
   private logger: Logger;
   private parser: Parser;
+  private router: Router;
   private serviceID: string;
   private session: LineBot;
   private storeUsers: Map<string, object>;
   private token: string | null;
   private tokenSecret: string | null;
   private username: string | null;
+  private webhookServer: WebHookServer | null;
 
-  constructor(obj?: IAdapterOptions) {
+  constructor(obj: IAdapterOptions) {
     this.serviceID = obj && obj.serviceID || uuid.v4();
     this.logLevel = obj && obj.logLevel || 'info';
     this.token = obj && obj.token || null;
@@ -47,26 +77,40 @@ export class Adapter {
     this.username = obj && obj.username || null;
     this.storeUsers = new Map();
 
-    const HTTPOptions: IAdapterHTTPOptions = {
-      host: '127.0.0.1',
-      port: 8080,
-    };
-    this.HTTPOptions = obj && obj.http || HTTPOptions;
-    this.HTTPOptions.host = this.HTTPOptions.host || HTTPOptions.host;
-    this.HTTPOptions.port = this.HTTPOptions.port || HTTPOptions.port;
+    if (this.token === '') {
+      throw new Error('Token should exist.');
+    }
 
-    this.parser = new Parser(this.serviceID, this.logLevel);
+    if (this.tokenSecret === '') {
+      throw new Error('Token secret should exist.');
+    }
+
+    if (this.username === '') {
+      throw new Error('Username secret should exist.');
+    }
+
+    this.parser = new Parser(this.serviceName(), this.serviceID, this.logLevel);
     this.logger = new Logger('adapter', this.logLevel);
+    this.router = this.setupRouter();
+
+    if (obj.http) {
+      this.webhookServer = new WebHookServer(obj.http, this.router, this.logLevel);
+    }
   }
 
   // Return list of users information
-  public users(): Promise {
+  public users(): Promise<Map<string, object>> {
     return Promise.resolve(this.storeUsers);
   }
 
   // Return list of channels information
-  public channels(): Promise {
+  public channels(): Promise<Error> {
     return Promise.reject(new Error('Not supported'));
+  }
+
+  // Return the service ID of the current instance
+  public serviceName(): string {
+    return 'line';
   }
 
   // Return the service ID of the current instance
@@ -74,7 +118,7 @@ export class Adapter {
     return this.serviceID;
   }
 
-  // Connect to Messenger
+  // Connect to Line
   // Start the webhook server
   public connect(): Observable<object> {
     if (this.connected) {
@@ -85,35 +129,30 @@ export class Adapter {
       return Observable.throw(new Error('Credentials should exist.'));
     }
 
-    this.connected = true;
     this.session = LineBot.create({
       channelID: this.username,
       channelSecret: this.tokenSecret,
       channelToken: this.token,
     });
 
-    this.session.webhook('/');
+    if (this.webhookServer) {
+      this.webhookServer.listen();
+    }
 
-    this.session.listen(this.HTTPOptions.port, this.HTTPOptions.host, () => {
-      this.logger.info(`Server listening at port ${this.HTTPOptions.host}:${this.HTTPOptions.port}...`);
-    });
-
+    this.connected = true;
     return Observable.of({ type: 'connected', serviceID: this.serviceId() });
   }
 
-  public disconnect(): Promise {
-    return Promise.reject(new Error('Not supported'));
+  public disconnect(): Promise<null> {
+    this.connected = false;
+    return Promise.resolve(null);
   }
 
   // Listen 'message' event from Messenger
   public listen(): Observable<object> {
     return Observable.merge(
-      Observable
-        .fromEvent(this.session, LineBot.Events.MESSAGE, (...args) =>
-          args[1].getEvent()),
-      Observable
-        .fromEvent(this.session, LineBot.Events.POSTBACK, (...args) =>
-          args[1].getEvent()))
+      Observable.fromEvent(this.session, LineBot.Events.MESSAGE, (...args) => args[1].getEvent()),
+      Observable.fromEvent(this.session, LineBot.Events.POSTBACK, (...args) => args[1].getEvent()))
       .mergeMap((event: any) => this.parser.normalize(event))
       .mergeMap((message: any) => {
         if (R.path(['source', 'type'], message) === 'user') {
@@ -131,41 +170,17 @@ export class Adapter {
       });
   }
 
-  public send(data: object): Promise {
+  public send(data: object): Promise<object | Error> {
     this.logger.debug('sending', { message: data });
 
-    const createButtons = (attachments, tpl: null): any => {
-      const template = tpl || new LineBot.ButtonTemplateBuilder();
-
-      R.forEach(
-        (attachment) => {
-          let type = LineBot.Action.POSTBACK;
-          if (attachment.mediaType === 'text/html') { type = LineBot.Action.URI; }
-          template.addAction(attachment.content || attachment.name, attachment.url, type);
-          return;
-        },
-        attachments);
-
-      return template;
-    };
-
-    const createConfirmButton = (attachment): any => {
-      const template = new LineBot.ConfirmTemplateBuilder();
-      template.setMessage(attachment.content || attachment.name);
-      template.setPositiveAction(attachment.yesLabel, attachment.yesLabel);
-      template.setNegativeAction(attachment.noLabel, attachment.noLabel);
-      return template;
-    };
-
-    return broidSchemas(data, 'send')
+    return schemas(data, 'send')
       .then(() => {
-        const type = R.path(['object', 'type'], data);
-        if (type === 'Collection') {
+        const objectType = R.path(['object', 'type'], data);
+        if (objectType === 'Collection') {
           let objects: any = R.path(['object', 'items'], data);
           if (!R.is(Array, objects)) { objects = [objects]; }
-
           const columns = R.map(
-            (object) => {
+            (object: any) => {
               const column = createButtons(
                 object.attachment || [],
                 new LineBot.CarouselColumnTemplateBuilder()
@@ -173,7 +188,6 @@ export class Adapter {
               column.setTitle(object.name);
               column.setMessage(object.content);
               column.setThumbnail(object.preview || object.url);
-
               return column;
             },
             objects);
@@ -182,18 +196,18 @@ export class Adapter {
           return new LineBot
             .TemplateMessageBuilder('You can\'t see this rich message.', carousel);
         } else {
-          const attachments = R.path(['object', 'attachment'], data);
+          const attachments: any[] = <any[]> R.path(['object', 'attachment'], data);
           const content = R.path(['object', 'content'], data);
           const name = R.path(['object', 'name'], data);
           const url = R.path(['object', 'url'], data);
           const preview = R.path(['object', 'preview'], data);
           if (R.is(Array, attachments) && !R.isEmpty(attachments)) {
             const attachmentsButtons = R.filter(
-              (attachment) =>
+              (attachment: any) =>
                 attachment.type === 'Button' && R.isEmpty(attachment.attachment || []),
               attachments);
             const attachmentsConfirm = R.filter(
-              (attachment) =>
+              (attachment: any) =>
                 attachment.type === 'Button' && !R.isEmpty(attachment.attachment || []),
               attachments);
 
@@ -205,27 +219,25 @@ export class Adapter {
               const buttons = createButtons(attachmentsButtons, null);
               buttons.setTitle(name);
               buttons.setMessage(content);
-
-              if (type === 'Image' && url) {
+              if (objectType === 'Image' && url) {
                 buttons.setThumbnail(preview || url);
               }
-
               return new LineBot.TemplateMessageBuilder(content, buttons);
             }
-          } else if (type === 'Note') {
+          } else if (objectType === 'Note') {
             return new LineBot.TextMessageBuilder(content);
-          } else if (type === 'Image' || type === 'Video') {
+          } else if (objectType === 'Image' || objectType === 'Video') {
             if (url) {
-              if (type === 'Video') {
+              if (objectType === 'Video') {
                 return new LineBot.VideoMessageBuilder(url, preview || url);
               }
               return new LineBot.ImageMessageBuilder(url, preview || url);
             }
-          } else if (type === 'Place') {
+          } else if (objectType === 'Place') {
             const latitude = R.path(['object', 'latitude'], data);
             const longitude = R.path(['object', 'longitude'], data);
-            return new LineBot.LocationMessageBuilder(name || 'Location',
-                                                      content, latitude, longitude);
+            return new LineBot
+              .LocationMessageBuilder(name || 'Location', content, latitude, longitude);
           }
         }
       })
@@ -246,10 +258,12 @@ export class Adapter {
   }
 
   // Return user information
-  private user(key: string, cache: boolean = true): Promise {
-    if (cache && this.storeUsers.get(key)) {
+  private user(key: string, cache: boolean = true): Promise<object> {
+    if (cache) {
       const data = this.storeUsers.get(key);
-      return Promise.resolve(data);
+      if (data) {
+        return Promise.resolve(data);
+      }
     }
 
     return this.session.getProfile(key)
@@ -258,4 +272,11 @@ export class Adapter {
         return data;
       });
   }
+
+  private setupRouter(): Router {
+    const router = Router();
+    router.use(this.session.webhook('/'));
+    return router;
+  }
+
 }
