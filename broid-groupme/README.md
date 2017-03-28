@@ -55,6 +55,31 @@ groupme.connect()
   });
 ```
 
+Groupme can also be used with your existing express setup.
+
+```javascript
+const BroidGroupme = require('broid-groupme');
+const express = require("express");
+
+const groupme = new BroidGroupme({
+  username: '<your_sender_number>',
+  token: '<your_groupme_token>',
+  tokenSecret: '<your_groupme_token_secret>',
+});
+
+const app = express();
+app.use("/groupme", groupme.getRouter());
+
+groupme.connect()
+  .subscribe({
+    next: data => console.log(data),
+    error: err => console.error(`Something went wrong: ${err.message}`),
+    complete: () => console.log('complete'),
+  });
+
+app.listen(8080);
+```
+
 **Options available**
 
 | name            | Type     | default    | Description  |

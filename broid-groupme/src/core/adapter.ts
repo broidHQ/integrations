@@ -61,9 +61,9 @@ export default class Adapter {
   }
 
   // Returns the intialized express router
-  public getRouter(): Router {
+  public getRouter(): Router | null {
     if (this.webhookServer) {
-      return false;
+      return null;
     }
     return this.router;
   }
@@ -108,7 +108,7 @@ export default class Adapter {
     }
 
     this.connected = true;
-    
+
     if (this.webhookServer) {
       this.webhookServer.listen();
     }
@@ -116,12 +116,12 @@ export default class Adapter {
     return Observable.of(({ type: "connected", serviceID: this.serviceId() }));
   }
 
-  public disconnect(): Promise<boolean> {
+  public disconnect(): Promise<null> {
     if (this.webhookServer) {
-      return this.webhookServer.close().then(() => true);
+      return this.webhookServer.close();
     }
-    
-    return Promise.resolve(true);
+
+    return Promise.resolve(null);
   }
 
   // Listen "message" event from Groupme
@@ -174,7 +174,7 @@ export default class Adapter {
 
   private setupRouter(): Router {
     const router = Router();
-    
+
     const handle = (req, res) => {
       if (!R.path(["body", "system"], req) &&
         this.username !== R.path(["body", "name"], req)) {
