@@ -24,7 +24,7 @@ import * as R from 'ramda';
 
 import { IActivityStream } from './interfaces';
 
-export default class Parser {
+export class Parser {
   public serviceID: string;
   public generatorName: string;
   private logger: Logger;
@@ -36,7 +36,7 @@ export default class Parser {
   }
 
   // Validate parsed data with Broid schema validator
-  public validate(event: any): Promise<Object> {
+  public validate(event: any): Promise<object> {
     this.logger.debug('Validation process', { event });
 
     const parsed = cleanNulls(event);
@@ -132,7 +132,7 @@ export default class Parser {
     const event = cleanNulls(raw);
     if (!event || R.isEmpty(event)) { return Promise.resolve(null); }
 
-    const extractText = (txt: string, username: string, attachments: Object[]) => {
+    const extractText = (txt: string, username: string, attachments: object[]) => {
       const regex = new RegExp(`^${username}`, 'ig');
       let text = txt.replace(regex, '');
 
@@ -145,7 +145,7 @@ export default class Parser {
       return R.trim(text);
     };
 
-    const extractBestVideoURL = (variants: Object[]) => {
+    const extractBestVideoURL = (variants: object[]) => {
       // It is assumed that Messenger quality url is expected
       // to be good but the not necessarily best.
       const eligible = R.filter((variant) => !R.isNil(variant.bitrate), variants);
@@ -174,7 +174,7 @@ export default class Parser {
 
     const authorInformation = event.user || event.sender;
     const dateCreatedAt = new Date(event.created_at);
-    const attachments: Object[] = R.reject(R.isNil)(R.map((media) => {
+    const attachments: object[] = R.reject(R.isNil)(R.map((media) => {
       if (media.type === 'photo') {
         return { type: 'Image', url: media.media_url_https, _url: media.url };
       } else if (media.type === 'video' || media.type === 'animated_gif') {
@@ -185,7 +185,7 @@ export default class Parser {
       return null;
     }, R.path(['entities', 'media'], event) || []));
 
-    const data: Object = {
+    const data: object = {
       attachments,
       author: {
         id: authorInformation.id_str,

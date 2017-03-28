@@ -24,9 +24,9 @@ import * as R from 'ramda';
 import { Observable } from 'rxjs/Rx';
 
 import { IAdapterHTTPOptions, IAdapterOptions } from './interfaces';
-import Parser from './parser';
+import { Parser } from './Parser';
 
-export default class Adapter {
+export class Adapter {
   private connected: boolean;
   private HTTPOptions: IAdapterHTTPOptions;
   private logLevel: string;
@@ -34,7 +34,7 @@ export default class Adapter {
   private parser: Parser;
   private serviceID: string;
   private session: LineBot;
-  private storeUsers: Map<string, Object>;
+  private storeUsers: Map<string, object>;
   private token: string | null;
   private tokenSecret: string | null;
   private username: string | null;
@@ -76,7 +76,7 @@ export default class Adapter {
 
   // Connect to Messenger
   // Start the webhook server
-  public connect(): Observable<Object> {
+  public connect(): Observable<object> {
     if (this.connected) {
       return Observable.of({ type: 'connected', serviceID: this.serviceId() });
     }
@@ -106,7 +106,7 @@ export default class Adapter {
   }
 
   // Listen 'message' event from Messenger
-  public listen(): Observable<Object> {
+  public listen(): Observable<object> {
     return Observable.merge(
       Observable
         .fromEvent(this.session, LineBot.Events.MESSAGE, (...args) =>
@@ -131,7 +131,7 @@ export default class Adapter {
       });
   }
 
-  public send(data: Object): Promise {
+  public send(data: object): Promise {
     this.logger.debug('sending', { message: data });
 
     const createButtons = (attachments, tpl: null): any => {

@@ -24,9 +24,9 @@ import * as uuid from 'node-uuid';
 import { Observable } from 'rxjs/Rx';
 
 import { IAdapterOptions, ISendParameters } from './interfaces';
-import Parser from './parser';
+import { Parser } from './Parser';
 
-export default class Adapter {
+export class Adapter {
   public serviceID: string;
 
   private address: string;
@@ -57,7 +57,7 @@ export default class Adapter {
     return this.serviceID;
   }
 
-  public connect(): Observable<Object> {
+  public connect(): Observable<object> {
     if (!this.address) {
       return Observable.throw(new Error('IRC address is not set'));
     }
@@ -94,17 +94,17 @@ export default class Adapter {
     return this.client.disconnectAsync();
   }
 
-  public listen(): Observable<Object> {
+  public listen(): Observable<object> {
     return Observable.fromEvent(this.ee, 'message')
-      .map((normalized: Object | null) => this.parser.parse(normalized))
-      .map((parsed: Object | null) => this.parser.validate(parsed))
-      .map((validated: Object | null) => {
+      .map((normalized: object | null) => this.parser.parse(normalized))
+      .map((parsed: object | null) => this.parser.validate(parsed))
+      .map((validated: object | null) => {
         if (!validated) { return Observable.empty(); }
         return Promise.resolve(validated);
       });
   }
 
-  public send(data: ISendParameters): Promise<Object | Error> {
+  public send(data: ISendParameters): Promise<object | Error> {
     this.logger.debug('sending', { message: data });
 
     return broidSchemas(data, 'send')

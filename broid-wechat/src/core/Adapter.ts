@@ -31,10 +31,10 @@ import * as tmp from 'tmp';
 import * as WeChat from 'wechat-api';
 
 import { IAdapterOptions } from './interfaces';
-import Parser from './parser';
-import WebHookServer from './webHookServer';
+import { Parser } from './Parser';
+import { WebHookServer } from './WebHookServer';
 
-export default class Adapter {
+export class Adapter {
   public serviceID: string;
 
   private appID: string;
@@ -82,7 +82,7 @@ export default class Adapter {
     return 'wechat';
   }
 
-  public connect(): Observable<Object> {
+  public connect(): Observable<object> {
     if (this.connected) {
       return Observable.of({ type: 'connected', serviceID: this.serviceId() });
     }
@@ -104,15 +104,15 @@ export default class Adapter {
     return Promise.resolve(null);
   }
 
-  public listen(): Observable<Object> {
+  public listen(): Observable<object> {
     if (!this.webhookServer) {
       return Observable.throw(new Error('No webhookServer found.'));
     }
 
     return Observable.fromEvent(this.emitter, 'message')
-      .mergeMap((event: Object) => this.parser.parse(event))
-      .mergeMap((parsed: Object | null) => this.parser.validate(parsed))
-      .mergeMap((validated: Object | null) => {
+      .mergeMap((event: object) => this.parser.parse(event))
+      .mergeMap((parsed: object | null) => this.parser.validate(parsed))
+      .mergeMap((validated: object | null) => {
         if (!validated) { return Observable.empty(); }
         return Promise.resolve(validated);
       });
@@ -131,7 +131,7 @@ export default class Adapter {
     return this.router;
   }
 
-  public send(data: ISendParameters): Promise<Object | Error> {
+  public send(data: ISendParameters): Promise<object | Error> {
     this.logger.debug('sending', { message: data });
 
     return broidSchemas(data, 'send')

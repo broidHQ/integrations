@@ -25,7 +25,7 @@ import * as validUrl from 'valid-url';
 
 import { IActivityStream, IMediaObject, IMessage } from './interfaces';
 
-export default class Parser {
+export class Parser {
   public serviceID: string;
   public generatorName: string;
   private logger: Logger;
@@ -37,7 +37,7 @@ export default class Parser {
   }
 
   // Validate parsed data with Broid schema validator
-  public validate(event: any): Promise<Object> {
+  public validate(event: any): Promise<object> {
     this.logger.debug('Validation process', { event });
 
     const parsed = cleanNulls(event);
@@ -57,7 +57,7 @@ export default class Parser {
   }
 
   // Convert normalized data to Broid schema
-  public parse(event: IMessage | null): Promise<Object> {
+  public parse(event: IMessage | null): Promise<object> {
     this.logger.debug('Parse process', { event });
 
     const normalized = cleanNulls(event);

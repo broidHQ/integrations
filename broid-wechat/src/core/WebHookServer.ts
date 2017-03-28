@@ -24,7 +24,7 @@ import * as http from 'http';
 
 import { IAdapterHTTPOptions } from './interfaces';
 
-export default class WebHookServer {
+export class WebHookServer {
   private express: express.Application;
   private host: string;
   private httpClient: http.Server;
@@ -35,7 +35,7 @@ export default class WebHookServer {
   constructor(options: IAdapterHTTPOptions, router: express.Router, logLevel: string) {
     this.host = options.host;
     this.port = options.port;
-    this.logger = new Logger('webhook_server', logLevel);
+    this.logger = new Logger('webhookServer', logLevel);
 
     this.setupExpress(router);
   }

@@ -25,7 +25,7 @@ import * as validUrl from 'valid-url';
 
 import { IActivityStream } from './interfaces';
 
-export default class Parser {
+export class Parser {
   public serviceID: string;
   public generatorName: string;
   private logger: Logger;

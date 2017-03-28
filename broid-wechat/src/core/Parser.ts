@@ -20,11 +20,11 @@ import broidSchemas, { IActivityStream } from '@broid/schemas';
 import { cleanNulls, Logger } from '@broid/utils';
 import * as R from 'ramda';
 
-export default class Parser {
+export class Parser {
   public generatorName: string;
   public serviceID: string;
   private logger: Logger;
-  private userCache: Object;
+  private userCache: object;
   private wechatClient: any;
 
   constructor(serviceName: string, wechatClient: any, serviceID: string, logLevel: string) {
@@ -36,7 +36,7 @@ export default class Parser {
   }
 
   // Validate parsed data with Broid schema validator
-  public validate(event: Object | null): Promise<Object | null> {
+  public validate(event: object | null): Promise<object | null> {
     this.logger.debug('Validation process', { event });
 
     const parsed = cleanNulls(event);
@@ -56,7 +56,7 @@ export default class Parser {
   }
 
   // Convert normalized data to Broid schema
-  public parse(event: Object): Promise<IActivityStream | null> {
+  public parse(event: object): Promise<IActivityStream | null> {
     this.logger.debug('Normalized process');
 
     const normalized = cleanNulls(event);

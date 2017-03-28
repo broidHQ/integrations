@@ -26,9 +26,9 @@ import { Observable } from 'rxjs/Rx';
 
 const Events: any = Discordie.Events;
 import { IAdapterOptions, IChannelInformations, IUserInformations } from './interfaces';
-import Parser from './parser';
+import { Parser } from './Parser';
 
-export default class Adapter {
+export class Adapter {
   public serviceID: string;
   public token: string | null;
   private session: any;
@@ -167,7 +167,7 @@ export default class Adapter {
       });
   }
 
-  public send(data: Object): Promise {
+  public send(data: object): Promise {
     this.logger.debug('sending', { message: data });
 
     const updateMessage = (message) => {

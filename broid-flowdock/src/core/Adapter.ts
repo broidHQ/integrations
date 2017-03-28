@@ -24,7 +24,7 @@ import * as R from 'ramda';
 import { Observable } from 'rxjs/Rx';
 
 import { IAdapterOptions } from './interfaces';
-import Parser from './parser';
+import { Parser } from './Parser';
 
 // Promisify the Flowdock Client
 const makeRequest = (session, method, ...args) =>
@@ -32,7 +32,7 @@ const makeRequest = (session, method, ...args) =>
     session[method](...args, (err, body) =>
       err ? reject(err) : resolve(body)));
 
-export default class Adapter {
+export class Adapter {
   private serviceID: string;
   private token: string | null;
   private session: any;
@@ -70,7 +70,7 @@ export default class Adapter {
   }
 
   // Connect to Flowdock
-  public connect(): Observable<Object> {
+  public connect(): Observable<object> {
     if (!this.token) {
       return Observable.throw(new Error('Credentials should exist.'));
     }
@@ -85,7 +85,7 @@ export default class Adapter {
   }
 
   // Listen 'message' event from Flowdock
-  public listen(): Observable<Object> {
+  public listen(): Observable<object> {
     const getFlows = new Promise((resolve, reject) => {
         this.session.flows((err, flows) => {
           if (err) { return reject(err); }

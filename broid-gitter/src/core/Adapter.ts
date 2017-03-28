@@ -25,7 +25,7 @@ import * as R from 'ramda';
 import { Observable } from 'rxjs/Rx';
 
 import { IAdapterOptions } from './interfaces';
-import Parser from './parser';
+import { Parser } from './Parser';
 
 const eventNames = ['chatMessages']; // Event availables: 'events', 'users'
 
@@ -38,7 +38,7 @@ const roomToInfos = (room: any) => ({
   url: room.url,
 });
 
-export default class Adapter {
+export class Adapter {
   private ee: EventEmitter;
   private logLevel: string;
   private logger: Logger;
@@ -80,7 +80,7 @@ export default class Adapter {
 
   // Connect to Gitter
   // Start the webhook server
-  public connect(): Observable<Object> {
+  public connect(): Observable<object> {
     if (!this.token || this.token === '') {
       return Observable.throw(new Error('Token should exist.'));
     }
@@ -127,7 +127,7 @@ export default class Adapter {
   }
 
   // Listen 'message' event from Google
-  public listen(): Observable<Object> {
+  public listen(): Observable<object> {
     if (!this.session) {
       return Observable.throw(new Error('No session found.'));
     }
@@ -136,15 +136,15 @@ export default class Adapter {
       Observable.fromEvent(this.ee, eventName), eventNames);
 
     return Observable.merge(...fromEvents)
-      .mergeMap((normalized: Object | null) => this.parser.parse(normalized))
-      .mergeMap((parsed: Object | null) => this.parser.validate(parsed))
-      .mergeMap((validated: Object | null) => {
+      .mergeMap((normalized: object | null) => this.parser.parse(normalized))
+      .mergeMap((parsed: object | null) => this.parser.validate(parsed))
+      .mergeMap((validated: object | null) => {
         if (!validated) { return Observable.empty(); }
         return Promise.resolve(validated);
       });
   }
 
-  public send(data: any): Promise<Object | Error> {
+  public send(data: any): Promise<object | Error> {
     this.logger.debug('sending', { message: data });
     return broidSchemas(data, 'send')
       .then(() => {

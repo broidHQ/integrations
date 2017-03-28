@@ -27,7 +27,7 @@ import * as R from 'ramda';
 
 import { IAttachment, IGroupParsed, IMessage } from './interfaces';
 
-export default class Parser {
+export class Parser {
   public serviceID: string;
   public generatorName: string;
   private logger: Logger;
@@ -39,7 +39,7 @@ export default class Parser {
   }
 
   // Validate parsed data with Broid schema validator
-  public validate(event: any): Promise<Object | null> {
+  public validate(event: any): Promise<object | null> {
     this.logger.debug('Validation process', { event });
 
     const parsed = cleanNulls(event);
@@ -54,7 +54,7 @@ export default class Parser {
   }
 
   // Convert normalized data to Broid schema
-  public parse(event: any): Promise<Object | null> {
+  public parse(event: any): Promise<object | null> {
     this.logger.debug('Normalize process', { event });
 
     const normalized = cleanNulls(event);

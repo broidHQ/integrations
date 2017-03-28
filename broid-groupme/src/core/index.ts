@@ -1,3 +1,5 @@
+/* tslint:disable */
+
 /**
  * @license
  * Copyright 2017 Broid.
@@ -15,7 +17,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
+
 // Javascript import compatibility
 
-import {default as Adapter} from './adapter';
+import { Adapter } from './Adapter';
 export = Adapter;

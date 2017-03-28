@@ -23,7 +23,7 @@ import * as R from 'ramda';
 
 import { IActivityStream } from './interfaces';
 
-export default class Parser {
+export class Parser {
   public serviceID: string;
   public generatorName: string;
   private logger: Logger;
@@ -35,7 +35,7 @@ export default class Parser {
   }
 
   // Validate parsed data with Broid schema validator
-  public validate(event: any): Promise<Object> {
+  public validate(event: any): Promise<object> {
     this.logger.debug('Validation process', { event });
 
     const parsed = cleanNulls(event);

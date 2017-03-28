@@ -24,7 +24,7 @@ import * as http from 'http';
 
 import { IAdapterHTTPOptions } from './interfaces';
 
-export default class WebHookServer extends EventEmitter {
+export class WebHookServer extends EventEmitter {
   private express: express.Application;
   private logger: Logger;
   private httpClient: http.Server;
@@ -36,7 +36,7 @@ export default class WebHookServer extends EventEmitter {
     super();
     this.host = options.host;
     this.port = options.port;
-    this.logger = new Logger('webhook_server', logLevel || 'info');
+    this.logger = new Logger('webhookServer', logLevel || 'info');
     this.express = this.setupExpress(router);
   }
 

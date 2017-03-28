@@ -26,9 +26,9 @@ import { Observable } from 'rxjs/Rx';
 import * as Twit from 'twit';
 
 import { IAdapterOptions, ISendParameters } from './interfaces';
-import Parser from './parser';
+import { Parser } from './Parser';
 
-export default class Adapter {
+export class Adapter {
   private serviceID: string;
   private username: string | null;
   private myid: string | null;
@@ -40,7 +40,7 @@ export default class Adapter {
   private parser: Parser;
   private logLevel: string;
   private logger: Logger;
-  private storeUsers: Map<string, Object>;
+  private storeUsers: Map<string, object>;
   private sessionGET: Promise;
   private sessionPOST: Promise;
 
@@ -80,7 +80,7 @@ export default class Adapter {
   }
 
   // Connect to Twitter
-  public connect(): Observable<Object> {
+  public connect(): Observable<object> {
     if (!this.token
       || !this.tokenSecret
       || !this.consumerKey
@@ -106,7 +106,7 @@ export default class Adapter {
   }
 
   // Listen 'message' event from Twitter
-  public listen(): Observable<Object> {
+  public listen(): Observable<object> {
     const streamMention = this.session.stream('statuses/filter',
       { track: this.username });
     const streamDm = this.session.stream('user');
@@ -147,7 +147,7 @@ export default class Adapter {
       });
   }
 
-  public send(data: Object): Promise {
+  public send(data: object): Promise {
     this.logger.debug('sending', { message: data });
 
     return broidSchemas(data, 'send')

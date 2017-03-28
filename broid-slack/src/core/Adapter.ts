@@ -33,10 +33,10 @@ import {
   ISlackMessage,
   IWebHookEvent,
 } from './interfaces';
-import Parser from './parser';
+import { Parser } from './Parser';
 import WebHookServer from './webHookServer.js';
 
-export default class Adapter {
+export class Adapter {
   private asUser: boolean;
   private connected: boolean;
   private emitter: EventEmitter;
@@ -47,8 +47,8 @@ export default class Adapter {
   private serviceID: string;
   private session: RtmClient;
   private sessionWeb: WebClient;
-  private storeUsers: Map<string, Object>;
-  private storeChannels: Map<string, Object>;
+  private storeUsers: Map<string, object>;
+  private storeChannels: Map<string, object>;
   private token: string | null;
   private webhookServer: WebHookServer;
 
@@ -98,7 +98,7 @@ export default class Adapter {
 
   // Connect to Slack
   // Start the webhook server
-  public connect(): Observable<Object> {
+  public connect(): Observable<object> {
     if (this.connected) {
       return Observable.of({ type: 'connected', serviceID: this.serviceId() });
     }
@@ -152,7 +152,7 @@ export default class Adapter {
   }
 
   // Listen 'message' event from Slack
-  public listen(): Observable<Object> {
+  public listen(): Observable<object> {
     const rtmEvents = R.pick([
       'MESSAGE',
     ], RTM_EVENTS);
@@ -273,7 +273,7 @@ export default class Adapter {
       });
   }
 
-  public send(data: Object): Promise {
+  public send(data: object): Promise {
     this.logger.debug('sending', { message: data });
     return broidSchemas(data, 'send')
       .then(() => data)

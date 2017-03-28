@@ -27,10 +27,10 @@ import { Observable } from 'rxjs/Rx';
 
 import { getGroups, postMessage } from './client';
 import { IAdapterOptions } from './interfaces';
-import Parser from './parser';
-import WebHookServer from './webHookServer';
+import { Parser } from './Parser';
+import { WebHookServer } from './WebHookServer';
 
-export default class Adapter {
+export class Adapter {
   private serviceID: string;
   private username: string;
   private token: string;
@@ -119,7 +119,7 @@ export default class Adapter {
 
   // Connect to Groupme
   // Start the webhook server
-  public connect(): Observable<Object> {
+  public connect(): Observable<object> {
     if (this.connected) {
       return Observable.of({ type: 'connected', serviceID: this.serviceId() });
     }
@@ -142,7 +142,7 @@ export default class Adapter {
   }
 
   // Listen 'message' event from Groupme
-  public listen(): Observable<Object> {
+  public listen(): Observable<object> {
     return Observable.fromEvent(this.emitter, 'message')
       .mergeMap((event: any) => {
         return this.channels()
@@ -158,7 +158,7 @@ export default class Adapter {
       });
   }
 
-  public send(data: any): Promise<Object | Error> {
+  public send(data: any): Promise<object | Error> {
     this.logger.debug('sending', { message: data });
     return broidSchemas(data, 'send')
       .then(() => {

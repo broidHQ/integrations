@@ -60,9 +60,9 @@ export interface IActivityTag {
 
 export interface ISendParameters {
   status?: string;
-  twit_options: Object;
+  twit_options: object;
   text?: string;
   screen_name?: string;
   user_id?: string;
-  media_ids?: Object[];
+  media_ids?: object[];
 }

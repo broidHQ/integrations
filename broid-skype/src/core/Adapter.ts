@@ -26,18 +26,18 @@ import * as R from 'ramda';
 import { Observable } from 'rxjs/Rx';
 
 import { IAdapterOptions } from './interfaces';
-import Parser from './parser';
-import WebHookServer from './webHookServer';
+import { Parser } from './Parser';
+import { WebHookServer } from './WebHookServer';
 
-export default class Adapter {
+export class Adapter {
   private connected: boolean;
   private logLevel: string;
   private logger: Logger;
   private parser: Parser;
   private router: Router;
   private serviceID: string;
-  private storeUsers: Map<string, Object>;
-  private storeAddresses: Map<string, Object>;
+  private storeUsers: Map<string, object>;
+  private storeAddresses: Map<string, object>;
   private token: string | null;
   private tokenSecret: string | null;
   private webhookServer: WebHookServer;
@@ -97,7 +97,7 @@ export default class Adapter {
 
   // Connect to Skype
   // Start the webhook server
-  public connect(): Observable<Object> {
+  public connect(): Observable<object> {
     if (this.connected) {
       return Observable.of({ type: 'connected', serviceID: this.serviceId() });
     }
@@ -134,7 +134,7 @@ export default class Adapter {
   }
 
   // Listen 'message' event from Messenger
-  public listen(): Observable<Object> {
+  public listen(): Observable<object> {
     return Observable.create((observer) => {
       this.session.dialog('/', (event) => {
         this.storeAddresses.set(R.path([
@@ -160,7 +160,7 @@ export default class Adapter {
     });
   }
 
-  public send(data: Object): Promise {
+  public send(data: object): Promise {
     this.logger.debug('sending', { message: data });
     return broidSchemas(data, 'send')
       .then(() => {

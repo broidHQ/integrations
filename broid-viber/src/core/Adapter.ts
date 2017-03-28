@@ -25,9 +25,9 @@ import { Observable } from 'rxjs/Rx';
 import { Bot, Events, Message } from 'viber-bot';
 
 import { IAdapterHTTPOptions, IAdapterOptions } from './interfaces';
-import Parser from './parser';
+import { Parser } from './Parser';
 
-export default class Adapter {
+export class Adapter {
   private avatar: string;
   private connected: boolean;
   private HTTPOptions: IAdapterHTTPOptions;
@@ -83,7 +83,7 @@ export default class Adapter {
 
   // Connect to Callr
   // Start the webhook server
-  public connect(): Observable<Object> {
+  public connect(): Observable<object> {
     if (this.connected) {
       return Observable.of({ type: 'connected', serviceID: this.serviceId() });
     }
@@ -118,7 +118,7 @@ export default class Adapter {
   }
 
   // Listen 'message' event from Callr
-  public listen(): Observable<Object> {
+  public listen(): Observable<object> {
     if (!this.session) {
       return Observable.throw(new Error('No session found.'));
     }
@@ -153,7 +153,7 @@ export default class Adapter {
       });
   }
 
-  public send(data: Object): Promise<any> {
+  public send(data: object): Promise<any> {
     this.logger.debug('sending', { message: data });
     return broidSchemas(data, 'send')
       .then(() => {

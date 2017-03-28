@@ -20,7 +20,7 @@ import * as http from 'http';
 
 import { IAdapterHTTPOptions } from './interfaces';
 
-export default class WebHookServer {
+export class WebHookServer {
   private logger: Logger;
   private host: string;
   private port: number;
@@ -29,7 +29,7 @@ export default class WebHookServer {
   constructor(options?: IAdapterHTTPOptions, logLevel?: string) {
     this.host = options && options.host || '127.0.0.1';
     this.port = options && options.port || 8080;
-    this.logger = new Logger('webhook_server', logLevel || 'info');
+    this.logger = new Logger('webhookServer', logLevel || 'info');
   }
 
   public listen(handler: any) {

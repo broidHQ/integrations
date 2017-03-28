@@ -25,7 +25,7 @@ import * as request from 'request-promise';
 import { Observable } from 'rxjs/Rx';
 
 import { IAdapterHTTPOptions, IAdapterOptions } from './interfaces';
-import Parser from './parser';
+import { Parser } from './Parser';
 
 const sortByFileSize = R.compose(R.reverse,
   R.sortBy(R.prop('file_size')));
@@ -36,7 +36,7 @@ const sortByFileSize = R.compose(R.reverse,
 // See https://core.telegram.org/bots/api#markdown-style for characters.
 const markdown = (str) => str.replace(/[\*_\[`]/g, '\\$&');
 
-export default class Adapter {
+export class Adapter {
   private serviceID: string;
   private token: string | null;
   private HTTPOptions: IAdapterHTTPOptions;
@@ -82,7 +82,7 @@ export default class Adapter {
   }
 
   // Connect to Telegram
-  public connect(): Observable<Object> {
+  public connect(): Observable<object> {
     if (!this.token || !this.HTTPOptions.webhookURL) {
       return Observable.throw(new Error('Credentials should exist.'));
     }
@@ -101,7 +101,7 @@ export default class Adapter {
   }
 
   // Listen 'message' event from Telegram
-  public listen(): Observable<Object> {
+  public listen(): Observable<object> {
     if (!this.session) {
       return Observable.throw(new Error('No session found.'));
     }
@@ -157,7 +157,7 @@ export default class Adapter {
       });
   }
 
-  public send(data: Object): Promise {
+  public send(data: object): Promise {
     this.logger.debug('sending', { message: data });
     return broidSchemas(data, 'send')
       .then(() => {

@@ -24,10 +24,10 @@ import * as R from 'ramda';
 import { Observable } from 'rxjs/Rx';
 
 import { IAdapterHTTPOptions, IAdapterOptions } from './interfaces';
-import Parser from './parser';
-import WebHookServer from './webHookServer';
+import { Parser } from './Parser';
+import { WebHookServer } from './WebHookServer';
 
-export default class Adapter {
+export class Adapter {
   private serviceID: string;
   private token: string | null;
   private HTTPOptions: IAdapterHTTPOptions;
@@ -38,7 +38,7 @@ export default class Adapter {
   private username: string;
   private logger: Logger;
   private webhookServer: WebHookServer;
-  private storeUsers: Map<string, Object>;
+  private storeUsers: Map<string, object>;
 
   constructor(obj?: IAdapterOptions) {
     this.serviceID = obj && obj.serviceID || uuid.v4();
@@ -80,7 +80,7 @@ export default class Adapter {
 
   // Connect to Kik
   // Start the webhook server
-  public connect(): Observable<Object> {
+  public connect(): Observable<object> {
     if (this.connected) {
       return Observable.of({ type: 'connected', serviceID: this.serviceId() });
     }
@@ -107,7 +107,7 @@ export default class Adapter {
   }
 
   // Listen 'message' event from Kik
-  public listen(): Observable<Object> {
+  public listen(): Observable<object> {
     if (!this.session) {
       return Observable.throw(new Error('No session found.'));
     }
@@ -130,7 +130,7 @@ export default class Adapter {
     });
   }
 
-  public send(data: Object): Promise {
+  public send(data: object): Promise {
     this.logger.debug('sending', { message: data });
     return broidSchemas(data, 'send')
       .then(() => {

@@ -23,7 +23,7 @@ import * as R from 'ramda';
 
 import { IActivityStream } from './interfaces';
 
-export default class Parser {
+export class Parser {
   public serviceID: string;
   public generatorName: string;
   private logger: Logger;
@@ -35,7 +35,7 @@ export default class Parser {
   }
 
   // Validate parsed data with Broid schema validator
-  public validate(event: any): Promise<Object> {
+  public validate(event: any): Promise<object> {
     this.logger.debug('Validation process', { event });
 
     const parsed = cleanNulls(event);
@@ -116,7 +116,7 @@ export default class Parser {
     return Promise.resolve(activitystreams);
   }
 
-  private parseMedia(media: any, content: string | null): Object | null {
+  private parseMedia(media: any, content: string | null): object | null {
     let type: string | null = null;
     const mimeType = mimetype.lookup(media.filename);
     if (mimeType.startsWith('image')) { type = 'Image'; }

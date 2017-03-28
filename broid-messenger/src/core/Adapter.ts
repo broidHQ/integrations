@@ -26,10 +26,10 @@ import * as rp from 'request-promise';
 import { Observable } from 'rxjs/Rx';
 
 import { IAdapterOptions, IWebHookEvent } from './interfaces';
-import Parser from './parser';
-import WebHookServer from './webHookServer';
+import { Parser } from './Parser';
+import { WebHookServer } from './WebHookServer';
 
-export default class Adapter {
+export class Adapter {
   private connected: boolean;
   private emitter: EventEmitter;
   private logLevel: string;
@@ -37,7 +37,7 @@ export default class Adapter {
   private parser: Parser;
   private router: Router;
   private serviceID: string;
-  private storeUsers: Map<string, Object>;
+  private storeUsers: Map<string, object>;
   private token: string | null;
   private tokenSecret: string | null;
   private webhookServer: WebHookServer;
@@ -86,7 +86,7 @@ export default class Adapter {
 
   // Connect to Messenger
   // Start the webhook server
-  public connect(): Observable<Object> {
+  public connect(): Observable<object> {
     if (this.connected) {
       return Observable.of({ type: 'connected', serviceID: this.serviceId() });
     }
@@ -109,7 +109,7 @@ export default class Adapter {
   }
 
   // Listen 'message' event from Messenger
-  public listen(): Observable<Object> {
+  public listen(): Observable<object> {
     return Observable.fromEvent(this.emitter, 'message')
       .mergeMap((event: IWebHookEvent) => this.parser.normalize(event))
       .mergeMap((messages: any) => Observable.from(messages))
@@ -123,7 +123,7 @@ export default class Adapter {
       });
   }
 
-  public send(data: Object): Promise {
+  public send(data: object): Promise {
     this.logger.debug('sending', { message: data });
     return broidSchemas(data, 'send')
       .then(() => {

@@ -26,8 +26,8 @@ import * as R from 'ramda';
 import { Observable } from 'rxjs/Rx';
 
 import { IAdapterOptions } from './interfaces';
-import Parser from './parser';
-import WebHookServer from './webHookServer';
+import { Parser } from './Parser';
+import { WebHookServer } from './WebHookServer';
 
 const events = [
   'assistant.intent.action.MAIN',
@@ -35,7 +35,7 @@ const events = [
   'assistant.intent.action.PERMISSION',
 ];
 
-export default class Adapter {
+export class Adapter {
   private assistant: actionsSdk.ActionsSdkAssistant;
   private actionsMap: Map<string, actionsSdk.ActionHandler>;
   private serviceID: string;
@@ -99,7 +99,7 @@ export default class Adapter {
 
   // Connect to Google Assistant
   // Start the webhook server
-  public connect(): Observable<Object> {
+  public connect(): Observable<object> {
     if (this.connected) {
       return Observable.of({ type: 'connected', serviceID: this.serviceId() });
     }
@@ -126,7 +126,7 @@ export default class Adapter {
   }
 
   // Listen 'message' event from Google
-  public listen(): Observable<Object> {
+  public listen(): Observable<object> {
     const fromEvents =  R.map((event) =>
       Observable.fromEvent(this.emitter, event), events);
 
@@ -140,7 +140,7 @@ export default class Adapter {
       });
   }
 
-  public send(data: Object): Promise<Object | Error> {
+  public send(data: object): Promise<object | Error> {
     this.logger.debug('sending', { message: data });
     return broidSchemas(data, 'send')
       .then(() => {

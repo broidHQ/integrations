@@ -26,10 +26,10 @@ import * as R from 'ramda';
 import { Observable } from 'rxjs/Rx';
 
 import { IAdapterOptions } from './interfaces';
-import Parser from './parser';
-import WebHookServer from './webHookServer';
+import { Parser } from './Parser';
+import { WebHookServer } from './WebHookServer';
 
-export default class Adapter {
+export class Adapter {
   private serviceID: string;
   private connected: boolean;
   private emitter: EventEmitter;
@@ -83,7 +83,7 @@ export default class Adapter {
 
   // Connect to Nexmo
   // Start the webhook server
-  public connect(): Observable<Object> {
+  public connect(): Observable<object> {
     if (this.connected) {
       return Observable.of({ type: 'connected', serviceID: this.serviceId() });
     }
@@ -104,7 +104,7 @@ export default class Adapter {
   }
 
   // Listen 'message' event from Nexmo
-  public listen(): Observable<Object> {
+  public listen(): Observable<object> {
     return Observable.fromEvent(this.emitter, 'message')
       .mergeMap((normalized: any) =>
         this.parser.parse(normalized))
@@ -115,7 +115,7 @@ export default class Adapter {
       });
   }
 
-  public send(data: any): Promise<Object | Error> {
+  public send(data: any): Promise<object | Error> {
     this.logger.debug('sending', { message: data });
     return broidSchemas(data, 'send')
       .then(() => {
