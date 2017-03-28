@@ -45,6 +45,8 @@
     "@broid/utils": "^1.0.0",
     "@kikinteractive/kik": "^2.0.12",
     "bluebird": "^3.4.7",
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
     "node-uuid": "^1.4.7",
     "ramda": "^0.23.0",
     "rxjs": "^5.0.2"

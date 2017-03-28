@@ -15,27 +15,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-import * as Promise from 'bluebird';
-import broidSchemas from '@broid/schemas';
+
+import { default as schemas, IActivityStream } from '@broid/schemas';
 import { cleanNulls, concat, Logger } from '@broid/utils';
+
+import * as Promise from 'bluebird';
 import * as uuid from 'node-uuid';
 import * as R from 'ramda';
-
-import { IActivityStream } from './interfaces';
 
 export class Parser {
   public serviceID: string;
   public generatorName: string;
   private logger: Logger;
 
-  constructor(serviceID: string, logLevel: string) {
+  constructor(serviceName: string, serviceID: string, logLevel: string) {
     this.serviceID = serviceID;
-    this.generatorName = 'kik';
+    this.generatorName = serviceName;
     this.logger = new Logger('parser', logLevel);
   }
 
   // Validate parsed data with Broid schema validator
-  public validate(event: any): Promise<object> {
+  public validate(event: any): Promise<null | object> {
     this.logger.debug('Validation process', { event });
 
     const parsed = cleanNulls(event);
@@ -46,7 +46,7 @@ export class Parser {
       return Promise.resolve(null);
     }
 
-    return broidSchemas(parsed, 'activity')
+    return schemas(parsed, 'activity')
       .then(() => parsed)
       .catch((err) => {
         this.logger.error(err);
@@ -76,14 +76,14 @@ export class Parser {
 
     // Process potentially media.
     if (normalized.type === 'Image' || normalized.type === 'Video') {
-      let type = 'Image';
+      let mediaType = 'Image';
       if (normalized.type === 'Video') {
-        type = 'Video';
+        mediaType = 'Video';
       }
 
       activitystreams.object = {
         id: normalized.id.toString() || this.createIdentifier(),
-        type,
+        type: mediaType,
         url: normalized.content,
       };
     }
@@ -130,7 +130,7 @@ export class Parser {
     return uuid.v4();
   }
 
-  private createActivityStream(normalized): IActivityStream {
+  private createActivityStream(normalized: any): IActivityStream {
     return {
       '@context': 'https://www.w3.org/ns/activitystreams',
       'actor': {},
