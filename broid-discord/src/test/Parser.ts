@@ -35,7 +35,7 @@ import * as discordMessageWithMedia from './fixtures/discord/messageWithMedia.js
 
 let parser: Parser;
 ava.before(() => {
-  parser = new Parser('test_service', 'info');
+  parser = new Parser('discord', 'test_service', 'info');
 });
 
 ava('Parse a simple message', async (t) => {

@@ -76,7 +76,7 @@ export class Adapter {
     return Promise.reject(new Error('Not supported'));
   }
 
-  // Return the service ID of the current instance
+  // Return the service Name of the current instance
   public serviceName(): string {
     return 'kik';
   }

@@ -57,7 +57,7 @@ export class Adapter {
     this.token = obj && obj.token || null;
 
     this.ee = new EventEmitter();
-    this.parser = new Parser(this.serviceID, this.logLevel);
+    this.parser = new Parser(this.serviceName(), this.serviceID, this.logLevel);
     this.logger = new Logger('adapter', this.logLevel);
   }
 
@@ -75,6 +75,11 @@ export class Adapter {
         .catch(reject);
     })
     .map(roomToInfos);
+  }
+
+  // Return the service Name of the current instance
+  public serviceName(): string {
+    return 'gitter';
   }
 
   // Return the service ID of the current instance

@@ -61,3 +61,4 @@ typings
 .revelant_directories
 .integrations
 .changed_dirs
+**/src/**/*.js

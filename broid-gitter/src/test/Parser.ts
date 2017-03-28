@@ -28,7 +28,7 @@ import * as broidMessagePrivate from './fixtures/broid/messagePrivate.json';
 
 let parser: Parser;
 ava.before(() => {
-  parser = new Parser('testuser', 'info');
+  parser = new Parser('gitter', 'testuser', 'info');
 });
 
 ava('Parse a group message', async (t) => {

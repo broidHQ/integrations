@@ -32,9 +32,9 @@ export class Parser {
   private logger: Logger;
   private username: string;
 
-  constructor(username: string, serviceID: string, logLevel: string) {
+  constructor(serviceName: string, username: string, serviceID: string, logLevel: string) {
     this.serviceID = serviceID;
-    this.generatorName = 'irc';
+    this.generatorName = serviceName;
     this.username = username;
     this.logger = new Logger('parser', logLevel);
   }

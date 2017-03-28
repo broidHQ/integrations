@@ -34,7 +34,7 @@ ava.before(() => {
     return 1483589416000;
   });
 
-  parser = new Parser('testuser', 'test_irc_service', 'info');
+  parser = new Parser('irc', 'testuser', 'test_irc_service', 'info');
 });
 
 ava('Parse a group message', async (t) => {

@@ -53,8 +53,13 @@ export class Adapter {
     this.channels = obj && obj.channels;
     this.ee = new EventEmitter();
 
-    this.parser = new Parser(this.username, this.serviceID, this.logLevel);
+    this.parser = new Parser(this.serviceName(), this.username, this.serviceID, this.logLevel);
     this.logger = new Logger('adapter', this.logLevel);
+  }
+
+  // Return the service Name of the current instance
+  public serviceName(): string {
+    return 'irc';
   }
 
   // Return the service ID of the current instance

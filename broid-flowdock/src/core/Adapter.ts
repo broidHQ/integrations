@@ -50,7 +50,7 @@ export class Adapter {
     this.logLevel = obj && obj.logLevel || 'info';
     this.token = obj && obj.token || null;
 
-    this.parser = new Parser(this.serviceID, this.logLevel);
+    this.parser = new Parser(this.serviceName(), this.serviceID, this.logLevel);
     this.logger = new Logger('adapter', this.logLevel);
 
     this.storeUsers = new Map();
@@ -70,6 +70,11 @@ export class Adapter {
   // Return the service ID of the current instance
   public serviceId(): string {
     return this.serviceID;
+  }
+
+  // Return the service Name of the current instance
+  public serviceName(): string {
+    return 'flowdock';
   }
 
   // Connect to Flowdock

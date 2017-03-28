@@ -35,7 +35,7 @@ import * as flowdockWithHashtag from './fixtures/flowdock/withHashtag.json';
 
 let parser: Parser;
 ava.before(() => {
-  parser = new Parser('test_service', 'info');
+  parser = new Parser('flowdock', 'test_service', 'info');
 });
 
 ava('Parse null', async (t) => {

@@ -28,9 +28,9 @@ export class Parser {
   public generatorName: string;
   private logger: Logger;
 
-  constructor(serviceID: string, logLevel: string) {
+  constructor(serviceName: string, serviceID: string, logLevel: string) {
     this.serviceID = serviceID;
-    this.generatorName = 'gitter';
+    this.generatorName = serviceName;
     this.logger = new Logger('parser', logLevel);
   }
 
