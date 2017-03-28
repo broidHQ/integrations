@@ -15,8 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-import test from 'ava';
-import Parser from '../core/parser';
+
+import ava from 'ava';
+import { Parser } from '../core/Parser';
 
 import * as broidMessage from './fixtures/broid/message.json';
 import * as broidMessageNormalized from './fixtures/broid/messageNormalized.json';
@@ -28,64 +29,63 @@ import * as twilioMessage from './fixtures/twilio/message.json';
 import * as twilioMessageWithMedia from './fixtures/twilio/messageWithMedia.json';
 import * as twilioMessageWithMedias from './fixtures/twilio/messageWithMedias.json';
 
-
 let parser: Parser;
-test.before(() => {
+ava.before(() => {
   parser = new Parser('twilio', 'test_service', 'info');
 });
 
-test('Parse null', async(t) => {
+ava('Parse null', async (t) => {
   const data = parser.parse(null);
   t.is(await data, null);
 });
 
-test('Normalize null', async(t) => {
+ava('Normalize null', async (t) => {
   const d: any = { request: { body: {} } };
   const data = parser.normalize(d);
   t.is(await data, null);
 });
 
-test('Normalize a simple message', async(t) => {
-  const data = parser.normalize(twilioMessage as any);
+ava('Normalize a simple message', async (t) => {
+  const data = parser.normalize(<any> twilioMessage);
   t.deepEqual(await data, broidMessageNormalized);
 });
 
-test('Normalize a message with media', async(t) => {
-  const data = parser.normalize(twilioMessageWithMedia as any);
+ava('Normalize a message with media', async (t) => {
+  const data = parser.normalize(<any> twilioMessageWithMedia);
   t.deepEqual(await data, broidMessageNormalizedWithMedia);
 });
 
-test('Normalize a message with multiple media', async(t) => {
-  const data = parser.normalize(twilioMessageWithMedias as any);
+ava('Normalize a message with multiple media', async (t) => {
+  const data = parser.normalize(<any> twilioMessageWithMedias);
   t.deepEqual(await data, broidMessageNormalizedWithMedias);
 });
 
-test('Parse a simple message', async(t) => {
-  const data = parser.parse(broidMessageNormalized as any);
+ava('Parse a simple message', async (t) => {
+  const data = parser.parse(<any> broidMessageNormalized);
   t.deepEqual(await data, broidMessage);
 });
 
-test('Parse a message with media', async(t) => {
-  const data = parser.parse(broidMessageNormalizedWithMedia as any);
+ava('Parse a message with media', async (t) => {
+  const data = parser.parse(<any> broidMessageNormalizedWithMedia);
   t.deepEqual(await data, broidMessageWithMedia);
 });
 
-test('Parse a message with multiple media', async(t) => {
-  const data = parser.parse(broidMessageNormalizedWithMedias as any);
+ava('Parse a message with multiple media', async (t) => {
+  const data = parser.parse(<any> broidMessageNormalizedWithMedias);
   t.deepEqual(await data, broidMessageWithMedias);
 });
 
-test('Validate a simple message', async(t) => {
+ava('Validate a simple message', async (t) => {
   const data = parser.validate(broidMessage);
   t.deepEqual(await data, broidMessage);
 });
 
-test('Validate a message with media', async(t) => {
+ava('Validate a message with media', async (t) => {
   const data = parser.validate(broidMessageWithMedia);
   t.deepEqual(await data, broidMessageWithMedia);
 });
 
-test('Validate a message with multiple media', async(t) => {
+ava('Validate a message with multiple media', async (t) => {
   const data = parser.validate(broidMessageWithMedias);
   t.deepEqual(await data, broidMessageWithMedias);
 });

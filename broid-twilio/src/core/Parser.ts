@@ -15,13 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-import * as Promise from 'bluebird';
-import broidSchemas from '@broid/schemas';
+
+import {
+  default as schemas,
+  IActivityStream,
+} from '@broid/schemas';
 import { cleanNulls, Logger } from '@broid/utils';
+
+import * as Promise from 'bluebird';
 import * as uuid from 'node-uuid';
 import * as R from 'ramda';
 
-import { IActivityStream, ITwilioMedia, ITwilioWebHookEvent } from './interfaces';
+import { ITwilioMedia, ITwilioWebHookEvent } from './interfaces';
 
 export class Parser {
   public serviceID: string;
@@ -35,7 +40,7 @@ export class Parser {
   }
 
   // Validate parsed data with Broid schema validator
-  public validate(event: any): Promise<object> {
+  public validate(event: any): Promise<object | null> {
     this.logger.debug('Validation process', { event });
 
     const parsed = cleanNulls(event);
@@ -46,7 +51,7 @@ export class Parser {
       return Promise.resolve(null);
     }
 
-    return broidSchemas(parsed, 'activity')
+    return schemas(parsed, 'activity')
       .then(() => parsed)
       .catch((err) => {
         this.logger.error(err);
@@ -136,10 +141,10 @@ export class Parser {
   }
 
   // Normalize the raw event
-  public normalize(event: ITwilioWebHookEvent): Promise {
+  public normalize(event: ITwilioWebHookEvent): Promise<object | null> {
     this.logger.debug('Event received to normalize');
 
-    const body = R.path(['request', 'body'], event);
+    const body: any = <any> R.path(['request', 'body'], event);
 
     if (!body || R.isEmpty(body)) { return Promise.resolve(null); }
 
@@ -176,7 +181,7 @@ export class Parser {
     return uuid.v4();
   }
 
-  private createActivityStream(normalized): IActivityStream {
+  private createActivityStream(normalized: any): IActivityStream {
     return {
       '@context': 'https://www.w3.org/ns/activitystreams',
       'generator': {

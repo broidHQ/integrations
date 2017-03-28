@@ -15,9 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-import * as Promise from 'bluebird';
-import broidSchemas from '@broid/schemas';
+
+import schemas from '@broid/schemas';
 import { Logger } from '@broid/utils';
+
+import * as Promise from 'bluebird';
 import { EventEmitter } from 'events';
 import { Router } from 'express';
 import * as uuid from 'node-uuid';
@@ -61,12 +63,12 @@ export class Adapter {
   }
 
   // Return list of users information
-  public users(): Promise {
+  public users(): Promise<Error> {
     return Promise.reject(new Error('Not supported'));
   }
 
   // Return list of channels information
-  public channels(): Promise {
+  public channels(): Promise<Error> {
     return Promise.reject(new Error('Not supported'));
   }
 
@@ -92,10 +94,8 @@ export class Adapter {
     if (this.connected) {
       return Observable.of({ type: 'connected', serviceID: this.serviceId() });
     }
-    this.connected = true;
 
-    if (!this.token
-      || !this.tokenSecret) {
+    if (!this.token || !this.tokenSecret) {
       return Observable.throw(new Error('Credentials should exist.'));
     }
 
@@ -104,6 +104,7 @@ export class Adapter {
       this.webhookServer.listen();
     }
 
+    this.connected = true;
     return Observable.of({ type: 'connected', serviceID: this.serviceId() });
   }
 
@@ -132,22 +133,23 @@ export class Adapter {
       });
   }
 
-  public send(data: object): Promise {
+  public send(data: object): Promise<object | Error> {
     this.logger.debug('sending', { message: data });
-    return broidSchemas(data, 'send')
+    return schemas(data, 'send')
       .then(() => {
-        const toNumber: string = R.path(['to', 'id'], data)
-          || R.path(['to', 'name'], data);
-        const type: string = R.path(['object', 'type'], data);
-        let content: string = R.path(['object', 'content'], data)
-          || R.path(['object', 'name'], data);
+        const toNumber: string = <string> R.path(['to', 'id'], data)
+          || <string> R.path(['to', 'name'], data);
+        const objectType: string = <string> R.path(['object', 'type'], data);
+        let content: string = <string> R.path(['object', 'content'], data)
+          || <string> R.path(['object', 'name'], data);
 
-        if (type === 'Image' || type === 'Video') {
-          content = R.path(['object', 'url'], data) || R.path(['object', 'content'], data)
-            || R.path(['object', 'name'], data);
+        if (objectType === 'Image' || objectType === 'Video') {
+          content = <string> R.path(['object', 'url'], data)
+            || <string> R.path(['object', 'content'], data)
+            || <string> R.path(['object', 'name'], data);
         }
 
-        if (type === 'Note' || type === 'Image' || type === 'Video') {
+        if (objectType === 'Note' || objectType === 'Image' || objectType === 'Video') {
           const sms = {
             body: content,
             from: this.username,
