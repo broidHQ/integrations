@@ -31,7 +31,7 @@
     "copy:config": "cp ../.ci/tsconfig.json . && cp ../.ci/tslint.json .",
     "lint": "npm run copy:config && tslint -c tslint.json src/**/*.ts",
     "lint:watch": "watch 'npm run lint' src",
-    "nsp-check": "nsp check -o summary",
+    "nsp-check": "nsp check --warn-only -o summary",
     "test": "echo \"Error: no test specified\" && exit 1",
     "travis": "npm run lint && npm run nsp-check",
     "tsc:watch": "tsc --watch",

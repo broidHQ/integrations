@@ -36,7 +36,7 @@ import {
   IWebHookEvent,
 } from './interfaces';
 import { Parser } from './Parser';
-import { WebHookServer} from './webHookServer';
+import { WebHookServer} from './WebHookServer';
 
 export class Adapter {
   private asUser: boolean;
