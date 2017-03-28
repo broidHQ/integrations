@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
+
 import { Logger } from '@broid/utils';
 import * as Promise from 'bluebird';
 import * as bodyParser from 'body-parser';

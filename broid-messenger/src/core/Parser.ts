@@ -15,8 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
+
 import {
-  default as broidSchemas,
+  default as schemas,
   IActivityStream,
   IASMedia,
   IASObject,
@@ -42,7 +43,7 @@ export class Parser {
   }
 
   // Validate parsed data with Broid schema validator
-  public validate(event: any): Promise<object> {
+  public validate(event: any): Promise<object | null> {
     this.logger.debug('Validation process', { event });
 
     const parsed = cleanNulls(event);
@@ -53,7 +54,7 @@ export class Parser {
       return Promise.resolve(null);
     }
 
-    return broidSchemas(parsed, 'activity')
+    return schemas(parsed, 'activity')
       .then(() => parsed)
       .catch((err) => {
         this.logger.error(err);
@@ -83,15 +84,15 @@ export class Parser {
     };
 
     // Process potentially media.
-    let attachments = [];
+    let attachments: any[] = [];
     if (normalized.attachments) {
-      attachments = R.map((attachment) =>
-        this.parseAttachment(attachment), normalized.attachments);
-      attachments = R.reject(R.isNil)(attachments);
+      attachments = <any[]> R.map(
+        (attachment) => this.parseAttachment(attachment),
+        normalized.attachments);
+      attachments = <any[]> R.reject(R.isNil)(attachments);
     }
 
-    const places = R.filter((attachment) =>
-      attachment.type === 'Place', attachments);
+    const places = R.filter((attachment) => attachment.type === 'Place', attachments);
 
     if (R.length(places) === 1) {
       activitystreams.object = places[0];
@@ -136,37 +137,40 @@ export class Parser {
 
     if (!body || R.isEmpty(body)) { return Promise.resolve(null); }
 
-    const messages = R.map((entry) =>
-      R.map((data) => {
-        if (data.message || data.postback) {
-          if (data.postback) {
-            return {
-              attachments: [],
-              author: data.sender.id,
-              authorInformation: {},
-              channel: data.sender.id,
-              content: data.postback.payload || null,
-              createdTimestamp: data.timestamp,
-              mid: data.timestamp.toString(),
-              quickReply: [],
-              seq: data.timestamp.toString(),
-            };
-          } else {
-            return {
-              attachments: data.message.attachments || [],
-              author: data.sender.id,
-              authorInformation: {},
-              channel: data.sender.id,
-              content: data.message.text || null,
-              createdTimestamp: data.timestamp,
-              mid: data.message.mid,
-              quickReply: data.message.quick_reply || [],
-              seq: data.message.seq,
-            };
-          }
-        }
-        return null;
-      }, entry.messaging)
+    const messages = R.map(
+      (entry: any) =>
+        R.map(
+          (data: any) => {
+            if (data.message || data.postback) {
+              if (data.postback) {
+                return {
+                  attachments: [],
+                  author: data.sender.id,
+                  authorInformation: {},
+                  channel: data.sender.id,
+                  content: data.postback.payload || null,
+                  createdTimestamp: data.timestamp,
+                  mid: data.timestamp.toString(),
+                  quickReply: [],
+                  seq: data.timestamp.toString(),
+                };
+              } else {
+                return {
+                  attachments: data.message.attachments || [],
+                  author: data.sender.id,
+                  authorInformation: {},
+                  channel: data.sender.id,
+                  content: data.message.text || null,
+                  createdTimestamp: data.timestamp,
+                  mid: data.message.mid,
+                  quickReply: data.message.quick_reply || [],
+                  seq: data.message.seq,
+                };
+              }
+            }
+            return null;
+          },
+          entry.messaging)
     , body.entry);
 
     return Promise.resolve(R.reject(R.isNil)(R.flatten(messages)));
@@ -176,7 +180,7 @@ export class Parser {
     return uuid.v4();
   }
 
-  private createActivityStream(normalized): IActivityStream {
+  private createActivityStream(normalized: any): IActivityStream {
     return {
       '@context': 'https://www.w3.org/ns/activitystreams',
       'generator': {
@@ -192,8 +196,7 @@ export class Parser {
   }
 
   private parseAttachment(attachment: any): IASMedia | IASObject | null {
-    if (attachment.type.toLowerCase() === 'image'
-    || attachment.type.toLowerCase() === 'video') {
+    if (attachment.type.toLowerCase() === 'image' || attachment.type.toLowerCase() === 'video') {
       const a: IASMedia = {
         type: capitalizeFirstLetter(attachment.type.toLowerCase()),
         url: R.path(['payload', 'url'], attachment),
@@ -204,15 +207,13 @@ export class Parser {
         return a;
       }
     } else if (attachment.type.toLowerCase() === 'location') {
-      const p: IASObject = {
+      return <IASObject> {
         id: this.createIdentifier(),
         latitude: R.path(['payload', 'coordinates', 'lat'], attachment),
         longitude: R.path(['payload', 'coordinates', 'long'], attachment),
         name: attachment.title,
         type: 'Place',
       };
-
-      return p;
     }
     return null;
   }

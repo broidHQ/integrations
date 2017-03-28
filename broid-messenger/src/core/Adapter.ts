@@ -15,7 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-import broidSchemas from '@broid/schemas';
+
+import schemas from '@broid/schemas';
 import { concat, Logger } from '@broid/utils';
 import * as Promise from 'bluebird';
 import { EventEmitter } from 'events';
@@ -25,6 +26,7 @@ import * as R from 'ramda';
 import * as rp from 'request-promise';
 import { Observable } from 'rxjs/Rx';
 
+import { createAttachment, createButtons, parseQuickReplies } from './helpers';
 import { IAdapterOptions, IWebHookEvent } from './interfaces';
 import { Parser } from './Parser';
 import { WebHookServer } from './WebHookServer';
@@ -59,12 +61,12 @@ export class Adapter {
   }
 
   // Return list of users information
-  public users(): Promise {
+  public users(): Promise<Map<string, object>> {
     return Promise.resolve(this.storeUsers);
   }
 
   // Return list of channels information
-  public channels(): Promise {
+  public channels(): Promise<Error> {
     return Promise.reject(new Error('Not supported'));
   }
 
@@ -91,21 +93,21 @@ export class Adapter {
       return Observable.of({ type: 'connected', serviceID: this.serviceId() });
     }
 
-    if (!this.token
-      || !this.tokenSecret) {
+    if (!this.token || !this.tokenSecret) {
       return Observable.throw(new Error('Credentials should exist.'));
     }
 
-    this.connected = true;
     if (this.webhookServer) {
       this.webhookServer.listen();
     }
 
+    this.connected = true;
     return Observable.of({ type: 'connected', serviceID: this.serviceId() });
   }
 
-  public disconnect(): Promise {
-    return Promise.reject(new Error('Not supported'));
+  public disconnect(): Promise<null> {
+    this.connected = false;
+    return Promise.resolve(null);
   }
 
   // Listen 'message' event from Messenger
@@ -123,67 +125,27 @@ export class Adapter {
       });
   }
 
-  public send(data: object): Promise {
+  public send(data: object): Promise<object | Error> {
     this.logger.debug('sending', { message: data });
-    return broidSchemas(data, 'send')
+
+    return schemas(data, 'send')
       .then(() => {
-        const toID: string = R.path(['to', 'id'], data)
-          || R.path(['to', 'name'], data);
-        const type: string = R.path(['object', 'type'], data);
-        const content: string = R.path(['object', 'content'], data);
-        const name: string = R.path(['object', 'name'], data) || content;
-
-        const attachments = R.path(['object', 'attachment'], data) || [];
-        const buttons = R.filter((attachment) =>
-          attachment.type === 'Button', attachments);
-        const quickReplies = R.filter((button) =>
-          button.mediaType === 'application/vnd.geo+json', buttons);
-
-        let fButtons = R.map((button) => {
-          // facebook type: postback, element_share
-          if (!button.mediaType) {
-            return {
-              payload: button.url,
-              title: button.name,
-              type: 'postback',
-            };
-          } else if (button.mediaType === 'text/html') {
-            // facebook type: web_url, account_link
-            return {
-              title: button.name,
-              type: 'web_url',
-              url: button.url,
-            };
-          } else if (button.mediaType === 'audio/telephone-event') {
-            // facebook type: phone_number
-            return {
-              payload: button.url,
-              title: button.name,
-              type: 'phone_number',
-            };
-          }
-
-          return null;
-        }, buttons);
-        fButtons = R.reject(R.isNil)(fButtons);
-
-        let fbQuickReplies = R.map((button) => {
-          if (button.mediaType === 'application/vnd.geo+json') {
-            // facebook type: location
-            return {
-              content_type: 'location',
-            };
-          }
-
-          return null;
-        }, quickReplies);
-        fbQuickReplies = R.reject(R.isNil)(fbQuickReplies);
-
+        const toID: string = <string> R.path(['to', 'id'], data) ||
+          <string> R.path(['to', 'name'], data);
+        const dataType: string = <string> R.path(['object', 'type'], data);
+        const content: string = <string> R.path(['object', 'content'], data);
+        const name: string = <string> R.path(['object', 'name'], data) || content;
+        const attachments: any[] = <any[]> R.path(['object', 'attachment'], data) || [];
+        const buttons = R.filter(
+          (attachment: any) => attachment.type === 'Button',
+          attachments);
+        const quickReplies = R.filter(
+          (button: any) => button.mediaType === 'application/vnd.geo+json',
+          buttons);
+        const fButtons = createButtons(buttons);
+        const fbQuickReplies = parseQuickReplies(quickReplies);
         const messageData: any = {
-          message: {
-            attachment: {},
-            text: '',
-          },
+          message: { attachment: {}, text: '', },
           recipient: { id: toID },
         };
 
@@ -192,67 +154,27 @@ export class Adapter {
           messageData.message.quick_replies = fbQuickReplies;
         }
 
-        if (type === 'Image') {
-          const attachment: any = {
-            payload: {
-              elements: [{
-                buttons: !R.isEmpty(fButtons) ? fButtons : null,
-                image_url: R.path(['object', 'url'], data),
-                item_url: '',
-                subtitle: content !== name ? content : '',
-                title: name || '',
-              }],
-              template_type: 'generic',
-            },
-            type: 'template',
-          };
-          messageData.message.attachment = attachment;
-        } else if (type === 'Video') {
-          if (!R.isEmpty(fButtons)) {
-            const attachment: any = {
-              payload: {
-                elements: [{
-                  buttons: fButtons,
-                  image_url: R.path(['object', 'url'], data),
-                  item_url: '',
-                  subtitle: content !== name ? content : '',
-                  title: name || '',
-                }],
-                template_type: 'generic',
-              },
-              type: 'template',
-            };
-            messageData.message.attachment = attachment;
-          } else {
+        if (dataType === 'Image' || dataType === 'Video') {
+          if (dataType === 'Video' && R.isEmpty(fButtons)) {
             messageData.message.text = concat([
               R.path(['object', 'name'], data) || '',
               R.path(['object', 'content'], data) || '',
               R.path(['object', 'url'], data),
             ]);
+          } else {
+            messageData.message.attachment = createAttachment(name, content, fButtons,
+                                                              R.path(['object', 'url'], data));
           }
-        } else if (type === 'Note') {
+        } else if (dataType === 'Note') {
           if (!R.isEmpty(fButtons)) {
-            const attachment: any = {
-              payload: {
-                elements: [{
-                  buttons: fButtons,
-                  image_url: '',
-                  item_url: '',
-                  subtitle: content || '',
-                  title: name || '',
-                }],
-                template_type: 'generic',
-              },
-              type: 'template',
-            };
-            messageData.message.attachment = attachment;
+            messageData.message.attachment = createAttachment(name, content, fButtons);
           } else {
             messageData.message.text = R.path(['object', 'content'], data);
             delete messageData.message.attachment;
           }
         }
 
-        if (type === 'Note' || type === 'Image' || type === 'Video') {
+        if (dataType === 'Note' || dataType === 'Image' || dataType === 'Video') {
           return rp({
             json: messageData,
             method: 'POST',
@@ -267,11 +189,15 @@ export class Adapter {
   }
 
   // Return user information
-  private user(id: string, fields: string = 'first_name,last_name', cache: boolean = true): Promise {
+  private user(id: string,
+               fields: string = 'first_name,last_name',
+               cache: boolean = true): Promise<object> {
     const key: string = `${id}${fields}`;
-    if (cache && this.storeUsers.get(key)) {
+    if (cache) {
       const data = this.storeUsers.get(key);
-      return Promise.resolve(data);
+      if (data) {
+        return Promise.resolve(data);
+      }
     }
 
     return rp({
