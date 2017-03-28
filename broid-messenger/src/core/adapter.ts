@@ -1,44 +1,44 @@
-import * as Promise from "bluebird";
 import broidSchemas from "@broid/schemas";
 import { concat, Logger } from "@broid/utils";
+import * as Promise from "bluebird";
+import { EventEmitter } from "events";
+import { Router } from "express";
 import * as uuid from "node-uuid";
 import * as R from "ramda";
 import * as rp from "request-promise";
 import { Observable } from "rxjs/Rx";
 
-import { IAdapterHTTPOptions, IAdapterOptions, IWebHookEvent } from "./interfaces";
+import { IAdapterOptions, IWebHookEvent } from "./interfaces";
 import Parser from "./parser";
 import WebHookServer from "./webHookServer";
 
 export default class Adapter {
   private connected: boolean;
-  private HTTPOptions: IAdapterHTTPOptions;
+  private emitter: EventEmitter;
   private logLevel: string;
   private logger: Logger;
   private parser: Parser;
+  private router: Router;
   private serviceID: string;
   private storeUsers: Map<string, Object>;
   private token: string | null;
   private tokenSecret: string | null;
   private webhookServer: WebHookServer;
 
-  constructor(obj?: IAdapterOptions) {
+  constructor(obj: IAdapterOptions) {
     this.serviceID = obj && obj.serviceID || uuid.v4();
     this.logLevel = obj && obj.logLevel || "info";
     this.token = obj && obj.token || null;
     this.tokenSecret = obj && obj.tokenSecret || null;
     this.storeUsers = new Map();
 
-    const HTTPOptions: IAdapterHTTPOptions = {
-      host: "127.0.0.1",
-      port: 8080,
-    };
-    this.HTTPOptions = obj && obj.http || HTTPOptions;
-    this.HTTPOptions.host = this.HTTPOptions.host || HTTPOptions.host;
-    this.HTTPOptions.port = this.HTTPOptions.port || HTTPOptions.port;
-
-    this.parser = new Parser(this.serviceID, this.logLevel);
+    this.parser = new Parser(this.serviceName(), this.serviceID, this.logLevel);
     this.logger = new Logger("adapter", this.logLevel);
+    this.router = this.setupRouter();
+
+    if (obj.http) {
+      this.webhookServer = new WebHookServer(obj.http, this.router, this.logLevel);
+    }
   }
 
   // Return list of users information
@@ -56,6 +56,17 @@ export default class Adapter {
     return this.serviceID;
   }
 
+  public serviceName(): string {
+    return "messenger";
+  }
+
+  public getRouter(): Router | null {
+    if (this.webhookServer) {
+      return null;
+    }
+    return this.router;
+  }
+
   // Connect to Messenger
   // Start the webhook server
   public connect(): Observable<Object> {
@@ -69,10 +80,9 @@ export default class Adapter {
     }
 
     this.connected = true;
-
-    this.webhookServer = new WebHookServer(this.tokenSecret, this.HTTPOptions,
-      this.logLevel);
-    this.webhookServer.listen();
+    if (this.webhookServer) {
+      this.webhookServer.listen();
+    }
 
     return Observable.of({ type: "connected", serviceID: this.serviceId() });
   }
@@ -83,7 +93,7 @@ export default class Adapter {
 
   // Listen "message" event from Messenger
   public listen(): Observable<Object> {
-    return Observable.fromEvent(this.webhookServer, "message")
+    return Observable.fromEvent(this.emitter, "message")
       .mergeMap((event: IWebHookEvent) => this.parser.normalize(event))
       .mergeMap((messages: any) => Observable.from(messages))
       .mergeMap((message: any) => this.user(message.author)
@@ -258,5 +268,35 @@ export default class Adapter {
       this.storeUsers.set(key, data);
       return data;
     });
+  }
+
+  private setupRouter(): Router {
+    const router = Router();
+
+    // Endpoint to verify the trust
+    router.get("/", (req, res) => {
+      if (req.query["hub.mode"] === "subscribe") {
+        if (req.query["hub.verify_token"] === this.tokenSecret) {
+          res.send(req.query["hub.challenge"]);
+        } else {
+          res.send("OK");
+        }
+      }
+    });
+
+    // route handler
+    router.post("/", (req, res) => {
+      const event: IWebHookEvent = {
+        request: req,
+        response: res,
+      };
+
+      this.emitter.emit("message", event);
+
+      // Assume all went well.
+      res.sendStatus(200);
+    });
+
+    return router;
   }
 }

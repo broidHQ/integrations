@@ -18,13 +18,13 @@ const messengerMessageLocation = require("./fixtures/messenger/messageLocation.j
 const broidMessageNormalized = require("./fixtures/broid/normalized/message.json");
 const broidMessageNormalizedImage = require("./fixtures/broid/normalized/messageImage.json");
 const broidMessageNormalizedInteractiveCallback = require("./fixtures/broid/normalized/messageInteractiveCallback.json");
-const broidMessageNormalizedLocation = require("./fixtures/broid/normalized/messageLocation.json");
 const broidMessageNormalizedLink = require("./fixtures/broid/normalized/messageLink.json");
+const broidMessageNormalizedLocation = require("./fixtures/broid/normalized/messageLocation.json");
 const broidMessage = require("./fixtures/broid/parsed/message.json");
 const broidMessageImage = require("./fixtures/broid/parsed/messageImage.json");
 const broidMessageInteractiveCallback = require("./fixtures/broid/parsed/messageInteractiveCallback.json");
-const broidMessageLocation = require("./fixtures/broid/parsed/messageLocation.json");
 const broidMessageLink = require("./fixtures/broid/parsed/messageLink.json");
+const broidMessageLocation = require("./fixtures/broid/parsed/messageLocation.json");
 const author = {
     first_name: "Issam",
     id: "1326232313",
@@ -33,7 +33,7 @@ const author = {
 };
 let parser;
 ava_1.default.before(() => {
-    parser = new parser_1.default("test_service", "info");
+    parser = new parser_1.default("messenger", "test_service", "info");
 });
 ava_1.default("Parse a null", (t) => __awaiter(this, void 0, void 0, function* () {
     const data = parser.parse(null);
