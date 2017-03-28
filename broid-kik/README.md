@@ -72,6 +72,7 @@ kik.connect()
     complete: () => console.log('complete'),
   });
 ```
+
 Kik can also be used with your existing express setup.
 
 ```javascript
