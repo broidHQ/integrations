@@ -52,6 +52,27 @@ alexa.connect()
   });
 ```
 
+Alexa can also be used with your existing express setup
+
+```javascript
+const BroidAlexa = require('broid-alexa');
+const express = require("express");
+
+const alexa = new BroidAlexa();
+
+const app = express();
+app.use("/alexa", alexa.getRouter());
+
+alexa.connect()
+  .subscribe({
+    next: data => console.log(data),
+    error: err => console.error(`Something went wrong: ${err.message}`),
+    complete: () => console.log('complete'),
+  });
+
+app.listen(8080);
+```
+
 **Options available**
 
 | name            | Type     | default    | Description  |

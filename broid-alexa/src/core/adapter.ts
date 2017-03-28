@@ -21,7 +21,7 @@ export default class Adapter {
   private router: Router;
   private webhookServer: WebHookServer | null;
 
-  constructor(obj: IAdapterOptions) {
+  constructor(obj?: IAdapterOptions) {
     this.serviceID = obj && obj.serviceID || uuid.v4();
     this.logLevel = obj && obj.logLevel || "info";
 
@@ -30,7 +30,7 @@ export default class Adapter {
     this.logger = new Logger("adapter", this.logLevel);
     this.router = this.setupRouter();
 
-    if (obj.http) {
+    if (obj && obj.http) {
       this.webhookServer = new WebHookServer(obj.http, this.router, this.logLevel);
     }
   }
@@ -41,9 +41,9 @@ export default class Adapter {
   }
 
   // Returns the intialized express router
-  public getRouter(): Router {
+  public getRouter(): Router | null {
     if (this.webhookServer) {
-      return false;
+      return null;
     }
     return this.router;
   }
@@ -78,11 +78,11 @@ export default class Adapter {
     return Observable.of(({ type: "connected", serviceID: this.serviceId() }));
   }
 
-  public disconnect(): Promise<Error> {
+  public disconnect(): Promise<null> {
     if (this.webhookServer) {
       return this.webhookServer.close();
     }
-    return Promise.resolve();
+    return Promise.resolve(null);
   }
 
   // Listen "message" event from Nexmo
