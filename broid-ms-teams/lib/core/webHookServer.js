@@ -1,29 +1,29 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const Promise = require("bluebird");
 const bodyParser = require("body-parser");
-const broid_utils_1 = require("broid-utils");
+const utils_1 = require("@broid/utils");
 const express = require("express");
 class WebHookServer {
-    constructor(options, logLevel) {
-        this.host = options && options.host || "127.0.0.1";
-        this.port = options && options.port || 8080;
-        this.logger = new broid_utils_1.Logger("webhook_server", logLevel || "info");
-        this.express = express();
-        this.middleware();
+    constructor(options, router, logLevel) {
+        this.host = options.host;
+        this.port = options.port;
+        this.logger = new utils_1.Logger("webhook_server", logLevel || "info");
+        this.setupExpress(router);
     }
     listen() {
-        this.express.listen(this.port, this.host, () => {
-            this.logger.info(`Server listening at port ${this.host}:${this.port}...`);
+        this.httpClient = this.express.listen(this.port, this.host, () => {
+            this.logger.info(`Server listening on port ${this.host}:${this.port}...`);
         });
     }
-    route(handler) {
-        const router = express.Router();
-        router.post("/", handler);
-        this.express.use("/", router);
+    close() {
+        return Promise.fromCallback((cb) => this.httpClient.close(cb));
     }
-    middleware() {
+    setupExpress(router) {
+        this.express = express();
         this.express.use(bodyParser.json());
         this.express.use(bodyParser.urlencoded({ extended: false }));
+        this.express.use("/", router);
     }
 }
 exports.default = WebHookServer;

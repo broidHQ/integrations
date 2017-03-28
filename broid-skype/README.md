@@ -1,3 +1,24 @@
+[npm]: https://img.shields.io/badge/npm-broid-green.svg?style=flat
+[npm-url]: https://www.npmjs.com/org/broid
+
+[node]: https://img.shields.io/node/v/@broid/skype.svg
+[node-url]: https://nodejs.org
+
+[deps]: https://img.shields.io/badge/dependencies-checked-green.svg?style=flat
+[deps-url]: #integrations
+
+[tests]: https://img.shields.io/travis/broidHQ/integrations/master.svg
+[tests-url]: https://travis-ci.org/broidHQ/integrations
+
+[bithound]: https://img.shields.io/bithound/code/github/broidHQ/integrations.svg
+[bithound-url]: https://www.bithound.io/github/broidHQ/integrations
+
+[bithoundscore]: https://www.bithound.io/github/broidHQ/integrations/badges/score.svg
+[bithoundscore-url]: https://www.bithound.io/github/broidHQ/integrations
+
+[nsp-checked]: https://img.shields.io/badge/nsp-checked-green.svg?style=flat
+[nsp-checked-url]: https://nodesecurity.io
+
 [![npm][npm]][npm-url]
 [![node][node]][node-url]
 [![deps][deps]][deps-url]
@@ -24,14 +45,24 @@ _Location, Phone number are platform limitations._
 
 ## Getting started
 
+### Install
+
+```bash
+npm install --save @broid/skype
+```
+
 ### Connect to Skype
 
 ```javascript
-const BroidSkype = require('broid-skype');
+const BroidSkype = require('@broid/skype');
 
 const skype = new BroidSkype({
   token: 'xxxxx',
   tokenSecret: 'xxxxxx',
+  http: {
+    host: '127.0.0.1',
+    port: 8080
+  }
 });
 
 skype.connect()
@@ -42,6 +73,30 @@ skype.connect()
   });
 ```
 
+Skype can also be used with your existing express setup.
+
+```javascript
+const BroidSkype = require('broid-skype');
+const express = require("express");
+
+const skype  = new BroidSkype({
+  token: 'xxxxx',
+  tokenSecret: 'xxxxxx',
+});
+
+const app = express();
+app.use("/skype", skype.getRouter());
+
+skype.connect()
+  .subscribe({
+    next: data => console.log(data),
+    error: err => console.error(`Something went wrong: ${err.message}`),
+    complete: () => console.log('complete'),
+  });
+
+app.listen(8080);
+```
+
 **Options available**
 
 | name             | Type     | default    | Description  |
@@ -50,7 +105,7 @@ skype.connect()
 | token_secret     | string   |      |  |
 | service_id       | string   | random     | Arbitrary identifier of the running instance |
 | log_level        | string   | `debug`    | Can be : `fatal`, `error`, `warn`, `info`, `debug`, `trace` |
-| http             | object   | `{ "port": 8080, "http": "127.0.0.1" }` | HTTP options (`host`, `port`) |
+| http             | object   |      | HTTP options (`host`, `port`) |
 
 
 ### Receive a message
@@ -230,7 +285,7 @@ skype.send(formatted_message)
       "type": "Object",
       "name": "address_id",
       "content": "xxxxxxx#29:xxxxxxxxxxxx#skype#28:xxxxxxxxxxxx"
-    }    
+    }
   },
   "to": {
     "type": "Person",
@@ -270,7 +325,7 @@ skype.send(formatted_message)
       "type": "Object",
       "name": "address_id",
       "content": "xxxxxxx#29:xxxxxxxxxxxx#skype#28:xxxxxxxxxxxx"
-    }    
+    }
   },
   "to": {
     "type": "Person",
@@ -296,24 +351,3 @@ Copyright (c) 2016-2017 Broid.ai
 
 This project is licensed under the AGPL 3, which can be
 [found here](https://www.gnu.org/licenses/agpl-3.0.en.html).
-
-[npm]: https://img.shields.io/badge/npm-broid-green.svg?style=flat
-[npm-url]: https://www.npmjs.com/~broid
-
-[node]: https://img.shields.io/node/v/broid-skype.svg
-[node-url]: https://nodejs.org
-
-[deps]: https://img.shields.io/badge/dependencies-checked-green.svg?style=flat
-[deps-url]: #integrations
-
-[tests]: https://img.shields.io/travis/broidHQ/integrations/master.svg
-[tests-url]: https://travis-ci.org/broidHQ/integrations
-
-[bithound]: https://img.shields.io/bithound/code/github/broidHQ/integrations.svg
-[bithound-url]: https://www.bithound.io/github/broidHQ/integrations
-
-[bithoundscore]: https://www.bithound.io/github/broidHQ/integrations/badges/score.svg
-[bithoundscore-url]: https://www.bithound.io/github/broidHQ/integrations
-
-[nsp-checked]: https://img.shields.io/badge/nsp-checked-green.svg?style=flat
-[nsp-checked-url]: https://nodesecurity.io

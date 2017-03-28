@@ -1,6 +1,6 @@
 import * as Promise from "bluebird";
-import broidSchemas from "broid-schemas";
-import { cleanNulls, Logger } from "broid-utils";
+import broidSchemas from "@broid/schemas";
+import { cleanNulls, Logger } from "@broid/utils";
 import * as uuid from "node-uuid";
 import * as R from "ramda";
 
@@ -11,9 +11,9 @@ export default class Parser {
   public generatorName: string;
   private logger: Logger;
 
-  constructor(serviceID: string, logLevel: string) {
+  constructor(serviceName: string, serviceID: string, logLevel: string) {
     this.serviceID = serviceID;
-    this.generatorName = "twilio";
+    this.generatorName = serviceName;
     this.logger = new Logger("parser", logLevel);
   }
 

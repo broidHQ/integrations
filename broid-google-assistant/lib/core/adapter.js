@@ -1,8 +1,9 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const actionsSdk = require("actions-on-google");
 const Promise = require("bluebird");
-const broid_schemas_1 = require("broid-schemas");
-const broid_utils_1 = require("broid-utils");
+const schemas_1 = require("@broid/schemas");
+const utils_1 = require("@broid/utils");
 const events_1 = require("events");
 const express_1 = require("express");
 const uuid = require("node-uuid");
@@ -25,7 +26,7 @@ class Adapter {
         this.actionsMap = new Map();
         this.emitter = new events_1.EventEmitter();
         this.parser = new parser_1.default(this.serviceName(), this.serviceID, this.username, this.logLevel);
-        this.logger = new broid_utils_1.Logger("adapter", this.logLevel);
+        this.logger = new utils_1.Logger("adapter", this.logLevel);
         this.router = this.setupRouter();
         if (obj.http) {
             this.webhookServer = new webHookServer_1.default(obj.http, this.router, this.logLevel);
@@ -45,7 +46,7 @@ class Adapter {
     }
     getRouter() {
         if (this.webhookServer) {
-            return false;
+            return null;
         }
         return this.router;
     }
@@ -65,9 +66,9 @@ class Adapter {
     }
     disconnect() {
         if (this.webhookServer) {
-            return this.webhookServer.close().then(() => true);
+            return this.webhookServer.close();
         }
-        return Promise.resolve(true);
+        return Promise.resolve(null);
     }
     listen() {
         const fromEvents = R.map((event) => Rx_1.Observable.fromEvent(this.emitter, event), events);
@@ -83,7 +84,7 @@ class Adapter {
     }
     send(data) {
         this.logger.debug("sending", { message: data });
-        return broid_schemas_1.default(data, "send")
+        return schemas_1.default(data, "send")
             .then(() => {
             let ssml = false;
             const content = R.path(["object", "content"], data)
@@ -136,5 +137,4 @@ class Adapter {
         return Promise.resolve(true);
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = Adapter;

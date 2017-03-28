@@ -27,7 +27,7 @@ const wechatClient = {
 };
 let parser;
 ava_1.default.before(() => {
-    parser = new parser_1.default(wechatClient, "test_wechat_service", "info");
+    parser = new parser_1.default("wechat", wechatClient, "test_wechat_service", "info");
 });
 ava_1.default("Parse note message", (t) => __awaiter(this, void 0, void 0, function* () {
     const data = parser.parse(RESPONSE_FIXTURES.note);

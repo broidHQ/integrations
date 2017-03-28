@@ -1,3 +1,24 @@
+[npm]: https://img.shields.io/badge/npm-broid-green.svg?style=flat
+[npm-url]: https://www.npmjs.com/org/broid
+
+[node]: https://img.shields.io/node/v/@broid/slack.svg
+[node-url]: https://nodejs.org
+
+[deps]: https://img.shields.io/badge/dependencies-checked-green.svg?style=flat
+[deps-url]: #integrations
+
+[tests]: https://img.shields.io/travis/broidHQ/integrations/master.svg
+[tests-url]: https://travis-ci.org/broidHQ/integrations
+
+[bithound]: https://img.shields.io/bithound/code/github/broidHQ/integrations.svg
+[bithound-url]: https://www.bithound.io/github/broidHQ/integrations
+
+[bithoundscore]: https://www.bithound.io/github/broidHQ/integrations/badges/score.svg
+[bithoundscore-url]: https://www.bithound.io/github/broidHQ/integrations
+
+[nsp-checked]: https://img.shields.io/badge/nsp-checked-green.svg?style=flat
+[nsp-checked-url]: https://nodesecurity.io
+
 [![npm][npm]][npm-url]
 [![node][node]][node-url]
 [![deps][deps]][deps-url]
@@ -34,13 +55,23 @@ _Notes:_ Interactive message are only supported on app (with Oauth bot token).
 
 You can generate one for test with this command: ``node bin/oauth.js --new -c client_id -s secret_id``
 
+### Install
+
+```bash
+npm install --save @broid/slack
+```
+
 ### Connect to Slack
 
 ```javascript
-const BroidSlack = require('broid-slack');
+const BroidSlack = require('@broid/slack');
 
 const slack = new BroidSlack({
-  token: 'xxxxx'
+  token: 'xxxxx',
+  http: {
+    host: '127.0.0.1',
+    port: 8080
+  }
 });
 
 slack.connect()
@@ -51,6 +82,29 @@ slack.connect()
   });
 ```
 
+Slack can also be used with your existing express setup.
+
+```javascript
+const BroidSlack = require('broid-slack');
+const express = require("express");
+
+const slack  = new BroidSlack({
+  token: 'xxxxx'
+});
+
+const app = express();
+app.use("/slack", slack.getRouter());
+
+slack.connect()
+  .subscribe({
+    next: data => console.log(data),
+    error: err => console.error(`Something went wrong: ${err.message}`),
+    complete: () => console.log('complete'),
+  });
+
+app.listen(8080);
+```
+
 **Options available**
 
 | name             | Type     | default    | Description  |
@@ -58,6 +112,7 @@ slack.connect()
 | serviceID       | string   | random     | Arbitrary identifier of the running instance |
 | logLevel        | string   | `info`     | Can be : `fatal`, `error`, `warn`, `info`, `debug`, `trace` |
 | token           | string   |            | Your access token |
+| http             | object   |            | WebServer options (`host`, `port`) |
 
 ### Receive a message
 
@@ -379,24 +434,3 @@ Copyright (c) 2016-2017 Broid.ai
 
 This project is licensed under the AGPL 3, which can be
 [found here](https://www.gnu.org/licenses/agpl-3.0.en.html).
-
-[npm]: https://img.shields.io/badge/npm-broid-green.svg?style=flat
-[npm-url]: https://www.npmjs.com/~broid
-
-[node]: https://img.shields.io/node/v/broid-slack.svg
-[node-url]: https://nodejs.org
-
-[deps]: https://img.shields.io/badge/dependencies-checked-green.svg?style=flat
-[deps-url]: #integrations
-
-[tests]: https://img.shields.io/travis/broidHQ/integrations/master.svg
-[tests-url]: https://travis-ci.org/broidHQ/integrations
-
-[bithound]: https://img.shields.io/bithound/code/github/broidHQ/integrations.svg
-[bithound-url]: https://www.bithound.io/github/broidHQ/integrations
-
-[bithoundscore]: https://www.bithound.io/github/broidHQ/integrations/badges/score.svg
-[bithoundscore-url]: https://www.bithound.io/github/broidHQ/integrations
-
-[nsp-checked]: https://img.shields.io/badge/nsp-checked-green.svg?style=flat
-[nsp-checked-url]: https://nodesecurity.io
