@@ -1,6 +1,6 @@
 import * as Promise from "bluebird";
-import broidSchemas from "broid-schemas";
-import { Logger } from "broid-utils";
+import broidSchemas from "@broid/schemas";
+import { Logger } from "@broid/utils";
 import { EventEmitter } from 'events';
 import { Router  } from "express";
 import * as uuid from "node-uuid";
@@ -129,8 +129,8 @@ export default class Adapter {
     return Observable.fromEvent(this.emitter, "message")
       .mergeMap((event: any) => {
         return this.channels()
-          .filter((group) => group.id === R.path(["body", "group_id"], event))
-          .then((group) => R.assoc("group", group, event));
+          .filter((group: any) => group.id === R.path(["body", "group_id"], event))
+          .then((group: any) => R.assoc("group", group, event));
       })
       .mergeMap((normalized: any) =>
         this.parser.parse(normalized))
