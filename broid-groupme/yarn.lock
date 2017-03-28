@@ -48,6 +48,20 @@
     pino "^3.0.5"
     ramda "^0.22.1"
 
+"@broid/schemas@^1.0.0":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@broid/schemas/-/schemas-1.0.1.tgz#3e2a318be8e2789e50730ea37528db19baa71f14"
+  dependencies:
+    ajv "^5.0.1-beta.1"
+    bluebird "^3.4.6"
+
+"@broid/utils@^1.0.0":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@broid/utils/-/utils-1.0.2.tgz#371a8b177c8f782bdf9a70d9e0d38630e7abb1e3"
+  dependencies:
+    pino "^3.0.5"
+    ramda "^0.22.1"
+
 "@types/moment@^2.13.0":
   version "2.13.0"
   resolved "https://registry.yarnpkg.com/@types/moment/-/moment-2.13.0.tgz#604ebd189bc3bc34a1548689404e61a2a4aac896"

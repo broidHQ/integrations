@@ -16,7 +16,7 @@ test.before(() => {
   sinon.stub(Date, "now", () => {
     return 1483589416000;
   });
-  parser = new Parser("testuser", "info");
+  parser = new Parser("groupme", "testuser", "info");
 });
 
 test("Parse a simple message", async (t) => {

@@ -5,9 +5,13 @@ const utils_1 = require("@broid/utils");
 const uuid = require("node-uuid");
 const R = require("ramda");
 class Parser {
-    constructor(serviceID, logLevel) {
+    constructor(serviceName, serviceID, logLevel) {
         this.serviceID = serviceID;
+<<<<<<< HEAD
+        this.generatorName = serviceName;
+=======
         this.generatorName = "groupme";
+>>>>>>> exposed-express-router
         this.logger = new utils_1.Logger("parser", logLevel);
     }
     validate(event) {
