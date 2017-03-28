@@ -44,6 +44,8 @@
     "@broid/schemas": "^1.0.0",
     "@broid/utils": "^1.0.0",
     "bluebird": "^3.4.7",
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
     "mimetype": "^0.0.8",
     "node-telegram-bot-api": "^0.25.0",
     "node-uuid": "^1.4.7",

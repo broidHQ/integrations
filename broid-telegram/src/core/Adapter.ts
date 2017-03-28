@@ -15,20 +15,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-import * as Promise from 'bluebird';
-import broidSchemas from '@broid/schemas';
+
+import schemas from '@broid/schemas';
 import { Logger } from '@broid/utils';
+
+import * as Promise from 'bluebird';
+import { Router  } from 'express';
 import * as TelegramBot from 'node-telegram-bot-api';
 import * as uuid from 'node-uuid';
 import * as R from 'ramda';
 import * as request from 'request-promise';
 import { Observable } from 'rxjs/Rx';
 
-import { IAdapterHTTPOptions, IAdapterOptions } from './interfaces';
+import { IAdapterOptions } from './interfaces';
 import { Parser } from './Parser';
+import { WebHookServer } from './WebHookServer';
 
-const sortByFileSize = R.compose(R.reverse,
-  R.sortBy(R.prop('file_size')));
+const sortByFileSize = R.compose(R.reverse, R.sortBy(R.prop('file_size')));
 
 // Escape special Markdown formatting characters, so we don't receive a
 // 'Bad Request: Can't parse message text: Can't find end of the entity '
@@ -37,42 +40,44 @@ const sortByFileSize = R.compose(R.reverse,
 const markdown = (str) => str.replace(/[\*_\[`]/g, '\\$&');
 
 export class Adapter {
+  private connected: boolean;
   private serviceID: string;
   private token: string | null;
-  private HTTPOptions: IAdapterHTTPOptions;
   private session: any;
   private parser: Parser;
   private logLevel: string;
   private logger: Logger;
+  private router: Router;
+  private webhookServer: WebHookServer | null;
+  private webhookURL: string;
 
-  constructor(obj?: IAdapterOptions) {
+  constructor(obj: IAdapterOptions) {
     this.serviceID = obj && obj.serviceID || uuid.v4();
     this.logLevel = obj && obj.logLevel || 'info';
     this.token = obj && obj.token || null;
 
-    const HTTPOptions: IAdapterHTTPOptions = {
-      host: '127.0.0.1',
-      port: 8080,
-      webhookURL: 'http://127.0.0.1/',
-    };
-    this.HTTPOptions = obj && obj.http || HTTPOptions;
-    this.HTTPOptions.host = this.HTTPOptions.host || HTTPOptions.host;
-    this.HTTPOptions.port = this.HTTPOptions.port || HTTPOptions.port;
-    this.HTTPOptions.webhookURL = this.HTTPOptions.webhookURL || HTTPOptions.webhookURL;
-    this.HTTPOptions.webhookURL = this.HTTPOptions.webhookURL
-      .replace(/\/?$/, '/');
+    if (this.token === '') {
+      throw new Error('Token should exist.');
+    }
 
-    this.parser = new Parser(this.serviceID, this.logLevel);
+    this.webhookURL = obj.webhookURL.replace(/\/?$/, '/');
+
+    this.parser = new Parser(this.serviceName(), this.serviceID, this.logLevel);
     this.logger = new Logger('adapter', this.logLevel);
+    this.router = this.setupRouter();
+
+    if (obj.http) {
+      this.webhookServer = new WebHookServer(obj.http, this.router, this.logLevel);
+    }
   }
 
   // Return list of users information
-  public users(): Promise {
+  public users(): Promise<Error> {
     return Promise.reject(new Error('Not supported'));
   }
 
   // Return list of channels information
-  public channels(): Promise {
+  public channels(): Promise<Error> {
     return Promise.reject(new Error('Not supported'));
   }
 
@@ -81,23 +86,43 @@ export class Adapter {
     return this.serviceID;
   }
 
+  // Return the service Name of the current instance
+  public serviceName(): string {
+    return 'telegram';
+  }
+
+  // Returns the intialized express router
+  public getRouter(): Router | null {
+    if (this.webhookServer) {
+      return null;
+    }
+    return this.router;
+  }
+
   // Connect to Telegram
   public connect(): Observable<object> {
-    if (!this.token || !this.HTTPOptions.webhookURL) {
+    if (this.connected) {
+      return Observable.of({ type: 'connected', serviceID: this.serviceId() });
+    }
+
+    if (!this.token || !this.webhookURL) {
       return Observable.throw(new Error('Credentials should exist.'));
     }
 
-    this.session = new TelegramBot(this.token,
-      { webHook: {
-        host: this.HTTPOptions.host,
-        port: this.HTTPOptions.port,
-      }});
-    this.session.setWebHook(`${this.HTTPOptions.webhookURL}${this.token}`);
+    this.session = new TelegramBot(this.token);
+    this.session.setWebHook(`${this.webhookURL}${this.token}`);
+
+    this.connected = true;
     return Observable.of({ type: 'connected', serviceID: this.serviceId() });
   }
 
-  public disconnect(): Promise {
-    return Promise.reject(new Error('Not supported'));
+  public disconnect(): Promise<null> {
+    this.connected = true;
+    if (this.webhookServer) {
+      return this.webhookServer.close();
+    }
+
+    return Promise.resolve(null);
   }
 
   // Listen 'message' event from Telegram
@@ -157,22 +182,22 @@ export class Adapter {
       });
   }
 
-  public send(data: object): Promise {
+  public send(data: object): Promise<object | Error> {
     this.logger.debug('sending', { message: data });
-    return broidSchemas(data, 'send')
+    return schemas(data, 'send')
       .then(() => {
         const options: any = { parse_mode: 'Markdown' };
-        const type = R.path(['object', 'type'], data);
-        const toID: string = R.path(['to', 'id'], data)
-          || R.path(['to', 'name'], data);
+        const objectType = R.path(['object', 'type'], data);
+        const toID: string = <string> R.path(['to', 'id'], data)
+          || <string> R.path(['to', 'name'], data);
 
         const confirm = () => ({ type: 'sent', serviceID: this.serviceId() });
 
-        if (type === 'Image' || type === 'Video') {
-          const url  = R.path(['object', 'url'], data);
+        if (objectType === 'Image' || objectType === 'Video') {
+          const url: string = <string> R.path(['object', 'url'], data);
           if (url.startsWith('http://') || url.startsWith('https://')) {
             const stream = request(url);
-            if (type === 'Image') {
+            if (objectType === 'Image') {
               return this.session.sendPhoto(toID, stream)
                 .then(confirm);
             }
@@ -182,24 +207,27 @@ export class Adapter {
           }
 
           return Promise.reject(new Error('File path should be URI'));
-        } else if (type === 'Note') {
+        } else if (objectType === 'Note') {
           // Quick Reply
-          const attachmentButtons = R.filter((attachment) => attachment.type === 'Button',
-            R.path(['object', 'attachment'], data) || []);
-          let buttons = R.map((button) => {
-            if (R.contains(button.mediaType, ['text/html'])) {
-              return [{ text: button.name, url: button.url }];
-            }
-            return [{ text: button.name, callback_data: button.url }];
-          }, attachmentButtons);
+          const attachmentButtons = R.filter(
+            (attachment: any) => attachment.type === 'Button',
+            <any[]> R.path(['object', 'attachment'], data) || []);
+          let buttons = R.map(
+            (button: any) => {
+              if (R.contains(button.mediaType, ['text/html'])) {
+                return [{ text: button.name, url: button.url }];
+              }
+              return [{ text: button.name, callback_data: button.url }];
+            },
+            attachmentButtons);
           buttons = R.reject(R.isNil)(buttons);
 
           if (!R.isEmpty(buttons)) {
             options.reply_markup = options.reply_markup || { inline_keyboard: [] };
-            options.reply_markup.inline_keyboard = options.reply_markup
-              .inline_keyboard || [];
-            options.reply_markup.inline_keyboard = R.concat(options
-              .reply_markup.inline_keyboard, buttons);
+            options.reply_markup.inline_keyboard = options.reply_markup.inline_keyboard || [];
+            options.reply_markup.inline_keyboard = R.concat(
+              options.reply_markup.inline_keyboard,
+              buttons);
           }
 
           const content = R.path(['object', 'content'], data);
@@ -211,5 +239,18 @@ export class Adapter {
 
         return Promise.reject(new Error('Only Note, Image, and Video are supported.'));
       });
+  }
+
+  private setupRouter(): Router {
+    const router = Router();
+    const handle = (req, res) => {
+      this.session.processUpdate(req.body);
+      res.sendStatus(200);
+    };
+
+    router.post(`/${this.token}`, handle);
+    router.get(`/${this.token}`, handle);
+
+    return router;
   }
 }

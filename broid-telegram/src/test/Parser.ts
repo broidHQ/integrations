@@ -15,8 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-import test from 'ava';
-import Parser from '../core/parser';
+
+import ava from 'ava';
+import { Parser } from '../core/Parser';
 
 import * as telegramMessage from './fixtures/telegram/message.json';
 import * as telegramMessageImage from './fixtures/telegram/messageImage.json';
@@ -35,76 +36,76 @@ import * as broidMessageInteractiveCallback from './fixtures/broid/parsed/messag
 import * as broidMessagePrivate from './fixtures/broid/parsed/messagePrivate.json';
 
 let parser: Parser;
-test.before(() => {
-  parser = new Parser('test_service', 'info');
+ava.before(() => {
+  parser = new Parser('telegram', 'test_service', 'info');
 });
 
-test('Parse a null', async(t) => {
+ava('Parse a null', async (t) => {
   const data = parser.parse(null);
   t.deepEqual(await data, null);
 });
 
-test('Parse a null', async(t) => {
+ava('Parse a null', async (t) => {
   const data = parser.normalize(null);
   t.deepEqual(await data, null);
 });
 
-test('Normalize a simple message', async(t) => {
-  const data = parser.normalize(telegramMessage as any);
+ava('Normalize a simple message', async (t) => {
+  const data = parser.normalize(<any> telegramMessage);
   t.deepEqual(await data, broidMessageNormalized);
 });
 
-test('Normalize a message with image', async(t) => {
-  const data = parser.normalize(telegramMessageImage as any);
+ava('Normalize a message with image', async (t) => {
+  const data = parser.normalize(<any> telegramMessageImage);
   t.deepEqual(await data, broidMessageNormalizedImage);
 });
 
-test('Normalize a private message', async(t) => {
-  const data = parser.normalize(telegramMessagePrivate as any);
+ava('Normalize a private message', async (t) => {
+  const data = parser.normalize(<any> telegramMessagePrivate);
   t.deepEqual(await data, broidMessageNormalizedPrivate);
 });
 
-test('Normalize a interactive message callback', async(t) => {
-  const data = parser.normalize(telegramMessageInteractiveCallback as any);
+ava('Normalize a interactive message callback', async (t) => {
+  const data = parser.normalize(<any> telegramMessageInteractiveCallback);
   t.deepEqual(await data, broidMessageNormalizedInteractiveCallback);
 });
 
-test('Parse a simple message', async(t) => {
+ava('Parse a simple message', async (t) => {
   const data = parser.parse(broidMessageNormalized);
   t.deepEqual(await data, broidMessage);
 });
 
-test('Parse a message with image', async(t) => {
+ava('Parse a message with image', async (t) => {
   const data = parser.parse(broidMessageNormalizedImageCompleted);
   t.deepEqual(await data, broidMessageImage);
 });
 
-test('Parse a private message', async(t) => {
+ava('Parse a private message', async (t) => {
   const data = parser.parse(broidMessageNormalizedPrivate);
   t.deepEqual(await data, broidMessagePrivate);
 });
 
-test('Parse a interactive message callback', async(t) => {
+ava('Parse a interactive message callback', async (t) => {
   const data = parser.parse(broidMessageNormalizedInteractiveCallback);
   t.deepEqual(await data, broidMessageInteractiveCallback);
 });
 
-test('Validate a simple message', async(t) => {
+ava('Validate a simple message', async (t) => {
   const data = parser.validate(broidMessage);
   t.deepEqual(await data, broidMessage);
 });
 
-test('Validate a message with image', async(t) => {
+ava('Validate a message with image', async (t) => {
   const data = parser.validate(broidMessageImage);
   t.deepEqual(await data, broidMessageImage);
 });
 
-test('Validate a private message', async(t) => {
+ava('Validate a private message', async (t) => {
   const data = parser.validate(broidMessagePrivate);
   t.deepEqual(await data, broidMessagePrivate);
 });
 
-test('Validate a interactive message callback', async(t) => {
+ava('Validate a interactive message callback', async (t) => {
   const data = parser.validate(broidMessageInteractiveCallback);
   t.deepEqual(await data, broidMessageInteractiveCallback);
 });

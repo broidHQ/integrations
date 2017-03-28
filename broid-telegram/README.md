@@ -58,8 +58,10 @@ const BroidTelegram = require('@broid/telegram');
 
 const telegram = new BroidTelegram({
   token: "<api_key>",
+  webhookURL: "http://127.0.0.1",
   http: {
-    webhookURL: "http://127.0.0.1/"
+    host: "127.0.0.1",
+    port: 8080
   }
 });
 
@@ -69,6 +71,30 @@ telegram.connect()
     error: err => console.error(`Something went wrong: ${err.message}`),
     complete: () => console.log('complete'),
   });
+```
+
+Telegram can also be used with your existing express setup.
+
+```javascript
+const BroidTelegram = require('@broid/telegram');
+const express = require("express");
+
+const telegram = new BroidTelegram({
+  token: "<api_key>",
+  webhookURL: "http://127.0.0.1"
+});
+
+const app = express();
+app.use("/telegram", telegram.getRouter());
+
+callr.connect()
+  .subscribe({
+    next: data => console.log(data),
+    error: err => console.error(`Something went wrong: ${err.message}`),
+    complete: () => console.log('complete'),
+  });
+
+app.listen(8080);
 ```
 
 **Options available**

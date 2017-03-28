@@ -15,24 +15,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-import * as Promise from 'bluebird';
-import broidSchemas from '@broid/schemas';
+
+import {
+  default as schemas,
+  IActivityStream,
+} from '@broid/schemas';
 import { cleanNulls, concat, Logger } from '@broid/utils';
+
+import * as Promise from 'bluebird';
 import * as mimetype from 'mimetype';
 import * as uuid from 'node-uuid';
 import * as R from 'ramda';
 import * as validUrl from 'valid-url';
-
-import { IActivityStream } from './interfaces';
 
 export class Parser {
   public serviceID: string;
   public generatorName: string;
   private logger: Logger;
 
-  constructor(serviceID: string, logLevel: string) {
+  constructor(serviceName: string, serviceID: string, logLevel: string) {
     this.serviceID = serviceID;
-    this.generatorName = 'telegram';
+    this.generatorName = serviceName;
     this.logger = new Logger('parser', logLevel);
   }
 
@@ -48,7 +51,7 @@ export class Parser {
       return Promise.resolve(null);
     }
 
-    return broidSchemas(parsed, 'activity')
+    return schemas(parsed, 'activity')
       .then(() => parsed)
       .catch((err) => {
         this.logger.error(err);
@@ -73,7 +76,7 @@ export class Parser {
       type: 'Person',
     };
 
-    const chatType = R.path(['chat', 'type'], normalized) || '';
+    const chatType: string = <string> R.path(['chat', 'type'], normalized) || '';
     activitystreams.target = {
       id: R.toString(R.path(['chat', 'id'], normalized)),
       name: R.path(['chat', 'title'], normalized) || concat([
@@ -86,16 +89,16 @@ export class Parser {
 
     // Process potentially media.
     if (normalized.type === 'Image' || normalized.type === 'Video') {
-      let type = 'Image';
+      let objType = 'Image';
       if (normalized.type === 'Video') {
-        type = 'Video';
+        objType = 'Video';
       }
 
       activitystreams.object = {
         id: normalized.message_id.toString() || this.createIdentifier(),
         mediaType: mimetype.lookup(normalized.text),
         name: normalized.text.split('/').pop(),
-        type,
+        type: objType,
         url: normalized.text,
       };
     }
@@ -169,7 +172,7 @@ export class Parser {
     return uuid.v4();
   }
 
-  private createActivityStream(normalized): IActivityStream {
+  private createActivityStream(normalized: any): IActivityStream {
     return {
       '@context': 'https://www.w3.org/ns/activitystreams',
       'generator': {
