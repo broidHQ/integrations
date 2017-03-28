@@ -7,6 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 const ava_1 = require("ava");
 const sinon = require("sinon");
 const parser_1 = require("../core/parser");
@@ -17,7 +18,7 @@ ava_1.default.before(() => {
     sinon.stub(Date, "now", () => {
         return 1483589416000;
     });
-    parser = new parser_1.default("testuser", "test_broid_service", "info");
+    parser = new parser_1.default("google-assistant", "testuser", "test_broid_service", "info");
 });
 ava_1.default("Parse a group message", (t) => __awaiter(this, void 0, void 0, function* () {
     let data = yield parser.parse(googleMessage);

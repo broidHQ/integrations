@@ -1,13 +1,14 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const Promise = require("bluebird");
 const schemas_1 = require("@broid/schemas");
 const utils_1 = require("@broid/utils");
 const uuid = require("node-uuid");
 const R = require("ramda");
 class Parser {
-    constructor(serviceID, username, logLevel) {
+    constructor(serviceName, serviceID, username, logLevel) {
         this.serviceID = serviceID;
-        this.generatorName = "google-assistant";
+        this.generatorName = serviceName;
         this.logger = new utils_1.Logger("parser", logLevel);
         this.username = username;
     }
@@ -83,5 +84,4 @@ class Parser {
         };
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = Parser;
