@@ -26,25 +26,33 @@
     "node": ">=6.0.0"
   },
   "scripts": {
+    "build": "npm run clean && npm run copy:config && tsc",
+    "clean": "rm -rf lib && rm -rf tsconfig.json && rm -rf tslint.json",
+    "copy:config": "cp ../.ci/tsconfig.json . && cp ../.ci/tslint.json .",
+    "lint": "npm run copy:config && tslint -c tslint.json src/**/*.ts",
+    "lint:watch": "watch 'npm run lint' src",
+    "nsp-check": "nsp check --warn-only -o summary",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc",
-    "watch": "concurrently --kill-others \"npm run lint:watch\" \"npm run tsc:watch\"",
-    "lint": "tslint -c tslint.json src/*",
-    "lint:watch": "watch 'tslint -c tslint.json src/*' src",
-    "tsc:watch": "tsc --watch",
-    "nsp-check": "nsp check -o summary",
-    "clean": "rm -rf lib && rm -rf typings",
     "travis": "npm run lint && npm run nsp-check",
-    "release": "npm run clean && typings install && npm run build && npm publish --access public"
+    "tsc:watch": "tsc --watch",
+    "release": "npm run clean && npm run build && npm publish --access public",
+    "watch": "concurrently --kill-others \"npm run lint:watch\" \"npm run tsc:watch\""
   },
   "dependencies": {
     "pino": "^3.0.5",
     "ramda": "^0.22.1"
   },
   "devDependencies": {
+    "@types/bluebird": "^3.5.2",
+    "@types/bluebird-global": "^3.5.1",
+    "@types/node": "^7.0.12",
+    "@types/node-uuid": "^0.0.28",
+    "@types/ramda": "^0.0.5",
     "concurrently": "^3.1.0",
+    "nsp": "^2.6.3",
     "tslint": "^4.3.1",
-    "tslint-eslint-rules": "^3.2.3",
+    "tslint-eslint-rules": "^3.5.1",
+    "tslint-microsoft-contrib": "^4.0.1",
     "typescript": "^2.1.4",
     "typings": "^2.1.0",
     "watch": "^1.0.1"

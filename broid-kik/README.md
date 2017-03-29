@@ -60,7 +60,8 @@ const kik = new broidKik({
   username: '<not_name>',
   token: "<api_key>",
   http: {
-    webhookURL: "http://127.0.0.1/"
+    host: "127.0.0.1",
+    port: 8080
   }
 });
 
@@ -70,6 +71,31 @@ kik.connect()
     error: err => console.error(`Something went wrong: ${err.message}`),
     complete: () => console.log('complete'),
   });
+```
+
+Kik can also be used with your existing express setup.
+
+```javascript
+const BroidKik = require('@broid/kik');
+const express = require("express");
+
+const kik = new broidKik({
+  username: '<not_name>',
+  token: "<api_key>",
+  webhookURL: "http://127.0.0.1/"
+});
+
+const app = express();
+app.use("/kik", kik.getRouter());
+
+kik.connect()
+  .subscribe({
+    next: data => console.log(data),
+    error: err => console.error(`Something went wrong: ${err.message}`),
+    complete: () => console.log('complete'),
+  });
+
+app.listen(8080);
 ```
 
 **Options available**

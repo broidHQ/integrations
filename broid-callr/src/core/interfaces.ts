@@ -13,16 +13,6 @@ export interface IAdapterOptions {
   http?: IAdapterHTTPOptions;
 }
 
-export interface IActivityStream {
-  actor: {};
-  object: {};
-  target: {};
-  readonly "@context": string;
-  readonly published: number;
-  readonly type: string;
-  readonly generator: {};
-}
-
 export interface ICallrWebHookEvent {
   request: any;
   response: any;

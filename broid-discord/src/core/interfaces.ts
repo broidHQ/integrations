@@ -17,13 +17,3 @@ export interface IChannelInformations {
   readonly name: string;
   readonly topic: string;
 }
-
-export interface IActivityStream {
-  readonly "@context": string;
-  readonly published: number;
-  readonly type: string;
-  readonly generator: any;
-  actor?: any;
-  target?: any;
-  object?: any;
-}
