@@ -1,21 +1,3 @@
-/**
- * @license
- * Copyright 2017 Broid.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
- */
-
 import schemas, { IActivityStream } from '@broid/schemas';
 import { cleanNulls, Logger } from '@broid/utils';
 
@@ -93,7 +75,7 @@ export class Parser {
   private createActivityStream(normalized: any): Promise<IActivityStream> {
     return this.getUserName(normalized.fromusername[0])
       .then((nickname: string) => {
-        return <IActivityStream> {
+        return {
           '@context': 'https://www.w3.org/ns/activitystreams',
           'actor': {
             id: normalized.fromusername[0],
@@ -113,7 +95,7 @@ export class Parser {
             type: 'Person',
           },
           'type': 'Create',
-        };
+        } as IActivityStream;
       });
   }
 
@@ -148,11 +130,14 @@ export class Parser {
 
     return Promise.join(getAccessToken, this.createActivityStream(normalized))
       .spread((accessToken: string, message: IActivityStream) => {
+        let url = `http://file.api.wechat.com/cgi-bin/media/get?access_token=${accessToken}`;
+        url = `${url}&media_id=${normalized.mediaid[0]}`;
+
         message.object = {
           id: normalized.msgid[0],
           mediaType,
           type: messageType,
-          url: `http://file.api.wechat.com/cgi-bin/media/get?access_token=${accessToken}&media_id=${normalized.mediaid[0]}`,
+          url,
         };
 
         return message;

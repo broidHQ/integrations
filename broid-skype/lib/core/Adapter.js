@@ -102,14 +102,15 @@ class Adapter {
             const context = R.path(['object', 'context', 'content'], data);
             const content = R.path(['object', 'content'], data);
             const name = R.path(['object', 'name'], data);
-            const dataType = R.path(['object', 'type'], data);
+            const objectType = R.path(['object', 'type'], data);
             const contextArr = R.split('#', context);
             const addressID = contextArr[0];
             let address = this.storeAddresses.get(addressID);
             if (!address) {
                 if (R.length(contextArr) !== 4) {
-                    return Promise
-                        .reject(new Error('Context value should use the form: address.id#address.conversation.id#channelId#bot.id'));
+                    const errorFormMsg = 'address.id#address.conversation.id#channelId#bot.id';
+                    const errorMsg = 'Context value should use the form:';
+                    return Promise.reject(new Error(`${errorMsg} ${errorFormMsg}`));
                 }
                 const conversationID = contextArr[1];
                 const channelID = contextArr[2];
@@ -148,7 +149,7 @@ class Adapter {
             const messageBuilder = new botbuilder.Message()
                 .textFormat(botbuilder.TextFormat.markdown)
                 .address(address);
-            if (dataType === 'Note') {
+            if (objectType === 'Note') {
                 if (!messageButtons) {
                     messageBuilder.text(content);
                 }
@@ -158,13 +159,13 @@ class Adapter {
                     ];
                 }
             }
-            else if (dataType === 'Image' || dataType === 'Video') {
+            else if (objectType === 'Image' || objectType === 'Video') {
                 const url = R.path(['object', 'url'], data);
                 const hero = new botbuilder.HeroCard().title(name).text(content);
                 if (messageButtons) {
                     hero.buttons(messageButtons);
                 }
-                if (dataType === 'Image') {
+                if (objectType === 'Image') {
                     hero.images([new botbuilder.CardImage().url(url)]);
                     messageAttachments = [hero];
                 }
@@ -175,7 +176,7 @@ class Adapter {
                         }, hero];
                 }
             }
-            if (dataType === 'Note' || dataType === 'Image' || dataType === 'Video') {
+            if (objectType === 'Note' || objectType === 'Image' || objectType === 'Video') {
                 messageBuilder.attachments(messageAttachments);
                 return Promise.fromCallback((cb) => this.session.send(messageBuilder, cb))
                     .then(() => ({ serviceID: this.serviceId(), type: 'sent' }));

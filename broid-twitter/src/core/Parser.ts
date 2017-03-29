@@ -1,21 +1,3 @@
-/**
- * @license
- * Copyright 2017 Broid.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
- */
-
 import {
   default as schemas,
   IActivityStream,
@@ -92,10 +74,10 @@ export class Parser {
       let url: string | null = null;
 
       if (!R.isEmpty(images)) {
-        url = <string> R.prop('url', images[0]);
+        url = R.prop('url', images[0]) as string;
       } else {
         attachmentType = 'Video';
-        url = <string> R.prop('url', videos[0]);
+        url = R.prop('url', videos[0]) as string;
       }
 
       if (url) {
@@ -192,13 +174,13 @@ export class Parser {
         if (media.type === 'photo') {
           return { type: 'Image', url: media.media_url_https, _url: media.url };
         } else if (media.type === 'video' || media.type === 'animated_gif') {
-          const url = extractBestVideoURL(<object[]> R.path(['video_info', 'variants'], media));
+          const url = extractBestVideoURL(R.path(['video_info', 'variants'], media) as object[]);
           if (!url) { return null; }
           return { type: 'Video', url, _url: media.url };
         }
         return null;
       },
-      <any[]> R.path(['entities', 'media'], event) || []));
+      R.path(['entities', 'media'], event) as any[] || []));
 
     const data: object = {
       attachments,
@@ -217,7 +199,7 @@ export class Parser {
       }),
       hashtags: R.map(
         (hashtag: any) => ({ text: hashtag.text }),
-        <any[]> R.path(['entities', 'hashtags'], event) || []),
+        R.path(['entities', 'hashtags'], event) as any[] || []),
       id: event.id_str,
       text: extractText(event.text, event._username, attachments),
       timestamp: dateCreatedAt.getTime(),

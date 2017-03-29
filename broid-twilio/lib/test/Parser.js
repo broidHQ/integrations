@@ -11,9 +11,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const ava_1 = require("ava");
 const Parser_1 = require("../core/Parser");
 const broidMessage = require("./fixtures/broid/message.json");
-const broidMessageNormalized = require("./fixtures/broid/messageNormalized.json");
-const broidMessageNormalizedWithMedia = require("./fixtures/broid/messageNormalizedWithMedia.json");
-const broidMessageNormalizedWithMedias = require("./fixtures/broid/messageNormalizedWithMedias.json");
+const broidMessageNorm = require("./fixtures/broid/messageNormalized.json");
+const broidMessageNormWithMedia = require("./fixtures/broid/messageNormalizedWithMedia.json");
+const broidMessageNormWithMedias = require("./fixtures/broid/messageNormalizedWithMedias.json");
 const broidMessageWithMedia = require("./fixtures/broid/messageWithMedia.json");
 const broidMessageWithMedias = require("./fixtures/broid/messageWithMedias.json");
 const twilioMessage = require("./fixtures/twilio/message.json");
@@ -34,26 +34,26 @@ ava_1.default('Normalize null', (t) => __awaiter(this, void 0, void 0, function*
 }));
 ava_1.default('Normalize a simple message', (t) => __awaiter(this, void 0, void 0, function* () {
     const data = parser.normalize(twilioMessage);
-    t.deepEqual(yield data, broidMessageNormalized);
+    t.deepEqual(yield data, broidMessageNorm);
 }));
 ava_1.default('Normalize a message with media', (t) => __awaiter(this, void 0, void 0, function* () {
     const data = parser.normalize(twilioMessageWithMedia);
-    t.deepEqual(yield data, broidMessageNormalizedWithMedia);
+    t.deepEqual(yield data, broidMessageNormWithMedia);
 }));
 ava_1.default('Normalize a message with multiple media', (t) => __awaiter(this, void 0, void 0, function* () {
     const data = parser.normalize(twilioMessageWithMedias);
-    t.deepEqual(yield data, broidMessageNormalizedWithMedias);
+    t.deepEqual(yield data, broidMessageNormWithMedias);
 }));
 ava_1.default('Parse a simple message', (t) => __awaiter(this, void 0, void 0, function* () {
-    const data = parser.parse(broidMessageNormalized);
+    const data = parser.parse(broidMessageNorm);
     t.deepEqual(yield data, broidMessage);
 }));
 ava_1.default('Parse a message with media', (t) => __awaiter(this, void 0, void 0, function* () {
-    const data = parser.parse(broidMessageNormalizedWithMedia);
+    const data = parser.parse(broidMessageNormWithMedia);
     t.deepEqual(yield data, broidMessageWithMedia);
 }));
 ava_1.default('Parse a message with multiple media', (t) => __awaiter(this, void 0, void 0, function* () {
-    const data = parser.parse(broidMessageNormalizedWithMedias);
+    const data = parser.parse(broidMessageNormWithMedias);
     t.deepEqual(yield data, broidMessageWithMedias);
 }));
 ava_1.default('Validate a simple message', (t) => __awaiter(this, void 0, void 0, function* () {

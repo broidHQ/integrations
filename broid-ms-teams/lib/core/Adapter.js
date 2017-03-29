@@ -108,27 +108,22 @@ class Adapter {
             let address = this.storeAddresses.get(addressID);
             if (!address) {
                 if (R.length(contextArr) !== 4) {
-                    return Promise
-                        .reject(new Error('Context value should use the form: address.id#address.conversation.id#channelId#bot.id'));
+                    const errorFormMsg = 'address.id#address.conversation.id#channelId#bot.id';
+                    const errorMsg = 'Context value should use the form:';
+                    return Promise.reject(new Error(`${errorMsg} ${errorFormMsg}`));
                 }
                 const conversationID = contextArr[1];
                 const channelID = contextArr[2];
                 const botID = contextArr[3];
                 const userID = R.path(['to', 'id'], data);
                 address = {
-                    bot: {
-                        id: botID,
-                    },
+                    bot: { id: botID },
                     channelId: channelID,
-                    conversation: {
-                        id: conversationID,
-                    },
+                    conversation: { id: conversationID },
                     id: addressID,
                     serviceUrl: `https://${channelID}.botframework.com`,
                     useAuth: true,
-                    user: {
-                        id: userID,
-                    },
+                    user: { id: userID },
                 };
             }
             const attachmentButtons = R.filter((attachment) => attachment.type === 'Button', R.path(['object', 'attachment'], data) || []);

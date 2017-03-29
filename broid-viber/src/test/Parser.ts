@@ -1,31 +1,13 @@
-/**
- * @license
- * Copyright 2017 Broid.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
- */
-
 import ava from 'ava';
 import { Parser } from '../core/Parser';
 
 import * as broidMessage from './fixtures/broid/message.json';
 import * as broidMessageInteractiveCallback from './fixtures/broid/messageInteractiveCallback.json';
 import * as broidMessageLocation from './fixtures/broid/messageLocation.json';
-import * as broidMessageNormalized from './fixtures/broid/messageNormalized.json';
-import * as broidMessageNormalizedInteractiveCallback from './fixtures/broid/messageNormalizedInteractiveCallback.json';
-import * as broidMessageNormalizedLocation from './fixtures/broid/messageNormalizedLocation.json';
-import * as broidMessageNormalizedWithMedia from './fixtures/broid/messageNormalizedWithMedia.json';
+import * as broidMessageNorm from './fixtures/broid/messageNormalized.json';
+import * as broidMessageNormInteraCallback from './fixtures/broid/messageNormalizedInteractiveCallback.json';
+import * as broidMessageNormLocation from './fixtures/broid/messageNormalizedLocation.json';
+import * as broidMessageNormWithMedia from './fixtures/broid/messageNormalizedWithMedia.json';
 import * as broidMessageWithMedia from './fixtures/broid/messageWithMedia.json';
 import * as viberMessage from './fixtures/viber/message.json';
 import * as viberMessageInteractiveCallback from './fixtures/viber/messageInteractiveCallback.json';
@@ -84,48 +66,48 @@ ava('Normalize null', async (t) => {
 });
 
 ava('Normalize a simple message', async (t) => {
-  const data = parser.normalize(<any> viberMessage);
-  t.deepEqual(await data, broidMessageNormalized);
+  const data = parser.normalize(viberMessage as any);
+  t.deepEqual(await data, broidMessageNorm);
 });
 
 ava('Normalize a location message', async (t) => {
-  const data = parser.normalize(<any> viberMessageLocation);
-  t.deepEqual(await data, broidMessageNormalizedLocation);
+  const data = parser.normalize(viberMessageLocation as any);
+  t.deepEqual(await data, broidMessageNormLocation);
 });
 
 ava('Normalize a interactive message callback', async (t) => {
-  const data = parser.normalize(<any> viberMessageInteractiveCallback);
-  t.deepEqual(await data, broidMessageNormalizedInteractiveCallback);
+  const data = parser.normalize(viberMessageInteractiveCallback as any);
+  t.deepEqual(await data, broidMessageNormInteraCallback);
 });
 
 ava('Normalize a message with media', async (t) => {
-  const data = parser.normalize(<any> viberMessageWithMedia);
-  t.deepEqual(await data, broidMessageNormalizedWithMedia);
+  const data = parser.normalize(viberMessageWithMedia as any);
+  t.deepEqual(await data, broidMessageNormWithMedia);
 });
 
 ava('Parse a simple message', async (t) => {
-  const broidWithTarget: any = Object.assign({}, broidMessageNormalized);
+  const broidWithTarget: any = Object.assign({}, broidMessageNorm);
   broidWithTarget.target = targetMe;
   const data = parser.parse(broidWithTarget);
   t.deepEqual(await data, broidMessage);
 });
 
 ava('Parse a location message', async (t) => {
-  const broidWithTarget: any = Object.assign({}, broidMessageNormalizedLocation);
+  const broidWithTarget: any = Object.assign({}, broidMessageNormLocation);
   broidWithTarget.target = targetMe;
   const data = parser.parse(broidWithTarget);
   t.deepEqual(await data, broidMessageLocation);
 });
 
 ava('Parse a interactive message callback', async (t) => {
-  const broidWithTarget: any = Object.assign({}, broidMessageNormalizedInteractiveCallback);
+  const broidWithTarget: any = Object.assign({}, broidMessageNormInteraCallback);
   broidWithTarget.target = targetMe;
   const data = parser.parse(broidWithTarget);
   t.deepEqual(await data, broidMessageInteractiveCallback);
 });
 
 ava('Parse a message with media', async (t) => {
-  const broidWithTarget: any = Object.assign({}, broidMessageNormalizedWithMedia);
+  const broidWithTarget: any = Object.assign({}, broidMessageNormWithMedia);
   broidWithTarget.target = targetMe;
   const data = parser.parse(broidWithTarget);
   t.deepEqual(await data, broidMessageWithMedia);

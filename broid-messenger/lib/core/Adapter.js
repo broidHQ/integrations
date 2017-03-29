@@ -90,7 +90,7 @@ class Adapter {
             const fButtons = helpers_1.createButtons(buttons);
             const fbQuickReplies = helpers_1.parseQuickReplies(quickReplies);
             const messageData = {
-                message: { attachment: {}, text: '', },
+                message: { attachment: {}, text: '' },
                 recipient: { id: toID },
             };
             if (R.length(fbQuickReplies) > 0) {

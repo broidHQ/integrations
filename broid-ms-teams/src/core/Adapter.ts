@@ -1,21 +1,3 @@
-/**
- * @license
- * Copyright 2017 Broid.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
- */
-
 import schemas from '@broid/schemas';
 import { Logger } from '@broid/utils';
 
@@ -139,11 +121,11 @@ export class Adapter {
     return Observable.create((observer) => {
       this.session.dialog('/', (event) => {
         this.storeAddresses.set(
-          <string> R.path(['message', 'address', 'id'], event),
-          <object> R.path(['message', 'address'], event));
+          R.path(['message', 'address', 'id'], event) as string,
+          R.path(['message', 'address'], event) as object);
         this.storeUsers.set(
-          <string> R.path(['message', 'user', 'id'], event),
-          <object> R.path(['message', 'user'], event));
+          R.path(['message', 'user', 'id'], event) as string,
+          R.path(['message', 'user'], event) as object);
 
         return Promise.resolve(event.message)
           .then((normalized) => this.parser.parse(normalized))
@@ -161,10 +143,10 @@ export class Adapter {
     this.logger.debug('sending', { message: data });
     return schemas(data, 'send')
       .then(() => {
-        const context: string = <string> R.path(['object', 'context', 'content'], data);
-        const content: string = <string> R.path(['object', 'content'], data);
-        const name: string = <string> R.path(['object', 'name'], data);
-        const objectType: string = <string> R.path(['object', 'type'], data);
+        const context: string = R.path(['object', 'context', 'content'], data) as string;
+        const content: string = R.path(['object', 'content'], data) as string;
+        const name: string = R.path(['object', 'name'], data) as string;
+        const objectType: string = R.path(['object', 'type'], data) as string;
 
         const contextArr = R.split('#', context);
         const addressID = contextArr[0];
@@ -172,8 +154,9 @@ export class Adapter {
         let address = this.storeAddresses.get(addressID);
         if (!address) {
           if (R.length(contextArr) !== 4) {
-            return Promise
-              .reject(new Error('Context value should use the form: address.id#address.conversation.id#channelId#bot.id'));
+            const errorFormMsg = 'address.id#address.conversation.id#channelId#bot.id';
+            const errorMsg = 'Context value should use the form:';
+            return Promise.reject(new Error(`${errorMsg} ${errorFormMsg}`));
           }
 
           const conversationID = contextArr[1];
@@ -182,26 +165,20 @@ export class Adapter {
           const userID = R.path(['to', 'id'], data);
 
           address = {
-            bot: {
-              id: botID,
-            },
+            bot: { id: botID },
             channelId: channelID,
-            conversation: {
-              id: conversationID,
-            },
+            conversation: { id: conversationID },
             id: addressID,
             serviceUrl: `https://${channelID}.botframework.com`,
             useAuth: true,
-            user: {
-              id: userID,
-            },
+            user: { id: userID },
           };
         }
 
         // Process attachment
         const attachmentButtons = R.filter(
           (attachment: any) => attachment.type === 'Button',
-          <any[]> R.path(['object', 'attachment'], data) || []);
+          R.path(['object', 'attachment'], data) as any[] || []);
 
         const messageButtons = R.map(
           (button) => {
@@ -215,7 +192,7 @@ export class Adapter {
         let messageAttachments: any[] = [];
         const messageBuilder = new botbuilder.Message()
           .textFormat(botbuilder.TextFormat.markdown)
-          .address(<botbuilder.IAddress> address);
+          .address(address as botbuilder.IAddress);
 
         if (objectType === 'Note') {
           if (!messageButtons) {
@@ -229,7 +206,7 @@ export class Adapter {
             ];
           }
         } else if (objectType === 'Image' || objectType === 'Video') {
-          const url: string = <string> R.path(['object', 'url'], data);
+          const url: string = R.path(['object', 'url'], data) as string;
           const hero = new botbuilder.HeroCard()
             .title(name)
             .text(content);

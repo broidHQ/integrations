@@ -1,21 +1,3 @@
-/**
- * @license
- * Copyright 2017 Broid.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
- */
-
 import * as Ajv from 'ajv';
 import * as Promise from 'bluebird';
 
@@ -89,9 +71,11 @@ export default function(data: any, schema: string): Promise<any> { // tslint:dis
     extendRefs: true,
   });
 
-  const schemas = require('./schemas'); // tslint:disable-line:no-require-imports
-  schemas.forEach((schemaName) =>
-    ajv.addSchema(require(`./schemas/${schemaName}`), schemaName)); // tslint:disable-line:no-require-imports
+  // tslint:disable-next-line:no-require-imports non-literal-require
+  const schemas = require('./schemas');
+
+  // tslint:disable-next-line:no-require-imports non-literal-require
+  schemas.forEach((schemaName) => ajv.addSchema(require(`./schemas/${schemaName}`), schemaName));
 
   if (schema.indexOf('http') < 0) {
     schema = `${BASE_URL}${schema}.json`;

@@ -112,11 +112,13 @@ class Parser {
             .then(R.prop('accessToken'));
         return Promise.join(getAccessToken, this.createActivityStream(normalized))
             .spread((accessToken, message) => {
+            let url = `http://file.api.wechat.com/cgi-bin/media/get?access_token=${accessToken}`;
+            url = `${url}&media_id=${normalized.mediaid[0]}`;
             message.object = {
                 id: normalized.msgid[0],
                 mediaType,
                 type: messageType,
-                url: `http://file.api.wechat.com/cgi-bin/media/get?access_token=${accessToken}&media_id=${normalized.mediaid[0]}`,
+                url,
             };
             return message;
         });

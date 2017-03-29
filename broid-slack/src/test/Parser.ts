@@ -1,21 +1,3 @@
-/**
- * @license
- * Copyright 2017 Broid.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
- */
-
 import ava from 'ava';
 import { Parser } from '../core/Parser';
 
@@ -39,22 +21,22 @@ ava('Parse null', async (t) => {
 });
 
 ava('Parse a simple message', async (t) => {
-  const data = parser.parse(<any> slackMessage);
+  const data = parser.parse(slackMessage as any);
   t.deepEqual(await data, broidMessage);
 });
 
 ava('Parse a message with media', async (t) => {
-  const data = parser.parse(<any> slackMessageWithMedia);
+  const data = parser.parse(slackMessageWithMedia as any);
   t.deepEqual(await data, broidMessageWithMedia);
 });
 
 ava('Parse a private message', async (t) => {
-  const data = parser.parse(<any> slackMessagePrivate);
+  const data = parser.parse(slackMessagePrivate as any);
   t.deepEqual(await data, broidMessagePrivate);
 });
 
 ava('Parse a interactive callback message', async (t) => {
-  const data = parser.parse(<any> slackInteractiveMessage);
+  const data = parser.parse(slackInteractiveMessage as any);
   t.deepEqual(await data, broidInteractiveMessage);
 });
 
@@ -64,16 +46,16 @@ ava('Validate a simple message', async (t) => {
 });
 
 ava('Validate a message with media', async (t) => {
-  const data = parser.validate(<any> broidMessageWithMedia);
+  const data = parser.validate(broidMessageWithMedia as any);
   t.deepEqual(await data, broidMessageWithMedia);
 });
 
 ava('Validate a private message', async (t) => {
-  const data = parser.validate(<any> broidMessagePrivate);
+  const data = parser.validate(broidMessagePrivate as any);
   t.deepEqual(await data, broidMessagePrivate);
 });
 
 ava('Validate a interactive callback message', async (t) => {
-  const data = parser.validate(<any> broidInteractiveMessage);
+  const data = parser.validate(broidInteractiveMessage as any);
   t.deepEqual(await data, broidInteractiveMessage);
 });

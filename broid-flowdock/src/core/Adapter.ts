@@ -1,21 +1,3 @@
-/**
- * @license
- * Copyright 2017 Broid.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
- */
-
 import schemas from '@broid/schemas';
 import { Logger } from '@broid/utils';
 
@@ -177,7 +159,7 @@ export class Adapter {
             const contentID = R.path(['object', 'id'], result);
             const tags = R.map(
               (tag: any) => tag.name,
-              <any[]> R.path(['object', 'tag'], result) || []);
+              R.path(['object', 'tag'], result) as any[] || []);
             const context: any = R.path(['object', 'context'], result);
 
             if (context && context.content) { // Send a message on thread
@@ -185,7 +167,7 @@ export class Adapter {
                 .threadMessage(flowID, context.content, content, tags, cb));
             } else if (toType === 'Group' && (dataType === 'Update' || dataType === 'Delete')) {
               // EDIT message, only Public message
-              return this.flowByID(<string> flowID)
+              return this.flowByID(flowID as string)
                 .then((flow) =>
                   Promise.fromCallback((cb) => this.session
                     .editMessage(
@@ -193,7 +175,7 @@ export class Adapter {
                       R.path(['organization', 'parameterized_name'], flow),
                       Number(contentID), { content, tags }, cb)));
             } else if (toType === 'Person') { // Private Message
-              return this.userByID(<string> flowID)
+              return this.userByID(flowID as string)
                 .tap(console.log)
                 .then((user) =>
                   Promise.fromCallback((cb) => this.session

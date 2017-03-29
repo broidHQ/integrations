@@ -39,7 +39,9 @@ class Parser {
         let displayName = R.path(['user', 'profile', 'display_name'], normalized);
         if (!displayName && R.path(['user', 'profile', 'given_name'], normalized)
             && R.path(['user', 'profile', 'family_name'], normalized)) {
-            displayName = `${R.path(['user', 'profile', 'given_name'], normalized)} ${R.path(['user', 'profile', 'family_name'], normalized)} `;
+            const givenName = R.path(['user', 'profile', 'given_name'], normalized);
+            const familyName = R.path(['user', 'profile', 'family_name'], normalized);
+            displayName = `${givenName} ${familyName} `;
         }
         activitystreams.actor = {
             id: R.path(['user', 'user_id'], normalized),

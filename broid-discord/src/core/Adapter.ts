@@ -1,21 +1,3 @@
-/**
- * @license
- * Copyright 2017 Broid.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
- */
-
 import schemas from '@broid/schemas';
 import { Logger } from '@broid/utils';
 
@@ -56,12 +38,12 @@ export class Adapter {
   public users(): Promise<any> {
     return new Promise((resolve) => {
       const users = this.session.Users.map((u) => {
-        return <IUserInformations> {
+        return {
           avatar: u.avatar,
           id: u.id,
           is_bot: u.bot,
           username: u.username,
-        };
+        } as IUserInformations;
       });
 
       resolve(users);
@@ -74,12 +56,12 @@ export class Adapter {
     return new Promise((resolve) => {
       const channels = this.session.Channels.map((c) => {
         if (c.type !== 0) { return null; }
-        return <IChannelInformations> {
+        return {
           guildID: c.guild_id,
           id: c.id,
           name: c.name,
           topic: c.topic,
-        };
+        } as IChannelInformations;
       });
 
       resolve(R.reject(R.isNil)(channels));
@@ -210,7 +192,7 @@ export class Adapter {
           }
           return channel.sendMessage(content);
         } else if (objectType === 'Image' || objectType === 'Video') {
-          const url: string  = <string> R.path(['object', 'url'], data);
+          const url: string  = R.path(['object', 'url'], data) as string;
           const name = R.path(['object', 'name'], data);
 
           if (url.startsWith('http://') || url.startsWith('https://')) {

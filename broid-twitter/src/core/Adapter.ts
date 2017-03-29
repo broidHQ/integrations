@@ -1,21 +1,3 @@
-/**
- * @license
- * Copyright 2017 Broid.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
- */
-
 import schemas from '@broid/schemas';
 import { Logger } from '@broid/utils';
 
@@ -162,10 +144,10 @@ export class Adapter {
 
     return schemas(data, 'send')
       .then(() => {
-        const name: string = <string> R.path(['object', 'name'], data);
-        const content: string = <string> R.path(['object', 'content'], data);
-        const dataType: string = <string> R.path(['object', 'type'], data);
-        const toID: string = <string> R.path(['to', 'id'], data);
+        const name: string = R.path(['object', 'name'], data) as string;
+        const content: string = R.path(['object', 'content'], data) as string;
+        const dataType: string = R.path(['object', 'type'], data) as string;
+        const toID: string = R.path(['to', 'id'], data) as string;
         const options: any = {
           content,
           screen_name: '',
@@ -202,7 +184,7 @@ export class Adapter {
             if (opts.to_channel) {
               return [
                 opts,
-                this.createMedia(<string> R.path(['object', 'url'], data), name),
+                this.createMedia(R.path(['object', 'url'], data) as string, name),
               ];
             }
 

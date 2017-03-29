@@ -1,21 +1,3 @@
-/**
- * @license
- * Copyright 2017 Broid.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
- */
-
 import schemas from '@broid/schemas';
 import { concat, Logger } from '@broid/utils';
 import * as Promise from 'bluebird';
@@ -130,12 +112,12 @@ export class Adapter {
 
     return schemas(data, 'send')
       .then(() => {
-        const toID: string = <string> R.path(['to', 'id'], data) ||
-          <string> R.path(['to', 'name'], data);
-        const dataType: string = <string> R.path(['object', 'type'], data);
-        const content: string = <string> R.path(['object', 'content'], data);
-        const name: string = <string> R.path(['object', 'name'], data) || content;
-        const attachments: any[] = <any[]> R.path(['object', 'attachment'], data) || [];
+        const toID: string = R.path(['to', 'id'], data) as string ||
+          R.path(['to', 'name'], data) as string;
+        const dataType: string = R.path(['object', 'type'], data) as string;
+        const content: string = R.path(['object', 'content'], data) as string;
+        const name: string = R.path(['object', 'name'], data) as string || content;
+        const attachments: any[] = R.path(['object', 'attachment'], data) as any[] || [];
         const buttons = R.filter(
           (attachment: any) => attachment.type === 'Button',
           attachments);
@@ -145,7 +127,7 @@ export class Adapter {
         const fButtons = createButtons(buttons);
         const fbQuickReplies = parseQuickReplies(quickReplies);
         const messageData: any = {
-          message: { attachment: {}, text: '', },
+          message: { attachment: {}, text: '' },
           recipient: { id: toID },
         };
 

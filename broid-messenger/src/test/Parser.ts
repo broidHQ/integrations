@@ -1,21 +1,3 @@
-/**
- * @license
- * Copyright 2017 Broid.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
- */
-
 import ava from 'ava';
 import { Parser } from '../core/Parser';
 
@@ -25,15 +7,15 @@ import * as messengerMessageInteractiveCallback from './fixtures/messenger/messa
 import * as messengerMessageLink from './fixtures/messenger/messageLink.json';
 import * as messengerMessageLocation from './fixtures/messenger/messageLocation.json';
 
-import * as broidMessageNormalized from './fixtures/broid/normalized/message.json';
-import * as broidMessageNormalizedImage from './fixtures/broid/normalized/messageImage.json';
-import * as broidMessageNormalizedInteractiveCallback from './fixtures/broid/normalized/messageInteractiveCallback.json';
-import * as broidMessageNormalizedLink from './fixtures/broid/normalized/messageLink.json';
-import * as broidMessageNormalizedLocation from './fixtures/broid/normalized/messageLocation.json';
+import * as broidMessageNorm from './fixtures/broid/normalized/message.json';
+import * as broidMessageNormImage from './fixtures/broid/normalized/messageImage.json';
+import * as broidMessageNormInteraCallback from './fixtures/broid/normalized/messageInteractiveCallback.json';
+import * as broidMessageNormLink from './fixtures/broid/normalized/messageLink.json';
+import * as broidMessageNormLocation from './fixtures/broid/normalized/messageLocation.json';
 
 import * as broidMessage from './fixtures/broid/parsed/message.json';
 import * as broidMessageImage from './fixtures/broid/parsed/messageImage.json';
-import * as broidMessageInteractiveCallback from './fixtures/broid/parsed/messageInteractiveCallback.json';
+import * as broidMessageInteraCallback from './fixtures/broid/parsed/messageInteractiveCallback.json';
 import * as broidMessageLink from './fixtures/broid/parsed/messageLink.json';
 import * as broidMessageLocation from './fixtures/broid/parsed/messageLocation.json';
 
@@ -55,60 +37,60 @@ ava('Parse a null', async (t) => {
 });
 
 ava('Normalize a simple message', async (t) => {
-  const data = parser.normalize(<any> messengerMessage);
-  t.deepEqual(await data, broidMessageNormalized);
+  const data = parser.normalize(messengerMessage as any);
+  t.deepEqual(await data, broidMessageNorm);
 });
 
 ava('Normalize a message with image', async (t) => {
-  const data = parser.normalize(<any> messengerMessageImage);
-  t.deepEqual(await data, broidMessageNormalizedImage);
+  const data = parser.normalize(messengerMessageImage as any);
+  t.deepEqual(await data, broidMessageNormImage);
 });
 
 ava('Normalize a message with link', async (t) => {
-  const data = parser.normalize(<any> messengerMessageLink);
-  t.deepEqual(await data, broidMessageNormalizedLink);
+  const data = parser.normalize(messengerMessageLink as any);
+  t.deepEqual(await data, broidMessageNormLink);
 });
 
 ava('Normalize a interactive message callback', async (t) => {
-  const data = parser.normalize(<any> messengerMessageInteractiveCallback);
-  t.deepEqual(await data, broidMessageNormalizedInteractiveCallback);
+  const data = parser.normalize(messengerMessageInteractiveCallback as any);
+  t.deepEqual(await data, broidMessageNormInteraCallback);
 });
 
 ava('Normalize a location message', async (t) => {
-  const data = parser.normalize(<any> messengerMessageLocation);
-  t.deepEqual(await data, broidMessageNormalizedLocation);
+  const data = parser.normalize(messengerMessageLocation as any);
+  t.deepEqual(await data, broidMessageNormLocation);
 });
 
 ava('Parse a simple message', async (t) => {
-  const r: any = Object.assign({}, broidMessageNormalized[0]);
+  const r: any = Object.assign({}, broidMessageNorm[0]);
   r.authorInformation = author;
   const data = parser.parse(r);
   t.deepEqual(await data, broidMessage);
 });
 
 ava('Parse a message with image', async (t) => {
-  const r: any = Object.assign({}, broidMessageNormalizedImage[0]);
+  const r: any = Object.assign({}, broidMessageNormImage[0]);
   r.authorInformation = author;
   const data = parser.parse(r);
   t.deepEqual(await data, broidMessageImage);
 });
 
 ava('Parse a message with link', async (t) => {
-  const r: any = Object.assign({}, broidMessageNormalizedLink[0]);
+  const r: any = Object.assign({}, broidMessageNormLink[0]);
   r.authorInformation = author;
   const data = parser.parse(r);
   t.deepEqual(await data, broidMessageLink);
 });
 
 ava('Parse a interactive message callback', async (t) => {
-  const r: any = Object.assign({}, broidMessageNormalizedInteractiveCallback[0]);
+  const r: any = Object.assign({}, broidMessageNormInteraCallback[0]);
   r.authorInformation = author;
   const data = parser.parse(r);
-  t.deepEqual(await data, broidMessageInteractiveCallback);
+  t.deepEqual(await data, broidMessageInteraCallback);
 });
 
 ava('Parse a location message', async (t) => {
-  const r: any = Object.assign({}, broidMessageNormalizedLocation[0]);
+  const r: any = Object.assign({}, broidMessageNormLocation[0]);
   r.authorInformation = author;
   const data = parser.parse(r);
   t.deepEqual(await data, broidMessageLocation);
@@ -130,8 +112,8 @@ ava('Validate a message with link', async (t) => {
 });
 
 ava('Validate a interactive message callback', async (t) => {
-  const data = parser.validate(broidMessageInteractiveCallback);
-  t.deepEqual(await data, broidMessageInteractiveCallback);
+  const data = parser.validate(broidMessageInteraCallback);
+  t.deepEqual(await data, broidMessageInteraCallback);
 });
 
 ava('Validate a location message', async (t) => {

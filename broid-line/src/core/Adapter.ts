@@ -1,21 +1,3 @@
-/**
- * @license
- * Copyright 2017 Broid.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
- */
-
 import schemas from '@broid/schemas';
 import { Logger } from '@broid/utils';
 
@@ -183,8 +165,7 @@ export class Adapter {
             (object: any) => {
               const column = createButtons(
                 object.attachment || [],
-                new LineBot.CarouselColumnTemplateBuilder()
-              );
+                new LineBot.CarouselColumnTemplateBuilder());
               column.setTitle(object.name);
               column.setMessage(object.content);
               column.setThumbnail(object.preview || object.url);
@@ -196,7 +177,7 @@ export class Adapter {
           return new LineBot
             .TemplateMessageBuilder('You can\'t see this rich message.', carousel);
         } else {
-          const attachments: any[] = <any[]> R.path(['object', 'attachment'], data);
+          const attachments: any[] = R.path(['object', 'attachment'], data) as any[];
           const content = R.path(['object', 'content'], data);
           const name = R.path(['object', 'name'], data);
           const url = R.path(['object', 'url'], data);

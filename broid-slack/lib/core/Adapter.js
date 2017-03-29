@@ -12,7 +12,7 @@ const rp = require("request-promise");
 const Rx_1 = require("rxjs/Rx");
 const helpers_1 = require("./helpers");
 const Parser_1 = require("./Parser");
-const webHookServer_1 = require("./webHookServer");
+const WebHookServer_1 = require("./WebHookServer");
 class Adapter {
     constructor(obj) {
         this.serviceID = obj && obj.serviceID || uuid.v4();
@@ -26,7 +26,7 @@ class Adapter {
         this.emitter = new events_1.EventEmitter();
         this.router = this.setupRoutes();
         if (obj.http) {
-            this.webhookServer = new webHookServer_1.WebHookServer(obj.http, this.router, this.logLevel);
+            this.webhookServer = new WebHookServer_1.WebHookServer(obj.http, this.router, this.logLevel);
         }
     }
     users() {

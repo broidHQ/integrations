@@ -13,10 +13,10 @@ const Parser_1 = require("../core/Parser");
 const broidMessage = require("./fixtures/broid/message.json");
 const broidMessageInteractiveCallback = require("./fixtures/broid/messageInteractiveCallback.json");
 const broidMessageLocation = require("./fixtures/broid/messageLocation.json");
-const broidMessageNormalized = require("./fixtures/broid/messageNormalized.json");
-const broidMessageNormalizedInteractiveCallback = require("./fixtures/broid/messageNormalizedInteractiveCallback.json");
-const broidMessageNormalizedLocation = require("./fixtures/broid/messageNormalizedLocation.json");
-const broidMessageNormalizedWithMedia = require("./fixtures/broid/messageNormalizedWithMedia.json");
+const broidMessageNorm = require("./fixtures/broid/messageNormalized.json");
+const broidMessageNormInteraCallback = require("./fixtures/broid/messageNormalizedInteractiveCallback.json");
+const broidMessageNormLocation = require("./fixtures/broid/messageNormalizedLocation.json");
+const broidMessageNormWithMedia = require("./fixtures/broid/messageNormalizedWithMedia.json");
 const broidMessageWithMedia = require("./fixtures/broid/messageWithMedia.json");
 const viberMessage = require("./fixtures/viber/message.json");
 const viberMessageInteractiveCallback = require("./fixtures/viber/messageInteractiveCallback.json");
@@ -71,40 +71,40 @@ ava_1.default('Normalize null', (t) => __awaiter(this, void 0, void 0, function*
 }));
 ava_1.default('Normalize a simple message', (t) => __awaiter(this, void 0, void 0, function* () {
     const data = parser.normalize(viberMessage);
-    t.deepEqual(yield data, broidMessageNormalized);
+    t.deepEqual(yield data, broidMessageNorm);
 }));
 ava_1.default('Normalize a location message', (t) => __awaiter(this, void 0, void 0, function* () {
     const data = parser.normalize(viberMessageLocation);
-    t.deepEqual(yield data, broidMessageNormalizedLocation);
+    t.deepEqual(yield data, broidMessageNormLocation);
 }));
 ava_1.default('Normalize a interactive message callback', (t) => __awaiter(this, void 0, void 0, function* () {
     const data = parser.normalize(viberMessageInteractiveCallback);
-    t.deepEqual(yield data, broidMessageNormalizedInteractiveCallback);
+    t.deepEqual(yield data, broidMessageNormInteraCallback);
 }));
 ava_1.default('Normalize a message with media', (t) => __awaiter(this, void 0, void 0, function* () {
     const data = parser.normalize(viberMessageWithMedia);
-    t.deepEqual(yield data, broidMessageNormalizedWithMedia);
+    t.deepEqual(yield data, broidMessageNormWithMedia);
 }));
 ava_1.default('Parse a simple message', (t) => __awaiter(this, void 0, void 0, function* () {
-    const broidWithTarget = Object.assign({}, broidMessageNormalized);
+    const broidWithTarget = Object.assign({}, broidMessageNorm);
     broidWithTarget.target = targetMe;
     const data = parser.parse(broidWithTarget);
     t.deepEqual(yield data, broidMessage);
 }));
 ava_1.default('Parse a location message', (t) => __awaiter(this, void 0, void 0, function* () {
-    const broidWithTarget = Object.assign({}, broidMessageNormalizedLocation);
+    const broidWithTarget = Object.assign({}, broidMessageNormLocation);
     broidWithTarget.target = targetMe;
     const data = parser.parse(broidWithTarget);
     t.deepEqual(yield data, broidMessageLocation);
 }));
 ava_1.default('Parse a interactive message callback', (t) => __awaiter(this, void 0, void 0, function* () {
-    const broidWithTarget = Object.assign({}, broidMessageNormalizedInteractiveCallback);
+    const broidWithTarget = Object.assign({}, broidMessageNormInteraCallback);
     broidWithTarget.target = targetMe;
     const data = parser.parse(broidWithTarget);
     t.deepEqual(yield data, broidMessageInteractiveCallback);
 }));
 ava_1.default('Parse a message with media', (t) => __awaiter(this, void 0, void 0, function* () {
-    const broidWithTarget = Object.assign({}, broidMessageNormalizedWithMedia);
+    const broidWithTarget = Object.assign({}, broidMessageNormWithMedia);
     broidWithTarget.target = targetMe;
     const data = parser.parse(broidWithTarget);
     t.deepEqual(yield data, broidMessageWithMedia);

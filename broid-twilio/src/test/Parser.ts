@@ -1,28 +1,10 @@
-/**
- * @license
- * Copyright 2017 Broid.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
- */
-
 import ava from 'ava';
 import { Parser } from '../core/Parser';
 
 import * as broidMessage from './fixtures/broid/message.json';
-import * as broidMessageNormalized from './fixtures/broid/messageNormalized.json';
-import * as broidMessageNormalizedWithMedia from './fixtures/broid/messageNormalizedWithMedia.json';
-import * as broidMessageNormalizedWithMedias from './fixtures/broid/messageNormalizedWithMedias.json';
+import * as broidMessageNorm from './fixtures/broid/messageNormalized.json';
+import * as broidMessageNormWithMedia from './fixtures/broid/messageNormalizedWithMedia.json';
+import * as broidMessageNormWithMedias from './fixtures/broid/messageNormalizedWithMedias.json';
 import * as broidMessageWithMedia from './fixtures/broid/messageWithMedia.json';
 import * as broidMessageWithMedias from './fixtures/broid/messageWithMedias.json';
 import * as twilioMessage from './fixtures/twilio/message.json';
@@ -46,32 +28,32 @@ ava('Normalize null', async (t) => {
 });
 
 ava('Normalize a simple message', async (t) => {
-  const data = parser.normalize(<any> twilioMessage);
-  t.deepEqual(await data, broidMessageNormalized);
+  const data = parser.normalize(twilioMessage as any);
+  t.deepEqual(await data, broidMessageNorm);
 });
 
 ava('Normalize a message with media', async (t) => {
-  const data = parser.normalize(<any> twilioMessageWithMedia);
-  t.deepEqual(await data, broidMessageNormalizedWithMedia);
+  const data = parser.normalize(twilioMessageWithMedia as any);
+  t.deepEqual(await data, broidMessageNormWithMedia);
 });
 
 ava('Normalize a message with multiple media', async (t) => {
-  const data = parser.normalize(<any> twilioMessageWithMedias);
-  t.deepEqual(await data, broidMessageNormalizedWithMedias);
+  const data = parser.normalize(twilioMessageWithMedias as any);
+  t.deepEqual(await data, broidMessageNormWithMedias);
 });
 
 ava('Parse a simple message', async (t) => {
-  const data = parser.parse(<any> broidMessageNormalized);
+  const data = parser.parse(broidMessageNorm);
   t.deepEqual(await data, broidMessage);
 });
 
 ava('Parse a message with media', async (t) => {
-  const data = parser.parse(<any> broidMessageNormalizedWithMedia);
+  const data = parser.parse(broidMessageNormWithMedia as any);
   t.deepEqual(await data, broidMessageWithMedia);
 });
 
 ava('Parse a message with multiple media', async (t) => {
-  const data = parser.parse(<any> broidMessageNormalizedWithMedias);
+  const data = parser.parse(broidMessageNormWithMedias as any);
   t.deepEqual(await data, broidMessageWithMedias);
 });
 

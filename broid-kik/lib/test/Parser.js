@@ -14,10 +14,10 @@ const kikMessage = require("./fixtures/kik/message.json");
 const kikMessageImage = require("./fixtures/kik/messageImage.json");
 const kikMessageInteractiveCallback = require("./fixtures/kik/messageInteractiveCallback.json");
 const kikMessageVideo = require("./fixtures/kik/messageVideo.json");
-const broidMessageNormalized = require("./fixtures/broid/normalized/message.json");
-const broidMessageNormalizedImage = require("./fixtures/broid/normalized/messageImage.json");
-const broidMessageNormalizedInteractiveCallback = require("./fixtures/broid/normalized/messageInteractiveCallback.json");
-const broidMessageNormalizedVideo = require("./fixtures/broid/normalized/messageVideo.json");
+const broidMessageNorma = require("./fixtures/broid/normalized/message.json");
+const broidMessageNormaImage = require("./fixtures/broid/normalized/messageImage.json");
+const broidMessageNormaInteraCallback = require("./fixtures/broid/normalized/messageInteractiveCallback.json");
+const broidMessageNormaVideo = require("./fixtures/broid/normalized/messageVideo.json");
 const broidMessage = require("./fixtures/broid/parsed/message.json");
 const broidMessageImage = require("./fixtures/broid/parsed/messageImage.json");
 const broidMessageInteractiveCallback = require("./fixtures/broid/parsed/messageInteractiveCallback.json");
@@ -41,34 +41,34 @@ ava_1.default('Parse a null', (t) => __awaiter(this, void 0, void 0, function* (
 }));
 ava_1.default('Normalize a simple message', (t) => __awaiter(this, void 0, void 0, function* () {
     const data = parser.normalize(kikMessage, userInformation);
-    t.deepEqual(yield data, broidMessageNormalized);
+    t.deepEqual(yield data, broidMessageNorma);
 }));
 ava_1.default('Normalize a message with image', (t) => __awaiter(this, void 0, void 0, function* () {
     const data = parser.normalize(kikMessageImage, userInformation);
-    t.deepEqual(yield data, broidMessageNormalizedImage);
+    t.deepEqual(yield data, broidMessageNormaImage);
 }));
 ava_1.default('Normalize a message with video', (t) => __awaiter(this, void 0, void 0, function* () {
     const data = parser.normalize(kikMessageVideo, userInformation);
-    t.deepEqual(yield data, broidMessageNormalizedVideo);
+    t.deepEqual(yield data, broidMessageNormaVideo);
 }));
 ava_1.default('Normalize a interactive message callback', (t) => __awaiter(this, void 0, void 0, function* () {
     const data = parser.normalize(kikMessageInteractiveCallback, userInformation);
-    t.deepEqual(yield data, broidMessageNormalizedInteractiveCallback);
+    t.deepEqual(yield data, broidMessageNormaInteraCallback);
 }));
 ava_1.default('Parse a simple message', (t) => __awaiter(this, void 0, void 0, function* () {
-    const data = parser.parse(broidMessageNormalized);
+    const data = parser.parse(broidMessageNorma);
     t.deepEqual(yield data, broidMessage);
 }));
 ava_1.default('Parse a message with image', (t) => __awaiter(this, void 0, void 0, function* () {
-    const data = parser.parse(broidMessageNormalizedImage);
+    const data = parser.parse(broidMessageNormaImage);
     t.deepEqual(yield data, broidMessageImage);
 }));
 ava_1.default('Parse a message with video', (t) => __awaiter(this, void 0, void 0, function* () {
-    const data = parser.parse(broidMessageNormalizedVideo);
+    const data = parser.parse(broidMessageNormaVideo);
     t.deepEqual(yield data, broidMessageVideo);
 }));
 ava_1.default('Parse a interactive message callback', (t) => __awaiter(this, void 0, void 0, function* () {
-    const data = parser.parse(broidMessageNormalizedInteractiveCallback);
+    const data = parser.parse(broidMessageNormaInteraCallback);
     t.deepEqual(yield data, broidMessageInteractiveCallback);
 }));
 ava_1.default('Validate a simple message', (t) => __awaiter(this, void 0, void 0, function* () {

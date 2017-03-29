@@ -1,33 +1,16 @@
-/**
- * @license
- * Copyright 2017 Broid.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
- */
 import ava from 'ava';
 import { Parser } from '../core/Parser';
 
 import * as broidMessage from './fixtures/broid/message.json';
-import * as broidMessageNormalized from './fixtures/broid/messageNormalized.json';
-import * as broidMessageNormalizedWithMedia from './fixtures/broid/messageNormalizedWithMedia.json';
-import * as broidMessageNormalizedWithTag from './fixtures/broid/messageNormalizedWithTag.json';
-import * as broidMessagePrivate from './fixtures/broid/messagePrivate.json';
-import * as broidMessagePrivateNormalized from './fixtures/broid/messagePrivateNormalized.json';
-import * as broidMessagePrivateNormalizedWithMedia from './fixtures/broid/messagePrivateNormalizedWithMedia.json';
-import * as broidMessagePrivateNormalizedWithTag from './fixtures/broid/messagePrivateNormalizedWithTag.json';
-import * as broidMessagePrivateWithMedia from './fixtures/broid/messagePrivateWithMedia.json';
-import * as broidMessagePrivateWithTag from './fixtures/broid/messagePrivateWithTag.json';
+import * as broidMessageNorm from './fixtures/broid/messageNormalized.json';
+import * as broidMessageNormWithMedia from './fixtures/broid/messageNormalizedWithMedia.json';
+import * as broidMessageNormWithTag from './fixtures/broid/messageNormalizedWithTag.json';
+import * as broidMessagePv from './fixtures/broid/messagePrivate.json';
+import * as broidMessagePvNorm from './fixtures/broid/messagePrivateNormalized.json';
+import * as broidMessagePvNormWithMedia from './fixtures/broid/messagePrivateNormalizedWithMedia.json';
+import * as broidMessagePvNormWithTag from './fixtures/broid/messagePrivateNormalizedWithTag.json';
+import * as broidMessagePvWithMedia from './fixtures/broid/messagePrivateWithMedia.json';
+import * as broidMessagePvWithTag from './fixtures/broid/messagePrivateWithTag.json';
 import * as broidMessageWithMedia from './fixtures/broid/messageWithMedia.json';
 import * as broidMessageWithTag from './fixtures/broid/messageWithTag.json';
 
@@ -49,91 +32,91 @@ ava('Parse null', async (t) => {
 });
 
 ava('Normalize a simple message', async (t) => {
-  const data = parser.normalize(<any> twitterMessage);
-  t.deepEqual(await data, broidMessageNormalized);
+  const data = parser.normalize(twitterMessage as any);
+  t.deepEqual(await data, broidMessageNorm);
 });
 
 ava('Normalize a simple message with tag', async (t) => {
-  const data = parser.normalize(<any> twitterMessageWithTag);
-  t.deepEqual(await data, broidMessageNormalizedWithTag);
+  const data = parser.normalize(twitterMessageWithTag as any);
+  t.deepEqual(await data, broidMessageNormWithTag);
 });
 
 ava('Normalize a private message with tag', async (t) => {
-  const data = parser.normalize(<any> twitterMessagePrivateWithTag);
-  t.deepEqual(await data, broidMessagePrivateNormalizedWithTag);
+  const data = parser.normalize(twitterMessagePrivateWithTag as any);
+  t.deepEqual(await data, broidMessagePvNormWithTag);
 });
 
 ava('Normalize a simple message with media', async (t) => {
-  const data = parser.normalize(<any> twitterMessageWithMedia);
-  t.deepEqual(await data, broidMessageNormalizedWithMedia);
+  const data = parser.normalize(twitterMessageWithMedia as any);
+  t.deepEqual(await data, broidMessageNormWithMedia);
 });
 
 ava('Normalize a private message', async (t) => {
-  const data = parser.normalize(<any> twitterMessagePrivate);
-  t.deepEqual(await data, broidMessagePrivateNormalized);
+  const data = parser.normalize(twitterMessagePrivate as any);
+  t.deepEqual(await data, broidMessagePvNorm);
 });
 
 ava('Normalize a private message with media', async (t) => {
-  const data = parser.normalize(<any> twitterMessagePrivateWithMedia);
-  t.deepEqual(await data, broidMessagePrivateNormalizedWithMedia);
+  const data = parser.normalize(twitterMessagePrivateWithMedia as any);
+  t.deepEqual(await data, broidMessagePvNormWithMedia);
 });
 
 ava('Parse a simple message', async (t) => {
-  const data = parser.parse(<any> broidMessageNormalized);
+  const data = parser.parse(broidMessageNorm) as any;
   t.deepEqual(await data, broidMessage);
 });
 
 ava('Parse a simple message with media', async (t) => {
-  const data = parser.parse(<any> broidMessageNormalizedWithMedia);
+  const data = parser.parse(broidMessageNormWithMedia as any);
   t.deepEqual(await data, broidMessageWithMedia);
 });
 
 ava('Parse a simple message with tag', async (t) => {
-  const data = parser.parse(<any> broidMessageNormalizedWithTag);
+  const data = parser.parse(broidMessageNormWithTag as any);
   t.deepEqual(await data, broidMessageWithTag);
 });
 
 ava('Parse a private message', async (t) => {
-  const data = parser.parse(<any> broidMessagePrivateNormalized);
-  t.deepEqual(await data, broidMessagePrivate);
+  const data = parser.parse(broidMessagePvNorm as any);
+  t.deepEqual(await data, broidMessagePv);
 });
 
 ava('Parse a private message with media', async (t) => {
-  const data = parser.parse(<any> broidMessagePrivateNormalizedWithMedia);
-  t.deepEqual(await data, broidMessagePrivateWithMedia);
+  const data = parser.parse(broidMessagePvNormWithMedia as any);
+  t.deepEqual(await data, broidMessagePvWithMedia);
 });
 
 ava('Parse a private message with tag', async (t) => {
-  const data = parser.parse(<any> broidMessagePrivateNormalizedWithTag);
-  t.deepEqual(await data, broidMessagePrivateWithTag);
+  const data = parser.parse(broidMessagePvNormWithTag as any);
+  t.deepEqual(await data, broidMessagePvWithTag);
 });
 
 ava('Validate a simple message', async (t) => {
-  const data = parser.validate(<any> broidMessage);
+  const data = parser.validate(broidMessage as any);
   t.deepEqual(await data, broidMessage);
 });
 
 ava('Validate a simple message with media', async (t) => {
-  const data = parser.validate(<any> broidMessageWithMedia);
+  const data = parser.validate(broidMessageWithMedia as any);
   t.deepEqual(await data, broidMessageWithMedia);
 });
 
 ava('Validate a simple message with tag', async (t) => {
-  const data = parser.validate(<any> broidMessageWithTag);
+  const data = parser.validate(broidMessageWithTag as any);
   t.deepEqual(await data, broidMessageWithTag);
 });
 
 ava('Validate a private message', async (t) => {
-  const data = parser.validate(<any> broidMessagePrivate);
-  t.deepEqual(await data, broidMessagePrivate);
+  const data = parser.validate(broidMessagePv as any);
+  t.deepEqual(await data, broidMessagePv);
 });
 
 ava('Validate a private message with media', async (t) => {
-  const data = parser.validate(<any> broidMessagePrivateWithMedia);
-  t.deepEqual(await data, broidMessagePrivateWithMedia);
+  const data = parser.validate(broidMessagePvWithMedia as any);
+  t.deepEqual(await data, broidMessagePvWithMedia);
 });
 
 ava('Validate a private message with tag', async (t) => {
-  const data = parser.validate(<any> broidMessagePrivateWithTag);
-  t.deepEqual(await data, broidMessagePrivateWithTag);
+  const data = parser.validate(broidMessagePvWithTag as any);
+  t.deepEqual(await data, broidMessagePvWithTag);
 });

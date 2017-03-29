@@ -1,21 +1,3 @@
-/**
- * @license
- * Copyright 2017 Broid.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
- */
-
 import schemas from '@broid/schemas';
 import { Logger } from '@broid/utils';
 
@@ -188,13 +170,13 @@ export class Adapter {
       .then(() => {
         const options: any = { parse_mode: 'Markdown' };
         const objectType = R.path(['object', 'type'], data);
-        const toID: string = <string> R.path(['to', 'id'], data)
-          || <string> R.path(['to', 'name'], data);
+        const toID: string = R.path(['to', 'id'], data) as string
+          || R.path(['to', 'name'], data) as string;
 
         const confirm = () => ({ type: 'sent', serviceID: this.serviceId() });
 
         if (objectType === 'Image' || objectType === 'Video') {
-          const url: string = <string> R.path(['object', 'url'], data);
+          const url: string = R.path(['object', 'url'], data) as string;
           if (url.startsWith('http://') || url.startsWith('https://')) {
             const stream = request(url);
             if (objectType === 'Image') {
@@ -211,7 +193,7 @@ export class Adapter {
           // Quick Reply
           const attachmentButtons = R.filter(
             (attachment: any) => attachment.type === 'Button',
-            <any[]> R.path(['object', 'attachment'], data) || []);
+            R.path(['object', 'attachment'], data) as any[] || []);
           let buttons = R.map(
             (button: any) => {
               if (R.contains(button.mediaType, ['text/html'])) {
