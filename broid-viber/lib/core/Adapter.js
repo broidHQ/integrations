@@ -18,17 +18,10 @@ class Adapter {
         this.username = obj && obj.username || null;
         this.avatar = obj && obj.avatar || '';
         this.webhookURL = obj && obj.webhookURL.replace(/\/?$/, '/') || '';
-        const optionsHTTP = {
-            host: '127.0.0.1',
-            port: 8080,
-        };
-        this.optionsHTTP = obj && obj.http || optionsHTTP;
-        this.optionsHTTP.host = this.optionsHTTP.host || optionsHTTP.host;
-        this.optionsHTTP.port = this.optionsHTTP.port || optionsHTTP.port;
         this.storeUsers = new Map();
         this.parser = new Parser_1.Parser(this.serviceName(), this.serviceID, this.logLevel);
         this.logger = new utils_1.Logger('adapter', this.logLevel);
-        this.router = this.setupRouter();
+        this.router = express_1.Router();
         if (obj.http) {
             this.webhookServer = new WebHookServer_1.WebHookServer(obj.http, this.router, this.logLevel);
         }
@@ -67,6 +60,8 @@ class Adapter {
             avatar: this.avatar,
             name: this.username,
         });
+        this.router.post('/', this.session.middleware());
+        this.router.get('/', this.session.middleware());
         if (this.webhookServer) {
             this.webhookServer.listen();
         }
@@ -182,12 +177,6 @@ class Adapter {
             }
             return Promise.reject(new Error('Note, Image, Video are only supported.'));
         });
-    }
-    setupRouter() {
-        const router = express_1.Router();
-        router.post('/', this.session.middleware());
-        router.get('/', this.session.middleware());
-        return router;
     }
 }
 exports.Adapter = Adapter;

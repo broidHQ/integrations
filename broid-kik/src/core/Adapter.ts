@@ -41,8 +41,7 @@ export class Adapter {
 
     this.parser = new Parser(this.serviceName(), this.serviceID, this.logLevel);
     this.logger = new Logger('adapter', this.logLevel);
-    this.router = this.setupRouter();
-
+    this.router = Router();
     if (obj.http) {
       this.webhookServer = new WebHookServer(obj.http, this.router, this.logLevel);
     }
@@ -92,6 +91,12 @@ export class Adapter {
       username: this.username,
     });
 
+    this.router.get('/', (req: any, res: any) => {
+      const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+      this.logger.info(`Request to home from ${ip}`);
+      res.send('Hello. This is a Broid Kik bot server. Got to www.broid.aid to get more details.');
+    });
+    this.router.use(this.session.incoming());
     if (this.webhookServer) {
       this.webhookServer.listen();
     }
@@ -214,16 +219,5 @@ export class Adapter {
         this.storeUsers.set(key, data);
         return data;
       });
-  }
-
-  private setupRouter(): Router {
-    const router = Router();
-    router.get('/', (req: any, res: any) => {
-      const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-      this.logger.info(`Request to home from ${ip}`);
-      res.send('Hello. This is a Broid Kik bot server. Got to www.broid.aid to get more details.');
-    });
-    router.use(this.session.incoming());
-    return router;
   }
 }

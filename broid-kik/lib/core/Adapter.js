@@ -23,7 +23,7 @@ class Adapter {
         this.webhookURL = obj.webhookURL.replace(/\/?$/, '/');
         this.parser = new Parser_1.Parser(this.serviceName(), this.serviceID, this.logLevel);
         this.logger = new utils_1.Logger('adapter', this.logLevel);
-        this.router = this.setupRouter();
+        this.router = express_1.Router();
         if (obj.http) {
             this.webhookServer = new WebHookServer_1.WebHookServer(obj.http, this.router, this.logLevel);
         }
@@ -58,6 +58,12 @@ class Adapter {
             baseUrl: this.webhookURL,
             username: this.username,
         });
+        this.router.get('/', (req, res) => {
+            const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+            this.logger.info(`Request to home from ${ip}`);
+            res.send('Hello. This is a Broid Kik bot server. Got to www.broid.aid to get more details.');
+        });
+        this.router.use(this.session.incoming());
         if (this.webhookServer) {
             this.webhookServer.listen();
         }
@@ -159,16 +165,6 @@ class Adapter {
             this.storeUsers.set(key, data);
             return data;
         });
-    }
-    setupRouter() {
-        const router = express_1.Router();
-        router.get('/', (req, res) => {
-            const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-            this.logger.info(`Request to home from ${ip}`);
-            res.send('Hello. This is a Broid Kik bot server. Got to www.broid.aid to get more details.');
-        });
-        router.use(this.session.incoming());
-        return router;
     }
 }
 exports.Adapter = Adapter;

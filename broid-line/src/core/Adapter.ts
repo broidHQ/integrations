@@ -73,8 +73,7 @@ export class Adapter {
 
     this.parser = new Parser(this.serviceName(), this.serviceID, this.logLevel);
     this.logger = new Logger('adapter', this.logLevel);
-    this.router = this.setupRouter();
-
+    this.router = Router();
     if (obj.http) {
       this.webhookServer = new WebHookServer(obj.http, this.router, this.logLevel);
     }
@@ -117,6 +116,7 @@ export class Adapter {
       channelToken: this.token,
     });
 
+    this.router.use(this.session.webhook('/'));
     if (this.webhookServer) {
       this.webhookServer.listen();
     }
@@ -253,11 +253,4 @@ export class Adapter {
         return data;
       });
   }
-
-  private setupRouter(): Router {
-    const router = Router();
-    router.use(this.session.webhook('/'));
-    return router;
-  }
-
 }

@@ -8,14 +8,13 @@ import * as R from 'ramda';
 import { Observable } from 'rxjs/Rx';
 import { Bot, Events, Message } from 'viber-bot';
 
-import { IAdapterHTTPOptions, IAdapterOptions } from './interfaces';
+import { IAdapterOptions } from './interfaces';
 import { Parser } from './Parser';
 import { WebHookServer } from './WebHookServer';
 
 export class Adapter {
   private avatar: string;
   private connected: boolean;
-  private optionsHTTP: IAdapterHTTPOptions;
   private logger: Logger;
   private logLevel: string;
   private me: any;
@@ -37,19 +36,11 @@ export class Adapter {
     this.avatar = obj && obj.avatar || '';
     this.webhookURL = obj && obj.webhookURL.replace(/\/?$/, '/') || '';
 
-    const optionsHTTP: IAdapterHTTPOptions = {
-      host: '127.0.0.1',
-      port: 8080,
-    };
-    this.optionsHTTP = obj && obj.http || optionsHTTP;
-    this.optionsHTTP.host = this.optionsHTTP.host || optionsHTTP.host;
-    this.optionsHTTP.port = this.optionsHTTP.port || optionsHTTP.port;
-
     this.storeUsers = new Map();
     this.parser = new Parser(this.serviceName(), this.serviceID, this.logLevel);
     this.logger = new Logger('adapter', this.logLevel);
 
-    this.router = this.setupRouter();
+    this.router = Router();
     if (obj.http) {
       this.webhookServer = new WebHookServer(obj.http, this.router, this.logLevel);
     }
@@ -106,6 +97,8 @@ export class Adapter {
       name: this.username,
     });
 
+    this.router.post('/', this.session.middleware());
+    this.router.get('/', this.session.middleware());
     if (this.webhookServer) {
       this.webhookServer.listen();
     }
@@ -236,12 +229,5 @@ export class Adapter {
 
         return Promise.reject(new Error('Note, Image, Video are only supported.'));
       });
-  }
-
-  private setupRouter(): Router {
-    const router = Router();
-    router.post('/', this.session.middleware());
-    router.get('/', this.session.middleware());
-    return router;
   }
 }

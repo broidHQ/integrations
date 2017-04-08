@@ -57,10 +57,11 @@ npm install --save @broid/kik
 const BroidKik = require('@broid/kik');
 
 const kik = new broidKik({
-  username: '<not_name>',
+  username: "<not_name>",
   token: "<api_key>",
+  webhookURL: "http://example.com/"
   http: {
-    host: "127.0.0.1",
+    host: "0.0.0.0",
     port: 8080
   }
 });
@@ -80,13 +81,10 @@ const BroidKik = require('@broid/kik');
 const express = require("express");
 
 const kik = new broidKik({
-  username: '<not_name>',
+  username: "<not_name>",
   token: "<api_key>",
-  webhookURL: "http://127.0.0.1/"
+  webhookURL: "http://example.com/"
 });
-
-const app = express();
-app.use("/kik", kik.getRouter());
 
 kik.connect()
   .subscribe({
@@ -95,6 +93,8 @@ kik.connect()
     complete: () => console.log('complete'),
   });
 
+const app = express();
+app.use("/kik", kik.getRouter());
 app.listen(8080);
 ```
 
