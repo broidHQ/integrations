@@ -2,10 +2,9 @@ import {
  default as schemas,
  IActivityStream,
 } from '@broid/schemas';
-import { cleanNulls, Logger } from '@broid/utils';
+import { cleanNulls, fileInfo, Logger } from '@broid/utils';
 
 import * as Promise from 'bluebird';
-import * as mimetype from 'mimetype';
 import * as R from 'ramda';
 
 export class Parser {
@@ -105,7 +104,8 @@ export class Parser {
 
   private parseMedia(media: any, content: string | null): object | null {
     let mediaType: string | null = null;
-    const mimeType = mimetype.lookup(media.filename);
+    const infos = fileInfo(media.filename);
+    const mimeType = infos.mimetype;
     if (mimeType.startsWith('image')) { mediaType = 'Image'; }
     if (mimeType.startsWith('video')) { mediaType = 'Video'; }
 

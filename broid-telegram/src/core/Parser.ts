@@ -2,13 +2,11 @@ import {
   default as schemas,
   IActivityStream,
 } from '@broid/schemas';
-import { cleanNulls, concat, Logger } from '@broid/utils';
+import { cleanNulls, concat, fileInfo, isUrl, Logger } from '@broid/utils';
 
 import * as Promise from 'bluebird';
 import * as mimetype from 'mimetype';
-import * as uuid from 'node-uuid';
 import * as R from 'ramda';
-import * as validUrl from 'valid-url';
 
 export class Parser {
   public serviceID: string;
@@ -76,9 +74,10 @@ export class Parser {
         objType = 'Video';
       }
 
+      const infos = fileInfo(normalized.text);
       activitystreams.object = {
         id: normalized.message_id.toString() || this.createIdentifier(),
-        mediaType: mimetype.lookup(normalized.text),
+        mediaType: infos.mimetype,
         name: normalized.text.split('/').pop(),
         type: objType,
         url: normalized.text,
@@ -86,8 +85,9 @@ export class Parser {
     }
 
     if (!activitystreams.object && !R.isEmpty(normalized.text)) {
-      if (validUrl.isUri(normalized.text)) {
-        const mediaType = mimetype.lookup(normalized.text);
+      if (isUrl(normalized.text)) {
+        const infos = fileInfo(normalized.text);
+        const mediaType = infos.mimetype;
         if (mediaType.startsWith('image/')) {
           activitystreams.object = {
             id: normalized.eventID || this.createIdentifier(),

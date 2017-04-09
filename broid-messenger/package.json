@@ -47,7 +47,6 @@
     "body-parser": "^1.15.2",
     "eventemitter3": "^2.0.2",
     "express": "^4.14.0",
-    "mimetype": "^0.0.8",
     "node-uuid": "^1.4.7",
     "ramda": "^0.23.0",
     "request": "^2.79.0",

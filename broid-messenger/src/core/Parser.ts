@@ -4,10 +4,9 @@ import {
   IASMedia,
   IASObject,
 } from '@broid/schemas';
-import { capitalizeFirstLetter, cleanNulls, concat, Logger } from '@broid/utils';
+import { capitalizeFirstLetter, cleanNulls, concat, fileInfo, Logger } from '@broid/utils';
 
 import * as Promise from 'bluebird';
-import * as mimetype from 'mimetype';
 import * as uuid from 'node-uuid';
 import * as R from 'ramda';
 
@@ -185,7 +184,8 @@ export class Parser {
       };
 
       if (a.url) {
-        a.mediaType = mimetype.lookup(a.url.split('?')[0]);
+        const infos = fileInfo(a.url.split('?')[0]);
+        a.mediaType = infos.mimetype;
         return a;
       }
     } else if (attachment.type.toLowerCase() === 'location') {

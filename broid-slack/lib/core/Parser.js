@@ -3,10 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const schemas_1 = require("@broid/schemas");
 const utils_1 = require("@broid/utils");
 const Promise = require("bluebird");
-const mimetype = require("mimetype");
 const uuid = require("node-uuid");
 const R = require("ramda");
-const validUrl = require("valid-url");
 class Parser {
     constructor(serviceName, serviceID, logLevel) {
         this.serviceID = serviceID;
@@ -49,8 +47,9 @@ class Parser {
         };
         let url = normalized.text.substr(1);
         url = url.substring(0, url.length - 1);
-        if (validUrl.isWebUri(url)) {
-            const mediaType = mimetype.lookup(url);
+        if (utils_1.isUrl(url)) {
+            const infos = utils_1.fileInfo(url);
+            const mediaType = infos.mimetype;
             if (mediaType.startsWith('image/')) {
                 activitystreams.object = {
                     id: normalized.eventID || this.createIdentifier(),

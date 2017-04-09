@@ -44,11 +44,9 @@
     "@broid/schemas": "^1.0.0",
     "@broid/utils": "^1.0.0",
     "bluebird": "^3.4.7",
-    "mimetype": "^0.0.8",
     "node-uuid": "^1.4.7",
     "ramda": "^0.23.0",
     "rxjs": "^5.0.2",
-    "valid-url": "^1.0.9",
     "viber-bot": "^1.0.6"
   },
   "devDependencies": {

@@ -3,10 +3,9 @@ import {
   IActivityStream,
   IASContext,
 } from '@broid/schemas';
-import { cleanNulls, Logger } from '@broid/utils';
+import { cleanNulls, fileInfo, Logger } from '@broid/utils';
 
 import * as Promise from 'bluebird';
-import * as mimetype from 'mimetype';
 import * as uuid from 'node-uuid';
 import * as R from 'ramda';
 
@@ -81,21 +80,23 @@ export class Parser {
       normalized.attachments);
 
     if (!R.isEmpty(attachmentImages)) {
+      const infos = fileInfo(attachmentImages[0].name);
       activitystreams.object = {
         content: normalized.text,
         context,
         id: addressID || this.createIdentifier(),
-        mediaType: mimetype.lookup(attachmentImages[0].name),
+        mediaType: infos.mimetype,
         name: attachmentImages[0].name,
         type: 'Image',
         url: attachmentImages[0].contentUrl,
       };
     } else if (!R.isEmpty(attachmentVideos)) {
+      const infos = fileInfo(attachmentVideos[0].name);
       activitystreams.object = {
         content: normalized.text,
         context,
         id: addressID || this.createIdentifier(),
-        mediaType: mimetype.lookup(attachmentVideos[0].name),
+        mediaType: infos.mimetype,
         name: attachmentVideos[0].name,
         type: 'Video',
         url: attachmentVideos[0].contentUrl,

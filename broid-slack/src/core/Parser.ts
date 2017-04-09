@@ -3,13 +3,11 @@
    IActivityStream,
    IASMedia,
  } from '@broid/schemas';
-import { cleanNulls, Logger } from '@broid/utils';
+import { cleanNulls, fileInfo, isUrl, Logger } from '@broid/utils';
 
 import * as Promise from 'bluebird';
-import * as mimetype from 'mimetype';
 import * as uuid from 'node-uuid';
 import * as R from 'ramda';
-import * as validUrl from 'valid-url';
 
 import { IMessage } from './interfaces';
 
@@ -67,8 +65,9 @@ export class Parser {
     // Process potentially media.
     let url: string = normalized.text.substr(1);
     url = url.substring(0, url.length - 1);
-    if (validUrl.isWebUri(url)) {
-      const mediaType = mimetype.lookup(url);
+    if (isUrl(url)) {
+      const infos = fileInfo(url);
+      const mediaType = infos.mimetype;
       if (mediaType.startsWith('image/')) {
         activitystreams.object = {
           id: normalized.eventID || this.createIdentifier(),

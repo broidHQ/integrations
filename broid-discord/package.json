@@ -62,7 +62,6 @@
     "@broid/utils": "^1.0.0",
     "bluebird": "^3.4.7",
     "discordie": "^0.11.0",
-    "mimetype": "0.0.8",
     "node-uuid": "^1.4.7",
     "ramda": "^0.23.0",
     "request-promise": "^4.1.1",

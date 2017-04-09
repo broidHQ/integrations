@@ -2,13 +2,11 @@ import {
   default as schemas,
   IActivityStream,
 } from '@broid/schemas';
-import { cleanNulls, Logger } from '@broid/utils';
+import { cleanNulls, fileInfo, isUrl, Logger } from '@broid/utils';
 
 import * as Promise from 'bluebird';
-import * as mimetype from 'mimetype';
 import * as uuid from 'node-uuid';
 import * as R from 'ramda';
-import * as validUrl from 'valid-url';
 
 import { ICallrWebHookEvent } from './interfaces';
 
@@ -64,8 +62,9 @@ export class Parser {
     };
 
     // Process potentially media.
-    if (validUrl.isUri(normalized.text)) {
-      const mediaType = mimetype.lookup(normalized.text);
+    if (isUrl(normalized.text)) {
+      const infos = fileInfo(normalized.text);
+      const mediaType = infos.mimetype;
       if (mediaType.startsWith('image/')) {
         activitystreams.object = {
           id: normalized.eventID || this.createIdentifier(),

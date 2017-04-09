@@ -2,10 +2,9 @@ import {
   default as schemas,
   IActivityStream,
 } from '@broid/schemas';
-import { cleanNulls, Logger } from '@broid/utils';
+import { cleanNulls, fileInfo, Logger } from '@broid/utils';
 
 import * as Promise from 'bluebird';
-import * as mimetype from 'mimetype';
 import * as uuid from 'node-uuid';
 import * as R from 'ramda';
 
@@ -81,7 +80,8 @@ export class Parser {
       }
 
       if (url) {
-        const mediaType = mimetype.lookup(url);
+        const infos = fileInfo(url);
+        const mediaType = infos.mimetype;
         activitystreams.object = {
           content: normalized.text,
           id: normalized.id || this.createIdentifier(),

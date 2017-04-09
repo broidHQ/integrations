@@ -39,8 +39,12 @@
     "watch": "concurrently --kill-others \"npm run lint:watch\" \"npm run tsc:watch\""
   },
   "dependencies": {
+    "bluebird": "^3.5.0",
+    "mmmagic": "^0.4.5",
     "pino": "^3.0.5",
-    "ramda": "^0.22.1"
+    "ramda": "^0.22.1",
+    "request": "^2.81.0",
+    "valid-url": "^1.0.9"
   },
   "devDependencies": {
     "@types/bluebird": "^3.5.2",
