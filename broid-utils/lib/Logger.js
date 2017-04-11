@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const pino = require("pino");
 class Logger {
     constructor(name, level) {
@@ -20,5 +21,4 @@ class Logger {
         messages.map((message) => this.pino.debug(message));
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = Logger;
