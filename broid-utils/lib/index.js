@@ -16,16 +16,16 @@ function capitalizeFirstLetter(str) {
 exports.capitalizeFirstLetter = capitalizeFirstLetter;
 const defaults = R.flip(R.merge);
 exports.defaults = defaults;
-const concat = R.compose(R.join(" "), R.reject(R.isNil));
+const concat = R.compose(R.join(' '), R.reject(R.isNil));
 exports.concat = concat;
-function isUrl(string) {
-    return validUrl.isWebUri(string);
+function isUrl(url) {
+    return validUrl.isWebUri(url);
 }
 exports.isUrl = isUrl;
 function fileInfo(file) {
     const magic = new mmmagic.Magic(false, mmmagic.MAGIC_MIME_TYPE);
     Promise.promisifyAll(magic);
-    const logger = new Logger_1.default("fileInfo", "debug");
+    const logger = new Logger_1.default('fileInfo', 'debug');
     return Promise.resolve(isUrl(file))
         .then((is) => {
         if (is) {
@@ -37,7 +37,7 @@ function fileInfo(file) {
         .then((mimetype) => ({ mimetype }))
         .catch((error) => {
         logger.error(error);
-        return { mimetype: "" };
+        return { mimetype: '' };
     });
 }
 exports.fileInfo = fileInfo;
