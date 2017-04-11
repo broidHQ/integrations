@@ -1,28 +1,28 @@
-import * as pino from "pino";
+import * as pino from 'pino';
 
-export default class Logger {
+export default class Logger { // tslint:disable-line:no-default-export
   private pino: any;
 
-  constructor(name, level) {
+  constructor(name: string, level: string) {
     this.pino = pino({
       level,
       name,
     });
   }
 
-  public error(...messages) {
-    messages.map((message) => this.pino.error(message));
+  public error(...messages: any[]) {
+    messages.map((message: any) => this.pino.error(message));
   }
 
-  public warning(...messages) {
-    messages.map((message) => this.pino.warn(message));
+  public warning(...messages: any[]) {
+    messages.map((message: any) => this.pino.warn(message));
   }
 
-  public info(...messages) {
-    messages.map((message) => this.pino.info(message));
+  public info(...messages: any[]) {
+    messages.map((message: any) => this.pino.info(message));
   }
 
-  public debug(...messages) {
-    messages.map((message) => this.pino.debug(message));
+  public debug(...messages: any[]) {
+    messages.map((message: any) => this.pino.debug(message));
   }
 }

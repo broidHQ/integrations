@@ -1,0 +1,53 @@
+#!/bin/sh -e
+
+rootDir() {
+  xargs -n1 | cut -d/ -f1
+}
+
+integrations() {
+  echo broid-*/package.json | rootDir | sort | sed '/^_/d'
+}
+
+revelant_directories() {
+  git diff --name-only "$TRAVIS_COMMIT" "$TRAVIS_BRANCH" | rootDir | sort | uniq
+}
+
+integrations_changed() {
+  integrations > .integrations
+  revelant_directories > .revelant_directories
+  comm -12 .integrations .revelant_directories
+}
+
+INTS_UPDATED=$(integrations_changed)
+if [ ${#INTS_UPDATED[@]} -eq 0 ]; then
+  echo "========= UPDATED FORCED ==========="
+  INTS_UPDATED=$(integrations)
+  echo "$INTS_UPDATED"
+  echo "============================="
+else
+  if [ -z "$INTS_UPDATED" ]; then
+    exit 1
+  fi
+  echo "========= UPDATED ==========="
+  echo "$INTS_UPDATED"
+  echo "============================="
+fi
+
+command_install() {
+  for integration in $INTS_UPDATED; do
+    (cd "$integration" && yarn install --ignore-scripts)
+  done
+}
+
+command_test() {
+  for integration in $INTS_UPDATED; do
+    echo "> Testing $integration"
+    (
+      cd "$integration"
+      yarn run travis
+    )
+  done
+}
+
+# Execute given command, default to `test`
+"command_${1:-test}"

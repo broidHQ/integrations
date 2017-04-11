@@ -1,6 +1,9 @@
 {
   "extends": ["tslint-microsoft-contrib", "tslint:latest"],
-  "rulesDirectory": ["./node_modules/tslint-microsoft-contrib", "./node_modules/tslint-eslint-rules/dist/rules"],
+  "rulesDirectory": [
+    "./broid-alexa/node_modules/tslint-microsoft-contrib",
+    "./broid-alexa/node_modules/tslint-eslint-rules/dist/rules"
+  ],
   "rules": {
     "quotemark": [true, "single", "jsx-single"],
     "missing-jsdoc": false,
