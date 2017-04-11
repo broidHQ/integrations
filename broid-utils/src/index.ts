@@ -1,10 +1,10 @@
 import * as Promise from 'bluebird';
-import * as mmmagic from "mmmagic";
-import * as R from "ramda";
-import * as request from "request";
+import * as mmmagic from 'mmmagic';
+import * as R from 'ramda';
+import * as request from 'request';
 import * as validUrl from 'valid-url';
 
-import {default as Logger} from "./Logger";
+import {default as Logger} from './Logger';
 
 Promise.promisifyAll(request);
 
@@ -23,12 +23,12 @@ function capitalizeFirstLetter(str: string) {
 }
 
 const defaults = R.flip(R.merge);
-const concat = R.compose(R.join(" "), R.reject(R.isNil));
+const concat = R.compose(R.join(' '), R.reject(R.isNil));
 
 // Check if a string is an url format
 // Return a boolean
-function isUrl(string) {
-  return validUrl.isWebUri(string);
+function isUrl(url) {
+  return validUrl.isWebUri(url);
 }
 
 // Return information about one file
@@ -38,7 +38,7 @@ function fileInfo(file) {
   const magic = new mmmagic.Magic(false, mmmagic.MAGIC_MIME_TYPE);
   Promise.promisifyAll(magic);
 
-  const logger = new Logger("fileInfo", "debug");
+  const logger = new Logger('fileInfo', 'debug');
 
   return Promise.resolve(isUrl(file))
     .then((is) => {
@@ -52,7 +52,7 @@ function fileInfo(file) {
     .then((mimetype) => ({ mimetype }))
     .catch((error) => {
       logger.error(error);
-      return { mimetype: "" };
+      return { mimetype: '' };
     });
 }
 
