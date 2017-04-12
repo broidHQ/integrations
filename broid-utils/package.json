@@ -26,17 +26,17 @@
     "node": ">=6.0.0"
   },
   "scripts": {
-    "build": "npm run clean && npm run copy:config && tsc",
+    "build": "yarn run clean && yarn run copy:config && tsc -p tsconfig.json",
     "clean": "rm -rf lib && rm -rf tsconfig.json && rm -rf tslint.json",
     "copy:config": "cp ../.ci/tsconfig.json . && cp ../.ci/tslint.json .",
-    "lint": "npm run copy:config && tslint -c tslint.json src/**/*.ts",
-    "lint:watch": "watch 'npm run lint' src",
+    "lint": "yarn run copy:config && tslint -c tslint.json src/**/*.ts",
+    "lint:watch": "watch 'yarn run lint' src",
     "nsp-check": "nsp check --warn-only -o summary",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "travis": "npm run lint && npm run nsp-check",
+    "travis": "yarn run lint && yarn run nsp-check",
     "tsc:watch": "tsc --watch",
-    "release": "npm run clean && npm run build && npm publish --access public",
-    "watch": "concurrently --kill-others \"npm run lint:watch\" \"npm run tsc:watch\""
+    "release": "yarn run clean && yarn run build && npm publish --access public",
+    "watch": "concurrently --kill-others \"yarn run lint:watch\" \"yarn run tsc:watch\""
   },
   "dependencies": {
     "bluebird": "^3.5.0",
@@ -57,7 +57,7 @@
     "tslint": "^4.3.1",
     "tslint-eslint-rules": "^3.5.1",
     "tslint-microsoft-contrib": "^4.0.1",
-    "typescript": "^2.1.4",
+    "typescript": "~2.2.2",
     "watch": "^1.0.1"
   }
 }

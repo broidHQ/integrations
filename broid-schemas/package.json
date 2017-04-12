@@ -26,17 +26,17 @@
     "node": ">=6.0.0"
   },
   "scripts": {
-    "build": "npm run clean && npm run lint && make && tsc",
+    "build": "yarn run clean && yarn run lint && make && tsc -p tsconfig.json",
     "clean": "rm -rf lib",
     "copy:config": "cp ../.ci/tsconfig.json . && cp ../.ci/tslint.json .",
-    "lint": "npm run copy:config && tslint -c tslint.json src/**/*.ts",
-    "lint:watch": "watch 'npm run lint' src",
+    "lint": "yarn run copy:config && tslint -c tslint.json src/**/*.ts",
+    "lint:watch": "watch 'yarn run lint' src",
     "nsp-check": "nsp check --warn-only -o summary",
-    "release": "npm run nsp-check && npm run build && npm publish --access public",
+    "release": "yarn run nsp-check && yarn run build && npm publish --access public",
     "test": "echo \"Error: no test specified\" && exit 0",
-    "travis": "npm run nsp-check && npm run test",
-    "tsc:watch": "npm run build && tsc --watch",
-    "watch": "concurrently --kill-others \"npm run lint:watch\" \"npm run tsc:watch\""
+    "travis": "yarn run nsp-check && yarn run test",
+    "tsc:watch": "yarn run build && tsc --watch",
+    "watch": "concurrently --kill-others \"yarn run lint:watch\" \"yarn run tsc:watch\""
   },
   "dependencies": {
     "ajv": "^5.0.1-beta.1",
@@ -55,7 +55,7 @@
     "tslint": "^4.4.2",
     "tslint-eslint-rules": "^3.5.1",
     "tslint-microsoft-contrib": "^4.0.1",
-    "typescript": "^2.1.5",
+    "typescript": "~2.2.2",
     "watch": "^1.0.1"
   }
 }

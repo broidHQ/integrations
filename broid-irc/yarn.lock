@@ -42,8 +42,8 @@
     bluebird "^3.4.6"
 
 "@broid/utils@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@broid/utils/-/utils-1.0.3.tgz#30cf17003fd890cc3f599d52e7dfd3d9cd3633d9"
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@broid/utils/-/utils-1.0.4.tgz#148e330671701204f111ac0d85d5675954444204"
   dependencies:
     bluebird "^3.5.0"
     mmmagic "^0.4.5"
@@ -2250,8 +2250,8 @@ multimatch@^2.1.0:
     minimatch "^3.0.0"
 
 nan@^2.3.0, nan@^2.3.3, nan@^2.3.5, nan@^2.4.0:
-  version "2.6.1"
-  resolved "https://registry.yarnpkg.com/nan/-/nan-2.6.1.tgz#8c84f7b14c96b89f57fbc838012180ec8ca39a01"
+  version "2.6.2"
+  resolved "https://registry.yarnpkg.com/nan/-/nan-2.6.2.tgz#e4ff34e6c95fdfb5aecc08de6596f43605a7db45"
 
 natural-compare@^1.4.0:
   version "1.4.0"
@@ -3308,9 +3308,9 @@ tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   version "0.14.5"
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-0.14.5.tgz#5ae68177f192d4456269d108afa93ff8743f4f64"
 
-typescript@^2.1.4:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.3.0.tgz#2e63e09284392bc8158a2444c33e2093795c0418"
+typescript@~2.2.2:
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.2.2.tgz#606022508479b55ffa368b58fee963a03dfd7b0c"
 
 uglify-js@^2.6:
   version "2.8.22"

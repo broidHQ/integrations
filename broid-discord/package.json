@@ -27,18 +27,18 @@
     "node": ">=6.0.0"
   },
   "scripts": {
-    "build": "npm run clean && npm run copy && npm run copy:config && tsc",
+    "build": "yarn run clean && yarn run copy && yarn run copy:config && tsc -p tsconfig.json",
     "clean": "rm -rf lib && rm -rf tsconfig.json && rm -rf tslint.json",
     "copy": "copyfiles -u 1 src/**/*.json lib/",
     "copy:config": "cp ../.ci/tsconfig.json . && cp ../.ci/tslint.json .",
-    "lint": "npm run copy:config && tslint -c tslint.json src/**/*.ts",
-    "lint:watch": "watch 'npm run lint' src",
+    "lint": "yarn run copy:config && tslint -c tslint.json src/**/*.ts",
+    "lint:watch": "watch 'yarn run lint' src",
     "nsp-check": "nsp check --warn-only -o summary",
-    "test": "npm run lint && npm run build && nyc ava --verbose",
-    "travis": "npm run nsp-check && npm run test",
-    "tsc:watch": "npm run build && tsc --watch",
-    "release": "npm run travis && npm run build && npm publish --access public",
-    "watch": "concurrently --kill-others \"npm run lint:watch\" \"npm run tsc:watch\""
+    "test": "yarn run lint && yarn run build && nyc ava --verbose",
+    "travis": "yarn run nsp-check && yarn run test",
+    "tsc:watch": "yarn run build && tsc --watch",
+    "release": "yarn run travis && yarn run build && npm publish --access public",
+    "watch": "concurrently --kill-others \"yarn run lint:watch\" \"yarn run tsc:watch\""
   },
   "devDependencies": {
     "@types/bluebird": "^3.5.2",
@@ -54,12 +54,12 @@
     "tslint": "^4.3.1",
     "tslint-eslint-rules": "^3.5.1",
     "tslint-microsoft-contrib": "^4.0.1",
-    "typescript": "^2.1.4",
+    "typescript": "~2.2.2",
     "watch": "^1.0.1"
   },
   "dependencies": {
     "@broid/schemas": "^1.0.0",
-    "@broid/utils": "^1.0.3",
+    "@broid/utils": "^1.0.4",
     "bluebird": "^3.4.7",
     "discordie": "^0.11.0",
     "node-uuid": "^1.4.7",
