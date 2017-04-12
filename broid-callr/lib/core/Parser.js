@@ -3,10 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const schemas_1 = require("@broid/schemas");
 const utils_1 = require("@broid/utils");
 const Promise = require("bluebird");
-const mimetype = require("mimetype");
 const uuid = require("node-uuid");
 const R = require("ramda");
-const validUrl = require("valid-url");
 class Parser {
     constructor(serviceName, serviceID, logLevel) {
         this.serviceID = serviceID;
@@ -47,33 +45,43 @@ class Parser {
             name: normalized.toPhoneNumber,
             type: 'Person',
         };
-        if (validUrl.isUri(normalized.text)) {
-            const mediaType = mimetype.lookup(normalized.text);
-            if (mediaType.startsWith('image/')) {
-                activitystreams.object = {
+        return Promise.resolve(activitystreams)
+            .then((as2) => {
+            if (utils_1.isUrl(normalized.text)) {
+                return utils_1.fileInfo(normalized.text)
+                    .then((infos) => {
+                    const mediaType = infos.mimetype;
+                    if (mediaType.startsWith('image/')) {
+                        as2.object = {
+                            id: normalized.eventID || this.createIdentifier(),
+                            mediaType,
+                            type: 'Image',
+                            url: normalized.text,
+                        };
+                    }
+                    else if (mediaType.startsWith('video/')) {
+                        as2.object = {
+                            id: normalized.eventID || this.createIdentifier(),
+                            mediaType,
+                            type: 'Video',
+                            url: normalized.text,
+                        };
+                    }
+                    return as2;
+                });
+            }
+            return as2;
+        })
+            .then((as2) => {
+            if (R.isEmpty(as2.object) && !R.isEmpty(as2.text)) {
+                as2.object = {
+                    content: normalized.text,
                     id: normalized.eventID || this.createIdentifier(),
-                    mediaType,
-                    type: 'Image',
-                    url: normalized.text,
+                    type: 'Note',
                 };
             }
-            else if (mediaType.startsWith('video/')) {
-                activitystreams.object = {
-                    id: normalized.eventID || this.createIdentifier(),
-                    mediaType,
-                    type: 'Video',
-                    url: normalized.text,
-                };
-            }
-        }
-        if (R.isEmpty(activitystreams.object) && !R.isEmpty(normalized.text)) {
-            activitystreams.object = {
-                content: normalized.text,
-                id: normalized.eventID || this.createIdentifier(),
-                type: 'Note',
-            };
-        }
-        return Promise.resolve(activitystreams);
+            return as2;
+        });
     }
     normalize(event) {
         this.logger.debug('Event received to normalize');

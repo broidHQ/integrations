@@ -60,7 +60,7 @@
   },
   "dependencies": {
     "@broid/schemas": "^1.0.0",
-    "@broid/utils": "^1.0.0",
+    "@broid/utils": "^1.0.3",
     "actions-on-google": "^1.0.5",
     "bluebird": "^3.4.7",
     "body-parser": "^1.16.0",

@@ -1,4 +1,9 @@
+import * as utils from '@broid/utils';
+
 import ava from 'ava';
+import * as Bluebird from 'bluebird';
+import * as sinon from 'sinon';
+
 import { Parser } from '../core/Parser';
 
 import * as telegramMessage from './fixtures/telegram/message.json';
@@ -20,6 +25,14 @@ import * as broidMessagePrivate from './fixtures/broid/parsed/messagePrivate.jso
 let parser: Parser;
 ava.before(() => {
   parser = new Parser('telegram', 'test_service', 'info');
+  sinon.stub(utils, 'fileInfo').callsFake((file) => {
+    if (file.indexOf('jpg') > -1) {
+      return Bluebird.resolve({ mimetype: 'image/jpeg' });
+    } else if (file.indexOf('mp4') > -1) {
+      return Bluebird.resolve({ mimetype: 'video/mp4' });
+    }
+    return Bluebird.resolve({ mimetype: '' });
+  });
 });
 
 ava('Parse a null', async (t) => {

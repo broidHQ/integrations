@@ -61,36 +61,45 @@ export class Parser {
       type: 'Person',
     };
 
-    // Process potentially media.
-    if (isUrl(normalized.text)) {
-      const infos = fileInfo(normalized.text);
-      const mediaType = infos.mimetype;
-      if (mediaType.startsWith('image/')) {
-        activitystreams.object = {
-          id: normalized.eventID || this.createIdentifier(),
-          mediaType,
-          type: 'Image',
-          url: normalized.text,
-        };
-      } else if (mediaType.startsWith('video/')) {
-        activitystreams.object = {
-          id: normalized.eventID || this.createIdentifier(),
-          mediaType,
-          type: 'Video',
-          url: normalized.text,
-        };
-      }
-    }
+    return Promise.resolve(activitystreams)
+      .then((as2) => {
+        if (isUrl(normalized.text)) {
+          return fileInfo(normalized.text)
+            .then((infos) => {
+              const mediaType = infos.mimetype;
+              if (mediaType.startsWith('image/')) {
+                as2.object = {
+                  id: normalized.eventID || this.createIdentifier(),
+                  mediaType,
+                  type: 'Image',
+                  url: normalized.text,
+                };
+              } else if (mediaType.startsWith('video/')) {
+                as2.object = {
+                  id: normalized.eventID || this.createIdentifier(),
+                  mediaType,
+                  type: 'Video',
+                  url: normalized.text,
+                };
+              }
 
-    if (R.isEmpty(activitystreams.object) && !R.isEmpty(normalized.text)) {
-      activitystreams.object = {
-        content: normalized.text,
-        id: normalized.eventID || this.createIdentifier(),
-        type: 'Note',
-      };
-    }
+              return as2;
+            });
+        }
 
-    return Promise.resolve(activitystreams);
+        return as2;
+      })
+      .then((as2) => {
+        if (R.isEmpty(as2.object) && !R.isEmpty(as2.text)) {
+          as2.object = {
+            content: normalized.text,
+            id: normalized.eventID || this.createIdentifier(),
+            type: 'Note',
+          };
+        }
+
+        return as2;
+      });
   }
 
   // Normalize the raw event

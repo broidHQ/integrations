@@ -1,4 +1,9 @@
+import * as utils from '@broid/utils';
+
 import ava from 'ava';
+import * as Bluebird from 'bluebird';
+import * as sinon from 'sinon';
+
 import { Parser } from '../core/Parser';
 
 import * as messengerMessage from './fixtures/messenger/message.json';
@@ -29,6 +34,12 @@ const author = {
 let parser: Parser;
 ava.before(() => {
   parser = new Parser('messenger', 'test_service', 'info');
+  sinon.stub(utils, 'fileInfo').callsFake((file) => {
+    if (file.indexOf('gif') > -1) {
+      return Bluebird.resolve({ mimetype: 'image/gif' });
+    }
+    return Bluebird.resolve({ mimetype: '' });
+  });
 });
 
 ava('Parse a null', async (t) => {

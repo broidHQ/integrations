@@ -8,9 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const utils = require("@broid/utils");
 const ava_1 = require("ava");
+const Bluebird = require("bluebird");
 const glob = require("glob");
 const path = require("path");
+const sinon = require("sinon");
 const Parser_1 = require("../core/Parser");
 const RESPONSE_FIXTURES = {};
 glob.sync(path.join(__dirname, './fixtures/ms-teams/*.json')).forEach((file) => {
@@ -23,6 +26,15 @@ glob.sync(path.join(__dirname, './fixtures/broid/*.json')).forEach((file) => {
 let parser;
 ava_1.default.before(() => {
     parser = new Parser_1.Parser('ms-teams', 'test_service', 'info');
+    sinon.stub(utils, 'fileInfo').callsFake((file) => {
+        if (file.indexOf('JPG') > -1) {
+            return Bluebird.resolve({ mimetype: 'image/jpeg' });
+        }
+        else if (file.indexOf('mp4') > -1) {
+            return Bluebird.resolve({ mimetype: 'video/mp4' });
+        }
+        return Bluebird.resolve({ mimetype: '' });
+    });
 });
 ava_1.default('Parse a simple message', (t) => __awaiter(this, void 0, void 0, function* () {
     const data = parser.parse(RESPONSE_FIXTURES.message);

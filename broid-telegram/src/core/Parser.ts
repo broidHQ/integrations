@@ -2,10 +2,10 @@ import {
   default as schemas,
   IActivityStream,
 } from '@broid/schemas';
-import { cleanNulls, concat, fileInfo, isUrl, Logger } from '@broid/utils';
+import { cleanNulls, concat, fileInfo, Logger } from '@broid/utils';
 
 import * as Promise from 'bluebird';
-import * as mimetype from 'mimetype';
+import * as uuid from 'node-uuid';
 import * as R from 'ramda';
 
 export class Parser {
@@ -67,62 +67,38 @@ export class Parser {
         ? 'Person' : 'Group',
     };
 
-    // Process potentially media.
-    if (normalized.type === 'Image' || normalized.type === 'Video') {
-      let objType = 'Image';
-      if (normalized.type === 'Video') {
-        objType = 'Video';
-      }
-
-      const infos = fileInfo(normalized.text);
-      activitystreams.object = {
-        id: normalized.message_id.toString() || this.createIdentifier(),
-        mediaType: infos.mimetype,
-        name: normalized.text.split('/').pop(),
-        type: objType,
-        url: normalized.text,
-      };
-    }
-
-    if (!activitystreams.object && !R.isEmpty(normalized.text)) {
-      if (isUrl(normalized.text)) {
-        const infos = fileInfo(normalized.text);
-        const mediaType = infos.mimetype;
-        if (mediaType.startsWith('image/')) {
+    return fileInfo(normalized.text)
+      .then((infos) => {
+        const mimetype = infos.mimetype;
+        if (mimetype.startsWith('image/') || mimetype.startsWith('video/')) {
           activitystreams.object = {
-            id: normalized.eventID || this.createIdentifier(),
-            mediaType,
+            id: normalized.message_id,
+            mediaType: mimetype,
             name: normalized.text.split('/').pop(),
-            type: 'Image',
+            type: mimetype.startsWith('image/') ? 'Image' : 'Video',
             url: normalized.text,
           };
-        } else if (mediaType.startsWith('video/')) {
+        } else {
           activitystreams.object = {
-            id: normalized.eventID || this.createIdentifier(),
-            mediaType,
-            name: normalized.text.split('/').pop(),
-            type: 'Video',
-            url: normalized.text,
+            content: normalized.text,
+            id: normalized.message_id,
+            type: 'Note',
           };
         }
-      } else {
-        activitystreams.object = {
-          content: normalized.text,
-          id: normalized.message_id.toString() || this.createIdentifier(),
-          type: 'Note',
-        };
-      }
-    }
 
-    if (activitystreams.object && normalized.chat_instance) {
-      activitystreams.object.context = {
-        content: normalized.chat_instance.toString(),
-        name: 'chat_instance',
-        type: 'Object',
-      };
-    }
+        return activitystreams;
+      })
+      .then((as2) => {
+        if (as2.object && normalized.chat_instance) {
+          as2.object.context = {
+            content: normalized.chat_instance.toString(),
+            name: 'chat_instance',
+            type: 'Object',
+          };
+        }
 
-    return Promise.resolve(activitystreams);
+        return as2;
+      });
   }
 
   // Normalize the raw event
@@ -133,15 +109,25 @@ export class Parser {
     if (!event || R.isEmpty(event)) { return Promise.resolve(null); }
 
     event.timestamp = event.date || Math.floor(Date.now() / 1000);
+    event.message_id = event.message_id || this.createIdentifier();
+    if (!R.is(String, event.message_id)) {
+      event.message_id = R.toString(event.message_id);
+    }
 
     if (event._event === 'callback_query'
       || event._event === 'inline_query'
       || event._event === 'chosen_inline_result') {
+
+      let messageID = event.id || event.message_id;
+      if (!R.is(String, messageID)) {
+        messageID = R.toString(messageID);
+      }
+
       return Promise.resolve({
         chat: R.path(['message', 'chat'], event),
         chat_instance: event.chat_instance,
         from: event.from,
-        message_id: event.id,
+        message_id: messageID,
         text: event.data,
         timestamp: R.path(['message', 'date'], event) || event.timestamp,
       });

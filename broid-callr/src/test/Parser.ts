@@ -1,4 +1,9 @@
+import * as utils from '@broid/utils';
+
 import ava from 'ava';
+import * as Bluebird from 'bluebird';
+import * as sinon from 'sinon';
+
 import { Parser } from '../core/Parser';
 
 import * as callrMessage from './fixtures/callr/message.json';
@@ -16,6 +21,14 @@ import * as broidMessageVideo from './fixtures/broid/parsed/messageVideo.json';
 let parser: Parser;
 ava.before(() => {
   parser = new Parser('callr', 'test_service', 'info');
+  sinon.stub(utils, 'fileInfo').callsFake((file) => {
+    if (file === 'http://www.broid.ai/broid.jpg') {
+      return Bluebird.resolve({ mimetype: 'image/jpeg' });
+    } else if (file === 'http://www.broid.ai/broid.mp4') {
+      return Bluebird.resolve({ mimetype: 'video/mp4' });
+    }
+    return Bluebird.resolve({ mimetype: '' });
+  });
 });
 
 ava('Parse a null', async (t) => {

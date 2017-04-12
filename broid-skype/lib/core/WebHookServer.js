@@ -12,12 +12,12 @@ class WebHookServer {
         this.express = this.setupExpress(router);
     }
     listen() {
-        this.httpClient = this.express.listen(this.port, this.host, () => {
+        this.httpServer = this.express.listen(this.port, this.host, () => {
             this.logger.info(`Server listening on port ${this.host}:${this.port}...`);
         });
     }
     close() {
-        return Promise.fromCallback((cb) => this.httpClient.close(cb));
+        return Promise.fromCallback((cb) => this.httpServer.close(cb));
     }
     setupExpress(router) {
         this.express = express();

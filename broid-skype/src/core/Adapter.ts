@@ -1,10 +1,9 @@
 import schemas from '@broid/schemas';
-import { Logger } from '@broid/utils';
+import { fileInfo, Logger } from '@broid/utils';
 
 import * as Promise from 'bluebird';
 import * as botbuilder from 'botbuilder';
 import { Router } from 'express';
-import * as mimetype from 'mimetype';
 import * as uuid from 'node-uuid';
 import * as R from 'ramda';
 import { Observable } from 'rxjs/Rx';
@@ -192,9 +191,7 @@ export class Adapter {
                 .value(`tel:${button.url}`)
                 .title(button.name || button.content || 'Click to call');
             }
-            return new botbuilder.CardAction()
-              .type('imBack')
-              .value(button.url)
+            return new botbuilder.CardAction().type('imBack').value(button.url)
               .title(button.name || button.content || 'Click to send response to bot');
           },
           attachmentButtons);
@@ -212,32 +209,34 @@ export class Adapter {
               new botbuilder.HeroCard().title(name).text(content).buttons(messageButtons),
             ];
           }
+
+          messageBuilder.attachments(messageAttachments);
+          return messageBuilder;
         } else if (objectType === 'Image' || objectType === 'Video') {
           const url: string = R.path(['object', 'url'], data) as string;
           const hero = new botbuilder.HeroCard().title(name).text(content);
 
-          if (messageButtons) {
-            hero.buttons(messageButtons);
-          }
+          if (messageButtons) { hero.buttons(messageButtons); }
 
           if (objectType === 'Image') {
             hero.images([new botbuilder.CardImage().url(url)]);
             messageAttachments = [hero];
+
+            messageBuilder.attachments(messageAttachments);
+            return messageBuilder;
           } else {
-            messageAttachments = [{
-              contentType: mimetype.lookup(url),
-              contentUrl: url,
-            }, hero];
+            return fileInfo(url)
+              .then((infos) => {
+                messageAttachments = [{ contentType: infos.mimetype, contentUrl: url }, hero];
+                messageBuilder.attachments(messageAttachments);
+                return messageBuilder;
+              });
           }
         }
 
-        if (objectType === 'Note' || objectType === 'Image' || objectType === 'Video') {
-          messageBuilder.attachments(messageAttachments);
-          return Promise.fromCallback((cb) => this.session.send(messageBuilder, cb))
-            .then(() => ({ serviceID: this.serviceId(), type: 'sent' }));
-        }
-
-        return Promise.reject(new Error('Only Note, Image, and Video are supported.'));
-      });
+        throw new Error('Only Note, Image, and Video are supported.');
+      })
+      .then((builder) => Promise.fromCallback((cb) => this.session.send(builder, cb))
+        .then(() => ({ serviceID: this.serviceId(), type: 'sent' })));
   }
 }

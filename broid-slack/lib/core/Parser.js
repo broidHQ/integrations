@@ -45,59 +45,65 @@ class Parser {
             name: R.path(['channel', 'id'], normalized) || R.path(['channel', 'user'], normalized),
             type: R.path(['channel', 'is_im'], normalized) ? 'Person' : 'Group',
         };
-        let url = normalized.text.substr(1);
-        url = url.substring(0, url.length - 1);
-        if (utils_1.isUrl(url)) {
-            const infos = utils_1.fileInfo(url);
-            const mediaType = infos.mimetype;
-            if (mediaType.startsWith('image/')) {
-                activitystreams.object = {
-                    id: normalized.eventID || this.createIdentifier(),
-                    mediaType,
-                    type: 'Image',
-                    url,
-                };
+        return Promise.resolve(activitystreams)
+            .then((as2) => {
+            let url = normalized.text.substr(1);
+            url = url.substring(0, url.length - 1);
+            if (utils_1.isUrl(url)) {
+                return utils_1.fileInfo(url)
+                    .then((infos) => {
+                    const mediaType = infos.mimetype;
+                    let fileType = null;
+                    if (mediaType.startsWith('image/')) {
+                        fileType = 'Image';
+                    }
+                    else if (mediaType.startsWith('video/')) {
+                        fileType = 'Video';
+                    }
+                    as2.object = {
+                        id: normalized.eventID || this.createIdentifier(),
+                        mediaType,
+                        type: fileType,
+                        url,
+                    };
+                    return as2;
+                });
             }
-            else if (mediaType.startsWith('video/')) {
-                activitystreams.object = {
-                    id: normalized.eventID || this.createIdentifier(),
-                    mediaType,
-                    type: 'Video',
-                    url,
-                };
-            }
-        }
-        if (normalized.file) {
-            const attachment = this.parseFile(normalized.file);
-            if (attachment) {
-                activitystreams.object = {
-                    content: attachment.content,
-                    id: normalized.ts || this.createIdentifier(),
-                    mediaType: attachment.mediaType,
-                    name: attachment.name,
-                    type: attachment.type,
-                    url: attachment.url,
-                };
-                if (attachment.preview) {
-                    activitystreams.object.preview = attachment.preview;
+            else if (normalized.file) {
+                const attachment = this.parseFile(normalized.file);
+                if (attachment) {
+                    as2.object = {
+                        content: attachment.content,
+                        id: normalized.ts || this.createIdentifier(),
+                        mediaType: attachment.mediaType,
+                        name: attachment.name,
+                        type: attachment.type,
+                        url: attachment.url,
+                    };
+                    if (attachment.preview) {
+                        as2.object.preview = attachment.preview;
+                    }
                 }
             }
-        }
-        if (!activitystreams.object && !R.isEmpty(normalized.content)) {
-            activitystreams.object = {
-                content: normalized.text,
-                id: normalized.ts || this.createIdentifier(),
-                type: 'Note',
-            };
-        }
-        if (activitystreams.object && normalized.subtype === 'interactive_message') {
-            activitystreams.object.context = {
-                content: `${normalized.callback_id}#${normalized.response_url}`,
-                name: 'interactive_message_callback',
-                type: 'Object',
-            };
-        }
-        return Promise.resolve(activitystreams);
+            return as2;
+        })
+            .then((as2) => {
+            if (!as2.object && !R.isEmpty(normalized.content)) {
+                as2.object = {
+                    content: normalized.text,
+                    id: normalized.ts || this.createIdentifier(),
+                    type: 'Note',
+                };
+            }
+            if (as2.object && normalized.subtype === 'interactive_message') {
+                as2.object.context = {
+                    content: `${normalized.callback_id}#${normalized.response_url}`,
+                    name: 'interactive_message_callback',
+                    type: 'Object',
+                };
+            }
+            return as2;
+        });
     }
     createIdentifier() {
         return uuid.v4();

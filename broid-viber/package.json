@@ -42,11 +42,12 @@
   },
   "dependencies": {
     "@broid/schemas": "^1.0.0",
-    "@broid/utils": "^1.0.0",
+    "@broid/utils": "^1.0.3",
     "bluebird": "^3.4.7",
     "node-uuid": "^1.4.7",
     "ramda": "^0.23.0",
     "rxjs": "^5.0.2",
+    "sinon": "^2.1.0",
     "viber-bot": "^1.0.6"
   },
   "devDependencies": {

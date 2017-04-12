@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const schemas_1 = require("@broid/schemas");
 const utils_1 = require("@broid/utils");
 const Promise = require("bluebird");
-const mimetype = require("mimetype");
 const uuid = require("node-uuid");
 const R = require("ramda");
 class Parser {
@@ -47,43 +46,45 @@ class Parser {
             name: normalized.channel,
             type: 'Person',
         };
-        let attachments = [];
-        if (normalized.attachments) {
-            attachments = R.map((attachment) => this.parseAttachment(attachment), normalized.attachments);
-            attachments = R.reject(R.isNil)(attachments);
-        }
-        const places = R.filter((attachment) => attachment.type === 'Place', attachments);
-        if (R.length(places) === 1) {
-            activitystreams.object = places[0];
-            activitystreams.object.id = normalized.mid;
-        }
-        else if (R.length(attachments) === 1) {
-            const attachment = attachments[0];
-            activitystreams.object = {
-                id: normalized.mid || this.createIdentifier(),
-                type: attachment.type,
-                url: attachment.url,
-            };
-            if (attachment.mediaType) {
-                activitystreams.object.mediaType = attachment.mediaType;
+        return Promise.map(normalized.attachments, (attachment) => this.parseAttachment(attachment))
+            .then(R.reject(R.isNil))
+            .then((attachments) => {
+            const places = R.filter((attachment) => attachment.type === 'Place', attachments);
+            if (R.length(places) === 1) {
+                activitystreams.object = places[0];
+                activitystreams.object.id = normalized.mid;
             }
-        }
-        else if (R.length(attachments) > 1) {
-            activitystreams.object = {
-                attachment: attachments,
-                content: normalized.content || '',
-                id: normalized.mid || this.createIdentifier(),
-                type: 'Note',
-            };
-        }
-        if (!activitystreams.object && !R.isEmpty(normalized.content)) {
-            activitystreams.object = {
-                content: normalized.content,
-                id: normalized.mid || this.createIdentifier(),
-                type: 'Note',
-            };
-        }
-        return Promise.resolve(activitystreams);
+            else if (R.length(attachments) === 1) {
+                const attachment = attachments[0];
+                activitystreams.object = {
+                    id: normalized.mid || this.createIdentifier(),
+                    type: attachment.type,
+                    url: attachment.url,
+                };
+                if (attachment.mediaType) {
+                    activitystreams.object.mediaType = attachment.mediaType;
+                }
+            }
+            else if (R.length(attachments) > 1) {
+                activitystreams.object = {
+                    attachment: attachments,
+                    content: normalized.content || '',
+                    id: normalized.mid || this.createIdentifier(),
+                    type: 'Note',
+                };
+            }
+            return activitystreams;
+        })
+            .then((as2) => {
+            if (!as2.object && !R.isEmpty(normalized.content)) {
+                as2.object = {
+                    content: normalized.content,
+                    id: normalized.mid || this.createIdentifier(),
+                    type: 'Note',
+                };
+            }
+            return as2;
+        });
     }
     normalize(event) {
         this.logger.debug('Event received to normalize');
@@ -148,21 +149,25 @@ class Parser {
                 type: utils_1.capitalizeFirstLetter(attachment.type.toLowerCase()),
                 url: R.path(['payload', 'url'], attachment),
             };
-            if (a.url) {
-                a.mediaType = mimetype.lookup(a.url.split('?')[0]);
-                return a;
-            }
+            return Promise.resolve(a)
+                .then((am) => {
+                if (am.url) {
+                    return utils_1.fileInfo(am.url.split('?')[0])
+                        .then((infos) => R.assoc('mediaType', infos.mimetype, am));
+                }
+                return null;
+            });
         }
         else if (attachment.type.toLowerCase() === 'location') {
-            return {
+            return Promise.resolve({
                 id: this.createIdentifier(),
                 latitude: R.path(['payload', 'coordinates', 'lat'], attachment),
                 longitude: R.path(['payload', 'coordinates', 'long'], attachment),
                 name: attachment.title,
                 type: 'Place',
-            };
+            });
         }
-        return null;
+        return Promise.resolve(null);
     }
 }
 exports.Parser = Parser;

@@ -1,6 +1,10 @@
+import * as utils from '@broid/utils';
+
 import ava from 'ava';
+import * as Bluebird from 'bluebird';
 import * as glob from 'glob';
 import * as path from 'path';
+import * as sinon from 'sinon';
 
 import { Parser } from '../core/Parser';
 
@@ -19,6 +23,14 @@ glob.sync(path.join(__dirname, './fixtures/broid/*.json')).forEach((file: string
 let parser: Parser;
 ava.before(() => {
   parser = new Parser('ms-teams', 'test_service', 'info');
+  sinon.stub(utils, 'fileInfo').callsFake((file) => {
+    if (file.indexOf('JPG') > -1) {
+      return Bluebird.resolve({ mimetype: 'image/jpeg' });
+    } else if (file.indexOf('mp4') > -1) {
+      return Bluebird.resolve({ mimetype: 'video/mp4' });
+    }
+    return Bluebird.resolve({ mimetype: '' });
+  });
 });
 
 ava('Parse a simple message', async (t) => {

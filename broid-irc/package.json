@@ -61,7 +61,7 @@
   },
   "dependencies": {
     "@broid/schemas": "^1.0.0",
-    "@broid/utils": "^1.0.0",
+    "@broid/utils": "^1.0.3",
     "bluebird": "^3.4.7",
     "irc": "^0.5.2",
     "mimetype": "^0.0.8",

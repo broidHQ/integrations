@@ -1,4 +1,9 @@
+import * as utils from '@broid/utils';
+
 import ava from 'ava';
+import * as Bluebird from 'bluebird';
+import * as sinon from 'sinon';
+
 import { Parser } from '../core/Parser';
 
 import * as broidMessage from './fixtures/broid/message.json';
@@ -24,6 +29,14 @@ import * as twitterMessageWithTag from './fixtures/twitter/messageWithTag.json';
 let parser: Parser;
 ava.before(() => {
   parser = new Parser('twitter', 'test_service', 'info');
+  sinon.stub(utils, 'fileInfo').callsFake((file) => {
+    if (file.indexOf('jpg') > -1) {
+      return Bluebird.resolve({ mimetype: 'image/jpeg' });
+    } else if (file.indexOf('mp4') > -1) {
+      return Bluebird.resolve({ mimetype: 'video/mp4' });
+    }
+    return Bluebird.resolve({ mimetype: '' });
+  });
 });
 
 ava('Parse null', async (t) => {

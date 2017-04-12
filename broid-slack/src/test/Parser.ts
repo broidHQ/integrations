@@ -1,4 +1,9 @@
+import * as utils from '@broid/utils';
+
 import ava from 'ava';
+import * as Bluebird from 'bluebird';
+import * as sinon from 'sinon';
+
 import { Parser } from '../core/Parser';
 
 import * as broidInteractiveMessage from './fixtures/broid/interactiveMessage.json';
@@ -13,6 +18,14 @@ import * as slackMessageWithMedia from './fixtures/slack/messageWithMedia.json';
 let parser: Parser;
 ava.before(() => {
   parser = new Parser('slack', 'test_service', 'info');
+  sinon.stub(utils, 'fileInfo').callsFake((file) => {
+    if (file.indexOf('jpg') > -1) {
+      return Bluebird.resolve({ mimetype: 'image/jpeg' });
+    } else if (file.indexOf('mp4') > -1) {
+      return Bluebird.resolve({ mimetype: 'video/mp4' });
+    }
+    return Bluebird.resolve({ mimetype: '' });
+  });
 });
 
 ava('Parse null', async (t) => {

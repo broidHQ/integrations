@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "@broid/schemas": "^1.0.0",
-    "@broid/utils": "^1.0.0",
+    "@broid/utils": "^1.0.3",
     "@kikinteractive/kik": "^2.0.12",
     "bluebird": "^3.4.7",
     "body-parser": "^1.17.1",

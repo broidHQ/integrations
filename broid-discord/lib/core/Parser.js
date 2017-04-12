@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const schemas_1 = require("@broid/schemas");
 const utils_1 = require("@broid/utils");
 const Promise = require("bluebird");
-const mimetype = require("mimetype");
 const R = require("ramda");
 class Parser {
     constructor(serviceName, serviceID, logLevel) {
@@ -53,22 +52,14 @@ class Parser {
             name: targetName,
             type: targetType,
         };
-        if (R.length(normalized.attachments) === 1) {
-            const m = this.parseMedia(normalized.attachments[0], normalized.content);
-            if (m) {
-                activitystreams.object = m;
+        return Promise.map(normalized.attachments, (rawAttachment) => this.parseMedia(rawAttachment, null))
+            .then(R.reject(R.isNil))
+            .then((attachments) => {
+            const count = R.length(attachments);
+            if (count === 1) {
+                activitystreams.object = R.assoc('content', normalized.content, attachments[0]);
             }
-        }
-        else if (R.length(normalized.attachments) > 1) {
-            let attachments = R.map((mediaURL) => {
-                const m = this.parseMedia(mediaURL, null);
-                if (m) {
-                    return m;
-                }
-                return null;
-            }, normalized.attachments);
-            attachments = R.reject(R.isNil)(attachments);
-            if (!R.isEmpty(attachments) && !R.isEmpty(normalized.content)) {
+            else if (count > 1) {
                 activitystreams.object = {
                     attachment: attachments,
                     content: normalized.content,
@@ -76,45 +67,51 @@ class Parser {
                     type: 'Note',
                 };
             }
-        }
-        if (!activitystreams.object && !R.isEmpty(normalized.content)) {
-            activitystreams.object = {
-                content: normalized.content,
-                id: normalized.id,
-                type: 'Note',
-            };
-        }
-        return Promise.resolve(activitystreams);
+            return activitystreams;
+        })
+            .then((as2) => {
+            if (!as2.object && !R.isEmpty(normalized.content)) {
+                as2.object = {
+                    content: normalized.content,
+                    id: normalized.id,
+                    type: 'Note',
+                };
+            }
+            return as2;
+        });
     }
     parseMedia(media, content) {
-        let mediaType = null;
-        const mimeType = mimetype.lookup(media.filename);
-        if (mimeType.startsWith('image')) {
-            mediaType = 'Image';
-        }
-        if (mimeType.startsWith('video')) {
-            mediaType = 'Video';
-        }
-        if (mediaType && content) {
-            return {
-                content,
-                id: media.id,
-                mediaType: mimeType,
-                name: media.filename,
-                type: mediaType,
-                url: media.url,
-            };
-        }
-        else if (mediaType) {
-            return {
-                id: media.id,
-                mediaType: mimeType,
-                name: media.filename,
-                type: mediaType,
-                url: media.url,
-            };
-        }
-        return null;
+        return utils_1.fileInfo(media.filename)
+            .then((infos) => {
+            const mimeType = infos.mimetype;
+            let mediaType = null;
+            if (mimeType.startsWith('image')) {
+                mediaType = 'Image';
+            }
+            if (mimeType.startsWith('video')) {
+                mediaType = 'Video';
+            }
+            if (mediaType && content) {
+                return {
+                    content,
+                    id: media.id,
+                    mediaType: mimeType,
+                    name: media.filename,
+                    type: mediaType,
+                    url: media.url,
+                };
+            }
+            else if (mediaType) {
+                return {
+                    id: media.id,
+                    mediaType: mimeType,
+                    name: media.filename,
+                    type: mediaType,
+                    url: media.url,
+                };
+            }
+            return null;
+        });
     }
     createActivityStream(normalized) {
         return {

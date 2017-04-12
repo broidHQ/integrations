@@ -8,7 +8,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const utils = require("@broid/utils");
 const ava_1 = require("ava");
+const Bluebird = require("bluebird");
+const sinon = require("sinon");
 const Parser_1 = require("../core/Parser");
 const callrMessage = require("./fixtures/callr/message.json");
 const callrMessageImage = require("./fixtures/callr/messageImage.json");
@@ -22,6 +25,15 @@ const broidMessageVideo = require("./fixtures/broid/parsed/messageVideo.json");
 let parser;
 ava_1.default.before(() => {
     parser = new Parser_1.Parser('callr', 'test_service', 'info');
+    sinon.stub(utils, 'fileInfo').callsFake((file) => {
+        if (file === 'http://www.broid.ai/broid.jpg') {
+            return Bluebird.resolve({ mimetype: 'image/jpeg' });
+        }
+        else if (file === 'http://www.broid.ai/broid.mp4') {
+            return Bluebird.resolve({ mimetype: 'video/mp4' });
+        }
+        return Bluebird.resolve({ mimetype: '' });
+    });
 });
 ava_1.default('Parse a null', (t) => __awaiter(this, void 0, void 0, function* () {
     const data = parser.parse(null);

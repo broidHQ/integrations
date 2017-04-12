@@ -8,7 +8,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const utils = require("@broid/utils");
 const ava_1 = require("ava");
+const Bluebird = require("bluebird");
+const sinon = require("sinon");
 const Parser_1 = require("../core/Parser");
 const broidMessage = require("./fixtures/broid/message.json");
 const broidMessageWithImage = require("./fixtures/broid/messageWithImage.json");
@@ -19,6 +22,15 @@ const skypeMessageWithVideo = require("./fixtures/skype/messageWithVideo.json");
 let parser;
 ava_1.default.before(() => {
     parser = new Parser_1.Parser('skype', 'test_service', 'info');
+    sinon.stub(utils, 'fileInfo').callsFake((file) => {
+        if (file.indexOf('JPG') > -1) {
+            return Bluebird.resolve({ mimetype: 'image/jpeg' });
+        }
+        else if (file.indexOf('mp4') > -1) {
+            return Bluebird.resolve({ mimetype: 'video/mp4' });
+        }
+        return Bluebird.resolve({ mimetype: '' });
+    });
 });
 ava_1.default('Parse a simple message', (t) => __awaiter(this, void 0, void 0, function* () {
     const data = parser.parse(skypeMessage);

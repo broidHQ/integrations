@@ -3,10 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const schemas_1 = require("@broid/schemas");
 const utils_1 = require("@broid/utils");
 const Promise = require("bluebird");
-const mimetype = require("mimetype");
 const uuid = require("node-uuid");
 const R = require("ramda");
-const validUrl = require("valid-url");
 class Parser {
     constructor(serviceName, serviceID, logLevel) {
         this.serviceID = serviceID;
@@ -55,57 +53,37 @@ class Parser {
             type: R.toLower(chatType) === 'private'
                 ? 'Person' : 'Group',
         };
-        if (normalized.type === 'Image' || normalized.type === 'Video') {
-            let objType = 'Image';
-            if (normalized.type === 'Video') {
-                objType = 'Video';
-            }
-            activitystreams.object = {
-                id: normalized.message_id.toString() || this.createIdentifier(),
-                mediaType: mimetype.lookup(normalized.text),
-                name: normalized.text.split('/').pop(),
-                type: objType,
-                url: normalized.text,
-            };
-        }
-        if (!activitystreams.object && !R.isEmpty(normalized.text)) {
-            if (validUrl.isUri(normalized.text)) {
-                const mediaType = mimetype.lookup(normalized.text);
-                if (mediaType.startsWith('image/')) {
-                    activitystreams.object = {
-                        id: normalized.eventID || this.createIdentifier(),
-                        mediaType,
-                        name: normalized.text.split('/').pop(),
-                        type: 'Image',
-                        url: normalized.text,
-                    };
-                }
-                else if (mediaType.startsWith('video/')) {
-                    activitystreams.object = {
-                        id: normalized.eventID || this.createIdentifier(),
-                        mediaType,
-                        name: normalized.text.split('/').pop(),
-                        type: 'Video',
-                        url: normalized.text,
-                    };
-                }
+        return utils_1.fileInfo(normalized.text)
+            .then((infos) => {
+            const mimetype = infos.mimetype;
+            if (mimetype.startsWith('image/') || mimetype.startsWith('video/')) {
+                activitystreams.object = {
+                    id: normalized.message_id,
+                    mediaType: mimetype,
+                    name: normalized.text.split('/').pop(),
+                    type: mimetype.startsWith('image/') ? 'Image' : 'Video',
+                    url: normalized.text,
+                };
             }
             else {
                 activitystreams.object = {
                     content: normalized.text,
-                    id: normalized.message_id.toString() || this.createIdentifier(),
+                    id: normalized.message_id,
                     type: 'Note',
                 };
             }
-        }
-        if (activitystreams.object && normalized.chat_instance) {
-            activitystreams.object.context = {
-                content: normalized.chat_instance.toString(),
-                name: 'chat_instance',
-                type: 'Object',
-            };
-        }
-        return Promise.resolve(activitystreams);
+            return activitystreams;
+        })
+            .then((as2) => {
+            if (as2.object && normalized.chat_instance) {
+                as2.object.context = {
+                    content: normalized.chat_instance.toString(),
+                    name: 'chat_instance',
+                    type: 'Object',
+                };
+            }
+            return as2;
+        });
     }
     normalize(evt) {
         this.logger.debug('Event received to normalize');
@@ -114,14 +92,22 @@ class Parser {
             return Promise.resolve(null);
         }
         event.timestamp = event.date || Math.floor(Date.now() / 1000);
+        event.message_id = event.message_id || this.createIdentifier();
+        if (!R.is(String, event.message_id)) {
+            event.message_id = R.toString(event.message_id);
+        }
         if (event._event === 'callback_query'
             || event._event === 'inline_query'
             || event._event === 'chosen_inline_result') {
+            let messageID = event.id || event.message_id;
+            if (!R.is(String, messageID)) {
+                messageID = R.toString(messageID);
+            }
             return Promise.resolve({
                 chat: R.path(['message', 'chat'], event),
                 chat_instance: event.chat_instance,
                 from: event.from,
-                message_id: event.id,
+                message_id: messageID,
                 text: event.data,
                 timestamp: R.path(['message', 'date'], event) || event.timestamp,
             });

@@ -68,67 +68,66 @@ export class Parser {
       type: targetType,
     };
 
-    if (R.length(normalized.attachments) === 1) {
-      const m = this.parseMedia(normalized.attachments[0], normalized.content);
-      if (m) { activitystreams.object = m; }
-    } else if (R.length(normalized.attachments) > 1) {
-      let attachments = R.map(
-        (mediaURL) => {
-          const m = this.parseMedia(mediaURL, null);
-          if (m) { return m; }
-          return null;
-        },
-        normalized.attachments);
+    return Promise.map(normalized.attachments, (rawAttachment) =>
+      this.parseMedia(rawAttachment, null))
+      .then(R.reject(R.isNil))
+      .then((attachments) => {
+        const count = R.length(attachments);
+        if (count === 1) {
+          activitystreams.object = R.assoc('content', normalized.content, attachments[0]);
+        } else if (count > 1) {
+          activitystreams.object = {
+            attachment: attachments,
+            content: normalized.content,
+            id: normalized.id,
+            type: 'Note',
+          };
+        }
 
-      attachments = R.reject(R.isNil)(attachments);
-      if (!R.isEmpty(attachments) && !R.isEmpty(normalized.content)) {
-        activitystreams.object = {
-          attachment: attachments,
-          content: normalized.content,
-          id: normalized.id,
-          type: 'Note',
-        };
-      }
-    }
-
-    if (!activitystreams.object && !R.isEmpty(normalized.content)) {
-      activitystreams.object = {
-        content: normalized.content,
-        id: normalized.id,
-        type: 'Note',
-      };
-    }
-
-    return Promise.resolve(activitystreams);
+        return activitystreams;
+      })
+      .then((as2) => {
+        if (!as2.object && !R.isEmpty(normalized.content)) {
+          as2.object = {
+            content: normalized.content,
+            id: normalized.id,
+            type: 'Note',
+          };
+        }
+        return as2;
+      });
   }
 
-  private parseMedia(media: any, content: string | null): object | null {
-    let mediaType: string | null = null;
-    const infos = fileInfo(media.filename);
-    const mimeType = infos.mimetype;
-    if (mimeType.startsWith('image')) { mediaType = 'Image'; }
-    if (mimeType.startsWith('video')) { mediaType = 'Video'; }
+  private parseMedia(media: any, content: string | null): Promise<any> | null {
+    return fileInfo(media.filename)
+      .then((infos) => {
+        const mimeType = infos.mimetype;
+        let mediaType: string | null = null;
 
-    if (mediaType && content) {
-      return {
-        content,
-        id: media.id,
-        mediaType: mimeType,
-        name: media.filename,
-        type: mediaType,
-        url: media.url,
-      };
-    } else if (mediaType) {
-      return {
-        id: media.id,
-        mediaType: mimeType,
-        name: media.filename,
-        type: mediaType,
-        url: media.url,
-      };
-    }
+        if (mimeType.startsWith('image')) { mediaType = 'Image'; }
+        if (mimeType.startsWith('video')) { mediaType = 'Video'; }
 
-    return null;
+        if (mediaType && content) {
+          return {
+            content,
+            id: media.id,
+            mediaType: mimeType,
+            name: media.filename,
+            type: mediaType,
+            url: media.url,
+          };
+        } else if (mediaType) {
+          return {
+            id: media.id,
+            mediaType: mimeType,
+            name: media.filename,
+            type: mediaType,
+            url: media.url,
+          };
+        }
+
+        return null;
+      });
   }
 
   private createActivityStream(normalized: any): IActivityStream {

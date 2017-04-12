@@ -10,7 +10,7 @@ import { IAdapterHTTPOptions } from './interfaces';
 export class WebHookServer {
   private express: express.Application;
   private logger: Logger;
-  private httpClient: http.Server;
+  private httpServer: http.Server;
   private host: string;
   private port: number;
 
@@ -23,13 +23,13 @@ export class WebHookServer {
   }
 
   public listen() {
-    this.httpClient = this.express.listen(this.port, this.host, () => {
+    this.httpServer = this.express.listen(this.port, this.host, () => {
       this.logger.info(`Server listening on port ${this.host}:${this.port}...`);
     });
   }
 
   public close(): Promise<null> {
-    return Promise.fromCallback((cb) => this.httpClient.close(cb));
+    return Promise.fromCallback((cb) => this.httpServer.close(cb));
   }
 
   // Configure Express middleware.

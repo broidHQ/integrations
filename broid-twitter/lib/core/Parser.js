@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const schemas_1 = require("@broid/schemas");
 const utils_1 = require("@broid/utils");
 const Promise = require("bluebird");
-const mimetype = require("mimetype");
 const uuid = require("node-uuid");
 const R = require("ramda");
 class Parser {
@@ -46,45 +45,54 @@ class Parser {
             name: R.path(['channel', 'name'], normalized),
             type: R.path(['channel', 'is_mention'], normalized) ? 'Group' : 'Person',
         };
-        const images = R.filter((attachment) => attachment.type === 'Image', normalized.attachments);
-        const videos = R.filter((attachment) => attachment.type === 'Video', normalized.attachments);
-        if (!R.isEmpty(images) || !R.isEmpty(videos)) {
-            let attachmentType = 'Image';
-            let url = null;
-            if (!R.isEmpty(images)) {
-                url = R.prop('url', images[0]);
-            }
-            else {
-                attachmentType = 'Video';
-                url = R.prop('url', videos[0]);
-            }
+        return Promise.map(normalized.attachments, (attachment) => {
+            const url = R.prop('url', attachment);
             if (url) {
-                const mediaType = mimetype.lookup(url);
+                return utils_1.fileInfo(url).then((infos) => R.assoc('mimetype', infos.mimetype, attachment));
+            }
+            return null;
+        })
+            .then(R.reject(R.isNil))
+            .filter((attachment) => attachment.mimetype !== '')
+            .then((attachments) => {
+            const count = R.length(attachments);
+            if (count === 1) {
                 activitystreams.object = {
                     content: normalized.text,
                     id: normalized.id || this.createIdentifier(),
-                    mediaType,
-                    type: attachmentType,
-                    url,
+                    mediaType: attachments[0].mimetype,
+                    type: attachments[0].type,
+                    url: attachments[0].url,
                 };
             }
-        }
-        if (!activitystreams.object && !R.isEmpty(normalized.text)) {
-            activitystreams.object = {
-                content: normalized.text,
-                id: normalized.id || this.createIdentifier(),
-                type: 'Note',
-            };
-        }
-        if (activitystreams.object && normalized.hashtags
-            && !R.isEmpty(normalized.hashtags)) {
-            activitystreams.object.tag = R.map((tag) => ({
-                id: tag.text,
-                name: tag.text,
-                type: 'Object',
-            }), normalized.hashtags);
-        }
-        return Promise.resolve(activitystreams);
+            else if (count > 1) {
+                activitystreams.object = {
+                    attachment: R.map((attachment) => ({
+                        mediaType: attachment.mimetype,
+                        type: attachment.type,
+                        url: attachment.url,
+                    }), attachments),
+                    content: normalized.content || '',
+                    id: normalized.mid || this.createIdentifier(),
+                    type: 'Note',
+                };
+            }
+            return activitystreams;
+        })
+            .then((as2) => {
+            if (!as2.object && !R.isEmpty(normalized.text)) {
+                as2.object = {
+                    content: normalized.text,
+                    id: normalized.id || this.createIdentifier(),
+                    type: 'Note',
+                };
+            }
+            if (as2.object && normalized.hashtags
+                && !R.isEmpty(normalized.hashtags)) {
+                as2.object.tag = R.map((tag) => ({ id: tag.text, name: tag.text, type: 'Object' }), normalized.hashtags);
+            }
+            return as2;
+        });
     }
     normalize(raw) {
         this.logger.debug('Event received to normalize', { raw });

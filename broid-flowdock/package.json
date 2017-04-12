@@ -57,7 +57,7 @@
   },
   "dependencies": {
     "@broid/schemas": "^1.0.0",
-    "@broid/utils": "^1.0.0",
+    "@broid/utils": "^1.0.3",
     "bluebird": "^3.4.7",
     "flowdock": "^0.9.0",
     "node-uuid": "^1.4.7",

@@ -65,48 +65,47 @@ export class Parser {
     };
 
     // Process potentially media.
-    let attachments: any[] = [];
-    if (normalized.attachments) {
-      attachments = R.map(
-        (attachment) => this.parseAttachment(attachment),
-        normalized.attachments) as any[];
-      attachments = R.reject(R.isNil)(attachments) as any[];
-    }
+    return Promise.map(normalized.attachments, (attachment) => this.parseAttachment(attachment))
+      .then(R.reject(R.isNil))
+      .then((attachments) => {
+        const places = R.filter((attachment) => attachment.type === 'Place', attachments);
 
-    const places = R.filter((attachment) => attachment.type === 'Place', attachments);
+        if (R.length(places) === 1) {
+          activitystreams.object = places[0];
+          activitystreams.object.id = normalized.mid;
+        } else if (R.length(attachments) === 1) {
+          const attachment: IASMedia = attachments[0];
+          activitystreams.object = {
+            id: normalized.mid || this.createIdentifier(),
+            type: attachment.type,
+            url: attachment.url,
+          };
 
-    if (R.length(places) === 1) {
-      activitystreams.object = places[0];
-      activitystreams.object.id = normalized.mid;
-    } else if (R.length(attachments) === 1) {
-      const attachment: IASMedia = attachments[0];
-      activitystreams.object = {
-        id: normalized.mid || this.createIdentifier(),
-        type: attachment.type,
-        url: attachment.url,
-      };
+          if (attachment.mediaType) {
+            activitystreams.object.mediaType = attachment.mediaType;
+          }
+        } else if (R.length(attachments) > 1) {
+          activitystreams.object = {
+            attachment: attachments,
+            content: normalized.content || '',
+            id: normalized.mid || this.createIdentifier(),
+            type: 'Note',
+          };
+        }
 
-      if (attachment.mediaType) {
-        activitystreams.object.mediaType = attachment.mediaType;
-      }
-    } else if (R.length(attachments) > 1) {
-      activitystreams.object = {
-        attachment: attachments,
-        content: normalized.content || '',
-        id: normalized.mid || this.createIdentifier(),
-        type: 'Note',
-      };
-    }
+        return activitystreams;
+      })
+      .then((as2) => {
+        if (!as2.object && !R.isEmpty(normalized.content)) {
+          as2.object = {
+            content: normalized.content,
+            id: normalized.mid || this.createIdentifier(),
+            type: 'Note',
+          };
+        }
 
-    if (!activitystreams.object && !R.isEmpty(normalized.content)) {
-      activitystreams.object = {
-        content: normalized.content,
-        id: normalized.mid || this.createIdentifier(),
-        type: 'Note',
-      };
-    }
-
-    return Promise.resolve(activitystreams);
+        return as2;
+      });
   }
 
   // Normalize the raw event
@@ -176,27 +175,32 @@ export class Parser {
     };
   }
 
-  private parseAttachment(attachment: any): IASMedia | IASObject | null {
+  private parseAttachment(attachment: any): Promise<IASMedia | IASObject | null> {
     if (attachment.type.toLowerCase() === 'image' || attachment.type.toLowerCase() === 'video') {
       const a: IASMedia = {
         type: capitalizeFirstLetter(attachment.type.toLowerCase()),
         url: R.path(['payload', 'url'], attachment),
       };
 
-      if (a.url) {
-        const infos = fileInfo(a.url.split('?')[0]);
-        a.mediaType = infos.mimetype;
-        return a;
-      }
+      return Promise.resolve(a)
+        .then((am) => {
+          if (am.url) {
+            return fileInfo(am.url.split('?')[0])
+              .then((infos) => R.assoc('mediaType', infos.mimetype, am));
+          }
+          return null;
+        });
+
     } else if (attachment.type.toLowerCase() === 'location') {
-      return {
+      return Promise.resolve({
         id: this.createIdentifier(),
         latitude: R.path(['payload', 'coordinates', 'lat'], attachment),
         longitude: R.path(['payload', 'coordinates', 'long'], attachment),
         name: attachment.title,
         type: 'Place',
-      } as IASObject;
+      } as IASObject);
     }
-    return null;
+
+    return Promise.resolve(null);
   }
 }

@@ -79,40 +79,66 @@ export class Parser {
         || attachment.contentType === 'application/octet-stream',
       normalized.attachments);
 
-    if (!R.isEmpty(attachmentImages)) {
-      const infos = fileInfo(attachmentImages[0].name);
-      activitystreams.object = {
-        content: normalized.text,
-        context,
-        id: addressID || this.createIdentifier(),
-        mediaType: infos.mimetype,
-        name: attachmentImages[0].name,
-        type: 'Image',
-        url: attachmentImages[0].contentUrl,
-      };
-    } else if (!R.isEmpty(attachmentVideos)) {
-      const infos = fileInfo(attachmentVideos[0].name);
-      activitystreams.object = {
-        content: normalized.text,
-        context,
-        id: addressID || this.createIdentifier(),
-        mediaType: infos.mimetype,
-        name: attachmentVideos[0].name,
-        type: 'Video',
-        url: attachmentVideos[0].contentUrl,
-      };
-    }
+    const assoc = (attachment, infos, fileType) => R.assoc(
+      'name',
+      attachment.name,
+      R.assoc(
+        'contentUrl',
+        attachment.contentUrl,
+        R.assoc(
+          'fileType',
+          fileType,
+          infos,
+        ),
+      ),
+    );
 
-    if (!activitystreams.object && !R.isEmpty(normalized.text)) {
-      activitystreams.object = {
-        content: normalized.text,
-        context,
-        id: addressID || this.createIdentifier(),
-        type: 'Note',
-      };
-    }
+    return Promise.map(attachmentImages, (attachment) =>
+      fileInfo(attachment.name).then((infos) => assoc(attachment, infos, 'Image')))
+      .then((dataImages) =>
+        Promise.map(attachmentVideos, (attachment) =>
+          fileInfo(attachment.name).then((infos) => assoc(attachment, infos, 'Video')))
+        .then((dataVideos) => R.concat(dataImages, dataVideos)))
+      .then((fileInfos) => {
+        const count = R.length(fileInfos);
+        if (count === 1) {
+          activitystreams.object = {
+            content: normalized.text,
+            context,
+            id: addressID || this.createIdentifier(),
+            mediaType: fileInfos[0].mimetype,
+            name: fileInfos[0].name,
+            type: fileInfos[0].fileType,
+            url: fileInfos[0].contentUrl,
+          };
+        } else if (count > 1) {
+          activitystreams.object = {
+            attachment: R.map((info) => ({
+              mediaType: info.mimetype,
+              name: info.name,
+              type: info.fileType,
+              url: info.contentUrl,
+            }), fileInfos),
+            content: normalized.text,
+            id: addressID || this.createIdentifier(),
+            type: 'Note',
+          };
+        }
 
-    return Promise.resolve(activitystreams);
+        return activitystreams;
+      })
+      .then((as2) => {
+        if (!as2.object && !R.isEmpty(normalized.text)) {
+          activitystreams.object = {
+            content: normalized.text,
+            context,
+            id: addressID || this.createIdentifier(),
+            type: 'Note',
+          };
+        }
+
+        return as2;
+      });
   }
 
   private createIdentifier(): string {

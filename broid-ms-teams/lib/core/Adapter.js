@@ -5,7 +5,6 @@ const utils_1 = require("@broid/utils");
 const Promise = require("bluebird");
 const botbuilder = require("botbuilder");
 const express_1 = require("express");
-const mimetype = require("mimetype");
 const uuid = require("node-uuid");
 const R = require("ramda");
 const Rx_1 = require("rxjs/Rx");
@@ -128,9 +127,7 @@ class Adapter {
             }
             const attachmentButtons = R.filter((attachment) => attachment.type === 'Button', R.path(['object', 'attachment'], data) || []);
             const messageButtons = R.map((button) => {
-                return new botbuilder.CardAction()
-                    .type('imBack')
-                    .value(button.url)
+                return new botbuilder.CardAction().type('imBack').value(button.url)
                     .title(button.name || button.content || 'Click to send response to bot');
             }, attachmentButtons);
             let messageAttachments = [];
@@ -143,39 +140,37 @@ class Adapter {
                 }
                 else {
                     messageAttachments = [
-                        new botbuilder.HeroCard()
-                            .title(name)
-                            .text(content)
-                            .buttons(messageButtons),
+                        new botbuilder.HeroCard().title(name).text(content).buttons(messageButtons),
                     ];
                 }
+                messageBuilder.attachments(messageAttachments);
+                return messageBuilder;
             }
             else if (objectType === 'Image' || objectType === 'Video') {
                 const url = R.path(['object', 'url'], data);
-                const hero = new botbuilder.HeroCard()
-                    .title(name)
-                    .text(content);
+                const hero = new botbuilder.HeroCard().title(name).text(content);
                 if (messageButtons) {
                     hero.buttons(messageButtons);
                 }
                 if (objectType === 'Image') {
                     hero.images([new botbuilder.CardImage().url(url)]);
                     messageAttachments = [hero];
+                    messageBuilder.attachments(messageAttachments);
+                    return messageBuilder;
                 }
                 else {
-                    messageAttachments = [{
-                            contentType: mimetype.lookup(url),
-                            contentUrl: url,
-                        }, hero];
+                    return utils_1.fileInfo(url)
+                        .then((infos) => {
+                        messageAttachments = [{ contentType: infos.mimetype, contentUrl: url }, hero];
+                        messageBuilder.attachments(messageAttachments);
+                        return messageBuilder;
+                    });
                 }
             }
-            if (objectType === 'Note' || objectType === 'Image' || objectType === 'Video') {
-                messageBuilder.attachments(messageAttachments);
-                return Promise.fromCallback((cb) => this.session.send(messageBuilder, cb))
-                    .then(() => ({ serviceID: this.serviceId(), type: 'sent' }));
-            }
-            return Promise.reject(new Error('Only Note, Image, and Video are supported.'));
-        });
+            throw new Error('Only Note, Image, and Video are supported.');
+        })
+            .then((builder) => Promise.fromCallback((cb) => this.session.send(builder, cb))
+            .then(() => ({ serviceID: this.serviceId(), type: 'sent' })));
     }
 }
 exports.Adapter = Adapter;

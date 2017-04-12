@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const schemas_1 = require("@broid/schemas");
 const utils_1 = require("@broid/utils");
 const Promise = require("bluebird");
-const mimetype = require("mimetype");
 const uuid = require("node-uuid");
 const R = require("ramda");
 class Parser {
@@ -53,35 +52,41 @@ class Parser {
         }
         const content = normalized.text;
         const id = normalized.token.toString() || this.createIdentifier();
-        if (normalized.url && normalized.type === 'Image' || normalized.type === 'Video') {
-            activitystreams.object = {
-                id,
-                mediaType: mimetype.lookup(normalized.url.split('?')[0]),
-                type: normalized.type,
-                url: normalized.url,
-            };
-        }
-        else if (normalized.type === 'Place') {
-            activitystreams.object = {
-                id,
-                latitude: normalized.latitude,
-                longitude: normalized.longitude,
-                type: 'Place',
-            };
-        }
-        if (content && !R.isEmpty(content)) {
-            if (activitystreams.object && !R.isEmpty(activitystreams.object)) {
-                activitystreams.object.content = content;
+        return Promise.resolve(activitystreams)
+            .then((as2) => {
+            if (normalized.url && (normalized.type === 'Image' || normalized.type === 'Video')) {
+                return utils_1.fileInfo(normalized.url.split('?')[0])
+                    .then((infos) => {
+                    as2.object = {
+                        id,
+                        mediaType: infos.mimetype,
+                        type: normalized.type,
+                        url: normalized.url,
+                    };
+                    return as2;
+                });
             }
-            else {
-                activitystreams.object = {
-                    content,
+            else if (normalized.type === 'Place') {
+                as2.object = {
                     id,
-                    type: 'Note',
+                    latitude: normalized.latitude,
+                    longitude: normalized.longitude,
+                    type: 'Place',
                 };
             }
-        }
-        return Promise.resolve(activitystreams);
+            return as2;
+        })
+            .then((as2) => {
+            if (content && !R.isEmpty(content)) {
+                if (as2.object && !R.isEmpty(as2.object)) {
+                    as2.object.content = content;
+                }
+                else {
+                    as2.object = { content, id, type: 'Note' };
+                }
+            }
+            return as2;
+        });
     }
     normalize(evt) {
         this.logger.debug('Event received to normalize');

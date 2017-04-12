@@ -60,58 +60,59 @@ export class Parser {
     };
 
     // Process attachment.
-    // Twitter doesn't allow to send multiple media in one tweet
-    const images = R.filter(
-      (attachment: any) => attachment.type === 'Image',
-      normalized.attachments);
-    const videos = R.filter(
-      (attachment: any) => attachment.type === 'Video',
-      normalized.attachments);
-
-    if (!R.isEmpty(images) || !R.isEmpty(videos)) {
-      let attachmentType = 'Image';
-      let url: string | null = null;
-
-      if (!R.isEmpty(images)) {
-        url = R.prop('url', images[0]) as string;
-      } else {
-        attachmentType = 'Video';
-        url = R.prop('url', videos[0]) as string;
-      }
-
+    return Promise.map(normalized.attachments, (attachment) => {
+      const url = R.prop('url', attachment) as string;
       if (url) {
-        const infos = fileInfo(url);
-        const mediaType = infos.mimetype;
+        return fileInfo(url).then((infos) => R.assoc('mimetype', infos.mimetype, attachment));
+      }
+      return null;
+    })
+    .then(R.reject(R.isNil))
+     // We ignore the attachments without mimetypes
+    .filter((attachment: any) => attachment.mimetype !== '')
+    .then((attachments) => {
+      const count = R.length(attachments);
+      if (count === 1) {
         activitystreams.object = {
           content: normalized.text,
           id: normalized.id || this.createIdentifier(),
-          mediaType,
-          type: attachmentType,
-          url,
+          mediaType: attachments[0].mimetype,
+          type: attachments[0].type,
+          url: attachments[0].url,
+        };
+      } else if (count > 1) { // Twitter doesn't allow to send multiple media in one tweet
+        activitystreams.object = {
+          attachment: R.map((attachment: any) => ({
+            mediaType: attachment.mimetype,
+            type: attachment.type,
+            url: attachment.url,
+          }), attachments),
+          content: normalized.content || '',
+          id: normalized.mid || this.createIdentifier(),
+          type: 'Note',
         };
       }
-    }
 
-    if (!activitystreams.object && !R.isEmpty(normalized.text)) {
-      activitystreams.object = {
-        content: normalized.text,
-        id: normalized.id || this.createIdentifier(),
-        type: 'Note',
-      };
-    }
+      return activitystreams;
+    })
+    .then((as2) => {
+      if (!as2.object && !R.isEmpty(normalized.text)) {
+        as2.object = {
+          content: normalized.text,
+          id: normalized.id || this.createIdentifier(),
+          type: 'Note',
+        };
+      }
 
-    if (activitystreams.object && normalized.hashtags
-      && !R.isEmpty(normalized.hashtags)) {
-        activitystreams.object.tag = R.map(
-          (tag: any) => ({
-            id: tag.text,
-            name: tag.text,
-            type: 'Object',
-          }),
-          normalized.hashtags);
-    }
+      if (as2.object && normalized.hashtags
+        && !R.isEmpty(normalized.hashtags)) {
+          as2.object.tag = R.map(
+            (tag: any) => ({ id: tag.text, name: tag.text, type: 'Object' }),
+            normalized.hashtags);
+      }
 
-    return Promise.resolve(activitystreams);
+      return as2;
+    });
   }
 
   // Normalize the raw event
