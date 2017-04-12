@@ -6,7 +6,7 @@ const R = require("ramda");
 const request = require("request");
 const validUrl = require("valid-url");
 const Logger_1 = require("./Logger");
-exports.Logger = Logger_1.default;
+exports.Logger = Logger_1.Logger;
 Promise.promisifyAll(request);
 const cleanNulls = R.when(R.either(R.is(Array), R.is(Object)), R.pipe(R.reject(R.isNil), R.map((a) => cleanNulls(a))));
 exports.cleanNulls = cleanNulls;
@@ -25,7 +25,7 @@ exports.isUrl = isUrl;
 function fileInfo(file) {
     const magic = new mmmagic.Magic(false, mmmagic.MAGIC_MIME_TYPE);
     Promise.promisifyAll(magic);
-    const logger = new Logger_1.default('fileInfo', 'debug');
+    const logger = new Logger_1.Logger('fileInfo', 'debug');
     return Promise.resolve(isUrl(file))
         .then((is) => {
         if (is) {
