@@ -1,6 +1,6 @@
 import * as pino from 'pino';
 
-export default class Logger { // tslint:disable-line:no-default-export
+export class Logger {
   private pino: any;
 
   constructor(name: string, level: string) {
