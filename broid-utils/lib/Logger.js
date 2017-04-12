@@ -21,4 +21,4 @@ class Logger {
         messages.map((message) => this.pino.debug(message));
     }
 }
-exports.default = Logger;
+exports.Logger = Logger;

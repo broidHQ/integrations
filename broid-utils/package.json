@@ -58,7 +58,6 @@
     "tslint-eslint-rules": "^3.5.1",
     "tslint-microsoft-contrib": "^4.0.1",
     "typescript": "^2.1.4",
-    "typings": "^2.1.0",
     "watch": "^1.0.1"
   }
 }
