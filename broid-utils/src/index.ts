@@ -4,7 +4,7 @@ import * as R from 'ramda';
 import * as request from 'request';
 import * as validUrl from 'valid-url';
 
-import {default as Logger} from './Logger';
+import { Logger } from './Logger';
 
 Promise.promisifyAll(request);
 
