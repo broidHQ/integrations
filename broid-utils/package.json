@@ -1,6 +1,6 @@
 {
   "name": "@broid/utils",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "main": "lib/index.js",
   "license": "AGPL-3.0+",
   "author": "Broid Team <opensource@broid.ai> (https://broid.ai)",
