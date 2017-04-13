@@ -40,9 +40,10 @@
   },
   "dependencies": {
     "bluebird": "^3.5.0",
-    "mmmagic": "^0.4.5",
+    "file-type": "^4.1.0",
     "pino": "^3.0.5",
     "ramda": "^0.22.1",
+    "read-chunk": "^2.0.0",
     "request": "^2.81.0",
     "valid-url": "^1.0.9"
   },
