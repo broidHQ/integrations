@@ -33,7 +33,7 @@ function fileInfo(file) {
         }
         return fileType(readChunk.sync(file, 0, 4100));
     })
-        .then((infos) => R.dissoc("mime", R.assoc("mimetype", infos.mime, infos)))
+        .then((infos) => R.dissoc('mime', R.assoc('mimetype', infos.mime, infos)))
         .catch((error) => {
         logger.error(error);
         return { mimetype: '' };
