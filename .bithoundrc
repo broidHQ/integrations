@@ -10,7 +10,7 @@
 	"critics": {
 		"lint": {
 			"engine": "tslint",
-      "configLocation": ".travis/tslint.json"
+      "configLocation": "_tools/ci_tslint.json"
 		},
 		"wc": {
 			"limit": 3000

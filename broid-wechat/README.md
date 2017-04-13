@@ -59,8 +59,12 @@ npm install --save @broid/wechat
 const BroidWeChat = require('@broid/wechat');
 
 const wechat = new BroidWeChat({
-  appID: ''
-  appSecret: ''
+  appID: '',
+  appSecret: '',
+  http: {
+    host: "127.0.0.1",
+    port: 8080
+  }
 });
 
 wechat.connect()
@@ -71,13 +75,37 @@ wechat.connect()
   });
 ```
 
+WeChat can also be used with your existing express setup.
+
+```javascript
+const BroidWeChat = require('broid-wechat');
+const express = require("express");
+
+const wechat  = new BroidWeChat({
+  appID: '',
+  appSecret: '',
+});
+
+const app = express();
+app.use("/wechat", wechat.getRouter());
+
+wechat.connect()
+  .subscribe({
+    next: data => console.log(data),
+    error: err => console.error(`Something went wrong: ${err.message}`),
+    complete: () => console.log('complete'),
+  });
+
+app.listen(8080);
+```
+
 **Options available**
 
 | name              | Type     | default    | Description  |
 | ----------------- |:--------:| :--------: | --------------------------|
 | serviceID         | string   | random     | Arbitrary identifier of the running instance |
 | logLevel          | string   | `info`     | Can be : `fatal`, `error`, `warn`, `info`, `debug`, `trace` |
-| http              | object   | `{ "port": 8080, "http": "0.0.0.0" }` | WebServer options (`host`, `port`, `webhookURL`) |
+| http              | object   |            | WebServer options (`host`, `port`, `webhookURL`) |
 
 ### Receive a message
 

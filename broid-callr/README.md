@@ -61,8 +61,10 @@ const callr = new broidCallr({
   username: '<sender_name>',
   token: "<access_token>",
   tokenSecret: "<access_secret>",
+  webhookURL: "http://127.0.0.1",
   http: {
-    webhookURL: "http://127.0.0.1/"
+    host: "127.0.0.1",
+    port: 8080
   }
 });
 
@@ -74,6 +76,33 @@ callr.connect()
   });
 ```
 
+Callr can also be used with your existing express setup.
+
+```javascript
+const BroidCallr = require('broid-callr');
+const express = require("express");
+
+const callr = new broidCallr({
+  username: '<sender_name>',
+  token: "<access_token>",
+  tokenSecret: "<access_secret>",
+  webhookURL: "http://example.com/callr"
+});
+
+const app = express();
+app.use("/callr", callr.getRouter());
+
+callr.connect()
+  .subscribe({
+    next: data => console.log(data),
+    error: err => console.error(`Something went wrong: ${err.message}`),
+    complete: () => console.log('complete'),
+  });
+
+app.listen(8080);
+```
+
+
 **Options available**
 
 | name             | Type     | default    | Description  |
@@ -83,7 +112,8 @@ callr.connect()
 | token            | string   |            | Your login |
 | tokenSecret     | string   |            | Your password |
 | username         | string   |            | Your sender name |
-| http             | object   | `{ "port": 8080, "http": "0.0.0.0", "webhookURL": "127.0.0.1" }` | WebServer options (`host`, `port`, `webhookURL`) |
+| webhookURL       | string   |           | Full webhook URL to be passed to Callr web services |
+| http             | object   |           | WebServer options (`host`, `port`) |
 
 ### Receive a message
 

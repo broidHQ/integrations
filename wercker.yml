@@ -1,0 +1,20 @@
+box: node:6
+build:
+  steps:
+    - script:
+      name: install yarn
+      code: |
+        yarn --version
+    - script:
+      name: set yarn cache
+      code: |
+        export YARN_CACHE=$WERCKER_CACHE_DIR/yarn
+    - script:
+      name: install dependencies
+      code: |
+        chmod +x ./_tools/scripts/*
+        HOME=$YARN_CACHE ./_tools/scripts/run-install.sh
+    - script:
+      name: test
+      code: |
+        ./_tools/scripts/run-tests.sh

@@ -114,8 +114,8 @@
 [deps]:https://img.shields.io/badge/dependencies-checked-green.svg?style=flat
 [deps-url]:#integrations
 
-[tests]:https://img.shields.io/travis/broidHQ/integrations/master.svg
-[tests-url]:https://travis-ci.org/broidHQ/integrations
+[tests]:https://app.wercker.com/status/661157f9db415b5b60bc8c2b92744604/s/master
+[tests-url]:https://app.wercker.com/project/byKey/661157f9db415b5b60bc8c2b92744604
 
 [bithound]:https://img.shields.io/bithound/code/github/broidHQ/integrations.svg
 [bithound-url]:https://www.bithound.io/github/broidHQ/integrations

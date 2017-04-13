@@ -1,4 +1,6 @@
+/* tslint:disable */
+
 // Javascript import compatibility
 
-import {default as Adapter} from "./adapter";
+import { Adapter } from './Adapter';
 export = Adapter;

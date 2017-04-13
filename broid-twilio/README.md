@@ -58,8 +58,12 @@ const BroidTwilio = require('@broid/twilio');
 
 const twilio = new BroidTwilio({
   username: '<phone_number>',
-  token: "<account_sid>",
-  token_secret: "<auth_token>"
+  token: '<account_sid>',
+  token_secret: '<auth_token>',
+  http: {
+    host: "127.0.0.1",
+    port: 8080
+  }
 });
 
 twilio.connect()
@@ -68,6 +72,31 @@ twilio.connect()
     error: err => console.error(`Something went wrong: ${err.message}`),
     complete: () => console.log('complete'),
   });
+```
+
+Twilio can also be used with your existing express setup.
+
+```javascript
+const BroidTwilio = require('broid-twilio');
+const express = require("express");
+
+const twilio  = new BroidTwilio({
+  username: '<phone_number>',
+  token: '<account_sid>',
+  token_secret: '<auth_token>'
+});
+
+const app = express();
+app.use("/twilio", twilio.getRouter());
+
+twilio.connect()
+  .subscribe({
+    next: data => console.log(data),
+    error: err => console.error(`Something went wrong: ${err.message}`),
+    complete: () => console.log('complete'),
+  });
+
+app.listen(8080);
 ```
 
 **Options available**
@@ -79,7 +108,7 @@ twilio.connect()
 | token            | string   |            | Your account sid |
 | tokenSecret     | string   |            | Your auth token |
 | username         | string   |            | The phone number |
-| http             | object   | `{ "port": 8080, "http": "0.0.0.0" }` | WebServer options (`host`, `port`) |
+| http             | object   |            | WebServer options (`host`, `port`) |
 
 ### Receive a message
 

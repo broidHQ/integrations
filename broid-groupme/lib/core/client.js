@@ -1,10 +1,11 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const R = require("ramda");
 const request = require("request-promise");
-const baseURL = "https://api.groupme.com/v3";
+const baseURL = 'https://api.groupme.com/v3';
 function getMessages(token, groupId) {
     return request({
-        json: "true",
+        json: 'true',
         qs: {
             token,
             limit: 100,
@@ -16,7 +17,7 @@ function getMessages(token, groupId) {
 exports.getMessages = getMessages;
 function getMembers(token, groupId) {
     return request({
-        json: "true",
+        json: 'true',
         qs: {
             token,
         },
@@ -26,7 +27,7 @@ function getMembers(token, groupId) {
 exports.getMembers = getMembers;
 function getGroups(token) {
     return request({
-        json: "true",
+        json: 'true',
         qs: {
             token,
         },
@@ -37,7 +38,7 @@ exports.getGroups = getGroups;
 function postMessage(token, payload) {
     const post = (data) => request({
         json: data,
-        method: "POST",
+        method: 'POST',
         qs: { token },
         resolveWithFullResponse: true,
         uri: `${baseURL}/bots/post`,
@@ -50,11 +51,11 @@ function postMessage(token, payload) {
     });
     if (payload.image) {
         return request.get(payload.image.url)
-            .pipe(request.post("https://image.groupme.com/pictures", { json: true, qs: { access_token: token } }))
+            .pipe(request.post('https://image.groupme.com/pictures', { json: true, qs: { access_token: token } }))
             .then((res) => {
-            const url = R.path(["payload", "url"], res);
+            const url = R.path(['payload', 'url'], res);
             if (!url) {
-                throw new Error("Image URL should exist.");
+                throw new Error('Image URL should exist.');
             }
             return url;
         })

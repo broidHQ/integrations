@@ -1,6 +1,0 @@
-{
-  "extends": "tslint:latest",
-  "rules": {
-    "max-line-length": [true, 200]
-  }
-}

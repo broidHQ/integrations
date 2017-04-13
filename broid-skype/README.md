@@ -59,6 +59,10 @@ const BroidSkype = require('@broid/skype');
 const skype = new BroidSkype({
   token: 'xxxxx',
   tokenSecret: 'xxxxxx',
+  http: {
+    host: '127.0.0.1',
+    port: 8080
+  }
 });
 
 skype.connect()
@@ -69,6 +73,30 @@ skype.connect()
   });
 ```
 
+Skype can also be used with your existing express setup.
+
+```javascript
+const BroidSkype = require('broid-skype');
+const express = require("express");
+
+const skype  = new BroidSkype({
+  token: 'xxxxx',
+  tokenSecret: 'xxxxxx',
+});
+
+const app = express();
+app.use("/skype", skype.getRouter());
+
+skype.connect()
+  .subscribe({
+    next: data => console.log(data),
+    error: err => console.error(`Something went wrong: ${err.message}`),
+    complete: () => console.log('complete'),
+  });
+
+app.listen(8080);
+```
+
 **Options available**
 
 | name             | Type     | default    | Description  |
@@ -77,7 +105,7 @@ skype.connect()
 | token_secret     | string   |      |  |
 | service_id       | string   | random     | Arbitrary identifier of the running instance |
 | log_level        | string   | `debug`    | Can be : `fatal`, `error`, `warn`, `info`, `debug`, `trace` |
-| http             | object   | `{ "port": 8080, "http": "127.0.0.1" }` | HTTP options (`host`, `port`) |
+| http             | object   |      | HTTP options (`host`, `port`) |
 
 
 ### Receive a message
@@ -257,7 +285,7 @@ skype.send(formatted_message)
       "type": "Object",
       "name": "address_id",
       "content": "xxxxxxx#29:xxxxxxxxxxxx#skype#28:xxxxxxxxxxxx"
-    }    
+    }
   },
   "to": {
     "type": "Person",
@@ -297,7 +325,7 @@ skype.send(formatted_message)
       "type": "Object",
       "name": "address_id",
       "content": "xxxxxxx#29:xxxxxxxxxxxx#skype#28:xxxxxxxxxxxx"
-    }    
+    }
   },
   "to": {
     "type": "Person",
