@@ -1,6 +1,6 @@
 {
   "name": "@broid/utils",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "main": "lib/index.js",
   "license": "AGPL-3.0+",
   "author": "Broid Team <opensource@broid.ai> (https://broid.ai)",
@@ -40,9 +40,10 @@
   },
   "dependencies": {
     "bluebird": "^3.5.0",
-    "mmmagic": "^0.4.5",
+    "file-type": "^4.1.0",
     "pino": "^3.0.5",
     "ramda": "^0.22.1",
+    "read-chunk": "^2.0.0",
     "request": "^2.81.0",
     "valid-url": "^1.0.9"
   },
