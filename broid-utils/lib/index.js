@@ -1,8 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const Promise = require("bluebird");
-const mmmagic = require("mmmagic");
+const fileType = require("file-type");
 const R = require("ramda");
+const readChunk = require("read-chunk");
 const request = require("request");
 const validUrl = require("valid-url");
 const Logger_1 = require("./Logger");
@@ -23,18 +24,16 @@ function isUrl(url) {
 }
 exports.isUrl = isUrl;
 function fileInfo(file) {
-    const magic = new mmmagic.Magic(false, mmmagic.MAGIC_MIME_TYPE);
-    Promise.promisifyAll(magic);
     const logger = new Logger_1.Logger('fileInfo', 'debug');
     return Promise.resolve(isUrl(file))
         .then((is) => {
         if (is) {
             return request.getAsync({ uri: file, encoding: null })
-                .then((response) => magic.detectAsync(response.body));
+                .then((response) => fileType(response.body));
         }
-        return magic.detectFileAsync(file);
+        return fileType(readChunk.sync(file, 0, 4100));
     })
-        .then((mimetype) => ({ mimetype }))
+        .then((infos) => R.dissoc("mime", R.assoc("mimetype", infos.mime, infos)))
         .catch((error) => {
         logger.error(error);
         return { mimetype: '' };
