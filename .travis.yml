@@ -24,6 +24,7 @@ install:
   - echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
   - sudo apt-get update -qq
   - sudo apt-get install -y -qq yarn
+  - sudo apt-get install -y -qq libmagic libmagic-dev
   - npm install -g nsp
   - yarn --version
 before_script:
