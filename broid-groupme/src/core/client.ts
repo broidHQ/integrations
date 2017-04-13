@@ -1,11 +1,11 @@
-import * as R from "ramda";
-import * as request from "request-promise";
+import * as R from 'ramda';
+import * as request from 'request-promise';
 
-const baseURL = "https://api.groupme.com/v3";
+const baseURL = 'https://api.groupme.com/v3';
 
-export function getMessages(token, groupId): Promise<any> {
+export function getMessages(token: string, groupId: string): Promise<any> {
   return request({
-    json: "true",
+    json: 'true',
     qs: {
       token,
       limit: 100,
@@ -15,9 +15,9 @@ export function getMessages(token, groupId): Promise<any> {
     .filter(((msg) => !msg.system)));
 }
 
-export function getMembers(token, groupId): Promise<any> {
+export function getMembers(token: string, groupId: string): Promise<any> {
   return request({
-    json: "true",
+    json: 'true',
     qs: {
       token,
     },
@@ -25,9 +25,9 @@ export function getMembers(token, groupId): Promise<any> {
   }).then((res) => res.response.members);
 }
 
-export function getGroups(token): Promise<any> {
+export function getGroups(token: string): Promise<any> {
   return request({
-    json: "true",
+    json: 'true',
     qs: {
       token,
     },
@@ -38,7 +38,7 @@ export function getGroups(token): Promise<any> {
 export function postMessage(token: string, payload: any): Promise<any> {
   const post = (data) => request({
     json: data,
-    method: "POST",
+    method: 'POST',
     qs: { token },
     resolveWithFullResponse: true,
     uri: `${baseURL}/bots/post`,
@@ -52,11 +52,12 @@ export function postMessage(token: string, payload: any): Promise<any> {
 
   if (payload.image) {
     return request.get(payload.image.url)
-      .pipe(request.post("https://image.groupme.com/pictures",
+      .pipe(request.post(
+        'https://image.groupme.com/pictures',
         { json: true, qs: { access_token: token } }))
       .then((res) => {
-        const url = R.path(["payload", "url"], res);
-        if (!url) { throw new Error("Image URL should exist."); }
+        const url = R.path(['payload', 'url'], res);
+        if (!url) { throw new Error('Image URL should exist.'); }
         return url;
       })
       .then((url) => {

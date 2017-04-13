@@ -59,7 +59,11 @@ const BroidLine = require('@broid/line');
 const line = new BroidLine({
   token: "<channel_secret>",
   tokenSecret: "<channel_access_token>",
-  username: "<channel_id>"
+  username: "<channel_id>",
+  http: {
+    host: "127.0.0.1",
+    port: 8080
+  }
 });
 
 line.connect()
@@ -68,6 +72,31 @@ line.connect()
     error: err => console.error(`Something went wrong: ${err.message}`),
     complete: () => console.log('complete'),
   });
+```
+
+Line can also be used with your existing express setup.
+
+```javascript
+const BroidLine = require('@broid/line');
+const express = require("express");
+
+const line = new BroidLine({
+  token: "<channel_secret>",
+  tokenSecret: "<channel_access_token>",
+  username: "<channel_id>"
+});
+
+const app = express();
+app.use("/line", line.getRouter());
+
+line.connect()
+  .subscribe({
+    next: data => console.log(data),
+    error: err => console.error(`Something went wrong: ${err.message}`),
+    complete: () => console.log('complete'),
+  });
+
+app.listen(8080);
 ```
 
 **Options available**

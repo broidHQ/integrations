@@ -63,8 +63,8 @@ const nexmo = new BroidNexmo({
   token: '<your_nexmo_token>',
   tokenSecret: '<your_nexmo_token_secret>',
   http: {
-    port: 8080,
-    host: "0.0.0.0"
+    host: '127.0.0.1',
+    port: 8080
   }
 });
 
@@ -76,6 +76,31 @@ nexmo.connect()
   });
 ```
 
+Nexmo can also be used with your existing express setup.
+
+```javascript
+const BroidNexmo = require('broid-nexmo');
+const express = require("express");
+
+const nexmo  = new BroidNexmo({
+  username: '<your_sender_number>',
+  token: '<your_nexmo_token>',
+  tokenSecret: '<your_nexmo_token_secret>',
+});
+
+const app = express();
+app.use("/nexmo", nexmo.getRouter());
+
+nexmo.connect()
+  .subscribe({
+    next: data => console.log(data),
+    error: err => console.error(`Something went wrong: ${err.message}`),
+    complete: () => console.log('complete'),
+  });
+
+app.listen(8080);
+```
+
 **Options available**
 
 | name            | Type     | default    | Description  |
@@ -85,7 +110,7 @@ nexmo.connect()
 | username        | string   |            | Your sender phone number |
 | token           | string   |            | Your nexmo token         |
 | tokenSecret     | string   |            | Your nexmo token secret  |
-| http            | object   | `{ "port": 8080, "http": "0.0.0.0" }` | WebServer options (`host`, `port`) |
+| http            | object   |            | WebServer options (`host`, `port`) |
 
 ### Receive a message
 

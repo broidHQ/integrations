@@ -10,4 +10,3 @@ export interface IAdapterOptions {
   logLevel?: string;
   http?: IAdapterHTTPOptions;
 }
-

@@ -12,16 +12,6 @@ export interface IAdapterOptions {
   username: string;
 }
 
-export interface IActivityStream {
-  actor?: {};
-  object?: ITwilioActivityStreamObject;
-  target?: {};
-  readonly "@context": string;
-  readonly generator: {};
-  readonly published: number;
-  readonly type: string;
-}
-
 export interface ITwilioWebHookEvent {
   response: any;
   request: any;
@@ -31,13 +21,13 @@ export interface ITwilioActivityStreamObject {
   id: string;
   content?: string;
   mediaType?: string;
-  type: string;
+  type: string; // tslint:disable-line:no-reserved-keywords
   url?: string;
   attachment?: ITwilioMedia;
 }
 
 export interface ITwilioMedia {
   mediaType: string;
-  type: string;
+  type: string; // tslint:disable-line:no-reserved-keywords
   url: string;
 }
