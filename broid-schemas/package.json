@@ -34,7 +34,7 @@
     "nsp-check": "nsp check --warn-only -o summary",
     "release": "yarn run nsp-check && yarn run build && npm publish --access public",
     "test": "echo \"Error: no test specified\" && exit 0",
-    "travis": "yarn run nsp-check && yarn run test",
+    "travis": "yarn run test",
     "tsc:watch": "yarn run build && tsc --watch",
     "watch": "concurrently --kill-others \"yarn run lint:watch\" \"yarn run tsc:watch\""
   },

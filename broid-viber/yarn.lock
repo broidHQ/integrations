@@ -9,14 +9,15 @@
     ajv "^5.0.1-beta.1"
     bluebird "^3.4.6"
 
-"@broid/utils@^1.0.3":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@broid/utils/-/utils-1.0.4.tgz#148e330671701204f111ac0d85d5675954444204"
+"@broid/utils@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@broid/utils/-/utils-1.1.0.tgz#cba5fdb2ad46082516e6ca11f0bd9d82aa535f5f"
   dependencies:
     bluebird "^3.5.0"
-    mmmagic "^0.4.5"
+    file-type "^4.1.0"
     pino "^3.0.5"
     ramda "^0.22.1"
+    read-chunk "^2.0.0"
     request "^2.81.0"
     valid-url "^1.0.9"
 
@@ -1604,6 +1605,10 @@ figures@^1.4.0:
     escape-string-regexp "^1.0.5"
     object-assign "^4.1.0"
 
+file-type@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/file-type/-/file-type-4.1.0.tgz#690b70293715d7fd39697e38f7a108ebab2551b9"
+
 filename-regex@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/filename-regex/-/filename-regex-2.0.0.tgz#996e3e80479b98b9897f15a8a58b3d084e926775"
@@ -2497,12 +2502,6 @@ minimist@^1.1.3, minimist@^1.2.0:
   dependencies:
     minimist "0.0.8"
 
-mmmagic@^0.4.5:
-  version "0.4.5"
-  resolved "https://registry.yarnpkg.com/mmmagic/-/mmmagic-0.4.5.tgz#883468e4423a75937674350018c4062d215eb2e2"
-  dependencies:
-    nan "^2.4.0"
-
 moment@2.x.x:
   version "2.18.1"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.18.1.tgz#c36193dd3ce1c2eed2adb7c802dbbc77a81b1c0f"
@@ -2524,7 +2523,7 @@ multimatch@^2.1.0:
     arrify "^1.0.0"
     minimatch "^3.0.0"
 
-nan@^2.3.0, nan@^2.4.0:
+nan@^2.3.0:
   version "2.6.2"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.6.2.tgz#e4ff34e6c95fdfb5aecc08de6596f43605a7db45"
 
@@ -2828,7 +2827,7 @@ performance-now@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/performance-now/-/performance-now-0.2.0.tgz#33ef30c5c77d4ea21c5a53869d91b56d8f2555e5"
 
-pify@^2.0.0:
+pify@^2.0.0, pify@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/pify/-/pify-2.3.0.tgz#ed141a6ac043a849ea588498e7dca8b15330e90c"
 
@@ -3041,6 +3040,12 @@ read-all-stream@^3.0.0:
   dependencies:
     pinkie-promise "^2.0.0"
     readable-stream "^2.0.0"
+
+read-chunk@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/read-chunk/-/read-chunk-2.0.0.tgz#3246e877829116cec059674c4d5f300f7a9261f3"
+  dependencies:
+    pify "^2.3.0"
 
 read-pkg-up@^1.0.1:
   version "1.0.1"
@@ -3407,8 +3412,8 @@ split2@^2.0.1:
     through2 "^2.0.2"
 
 sshpk@^1.7.0:
-  version "1.11.0"
-  resolved "https://registry.yarnpkg.com/sshpk/-/sshpk-1.11.0.tgz#2d8d5ebb4a6fab28ffba37fa62a90f4a3ea59d77"
+  version "1.13.0"
+  resolved "https://registry.yarnpkg.com/sshpk/-/sshpk-1.13.0.tgz#ff2a3e4fd04497555fed97b39a0fd82fafb3a33c"
   dependencies:
     asn1 "~0.2.3"
     assert-plus "^1.0.0"

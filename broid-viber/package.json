@@ -35,14 +35,14 @@
     "lint:watch": "watch 'yarn run lint' src",
     "nsp-check": "nsp check --warn-only -o summary",
     "test": "yarn run lint && yarn run build && nyc ava --verbose",
-    "travis": "yarn run nsp-check && yarn run test",
+    "travis": "yarn run test",
     "tsc:watch": "yarn run build && tsc --watch",
     "release": "yarn run travis && yarn run build && npm publish --access public",
     "watch": "concurrently --kill-others \"yarn run lint:watch\" \"yarn run tsc:watch\""
   },
   "dependencies": {
     "@broid/schemas": "^1.0.0",
-    "@broid/utils": "^1.0.4",
+    "@broid/utils": "^1.1.0",
     "bluebird": "^3.4.7",
     "node-uuid": "^1.4.7",
     "ramda": "^0.23.0",

@@ -12,9 +12,9 @@ build:
     - script:
       name: install dependencies
       code: |
-        chmod +x ./_tools/test
-        HOME=$YARN_CACHE ./_tools/test install
+        chmod +x ./_tools/scripts/*
+        HOME=$YARN_CACHE ./_tools/scripts/run-install.sh
     - script:
       name: test
       code: |
-        ./_tools/test
+        ./_tools/scripts/run-tests.sh

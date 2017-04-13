@@ -1,5 +1,4 @@
-#!/bin/sh
-set -e
+#!/bin/sh -e
 
 rootDir() {
   xargs -n1 | cut -d/ -f1
@@ -10,7 +9,7 @@ integrations() {
 }
 
 revelant_directories() {
-  git diff --name-only "origin/master...$CI_BRANCH" | rootDir | sort | uniq |
+  git diff --name-only origin/master -- "*.ts" "*.json" "*.js" | rootDir | sort | uniq |
   grep -E -i -w '(broid-)\w+' # Get only broid integrations paths
 }
 
@@ -20,4 +19,12 @@ integrations_changed() {
   comm -12 .integrations .revelant_directories
 }
 
-echo $(integrations_changed)
+INTS_UPDATED=$(integrations_changed)
+if [ ${#INTS_UPDATED[@]} -eq 0 ]; then
+  echo $(integrations)
+else
+  if [ -z "$INTS_UPDATED" ]; then
+    exit 1
+  fi  
+  echo $INTS_UPDATED
+fi

@@ -33,7 +33,7 @@
     "lint:watch": "watch 'yarn run lint' src",
     "nsp-check": "nsp check --warn-only -o summary",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "travis": "yarn run lint && yarn run nsp-check",
+    "travis": "yarn run lint",
     "tsc:watch": "tsc --watch",
     "release": "yarn run clean && yarn run build && npm publish --access public",
     "watch": "concurrently --kill-others \"yarn run lint:watch\" \"yarn run tsc:watch\""

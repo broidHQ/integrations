@@ -27,7 +27,7 @@
     "node": ">=6.0.0"
   },
   "scripts": {
-    "build": "yarn run clean && yarn run copy && yarn run copy:config && cat tsconfig.json && tsc --version && tsc -p tsconfig.json",
+    "build": "yarn run clean && yarn run copy && yarn run copy:config && tsc -p tsconfig.json",
     "clean": "rm -rf lib && rm -rf tsconfig.json && rm -rf tslint.json",
     "copy": "copyfiles -u 1 src/**/*.json lib/",
     "copy:config": "cp ../_tools/tsconfig.json . && cp ../_tools/tslint.json .",
@@ -35,7 +35,7 @@
     "lint:watch": "watch 'yarn run lint' src",
     "nsp-check": "nsp check --warn-only -o summary",
     "test": "yarn run lint && yarn run build && nyc ava --verbose",
-    "travis": "yarn run nsp-check && yarn run test",
+    "travis": "yarn run test",
     "tsc:watch": "yarn run build && tsc --watch",
     "release": "yarn run travis && yarn run build && npm publish --access public",
     "watch": "concurrently --kill-others \"yarn run lint:watch\" \"yarn run tsc:watch\""
@@ -61,7 +61,7 @@
   },
   "dependencies": {
     "@broid/schemas": "^1.0.0",
-    "@broid/utils": "^1.0.4",
+    "@broid/utils": "^1.1.0",
     "bluebird": "^3.4.7",
     "body-parser": "^1.16.0",
     "express": "^4.14.0",

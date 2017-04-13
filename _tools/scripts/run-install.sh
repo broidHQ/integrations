@@ -1,10 +1,10 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
 
 source "$(dirname "$0")/get-modified.sh"
 
-echo "CI_BRANCH: $CI_BRANCH"
+echo "WERCKER_GIT_BRANCH: $WERCKER_GIT_BRANCH"
 
 INTS_UPDATED=$(integrations_changed)
 echo $INTS_UPDATED
