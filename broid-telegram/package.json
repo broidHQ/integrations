@@ -30,7 +30,7 @@
     "build": "yarn run clean && yarn run copy && yarn run copy:config && tsc -p tsconfig.json",
     "clean": "rm -rf lib && rm -rf tsconfig.json && rm -rf tslint.json",
     "copy": "copyfiles -u 1 src/**/*.json lib/",
-    "copy:config": "cp ../.ci/tsconfig.json . && cp ../.ci/tslint.json .",
+    "copy:config": "cp ../_tools/tsconfig.json . && cp ../_tools/tslint.json .",
     "lint": "yarn run copy:config && tslint -c tslint.json src/**/*.ts",
     "lint:watch": "watch 'yarn run lint' src",
     "nsp-check": "nsp check --warn-only -o summary",

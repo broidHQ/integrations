@@ -1,0 +1,67 @@
+FROM node:6.9.4-alpine
+
+RUN apk --no-cache add ca-certificates curl make gcc g++ python linux-headers paxctl libgcc libstdc++ gnupg git wget && update-ca-certificates
+RUN mkdir -p /opt/yarn && cd /opt/yarn && wget https://yarnpkg.com/latest.tar.gz && tar zxf latest.tar.gz
+ENV PATH "/Users/killix/.nvm/versions/node/v6.9.1/bin:/Users/killix/.local/google-cloud-sdk/bin:/usr/local/bin:/Users/killix/.gvm/pkgsets/go1.7.1/global/bin:/Users/killix/.gvm/gos/go1.7.1/bin:/Users/killix/.gvm/pkgsets/go1.7.1/global/overlay/bin:/Users/killix/.gvm/bin:/Users/killix/.gvm/bin:/Users/killix/.cargo/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/MacGPG2/bin:/Users/killix/bin:/usr/local/Cellar/node/7.3.0/bin:/opt/yarn/dist/bin"
+
+ARG CI_BRANCH
+ENV CI_BRANCH $CI_BRANCH
+
+RUN mkdir -p /integrations
+WORKDIR /integrations/
+
+COPY ./_tools /integrations/_tools/
+RUN chmod +x _tools/scripts/run-install.sh
+RUN chmod +x _tools/scripts/run-tests.sh
+
+COPY ./broid-alexa/package.json ./broid-alexa/yarn.lock /integrations/broid-alexa/
+COPY ./broid-callr/package.json ./broid-callr/yarn.lock /integrations/broid-callr/
+COPY ./broid-discord/package.json ./broid-discord/yarn.lock /integrations/broid-discord/
+COPY ./broid-flowdock/package.json ./broid-flowdock/yarn.lock /integrations/broid-flowdock/
+COPY ./broid-gitter/package.json ./broid-gitter/yarn.lock /integrations/broid-gitter/
+COPY ./broid-google-assistant/package.json ./broid-google-assistant/yarn.lock /integrations/broid-google-assistant/
+COPY ./broid-groupme/package.json ./broid-groupme/yarn.lock /integrations/broid-groupme/
+COPY ./broid-irc/package.json ./broid-irc/yarn.lock /integrations/broid-irc/
+COPY ./broid-kik/package.json ./broid-kik/yarn.lock /integrations/broid-kik/
+COPY ./broid-line/package.json ./broid-line/yarn.lock /integrations/broid-line/
+COPY ./broid-messenger/package.json ./broid-messenger/yarn.lock /integrations/broid-messenger/
+COPY ./broid-ms-teams/package.json ./broid-ms-teams/yarn.lock /integrations/broid-ms-teams/
+COPY ./broid-nexmo/package.json ./broid-nexmo/yarn.lock /integrations/broid-nexmo/
+COPY ./broid-schemas/package.json ./broid-schemas/yarn.lock /integrations/broid-schemas/
+COPY ./broid-skype/package.json ./broid-skype/yarn.lock /integrations/broid-skype/
+COPY ./broid-slack/package.json ./broid-slack/yarn.lock /integrations/broid-slack/
+COPY ./broid-telegram/package.json ./broid-telegram/yarn.lock /integrations/broid-telegram/
+COPY ./broid-twilio/package.json ./broid-twilio/yarn.lock /integrations/broid-twilio/
+COPY ./broid-twitter/package.json ./broid-twitter/yarn.lock /integrations/broid-twitter/
+COPY ./broid-utils/package.json ./broid-utils/yarn.lock /integrations/broid-utils/
+COPY ./broid-viber/package.json ./broid-viber/yarn.lock /integrations/broid-viber/
+COPY ./broid-wechat/package.json ./broid-wechat/yarn.lock /integrations/broid-wechat/
+
+COPY ./.git /integrations/.git/
+
+RUN /bin/sh _tools/scripts/run-install.sh
+
+COPY ./broid-alexa/src/* /integrations/broid-alexa/src/
+COPY ./broid-callr/src/* /integrations/broid-callr/src/
+COPY ./broid-discord/src/* /integrations/broid-discord/src/
+COPY ./broid-flowdock/src/* /integrations/broid-flowdock/src/
+COPY ./broid-gitter/src/* /integrations/broid-gitter/src/
+COPY ./broid-google-assistant/src/* /integrations/broid-google-assistant/src/
+COPY ./broid-groupme/src/* /integrations/broid-groupme/src/
+COPY ./broid-irc/src/* /integrations/broid-irc/src/
+COPY ./broid-kik/src/* /integrations/broid-kik/src/
+COPY ./broid-line/src/* /integrations/broid-line/src/
+COPY ./broid-messenger/src/* /integrations/broid-messenger/src/
+COPY ./broid-ms-teams/src/* /integrations/broid-ms-teams/src/
+COPY ./broid-nexmo/src/* /integrations/broid-nexmo/src/
+COPY ./broid-schemas/src/* /integrations/broid-schemas/src/
+COPY ./broid-skype/src/* /integrations/broid-skype/src/
+COPY ./broid-slack/src/* /integrations/broid-slack/src/
+COPY ./broid-telegram/src/* /integrations/broid-telegram/src/
+COPY ./broid-twilio/src/* /integrations/broid-twilio/src/
+COPY ./broid-twitter/src/* /integrations/broid-twitter/src/
+COPY ./broid-utils/src/* /integrations/broid-utils/src/
+COPY ./broid-viber/src/* /integrations/broid-viber/src/
+COPY ./broid-wechat/src/* /integrations/broid-wechat/src/
+
+RUN /bin/sh _tools/scripts/run-tests.sh

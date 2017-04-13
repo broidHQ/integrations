@@ -1,38 +1,24 @@
-language: node_js
-dist: trusty
+os:
+  - linux
 sudo: true
-env:
-  - CXX=g++-4.8
+language: cpp
 addons:
   apt:
     sources:
-    - ubuntu-toolchain-r-test
+      - ubuntu-toolchain-r-test
     packages:
-    - g++-4.8
-cache:
-  directories:
-    - integrations/broid-alexa/node_modules
-    - integrations/broid-callr/node_modules
-    - integrations/broid-discord/node_modules
-    - integrations/broid-flowdock/node_modules
-    - integrations/broid-kik/node_modules
-    - integrations/broid-line/node_modules
-    - integrations/broid-messenger/node_modules
-    - integrations/broid-ms-teams/node_modules
-    - integrations/broid-schemas/node_modules
-    - integrations/broid-skype/node_modules
-    - integrations/broid-slack/node_modules
-    - integrations/broid-telegram/node_modules
-    - integrations/broid-twilio/node_modules
-    - integrations/broid-twitter/node_modules
-    - integrations/broid-utils/node_modules
-    - integrations/broid-viber/node_modules
-    - integrations/broid-irc/node_modules
-    - integrations/broid-wechat/node_modules
-    - integrations/broid-ms-team/node_modules
-node_js:
-  - "6"
-before_install:
+      - g++-4.8
+      - build-essential
+notifications:
+  email: false
+env:
+  matrix:
+    - TRAVIS_NODE_VERSION="6"
+install:
+  - "rm -rf ~/.nvm && mkdir -p ~/.nvm && curl -sL `curl -sI https://github.com/creationix/nvm/releases/latest|sed -En 's/^Location: (.+)\\/releases\\/tag\\/(.+)/\\1\\/tarball\\/\\2/p'|tr -d '\r\n'`|tar zx --strip=1 -C ~/.nvm && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION"
+  - npm --version
+  - if [[ $TRAVIS_OS_NAME == "linux" ]]; then export CXX=g++-4.8; export CC=gcc-4.8; fi
+  - $CXX --version
   # Repo for Yarn
   - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
   - echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
@@ -40,10 +26,7 @@ before_install:
   - sudo apt-get install -y -qq yarn
   - npm install -g nsp
   - yarn --version
-  - export CXX=g++-4.8
-  - export BUILDTYPE="production";
 before_script:
-  - $CXX --version
-  - chmod +x ./.ci/scripts/*
-  - ./.ci/scripts/run-install.sh
-script: ./.ci/scripts/run-tests.sh
+  - chmod +x ./_tools/test
+  - ./_tools/test install
+script: ./_tools/test

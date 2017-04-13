@@ -4,7 +4,7 @@ engines:
   tslint:
     enabled: true
     channel: beta
-    config: .ci/ci_tslint.json
+    config: _tools/ci_tslint.json
 ratings:
   paths:
   - "**/src/**.d.ts"
