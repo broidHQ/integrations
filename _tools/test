@@ -35,7 +35,7 @@ fi
 
 command_install() {
   for integration in $INTS_UPDATED; do
-    (cd "$integration" && npm install --ignore-scripts)
+    (cd "$integration" && yarn install --ignore-scripts)
   done
 }
 
@@ -44,7 +44,7 @@ command_test() {
     echo "> Testing $integration"
     (
       cd "$integration"
-      npm run travis
+      yarn run travis
     )
   done
 }

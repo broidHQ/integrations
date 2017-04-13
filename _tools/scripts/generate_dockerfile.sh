@@ -36,7 +36,8 @@ echo "RUN /bin/sh _tools/scripts/run-install.sh"
 echo ""
 for dir in ../../broid-* ; do
   dircleaned=${dir//[..\/]/}
-  echo "COPY ./$dircleaned/src/* /integrations/$dircleaned/src/"
+  echo "COPY ./$dircleaned/src/core /integrations/$dircleaned/src/core/"
+  echo "COPY ./$dircleaned/src/test /integrations/$dircleaned/src/test/"
 done
 echo ""
 echo "RUN /bin/sh _tools/scripts/run-tests.sh"

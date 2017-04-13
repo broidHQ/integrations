@@ -27,7 +27,7 @@
     "node": ">=6.0.0"
   },
   "scripts": {
-    "build": "yarn run clean && yarn run copy && yarn run copy:config && tsc -p tsconfig.json",
+    "build": "yarn run clean && yarn run copy && yarn run copy:config && cat tsconfig.json && tsc --version && tsc -p tsconfig.json",
     "clean": "rm -rf lib && rm -rf tsconfig.json && rm -rf tslint.json",
     "copy": "copyfiles -u 1 src/**/*.json lib/",
     "copy:config": "cp ../_tools/tsconfig.json . && cp ../_tools/tslint.json .",
