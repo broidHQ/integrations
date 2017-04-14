@@ -85,7 +85,7 @@
     ]
   },
   "bin": {
-    "broid-slack": "oauth.js"
+    "broid-slack": "bin/oauth.js"
   },
   "directories": {
     "test": "test"
