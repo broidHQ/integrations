@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const schemas_1 = require("@broid/schemas");
 const utils_1 = require("@broid/utils");
 const Promise = require("bluebird");
+const events_1 = require("events");
 const express_1 = require("express");
 const uuid = require("node-uuid");
 const R = require("ramda");
@@ -21,6 +22,7 @@ class Adapter {
         this.parser = new Parser_1.Parser(this.serviceName(), this.serviceID, this.logLevel);
         this.logger = new utils_1.Logger('adapter', this.logLevel);
         this.router = this.setupRouter();
+        this.emitter = new events_1.EventEmitter();
         if (obj.http) {
             this.webhookServer = new WebHookServer_1.WebHookServer(obj.http, this.router, this.logLevel);
         }

@@ -36,6 +36,7 @@ export class Adapter {
     this.parser = new Parser(this.serviceName(), this.serviceID, this.logLevel);
     this.logger = new Logger('adapter', this.logLevel);
     this.router = this.setupRouter();
+    this.emitter = new EventEmitter();
 
     if (obj.http) {
       this.webhookServer = new WebHookServer(obj.http, this.router, this.logLevel);
