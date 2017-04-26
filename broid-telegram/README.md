@@ -87,7 +87,7 @@ const telegram = new BroidTelegram({
 const app = express();
 app.use("/telegram", telegram.getRouter());
 
-callr.connect()
+telegram.connect()
   .subscribe({
     next: data => console.log(data),
     error: err => console.error(`Something went wrong: ${err.message}`),
