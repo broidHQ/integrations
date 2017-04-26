@@ -91,6 +91,10 @@ export class Adapter {
       return Observable.throw(new Error('Credentials should exist.'));
     }
 
+    if (this.webhookServer) {
+      this.webhookServer.listen();
+    }
+
     this.session = new TelegramBot(this.token);
     this.session.setWebHook(`${this.webhookURL}${this.token}`);
 
