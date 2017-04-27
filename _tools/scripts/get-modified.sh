@@ -1,4 +1,6 @@
-#!/bin/sh -e
+#!/bin/bash
+
+set -e
 
 rootDir() {
   xargs -n1 | cut -d/ -f1
@@ -25,6 +27,6 @@ if [ ${#INTS_UPDATED[@]} -eq 0 ]; then
 else
   if [ -z "$INTS_UPDATED" ]; then
     exit 1
-  fi  
+  fi
   echo $INTS_UPDATED
 fi
