@@ -26,7 +26,7 @@ if [ ${#INTS_UPDATED[@]} -eq 0 ]; then
   echo $(integrations)
 else
   if [ -z "$INTS_UPDATED" ]; then
-    exit 1
+    echo $(integrations)
   fi
   echo $INTS_UPDATED
 fi
