@@ -1,6 +1,4 @@
-#!/bin/bash
-
-set -e
+#!/bin/sh -e
 
 rootDir() {
   xargs -n1 | cut -d/ -f1
@@ -15,18 +13,20 @@ revelant_directories() {
   grep -E -i -w '(broid-)\w+' # Get only broid integrations paths
 }
 
-integrations_changed() {
+changed() {
   integrations > .integrations
   revelant_directories > .revelant_directories
   comm -12 .integrations .revelant_directories
 }
 
-INTS_UPDATED=$(integrations_changed)
-if [ ${#INTS_UPDATED[@]} -eq 0 ]; then
-  echo $(integrations)
-else
-  if [ -z "$INTS_UPDATED" ]; then
+integrations_changed() {
+  INTS_UPDATED=$(changed)
+  if [ ${#INTS_UPDATED[@]} -eq 0 ]; then
     echo $(integrations)
+  else
+    if [ -z "$INTS_UPDATED" ]; then
+      echo $(integrations)
+    fi
+    echo $INTS_UPDATED
   fi
-  echo $INTS_UPDATED
-fi
+}
