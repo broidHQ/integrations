@@ -2,6 +2,8 @@
 
 set -e
 
+echo "WERCKER_GIT_BRANCH: $WERCKER_GIT_BRANCH"
+
 source "$(dirname "$0")/get-modified.sh"
 
 echo "WERCKER_GIT_BRANCH: $WERCKER_GIT_BRANCH"
