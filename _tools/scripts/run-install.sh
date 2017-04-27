@@ -2,14 +2,12 @@
 
 set -e
 
-echo "WERCKER_GIT_BRANCH: $WERCKER_GIT_BRANCH"
-
 source "$(dirname "$0")/get-modified.sh"
 
 echo "WERCKER_GIT_BRANCH: $WERCKER_GIT_BRANCH"
 
 INTS_UPDATED=$(integrations_changed)
-echo $INTS_UPDATED
+echo "INTS_UPDATED: $INTS_UPDATED"
 
 for integration in $INTS_UPDATED; do
   echo "> Install dependencies for $integration"
