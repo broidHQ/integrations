@@ -18,7 +18,7 @@ export class Adapter {
   private connected: boolean;
   private address: string;
   private username: string;
-  private channels: string[];
+  private ircChannels: string[];
   private client: any;
   private logLevel: string;
   private connectTimeout: number;
@@ -32,7 +32,7 @@ export class Adapter {
     this.connectTimeout = obj && obj.connectTimeout || 60000;
     this.address = obj && obj.address;
     this.username = obj && obj.username;
-    this.channels = obj && obj.channels;
+    this.ircChannels = obj && obj.channels;
     this.ee = new EventEmitter();
 
     this.parser = new Parser(this.serviceName(), this.username, this.serviceID, this.logLevel);
@@ -47,6 +47,18 @@ export class Adapter {
   // Return the service ID of the current instance
   public serviceId(): string {
     return this.serviceID;
+  }
+
+  public getRouter(): null {
+    return null;
+  }
+
+  public users(): Promise<Error> {
+    return Promise.reject(new Error('Not supported'));
+  }
+
+  public channels(): Promise<Error> {
+    return Promise.reject(new Error('Not supported'));
   }
 
   public connect(): Observable<object> {
@@ -64,7 +76,7 @@ export class Adapter {
 
     this.client = Promise.promisifyAll(new irc.Client(this.address, this.username, {
       autoConnect: false,
-      channels: this.channels,
+      channels: this.ircChannels,
     }));
 
     const connect = this.client.connectAsync()
