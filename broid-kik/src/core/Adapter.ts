@@ -6,6 +6,7 @@ import * as Promise from 'bluebird';
 import { Router  } from 'express';
 import * as uuid from 'node-uuid';
 import * as R from 'ramda';
+import * as url from 'url';
 import { Observable } from 'rxjs/Rx';
 
 import { IAdapterOptions } from './interfaces';
@@ -85,18 +86,26 @@ export class Adapter {
       return Observable.throw(new Error('Credentials should exist.'));
     }
 
-    this.session = new KikBot({
+    const webhookURL = url.parse(this.webhookURL);
+
+    const options: any = {
       apiKey: this.token,
-      baseUrl: this.webhookURL,
-      username: this.username,
-    });
+      baseUrl: `${webhookURL.protocol}//${webhookURL.hostname}`,
+      username: this.username
+    };
+
+    if (webhookURL.path) {
+      options.incomingPath = `${webhookURL.path}/incoming`;
+    }
+
+    this.session = new KikBot(options);
 
     this.router.get('/', (req: any, res: any) => {
       const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
       this.logger.info(`Request to home from ${ip}`);
       res.send('Hello. This is a Broid Kik bot server. Got to www.broid.aid to get more details.');
     });
-    this.router.use(this.session.incoming());
+    this.router.use('/incoming', this.session.incoming());
     if (this.webhookServer) {
       this.webhookServer.listen();
     }
