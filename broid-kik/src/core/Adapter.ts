@@ -6,8 +6,8 @@ import * as Promise from 'bluebird';
 import { Router  } from 'express';
 import * as uuid from 'node-uuid';
 import * as R from 'ramda';
-import * as url from 'url';
 import { Observable } from 'rxjs/Rx';
+import * as url from 'url';
 
 import { IAdapterOptions } from './interfaces';
 import { Parser } from './Parser';
@@ -87,18 +87,17 @@ export class Adapter {
     }
 
     const webhookURL = url.parse(this.webhookURL);
-
-    const options: any = {
+    const kikOptions: any = {
       apiKey: this.token,
       baseUrl: `${webhookURL.protocol}//${webhookURL.hostname}`,
-      username: this.username
+      username: this.username,
     };
 
     if (webhookURL.path) {
-      options.incomingPath = `${webhookURL.path}/incoming`;
+      kikOptions.incomingPath = `${webhookURL.path}/incoming`;
     }
 
-    this.session = new KikBot(options);
+    this.session = new KikBot(kikOptions);
 
     this.router.get('/', (req: any, res: any) => {
       const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
