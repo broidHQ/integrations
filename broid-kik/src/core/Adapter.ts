@@ -94,7 +94,7 @@ export class Adapter {
     };
 
     if (webhookURL.path) {
-      kikOptions.incomingPath = `${webhookURL.path}/incoming`;
+      kikOptions.incomingPath = `${webhookURL.path}incoming`;
     }
 
     this.session = new KikBot(kikOptions);
