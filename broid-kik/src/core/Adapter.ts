@@ -168,14 +168,21 @@ export class Adapter {
             if (dataType === 'Image' || dataType === 'Video') {
               const url = R.path(['object', 'url'], data);
               const name = R.path(['object', 'name'], data) || '';
+              const preview = R.path(['object', 'preview'], data) || url;
 
-              let message = KikBot.Message.picture(url)
-                .setAttributionName(name)
-                .setAttributionIcon(R.path(['object', 'preview'], data) || url);
+              let message;
+              if (dataType === 'Image') {
+                message = KikBot.Message.picture(url);
+              }
               if (dataType === 'Video') {
-                message = KikBot.Message.video(url)
-                  .setAttributionName(name)
-                  .setAttributionIcon(R.path(['object', 'preview'], data));
+                message = KikBot.Message.video(url);
+              }
+
+              if (message && name) {
+                message.setAttributionName(name);
+              }
+              if (message && preview) {
+                message.setAttributionIcon(preview);
               }
 
               return [btns, message];
