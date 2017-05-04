@@ -98,6 +98,8 @@ app.use("/kik", kik.getRouter());
 app.listen(8080);
 ```
 
+When using the kik integration in an express application, ensure that you do **not** mount any kind of `body-parser` middleware before the router. The official kik library [expects to handle a raw body itself](https://github.com/kikinteractive/kik-node/issues/8).
+
 **Options available**
 
 | name             | Type     | default    | Description  |
