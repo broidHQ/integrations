@@ -40,18 +40,28 @@ function createButtons(buttons) {
 }
 exports.createButtons = createButtons;
 function createAttachment(name, content, buttons, imageURL) {
-    return {
-        payload: {
-            elements: [{
-                    buttons: buttons && !R.isEmpty(buttons) ? buttons : null,
-                    image_url: imageURL || '',
-                    item_url: '',
-                    subtitle: content !== name ? content : '',
-                    title: !name || R.isEmpty(name) ? imageURL.substring(0, 30) : name,
-                }],
-            template_type: 'generic',
-        },
-        type: 'template',
-    };
+    if (imageURL && (!name || R.isEmpty(name)) && (!buttons || R.isEmpty(buttons))) {
+        return {
+            payload: {
+                url: imageURL,
+            },
+            type: 'image',
+        };
+    }
+    else {
+        return {
+            payload: {
+                elements: [{
+                        buttons: buttons && !R.isEmpty(buttons) ? buttons : null,
+                        image_url: imageURL || '',
+                        item_url: '',
+                        subtitle: content !== name ? content : '',
+                        title: !name || R.isEmpty(name) ? content.substring(0, 10) : name,
+                    }],
+                template_type: 'generic',
+            },
+            type: 'template',
+        };
+    }
 }
 exports.createAttachment = createAttachment;
