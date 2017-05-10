@@ -91,20 +91,16 @@ export class Adapter {
       apiKey: this.token,
       baseUrl: `${webhookURL.protocol}//${webhookURL.hostname}`,
       username: this.username,
+      incomingPath: "/",
     };
 
     if (webhookURL.path) {
-      kikOptions.incomingPath = `${webhookURL.path}incoming`;
+      kikOptions.incomingPath = webhookURL.path.replace(/\/?$/, '');
     }
 
     this.session = new KikBot(kikOptions);
+    this.router.use('/', this.session.incoming());
 
-    this.router.get('/', (req: any, res: any) => {
-      const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-      this.logger.info(`Request to home from ${ip}`);
-      res.send('Hello. This is a Broid Kik bot server. Got to www.broid.aid to get more details.');
-    });
-    this.router.use('/incoming', this.session.incoming());
     if (this.webhookServer) {
       this.webhookServer.listen();
     }
@@ -131,8 +127,6 @@ export class Adapter {
 
     return Observable.create((observer) => {
       this.session.use((incoming, next) => {
-        next(); // we assume all is good
-
         this.user(incoming.from, true)
           .then((userInformation) =>
             this.parser.normalize(incoming, userInformation))
@@ -140,7 +134,7 @@ export class Adapter {
           .then((parsed) => this.parser.validate(parsed))
           .then((validated) => {
             if (validated) { observer.next(validated); }
-            return null;
+            return next(); // assume all work fine.
           });
       });
     });
