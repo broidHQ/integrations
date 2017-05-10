@@ -365,6 +365,13 @@ export class Adapter {
         response: res,
       };
 
+      // Challenge verification
+      const payloadType: string = R.path(['body', 'type'], req) as string;
+      if (payloadType === 'url_verification') {
+        const challenge: string = R.path(['body', 'challenge'], req) as string;
+        return res.json({ challenge });
+      }
+
       this.emitter.emit('message', event);
 
       // Assume all went well.

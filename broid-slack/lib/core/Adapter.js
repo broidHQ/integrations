@@ -283,6 +283,11 @@ class Adapter {
                 request: req,
                 response: res,
             };
+            const payloadType = R.path(['body', 'type'], req);
+            if (payloadType === "url_verification") {
+                const challenge = R.path(['body', 'challenge'], req);
+                return res.json({ challenge });
+            }
             this.emitter.emit('message', event);
             res.send('');
         });
