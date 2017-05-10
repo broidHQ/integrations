@@ -47,7 +47,7 @@ function createAttachment(name, content, buttons, imageURL) {
                     image_url: imageURL || '',
                     item_url: '',
                     subtitle: content !== name ? content : '',
-                    title: name || '',
+                    title: !name || R.isEmpty(name) ? imageURL.substring(0, 30) : name,
                 }],
             template_type: 'generic',
         },
