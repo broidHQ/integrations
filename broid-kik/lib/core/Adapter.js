@@ -58,8 +58,8 @@ class Adapter {
         const kikOptions = {
             apiKey: this.token,
             baseUrl: `${webhookURL.protocol}//${webhookURL.hostname}`,
+            incomingPath: '/',
             username: this.username,
-            incomingPath: "/",
         };
         if (webhookURL.path) {
             kikOptions.incomingPath = webhookURL.path.replace(/\/?$/, '');

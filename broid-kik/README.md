@@ -110,6 +110,9 @@ When using the kik integration in an express application, ensure that you do **n
 | username         | string   |            | Your bot name |
 | http             | object   | `{ "port": 8080, "http": "0.0.0.0", "webhookURL": "127.0.0.1" }` | WebServer options (`host`, `port`, `webhookURL`) |
 
+
+Note: `webhookURL` need to contain a path because Kik `incomingPath` not support empty value.
+
 ### Buttons supported
 
 Kik support simple quick reply button

@@ -90,8 +90,8 @@ export class Adapter {
     const kikOptions: any = {
       apiKey: this.token,
       baseUrl: `${webhookURL.protocol}//${webhookURL.hostname}`,
+      incomingPath: '/',
       username: this.username,
-      incomingPath: "/",
     };
 
     if (webhookURL.path) {
