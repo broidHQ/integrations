@@ -44,13 +44,13 @@ export class Parser {
     if (!normalized || R.isEmpty(normalized)) { return Promise.resolve(null); }
 
     const activitystreams = this.createActivityStream(normalized);
-    activitystreams.actor = {
+    activitystreams.target = {
       id: normalized.from.id.toString(),
       name: concat([normalized.from.firstName, normalized.from.lastName]),
       type: 'Person',
     };
 
-    activitystreams.target = {
+    activitystreams.actor = {
       id: normalized.chatID.toString(),
       name: normalized.chatID.toString(),
       type: 'Person',

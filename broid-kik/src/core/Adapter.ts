@@ -7,6 +7,7 @@ import { Router  } from 'express';
 import * as uuid from 'node-uuid';
 import * as R from 'ramda';
 import { Observable } from 'rxjs/Rx';
+import * as url from 'url';
 
 import { IAdapterOptions } from './interfaces';
 import { Parser } from './Parser';
@@ -85,18 +86,25 @@ export class Adapter {
       return Observable.throw(new Error('Credentials should exist.'));
     }
 
-    this.session = new KikBot({
+    const webhookURL = url.parse(this.webhookURL);
+    const kikOptions: any = {
       apiKey: this.token,
-      baseUrl: this.webhookURL,
+      baseUrl: `${webhookURL.protocol}//${webhookURL.hostname}`,
       username: this.username,
-    });
+    };
+
+    if (webhookURL.path) {
+      kikOptions.incomingPath = `${webhookURL.path}incoming`;
+    }
+
+    this.session = new KikBot(kikOptions);
 
     this.router.get('/', (req: any, res: any) => {
       const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
       this.logger.info(`Request to home from ${ip}`);
       res.send('Hello. This is a Broid Kik bot server. Got to www.broid.aid to get more details.');
     });
-    this.router.use(this.session.incoming());
+    this.router.use('/incoming', this.session.incoming());
     if (this.webhookServer) {
       this.webhookServer.listen();
     }
@@ -160,14 +168,21 @@ export class Adapter {
             if (dataType === 'Image' || dataType === 'Video') {
               const url = R.path(['object', 'url'], data);
               const name = R.path(['object', 'name'], data) || '';
+              const preview = R.path(['object', 'preview'], data) || url;
 
-              let message = KikBot.Message.picture(url)
-                .setAttributionName(name)
-                .setAttributionIcon(R.path(['object', 'preview'], data) || url);
+              let message;
+              if (dataType === 'Image') {
+                message = KikBot.Message.picture(url);
+              }
               if (dataType === 'Video') {
-                message = KikBot.Message.video(url)
-                  .setAttributionName(name)
-                  .setAttributionIcon(R.path(['object', 'preview'], data));
+                message = KikBot.Message.video(url);
+              }
+
+              if (message && name) {
+                message.setAttributionName(name);
+              }
+              if (message && preview) {
+                message.setAttributionIcon(preview);
               }
 
               return [btns, message];
