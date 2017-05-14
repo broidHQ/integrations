@@ -9,7 +9,7 @@ Broid Integrations is an open source project providing a suite of Activity Strea
 ## Schemas
 
 Broid integrations support Simple, Rich, Video and Image messages.
-As possible, theses schemas use [activitystreams 2.0](https://www.w3.org/TR/activitystreams-core/) specifications. If using Typescript, you can use the interfaces supplied [here](https://github.com/broidHQ/integrations/blob/master/broid-schemas/src/index.ts) to simplify your work.
+Theses schemas use [activitystreams 2.0](https://www.w3.org/TR/activitystreams-core/) specifications. If using Typescript, you can use the interfaces supplied [here](https://github.com/broidHQ/integrations/blob/master/broid-schemas/src/index.ts) to simplify your work.
 
 ### Examples
 
@@ -76,6 +76,75 @@ In this case, `generator` field is use to inform that messaging platform is `Sla
   "to": {
     "id": "8GBB3nlCwffk8SQm1zmcAA==",
     "name": "Sally"
+  }
+}
+```
+
+- Edit a message on Discord
+
+```json
+{
+  "@context": "https://www.w3.org/ns/activitystreams",
+  "type": "Update",
+  "generator": {
+    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
+    "type": "Service",
+    "name": "discord"
+  },
+  "object": {
+    "type": "Note",
+    "content": "hello world edited",
+    "id": "1483406119",
+  },
+  "to": {
+    "type": "Person",
+    "id": "152486124831181614"
+  }
+}
+```
+
+- Delete a message on Discord
+
+```json
+{
+  "@context": "https://www.w3.org/ns/activitystreams",
+  "type": "Delete",
+  "generator": {
+    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
+    "type": "Service",
+    "name": "discord"
+  },
+  "object": {
+    "type": "Note",
+    "content": "",
+    "id": "1483406119",
+  },
+  "to": {
+    "type": "Person",
+    "id": "152486124831181614"
+  }
+}
+```
+
+- Send a image or a video on Discord
+
+```json
+{
+  "@context": "https://www.w3.org/ns/activitystreams",
+  "type": "Create",
+  "generator": {
+    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
+    "type": "Service",
+    "name": "discord"
+  },
+  "object": {
+    "content": "image.jpg",
+    "type": "Image",
+    "url": "https://www.broid.ai/url_of_image.jpg",
+  },
+  "to": {
+    "type": "Person",
+    "id": "152486124831181614"
   }
 }
 ```

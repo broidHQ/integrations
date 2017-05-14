@@ -47,7 +47,7 @@ _Buttons, Location, Phone number are platform limitations._
 
 ### Register your app/bot on Discord
 
-- Instructions to create **bot**, can be found [here](https://discordapp.com/developers/docs/intro).
+- Instructions to create a **bot** can be found the [Discord developer website](https://discordapp.com/developers/docs/intro).
 
 ### Install
 
@@ -70,13 +70,13 @@ discord.connect()
   });
 ```
 
-**Options available**
+**Parameters**
 
 | name             | Type     | default    | Description  |
 | ---------------- |:--------:| :--------: | --------------------------|
+| token            | string   |            | Your bot access token |
 | serviceID       | string   | random     | Arbitrary identifier of the running instance |
 | logLevel        | string   | `info`     | Can be : `fatal`, `error`, `warn`, `info`, `debug`, `trace` |
-| token            | string   |            | Your bot access token |
 
 ### Receive a message
 
@@ -91,7 +91,7 @@ discord.listen()
 
 ### Post a message
 
-To send a message, the format should use the [broid-schemas](https://github.com/broidHQ/integrations/tree/master/integrations/broid-schemas).
+To send a message, the format should use the [broid-schemas](https://github.com/broidHQ/integrations/tree/master/broid-schemas).
 
 ```javascript
 const formatted_message = {
@@ -119,171 +119,9 @@ discord.send(formatted_message)
 
 ## Examples of messages
 
-### Message received
+You can find examples of sent and received messages at [Broid-Schemas](https://github.com/broidHQ/integrations/tree/master/broid-schemas).
 
-- A direct message received from Sally
-
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "published": 1483491501,
-  "type": "Create",
-  "generator": {
-    "id": "af869e0f-f4e5-424d-a288-1657d843f438",
-    "type": "Service",
-    "name": "discord"
-  },
-  "object": {
-    "type": "Note",
-    "id": "1483491501",
-    "content": "hello world on private"
-  },
-  "target": {
-    "type": "Person",
-    "id": "152483118161461248"
-  },
-  "actor": {
-    "id": "152486124831181614",
-    "type": "Person",
-    "name": "sally"
-  }
-}
-```
-
-- A message received from Sally on Channel/Group
-
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "published": 1483491501,
-  "type": "Create",
-  "generator": {
-    "id": "af869e0f-f4e5-424d-a288-1657d843f438",
-    "type": "Service",
-    "name": "discord"
-  },
-  "object": {
-    "type": "Note",
-    "id": "1483491501",
-    "content": "hello world on private"
-  },
-  "target": {
-    "type": "Group",
-    "id": "152483118161461248",
-    "name": "channelname"
-  },
-  "actor": {
-    "id": "152486124831181614",
-    "type": "Person",
-    "name": "sally"
-  }
-}
-```
-
-### Send a message
-
-- Send a simple message
-
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "type": "Create",
-  "generator": {
-    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
-    "type": "Service",
-    "name": "discord"
-  },
-  "object": {
-    "type": "Note",
-    "content": "hello world"
-  },
-  "to": {
-    "type": "Person",
-    "id": "152486124831181614"
-  }
-}
-```
-
-- Edit a message
-
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "type": "Update",
-  "generator": {
-    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
-    "type": "Service",
-    "name": "discord"
-  },
-  "object": {
-    "type": "Note",
-    "content": "hello world edited",
-    "id": "1483406119",
-  },
-  "to": {
-    "type": "Person",
-    "id": "152486124831181614"
-  }
-}
-```
-
-- Delete a message
-
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "type": "Delete",
-  "generator": {
-    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
-    "type": "Service",
-    "name": "discord"
-  },
-  "object": {
-    "type": "Note",
-    "content": "",
-    "id": "1483406119",
-  },
-  "to": {
-    "type": "Person",
-    "id": "152486124831181614"
-  }
-}
-```
-
-- Send a image or a video
-
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "type": "Create",
-  "generator": {
-    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
-    "type": "Service",
-    "name": "discord"
-  },
-  "object": {
-    "content": "image.jpg",
-    "type": "Image",
-    "url": "https://www.broid.ai/url_of_image.jpg",
-  },
-  "to": {
-    "type": "Person",
-    "id": "152486124831181614"
-  }
-}
-```
-
-
-# Contributing to Broid
-
-Broid is an open source project. Broid wouldn't be where it is now without contributions by the community. Please consider forking Broid to improve, enhance or fix issues. If you feel like the community will benefit from your fork, please open a pull request.
-
-And because we want to do the better for you. Help us improving Broid by
-sharing your feedback on our [Integrations GitHub Repo](https://github.com/broidhq/integrations) and let's build Broid together!
-
-## Code of Conduct
-
-Make sure that you're read and understand the [Code of Conduct](http://contributor-covenant.org/version/1/2/0/).
+## [Contributing to Broid](../CONTRIBUTE.md)
 
 ## Copyright & License
 

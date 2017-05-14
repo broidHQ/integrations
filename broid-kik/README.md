@@ -125,7 +125,7 @@ kik.listen()
 
 ### Post a message
 
-To send a message, the format should use the [broid-schemas](https://github.com/broidHQ/integrations/tree/master/integrations/broid-schemas).
+To send a message, the format should use the [broid-schemas](https://github.com/broidHQ/integrations/tree/master/broid-schemas).
 
 ```javascript
 const formatted_message = {
