@@ -13,6 +13,10 @@ Theses schemas use [activitystreams 2.0](https://www.w3.org/TR/activitystreams-c
 
 ### Examples
 
+Here you'll find examples of communcation across different services. Even though the examples may not be to the service
+you wish to use, the schema remains the same across all integrations if the communication method (e.g images, videos) is
+supported.
+
 - A simple message received on Slack from Sally:
 
 ```json
@@ -45,6 +49,109 @@ Theses schemas use [activitystreams 2.0](https://www.w3.org/TR/activitystreams-c
 
 In this case, `generator` field is use to inform that messaging platform is `Slack` and the `target` field contain information about the Channel (_Group_ or _Person_). `actor` is the author of the message.
 
+- A message received from Sally with arguments on Google Assistant
+
+```json
+{
+  "@context": "https://www.w3.org/ns/activitystreams",
+  "published": 1483677146,
+  "type": "Create",
+  "generator": {
+    "id": "67c9cb10-8a74-42c8-ba55-294d0447cdf9",
+    "type": "Service",
+    "name": "google-assistant"
+  },
+  "actor": {
+    "id": "IL12J7nWa/2zothSEg46DsY0q7o/H9FUis/YGdp64te=",
+    "type": "Person"
+  },
+  "target": {
+    "id": "my_action_name",
+    "type": "Person",
+    "name": "my_action_name"
+  },
+  "object": {
+    "type": "Note",
+    "id": "1484625833669",
+    "content": "Hello world",
+    "context": [
+      {
+        "content": "argValue",
+        "name": "argName",
+        "type": "Object"
+      },
+      {
+        "content": "argValue1",
+        "name": "argName1",
+        "type": "Object"
+      }
+    ]
+  }
+}
+```
+
+- A video/image received on Callr.
+
+```json
+{
+  "@context": "https://www.w3.org/ns/activitystreams",
+  "published": 1483677146,
+  "type": "Create",
+  "generator": {
+    "id": "67c9cb10-8a74-42c8-ba55-294d0447cdf9",
+    "type": "Service",
+    "name": "callr"
+  },
+  "actor": {
+    "id": "+15437783737",
+    "type": "Person",
+    "name": "+15437783737"
+  },
+  "target": {
+    "id": "+15437783700",
+    "type": "Person",
+    "name": "+15437783700"
+  },
+  "object": {
+  "type": "Image",
+  "id": "358c14836772801482I5g3Jjko7RWp6M",
+  "url": "http://images.nationalgeographic.com/wpf/media-live/photos/000/090/cache/african-elephant-standing_9033_600x450.jpg",
+  "mediaType": "image/jpeg"
+  }
+}
+```
+
+- A location received from Sally on Groupme
+
+```json
+{
+  "@context": "https://www.w3.org/ns/activitystreams",
+  "generator": {
+    "id": "67c9cb10-8a74-42c8-ba55-294d0447cdf9",
+    "type": "Service",
+    "name": "groupme"
+  },
+  "published": 1483589416,
+  "type": "Create",
+  "actor": {
+    "id": "43963839",
+    "name": "Sally Doe",
+    "type": "Person"
+  },
+  "target": {
+    "id": "28728284",
+    "name": "dev",
+    "type": "Person"
+  },
+  "object": {
+    "id": "148652394682185354",
+    "latitude": 45.531106,
+    "longitude": -73.554582,
+    "name": "Café Touski",
+    "type": "Place"
+  }
+}
+```
 
 - A quick reply send to Messenger:
 
@@ -126,7 +233,7 @@ In this case, `generator` field is use to inform that messaging platform is `Sla
 }
 ```
 
-- Send a image or a video on Discord
+- Send a image on Kik
 
 ```json
 {
@@ -135,36 +242,252 @@ In this case, `generator` field is use to inform that messaging platform is `Sla
   "generator": {
     "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
     "type": "Service",
-    "name": "discord"
+    "name": "kik"
   },
   "object": {
-    "content": "image.jpg",
     "type": "Image",
-    "url": "https://www.broid.ai/url_of_image.jpg",
+    "content": "hello world",
+    "url": "https://www.broid.ai/images/fake.png",
+    "preview": "https://www.broid.ai/images/fake.png"
   },
   "to": {
     "type": "Person",
-    "id": "152486124831181614"
+    "id": "sally2"
   }
 }
 ```
 
-# Contributing to Broid
+- Send a video on Kik
 
-Broid is an open source project. Broid wouldn't be where it is now without contributions by the community. Please consider forking Broid to improve, enhance or fix issues. If you feel like the community will benefit from your fork, please open a pull request.
+```json
+{
+  "@context": "https://www.w3.org/ns/activitystreams",
+  "type": "Create",
+  "generator": {
+    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
+    "type": "Service",
+    "name": "kik"
+  },
+  "object": {
+    "type": "Video",
+    "content": "hello world",
+    "url": "https://www.broid.ai/videos/echo-hereweare.mp4",
+    "preview": "https://www.broid.ai/images/fake.png"
+  },
+  "to": {
+    "type": "Person",
+    "id": "sally2"
+  }
+}
+```
 
-And because we want to do the better for you. Help us improving Broid by
-sharing your feedback on our [Feedback GitHub Repo](https://github.com/broidhq/integrations) and let's build Broid together!
+- Send a audio clip on WeChat
 
-## Code of Conduct
+```json
+{
+  "@context": "https://www.w3.org/ns/activitystreams",
+  "type": "Create",
+  "generator": {
+    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
+    "type": "Service",
+    "name": "wechat"
+  },
+  "object": {
+    "type": "Audio",
+    "content": "hello world",
+    "url": "https://www.broid.ai/audio/audio.amr"
+  },
+  "to": {
+    "type": "Person",
+    "id": "wechat_user_openid"
+  }
+}
+```
 
-Make sure that you're read and understand the [Code of Conduct](http://contributor-covenant.org/version/1/2/0/).
+- Send a confirm message on Kik
 
-## CLA
+```json
+{
+  "@context": "https://www.w3.org/ns/activitystreams",
+  "type": "Create",
+  "generator": {
+    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
+    "type": "Service",
+    "name": "line"
+  },
+  "object": {
+    "type": "Note",
+    "name": "Hello",
+    "content": "hello world",
+    "attachment": [{
+        "type": "Button",
+        "content": "Wouldn't you prefer a good game of chess?",
+        "name": "maze",
+        "url": "value_maze",
+        "attachment": {
+          "name": "Falken's Maze",
+          "content": "Wouldn't you prefer a good game of chess?",
+          "yesLabel": "Yes",
+          "noLabel": "No"
+        }
+    }]
+  },
+  "to": {
+    "type": "Group",
+    "id": "U1a2ab6a2fe712ea1f81ad6310c03d624"
+  }
+}
+```
 
-To protect the interests of the Broid contributors, Broid, customers and end users we require contributors to sign a [Contributors License Agreement](https://cla-assistant.io/broidhq/integrations) (CLA) before we pull the changes into the main repository. [Our CLA](https://cla-assistant.io/broidhq/integrations) is simple and straightforward - it requires that the contributions you make to any Broid open source project are properly licensed and that you have the legal authority to make those changes. This helps us significantly reduce future legal risk for everyone involved. It's easy---no faxing or printing required!
+- Send a caroussel on Kik
 
-You can digitally sign the [CLA online](https://cla-assistant.io/broidhq/integrations). Please indicate your email address in your first pull request so that we can make sure that will locate your CLA. Once you've submitted it, you no longer need to send one for subsequent submissions.
+```json
+{
+  "@context": "https://www.w3.org/ns/activitystreams",
+  "type": "Create",
+  "generator": {
+    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
+    "type": "Service",
+    "name": "line"
+  },
+  "object": {
+    "type": "Collection",
+    "items": [
+      {
+        "type": "Image",
+        "name": "Product A",
+        "content": "a cool product a",
+        "url": "https://unsplash.it/200/300",
+        "attachment": [{
+            "type": "Button",
+            "content": "Broid's website",
+            "name": "broid",
+            "mediaType": "text/html",
+            "url": "https://www.broid.ai"
+        }, {
+            "type": "Button",
+            "content": "Add to cart",
+            "name": "Add to cart",
+            "url": "action=buy&itemid=111"
+        }]
+      },
+      {
+        "type": "Image",
+        "name": "Product B",
+        "content": "a cool product b",
+        "url": "https://unsplash.it/g/200/300",
+        "attachment": [{
+            "type": "Button",
+            "content": "Broid's website",
+            "name": "broid",
+            "mediaType": "text/html",
+            "url": "https://www.broid.ai"
+        }, {
+            "type": "Button",
+            "content": "Add to cart",
+            "name": "Buy this product",
+            "url": "action=buy&itemid=222"
+        }]
+      }
+    ]
+  },
+  "to": {
+    "type": "Person",
+    "id": "U1a2ab6a2fe712ea1f81ad6310c03d624"
+  }
+}
+```
+
+- Send a location on Viber
+
+```json
+{
+  "@context": "https://www.w3.org/ns/activitystreams",
+  "type": "Create",
+  "generator": {
+    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
+    "type": "Service",
+    "name": "viber"
+  },
+  "object": {
+    "type": "Place",
+    "latitude": 45.53192,
+    "longitude": -73.55304
+  },
+  "to": {
+    "id": "8GBB3nlCwffk8SQm1zmcAA==",
+    "name": "Sally"
+  }
+}
+```
+
+- A interactive message callback on Slack
+
+```json
+{
+  "@context": "https://www.w3.org/ns/activitystreams",
+  "published": 1483495367,
+  "type": "Create",
+  "generator": {
+    "id": "a99f63b0-aa77-40b4-8cf5-4ae3d694ed94",
+    "type": "Service",
+    "name": "slack"
+  },
+  "object": {
+    "type": "Note",
+    "id": "1483495367.753793",
+    "content": "https://www.broid.ai",
+    "context": {
+      "type": "Object",
+      "name": "interactive_message_callback",
+      "content": "03722c50-14d6-4501-a7d7-18c833079a49#https://hooks.slack.com/actions/xxxx/xxxxx"
+    }
+  },
+  "target": {
+    "type": "Group",
+    "id": "C1L7YRBLG",
+    "name": "channelname"
+  },
+  "actor": {
+    "id": "U0K81Q8N3",
+    "type": "Person",
+    "name": "sally"
+  }
+}
+```
+
+- Respond to interactive message on Slack
+
+```json
+{
+  "@context": "https://www.w3.org/ns/activitystreams",
+  "type": "Create",
+  "generator": {
+    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
+    "type": "Service",
+    "name": "slack"
+  },
+  "object": {
+    "type": "Note",
+    "content": "go for http://broid.ai",
+    "context" : {
+      "type": "Object",
+      "name": "interactive_message_callback",
+      "content": "03722c50-14d6-4501-a7d7-18c833079a49#https://hooks.slack.com/actions/xxxx/xxxxx"
+    },    
+  },
+  "to": {
+    "type": "Group",
+    "id": "C1L7YRBLG"
+  }
+}
+```
+
+**INFO** Keep the number of actions consistent for all columns. If you use an image or title for a column, make sure to do the same for all other columns.
+
+## Contributing to Broid
+
+See [CONTRIBUTE.md](../CONTRIBUTE.md)
 
 ## Copyright & License
 

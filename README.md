@@ -242,7 +242,9 @@ Broid integrations supports [Activity Streams 2.0](https://t.broid.ai/c/LSB12U?u
 |:--:|:----:|
 |broid-schemas |[![schemas][schemas-npm]][schemas-url] [![schemas][schemas-dm]][schemas-dm-url] [![schemas][integration-doc-badge]][schemas-url]|
 
-## [Contribute](CONTRIBUTE.md)
+## Contribute
+
+See [CONTRIBUTE.md](CONTRIBUTE.md).
 
 ## CLA
 

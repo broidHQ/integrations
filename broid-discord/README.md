@@ -121,7 +121,9 @@ discord.send(formatted_message)
 
 You can find examples of sent and received messages at [Broid-Schemas](https://github.com/broidHQ/integrations/tree/master/broid-schemas).
 
-## [Contributing to Broid](../CONTRIBUTE.md)
+## Contributing to Broid
+
+See [CONTRIBUTE.md](../CONTRIBUTE.md)
 
 ## Copyright & License
 
