@@ -1,0 +1,24 @@
+{
+  "name": "broid-livetests",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "AGPL-3.0+",
+  "author": "Broid Team <opensource@broid.ai> (https://broid.ai)",
+  "dependencies": {
+    "@broid/schemas": "^1.0.1",
+    "bluebird": "^3.5.0",
+    "localtunnel": "^1.8.2",
+    "nconf": "^0.8.4",
+    "ramda": "^0.23.0"
+  },
+  "devDependencies": {
+    "@types/bluebird": "^3.5.4",
+    "@types/bluebird-global": "^3.5.2",
+    "@types/node": "^7.0.21",
+    "@types/ramda": "^0.0.9",
+    "tslint": "^4.3.1",
+    "tslint-eslint-rules": "^3.5.1",
+    "tslint-microsoft-contrib": "^4.0.1",
+    "typescript": "~2.2.2"
+  }
+}

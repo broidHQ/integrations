@@ -126,6 +126,7 @@ export class Adapter {
 
   public disconnect(): Promise<null> {
     this.connected = false;
+    this.session.disconnect();
     if (this.webhookServer) {
       return this.webhookServer.close();
     }

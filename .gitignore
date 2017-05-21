@@ -64,3 +64,4 @@ typings
 **/src/**/*.js
 broid-*/tsconfig.json
 broid-*/tslint.json
+**/local.ts
