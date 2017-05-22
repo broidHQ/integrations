@@ -69,6 +69,10 @@ export class Adapter {
     return this.serviceID;
   }
 
+  public getRouter(): null {
+    return null;
+  }
+
   // Connect to Gitter
   // Start the webhook server
   public connect(): Observable<object> {

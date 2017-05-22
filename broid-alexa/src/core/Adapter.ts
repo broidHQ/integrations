@@ -8,11 +8,11 @@ import * as uuid from 'node-uuid';
 import * as R from 'ramda';
 import { Observable } from 'rxjs/Rx';
 
-import { IAdapterOptions } from './interfaces';
+import { IAdapter, IAdapterOptions } from './interfaces';
 import { Parser } from './Parser';
 import { WebHookServer } from './WebHookServer';
 
-export class Adapter {
+export class Adapter implements IAdapter {
   private serviceID: string;
   private connected: boolean;
   private emitter: EventEmitter;
@@ -50,12 +50,12 @@ export class Adapter {
   }
 
   // Return list of users information
-  public users(): Promise<Error> {
+  public users(): Promise<Map<string, object> | Error> {
     return Promise.reject(new Error('Not supported'));
   }
 
   // Return list of channels information
-  public channels(): Promise<Error> {
+  public channels(): Promise<Map<string, object> | Error> {
     return Promise.reject(new Error('Not supported'));
   }
 

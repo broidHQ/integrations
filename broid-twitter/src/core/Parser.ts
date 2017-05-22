@@ -47,17 +47,18 @@ export class Parser {
     if (!normalized || R.isEmpty(normalized)) { return Promise.resolve(null); }
 
     const activitystreams = this.createActivityStream(normalized);
-    activitystreams.actor = {
+    const actor = {
       id: R.path(['author', 'id'], normalized),
       name: R.path(['author', 'name'], normalized),
       type: 'Person',
     };
 
-    activitystreams.target = {
-      id: R.path(['channel', 'id'], normalized),
-      name: R.path(['channel', 'name'], normalized),
-      type: R.path(['channel', 'is_mention'], normalized) ? 'Group' : 'Person',
-    };
+    activitystreams.actor = actor;
+    if (R.path(['channel', 'is_mention'], normalized)) {
+      activitystreams.target = R.assoc('type', 'Group', actor);
+    } else {
+      activitystreams.target = actor;
+    }
 
     // Process attachment.
     return Promise.map(normalized.attachments, (attachment) => {

@@ -39,6 +39,9 @@ class Adapter {
     serviceName() {
         return 'twitter';
     }
+    getRouter() {
+        return null;
+    }
     connect() {
         if (this.connected) {
             return Rx_1.Observable.of({ type: 'connected', serviceID: this.serviceId() });

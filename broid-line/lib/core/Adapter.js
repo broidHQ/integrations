@@ -65,6 +65,9 @@ class Adapter {
     serviceId() {
         return this.serviceID;
     }
+    getRouter() {
+        return null;
+    }
     connect() {
         if (this.connected) {
             return Rx_1.Observable.of({ type: 'connected', serviceID: this.serviceId() });

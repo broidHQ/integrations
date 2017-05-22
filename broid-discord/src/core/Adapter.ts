@@ -78,6 +78,10 @@ export class Adapter {
     return 'discord';
   }
 
+  public getRouter(): null {
+    return null;
+  }
+
   // Connect to Discord
   public connect(): Observable<any> {
     if (!this.token) {
