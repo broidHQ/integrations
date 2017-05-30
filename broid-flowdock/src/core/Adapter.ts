@@ -59,6 +59,10 @@ export class Adapter {
     return 'flowdock';
   }
 
+  public getRouter(): null {
+    return null;
+  }
+
   // Connect to Flowdock
   public connect(): Observable<object> {
     if (!this.token) {

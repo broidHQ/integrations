@@ -69,6 +69,10 @@ export class Adapter {
     return 'twitter';
   }
 
+  public getRouter(): null {
+    return null;
+  }
+
   // Connect to Twitter
   public connect(): Observable<object> {
     if (this.connected) {

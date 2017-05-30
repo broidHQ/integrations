@@ -96,7 +96,7 @@ export class Adapter {
     }
 
     this.session = new TelegramBot(this.token);
-    this.session.setWebHook(`${this.webhookURL}${this.token}`);
+    this.session.setWebHook(`${this.webhookURL}${this.serviceId()}`);
 
     this.connected = true;
     return Observable.of({ type: 'connected', serviceID: this.serviceId() });
@@ -234,8 +234,8 @@ export class Adapter {
       res.sendStatus(200);
     };
 
-    router.post(`/${this.token}`, handle);
-    router.get(`/${this.token}`, handle);
+    router.post(`/${this.serviceId()}`, handle);
+    router.get(`/${this.serviceId()}`, handle);
 
     return router;
   }
