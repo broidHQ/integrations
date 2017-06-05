@@ -75,6 +75,7 @@ class Adapter {
     }
     disconnect() {
         this.connected = false;
+        this.session.disconnect();
         return Promise.resolve(null);
     }
     listen() {

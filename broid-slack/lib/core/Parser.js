@@ -34,6 +34,9 @@ class Parser {
         if (!normalized || R.isEmpty(normalized)) {
             return Promise.resolve(null);
         }
+        if (!normalized.text) {
+            return Promise.resolve(null);
+        }
         const activitystreams = this.createActivityStream(normalized);
         activitystreams.actor = {
             id: R.path(['user', 'id'], normalized),

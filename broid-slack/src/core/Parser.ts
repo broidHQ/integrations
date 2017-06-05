@@ -48,6 +48,8 @@ export class Parser {
 
     const normalized = cleanNulls(event);
     if (!normalized || R.isEmpty(normalized)) { return Promise.resolve(null); }
+    // Ignore messages with no text field (usually messages from the past);
+    if (!normalized.text) { return Promise.resolve(null); }
 
     const activitystreams = this.createActivityStream(normalized);
     activitystreams.actor = {

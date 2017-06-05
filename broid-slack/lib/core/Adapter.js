@@ -72,7 +72,7 @@ class Adapter {
         });
         const disconnected = Rx_1.Observable
             .fromEvent(this.session, client_1.CLIENT_EVENTS.RTM.DISCONNECT)
-            .map(() => Promise.resolve({ type: 'connected', serviceID: this.serviceId() }));
+            .map(() => Promise.resolve({ type: 'disconnected', serviceID: this.serviceId() }));
         const rateLimited = Rx_1.Observable
             .fromEvent(this.session, client_1.CLIENT_EVENTS.WEB.RATE_LIMITED)
             .map(() => Promise.resolve({ type: 'rate_limited', serviceID: this.serviceId() }));
@@ -82,6 +82,7 @@ class Adapter {
     }
     disconnect() {
         this.connected = false;
+        this.session.disconnect();
         if (this.webhookServer) {
             return this.webhookServer.close();
         }

@@ -67,7 +67,7 @@ export class Parser {
       name: targetName,
       type: targetType,
     };
-
+    
     return Promise.map(normalized.attachments, (rawAttachment) =>
       this.parseMedia(rawAttachment, null))
       .then(R.reject(R.isNil))
@@ -99,7 +99,7 @@ export class Parser {
   }
 
   private parseMedia(media: any, content: string | null): Promise<any> | null {
-    return fileInfo(media.filename)
+    return fileInfo(media.url)
       .then((infos) => {
         const mimeType = infos.mimetype;
         let mediaType: string | null = null;
