@@ -64,7 +64,7 @@ export class Parser {
     return Promise.resolve(activitystreams)
       .then((as2) => {
         if (isUrl(normalized.text)) {
-          return fileInfo(normalized.text)
+          return fileInfo(normalized.text, this.logger)
             .then((infos) => {
               const mediaType = infos.mimetype;
               if (mediaType.startsWith('image/')) {
