@@ -67,7 +67,7 @@ export class Parser {
       name: targetName,
       type: targetType,
     };
-    
+
     return Promise.map(normalized.attachments, (rawAttachment) =>
       this.parseMedia(rawAttachment, null))
       .then(R.reject(R.isNil))
