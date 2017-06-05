@@ -245,6 +245,7 @@ export class Adapter {
         const opts = {
           as_user: this.asUser,
           attachments: msg.attachments || [],
+          thread_ts: msg.messageID,
           unfurl_links: true,
         };
 

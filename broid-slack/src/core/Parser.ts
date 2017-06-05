@@ -95,7 +95,7 @@ export class Parser {
           if (attachment) {
             as2.object = {
               content: attachment.content,
-              id: normalized.ts || this.createIdentifier(),
+              id: normalized.thread_ts || normalized.ts || this.createIdentifier(),
               mediaType: attachment.mediaType,
               name: attachment.name,
               type: attachment.type,
@@ -114,7 +114,7 @@ export class Parser {
         if (!as2.object && !R.isEmpty(normalized.content)) {
           as2.object = {
             content: normalized.text,
-            id: normalized.ts || this.createIdentifier(),
+            id: normalized.thread_ts || normalized.ts || this.createIdentifier(),
             type: 'Note',
           };
         }
@@ -136,6 +136,8 @@ export class Parser {
   }
 
   private createActivityStream(normalized: any): IActivityStream {
+    const ts: string = normalized.thread_ts || normalized.ts;
+
     return {
       '@context': 'https://www.w3.org/ns/activitystreams',
       'generator': {
@@ -143,9 +145,7 @@ export class Parser {
         name: this.generatorName,
         type: 'Service',
       },
-      'published': normalized.ts ?
-        this.ts2Timestamp(normalized.ts)
-        : Math.floor(Date.now() / 1000),
+      'published': ts ? this.ts2Timestamp(ts) : Math.floor(Date.now() / 1000),
       'type': 'Create',
     };
   }
