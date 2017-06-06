@@ -94,10 +94,10 @@ export class Parser {
     );
 
     return Promise.map(attachmentImages, (attachment) =>
-      fileInfo(attachment.name).then((infos) => assoc(attachment, infos, 'Image')))
+      fileInfo(attachment.name, this.logger).then((infos) => assoc(attachment, infos, 'Image')))
       .then((dataImages) =>
         Promise.map(attachmentVideos, (attachment) =>
-          fileInfo(attachment.name).then((infos) => assoc(attachment, infos, 'Video')))
+          fileInfo(attachment.name, this.logger).then((infos) => assoc(attachment, infos, 'Video')))
         .then((dataVideos) => R.concat(dataImages, dataVideos)))
       .then((fileInfos) => {
         const count = R.length(fileInfos);

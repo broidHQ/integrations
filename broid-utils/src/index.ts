@@ -35,8 +35,7 @@ function isUrl(url) {
 // Return information about one file
 // File can be Buffer, ReadStream, file path, file name or url.
 // Return an object
-function fileInfo(file) {
-  const logger = new Logger('fileInfo', 'debug');
+function fileInfo(file, logger?: Logger) {
   return Promise.resolve(isUrl(file))
     .then((is) => {
       if (is) {
@@ -48,7 +47,9 @@ function fileInfo(file) {
     })
     .then((infos) => R.dissoc('mime', R.assoc('mimetype', infos.mime, infos)))
     .catch((error) => {
-      logger.error(error);
+      if (logger) {
+        logger.debug(error);
+      }
       return { mimetype: '' };
     });
 }
