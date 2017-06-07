@@ -58,7 +58,7 @@ class Adapter {
             this.webhookServer.listen();
         }
         this.session = new TelegramBot(this.token);
-        this.session.setWebHook(`${this.webhookURL}${this.token}`);
+        this.session.setWebHook(`${this.webhookURL}${this.serviceId()}`);
         this.connected = true;
         return Rx_1.Observable.of({ type: 'connected', serviceID: this.serviceId() });
     }
@@ -170,8 +170,8 @@ class Adapter {
             this.session.processUpdate(req.body);
             res.sendStatus(200);
         };
-        router.post(`/${this.token}`, handle);
-        router.get(`/${this.token}`, handle);
+        router.post(`/${this.serviceId()}`, handle);
+        router.get(`/${this.serviceId()}`, handle);
         return router;
     }
 }

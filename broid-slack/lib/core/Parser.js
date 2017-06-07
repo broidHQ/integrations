@@ -53,7 +53,7 @@ class Parser {
             let url = normalized.text.substr(1);
             url = url.substring(0, url.length - 1);
             if (utils_1.isUrl(url)) {
-                return utils_1.fileInfo(url)
+                return utils_1.fileInfo(url, this.logger)
                     .then((infos) => {
                     const mediaType = infos.mimetype;
                     let fileType = null;

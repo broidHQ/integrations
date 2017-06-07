@@ -53,7 +53,7 @@ class Parser {
             type: R.toLower(chatType) === 'private'
                 ? 'Person' : 'Group',
         };
-        return utils_1.fileInfo(normalized.text)
+        return utils_1.fileInfo(normalized.text, this.logger)
             .then((infos) => {
             const mimetype = infos.mimetype;
             if (mimetype.startsWith('image/') || mimetype.startsWith('video/')) {
