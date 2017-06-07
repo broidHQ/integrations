@@ -75,8 +75,8 @@ messenger.connect()
 | ---------------- |:--------:| :--------: | --------------------------|
 | serviceID        | string   | random     | Arbitrary identifier of the running instance |
 | logLevel         | string   | `info`     | Can be : `fatal`, `error`, `warn`, `info`, `debug`, `trace` |
-| token            | string   |            | Your account oauth token |
-| tokenSecret      | string   |            | Your auth verify token |
+| token            | string   |            | Your application token |
+| tokenSecret      | string   |            | Your auth verify token (hub.verify_token) |
 | http             | object   | `{ "port": 8080, "http": "0.0.0.0" }` | WebServer options (`host`, `port`) |
 
 ### Receive a message
