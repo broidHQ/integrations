@@ -114,7 +114,7 @@ export class Adapter {
       });
     const disconnected = Observable
       .fromEvent(this.session, CLIENT_EVENTS.RTM.DISCONNECT)
-      .map(() => Promise.resolve({ type: 'connected', serviceID: this.serviceId() }));
+      .map(() => Promise.resolve({ type: 'disconnected', serviceID: this.serviceId() }));
     const rateLimited = Observable
       .fromEvent(this.session, CLIENT_EVENTS.WEB.RATE_LIMITED)
       .map(() => Promise.resolve({ type: 'rate_limited', serviceID: this.serviceId() }));
@@ -126,6 +126,7 @@ export class Adapter {
 
   public disconnect(): Promise<null> {
     this.connected = false;
+    this.session.disconnect();
     if (this.webhookServer) {
       return this.webhookServer.close();
     }
@@ -244,6 +245,7 @@ export class Adapter {
         const opts = {
           as_user: this.asUser,
           attachments: msg.attachments || [],
+          thread_ts: msg.messageID,
           unfurl_links: true,
         };
 

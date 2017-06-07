@@ -2,7 +2,7 @@ import schemas from '@broid/schemas';
 import { Logger } from '@broid/utils';
 
 import * as Promise from 'bluebird';
-import { Router  } from 'express';
+import { Router } from 'express';
 import * as TelegramBot from 'node-telegram-bot-api';
 import * as uuid from 'node-uuid';
 import * as R from 'ramda';

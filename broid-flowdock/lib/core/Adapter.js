@@ -31,6 +31,9 @@ class Adapter {
     serviceName() {
         return 'flowdock';
     }
+    getRouter() {
+        return null;
+    }
     connect() {
         if (!this.token) {
             return Rx_1.Observable.throw(new Error('Credentials should exist.'));

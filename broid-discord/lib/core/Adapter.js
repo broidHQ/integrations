@@ -56,6 +56,9 @@ class Adapter {
     serviceName() {
         return 'discord';
     }
+    getRouter() {
+        return null;
+    }
     connect() {
         if (!this.token) {
             return Rx_1.Observable.throw(new Error('Token should exist.'));
@@ -75,6 +78,7 @@ class Adapter {
     }
     disconnect() {
         this.connected = false;
+        this.session.disconnect();
         return Promise.resolve(null);
     }
     listen() {

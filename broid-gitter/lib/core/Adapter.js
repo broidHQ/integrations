@@ -43,6 +43,9 @@ class Adapter {
     serviceId() {
         return this.serviceID;
     }
+    getRouter() {
+        return null;
+    }
     connect() {
         if (!this.token || this.token === '') {
             return Rx_1.Observable.throw(new Error('Token should exist.'));

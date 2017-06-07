@@ -48,6 +48,8 @@ export class Parser {
 
     const normalized = cleanNulls(event);
     if (!normalized || R.isEmpty(normalized)) { return Promise.resolve(null); }
+    // Ignore messages with no text field (usually messages from the past);
+    if (!normalized.text) { return Promise.resolve(null); }
 
     const activitystreams = this.createActivityStream(normalized);
     activitystreams.actor = {
@@ -68,7 +70,7 @@ export class Parser {
         url = url.substring(0, url.length - 1);
 
         if (isUrl(url)) {
-          return fileInfo(url)
+          return fileInfo(url, this.logger)
             .then((infos) => {
               const mediaType: string = infos.mimetype;
               let fileType: string | null = null;
@@ -93,7 +95,7 @@ export class Parser {
           if (attachment) {
             as2.object = {
               content: attachment.content,
-              id: normalized.ts || this.createIdentifier(),
+              id: normalized.thread_ts || normalized.ts || this.createIdentifier(),
               mediaType: attachment.mediaType,
               name: attachment.name,
               type: attachment.type,
@@ -112,7 +114,7 @@ export class Parser {
         if (!as2.object && !R.isEmpty(normalized.content)) {
           as2.object = {
             content: normalized.text,
-            id: normalized.ts || this.createIdentifier(),
+            id: normalized.thread_ts || normalized.ts || this.createIdentifier(),
             type: 'Note',
           };
         }
@@ -134,6 +136,8 @@ export class Parser {
   }
 
   private createActivityStream(normalized: any): IActivityStream {
+    const ts: string = normalized.thread_ts || normalized.ts;
+
     return {
       '@context': 'https://www.w3.org/ns/activitystreams',
       'generator': {
@@ -141,9 +145,7 @@ export class Parser {
         name: this.generatorName,
         type: 'Service',
       },
-      'published': normalized.ts ?
-        this.ts2Timestamp(normalized.ts)
-        : Math.floor(Date.now() / 1000),
+      'published': ts ? this.ts2Timestamp(ts) : Math.floor(Date.now() / 1000),
       'type': 'Create',
     };
   }

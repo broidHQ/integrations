@@ -145,112 +145,11 @@ googleAssistant.send(formatted_message)
 
 ## Examples of messages
 
-### Message received
+You can find examples of sent and received messages at [Broid-Schemas](https://github.com/broidHQ/integrations/tree/master/broid-schemas).
 
-- A message received from Sally
+## Contributing to Broid
 
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "published": 1483677146,
-  "type": "Create",
-  "generator": {
-    "id": "67c9cb10-8a74-42c8-ba55-294d0447cdf9",
-    "type": "Service",
-    "name": "google-assistant"
-  },
-  "actor": {
-    "id": "IL12J7nWa/2zothSEg46DsY0q7o/H9FUis/YGdp64te=",
-    "type": "Person"
-  },
-  "target": {
-    "id": "my_action_name",
-    "type": "Person",
-    "name": "my_action_name"
-  },
-  "object": {
-    "type": "Note",
-    "id": "1484625833669",
-    "content": "Hello world"
-  }
-}
-```
-
-- A message received from Sally with Arguments
-
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "published": 1483677146,
-  "type": "Create",
-  "generator": {
-    "id": "67c9cb10-8a74-42c8-ba55-294d0447cdf9",
-    "type": "Service",
-    "name": "google-assistant"
-  },
-  "actor": {
-    "id": "IL12J7nWa/2zothSEg46DsY0q7o/H9FUis/YGdp64te=",
-    "type": "Person"
-  },
-  "target": {
-    "id": "my_action_name",
-    "type": "Person",
-    "name": "my_action_name"
-  },
-  "object": {
-    "type": "Note",
-    "id": "1484625833669",
-    "content": "Hello world",
-    "context": [
-      {
-        "content": "argValue",
-        "name": "argName",
-        "type": "Object"
-      },
-      {
-        "content": "argValue1",
-        "name": "argName1",
-        "type": "Object"
-      }
-    ]
-  }
-}
-```
-
-### Send a message
-
-- Send a simple message
-
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "type": "Create",
-  "generator": {
-    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
-    "type": "Service",
-    "name": "google-assistant"
-  },
-  "object": {
-    "type": "Note",
-    "content": "hello world"
-  },
-  "to": {
-    "id": "IL12J7nWa/2zothSEg46DsY0q7o/H9FUis/YGdp64te=",
-    "type": "Person"
-  }
-}
-```
-
-# Contributing to Broid
-
-Broid is an open source project. Broid wouldn't be where it is now without contributions by the community. Please consider forking Broid to improve, enhance or fix issues. If you feel like the community will benefit from your fork, please open a pull request.
-
-And because we want to do the better for you. Help us improving Broid by
-sharing your feedback on our [Integrations GitHub Repo](https://github.com/broidhq/integrations) and let's build Broid together!
-
-## Code of Conduct
-
-Make sure that you're read and understand the [Code of Conduct](http://contributor-covenant.org/version/1/2/0/).
+See [CONTRIBUTE.md](../CONTRIBUTE.md)
 
 ## Copyright & License
 

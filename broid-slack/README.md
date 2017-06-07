@@ -114,6 +114,17 @@ app.listen(8080);
 | token           | string   |            | Your access token |
 | http             | object   |            | WebServer options (`host`, `port`) |
 
+
+### Generate the "Bot User Token"
+
+`broid-slack` needs the "Bot User Token" to authenticate against the Slack RTM and Web Client. To obtain this client, you can use the script at `bin/oauth.js`. You will need your "Client ID" and your "Client Secret":
+
+```sh
+$ ./oauth.js --new --clientID xxxxxxxxxxxxxxxxxxxxxxxxx --clientSecret yyyyyyyyyyyyyyyyyyyyyyyyyyyy
+```
+
+This will open your default web browser and guide you to obtain the needeed token (easily spotted starting with: `xoxp-`). Alternatively you can obtain a "Legacy Token" [here](https://api.slack.com/custom-integrations/legacy-tokens).
+
 ### Receive a message
 
 ```javascript
@@ -127,7 +138,7 @@ slack.listen()
 
 ### Post a message
 
-To send a message, the format should use the [broid-schemas](https://github.com/broidHQ/integrations/tree/master/integrations/broid-schemas).
+To send a message, the format should use the [broid-schemas](https://github.com/broidHQ/integrations/tree/master/broid-schemas).
 
 ```javascript
 const formatted_message = {
@@ -159,274 +170,11 @@ This adapter support the [interactive messages](https://api.slack.com/docs/messa
 
 ## Examples of messages
 
-### Message received
+You can find examples of sent and received messages at [Broid-Schemas](https://github.com/broidHQ/integrations/tree/master/broid-schemas).
 
-- A direct message received from Sally
+## Contributing to Broid
 
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "generator": {
-    "id": "58a48f11-d623-475a-9335-80f9466ea08b",
-    "name": "slack",
-    "type": "Service"
-  },
-  "published": 1483872057,
-  "type": "Create",
-  "actor": {
-    "id": "U0K81Q8N3",
-    "name": "Sally",
-    "type": "Person"
-  },
-  "target": {
-    "id": "D3LGCDRM1",
-    "name": "D3LGCDRM1",
-    "type": "Person"
-  },
-  "object": {
-    "content": "hello world",
-    "id": "1483872057.000018",
-    "type": "Note"
-  }
-}
-```
-
-- A message received from Sally on Channel/Group
-
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "generator": {
-    "id": "58a48f11-d623-475a-9335-80f9466ea08b",
-    "name": "slack",
-    "type": "Service"
-  },
-  "published": 1483872034,
-  "type": "Create",
-  "actor": {
-    "id": "U0K81Q8N3",
-    "name": "Sally",
-    "type": "Person"
-  },
-  "target": {
-    "id": "G3LT1PUN2",
-    "name": "G3LT1PUN2",
-    "type": "Group"
-  },
-  "object": {
-    "content": "hello world on group",
-    "id": "1483872034.000005",
-    "type": "Note"
-  }
-}
-
-```
-
-- A interactive message callback
-
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "published": 1483495367,
-  "type": "Create",
-  "generator": {
-    "id": "a99f63b0-aa77-40b4-8cf5-4ae3d694ed94",
-    "type": "Service",
-    "name": "slack"
-  },
-  "object": {
-    "type": "Note",
-    "id": "1483495367.753793",
-    "content": "https://www.broid.ai",
-    "context": {
-      "type": "Object",
-      "name": "interactive_message_callback",
-      "content": "03722c50-14d6-4501-a7d7-18c833079a49#https://hooks.slack.com/actions/xxxx/xxxxx"
-    }
-  },
-  "target": {
-    "type": "Group",
-    "id": "C1L7YRBLG",
-    "name": "channelname"
-  },
-  "actor": {
-    "id": "U0K81Q8N3",
-    "type": "Person",
-    "name": "sally"
-  }
-}
-```
-
-### Send a message
-
-- Send a simple message
-
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "type": "Create",
-  "generator": {
-    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
-    "type": "Service",
-    "name": "slack"
-  },
-  "object": {
-    "type": "Note",
-    "content": "hello world"
-  },
-  "to": {
-    "type": "Person",
-    "id": "C1E3X0RRB"
-  }
-}
-```
-
-- Edit a message
-
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "type": "Create",
-  "generator": {
-    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
-    "type": "Service",
-    "name": "slack"
-  },
-  "object": {
-    "type": "Note",
-    "content": "hello world edited",
-    "id": "1483406119.000020",
-  },
-  "to": {
-    "type": "Person",
-    "id": "C1E3X0RRB"
-  }
-}
-```
-
-- Delete a message
-
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "type": "Create",
-  "generator": {
-    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
-    "type": "Service",
-    "name": "slack"
-  },
-  "object": {
-    "type": "Note",
-    "content": "",
-    "id": "1483406119.000020",
-  },
-  "to": {
-    "type": "Person",
-    "id": "C1E3X0RRB"
-  }
-}
-```
-
-- Send a Image
-
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "type": "Create",
-  "generator": {
-    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
-    "type": "Service",
-    "name": "slack"
-  },
-  "object": {
-    "type": "Image",
-    "content": "this is a image!",
-    "url": "http://url_of/images/image.png"
-  },
-  "to": {
-    "type": "Group",
-    "id": "C1L7YRBLG"
-  }
-}
-```
-
-- Send quick reply message
-
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "type": "Create",
-  "generator": {
-    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
-    "type": "Service",
-    "name": "slack"
-  },
-  "object": {
-    "type": "Note",
-    "content": "hello world",
-    "attachment": [{
-        "type": "Button",
-        "content": "Broid's website",
-        "name": "broid",
-        "mediaType": "text/html",
-        "url": "https://www.broid.ai"
-    }, {
-        "type": "Button",
-        "content": "Falken's Maze Confirm",
-        "name": "maze",
-        "url": "value_maze",
-        "attachment": {
-          "name": "Falken's Maze",
-          "content": "Can you confirm?",
-          "yesLabel": "Yes",
-          "noLabel": "No"
-        }
-    }]
-  },
-  "to": {
-    "type": "Group",
-    "id": "C1L7YRBLG"
-  }
-}
-```
-
-- Respond to interactive message
-
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "type": "Create",
-  "generator": {
-    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
-    "type": "Service",
-    "name": "slack"
-  },
-  "object": {
-    "type": "Note",
-    "content": "go for http://broid.ai",
-    "context" : {
-      "type": "Object",
-      "name": "interactive_message_callback",
-      "content": "03722c50-14d6-4501-a7d7-18c833079a49#https://hooks.slack.com/actions/xxxx/xxxxx"
-    },    
-  },
-  "to": {
-    "type": "Group",
-    "id": "C1L7YRBLG"
-  }
-}
-```
-
-# Contributing to Broid
-
-Broid is an open source project. Broid wouldn't be where it is now without contributions by the community. Please consider forking Broid to improve, enhance or fix issues. If you feel like the community will benefit from your fork, please open a pull request.
-
-And because we want to do the better for you. Help us improving Broid by
-sharing your feedback on our [Integrations GitHub Repo](https://github.com/broidhq/integrations) and let's build Broid together!
-
-## Code of Conduct
-
-Make sure that you're read and understand the [Code of Conduct](http://contributor-covenant.org/version/1/2/0/).
+See [CONTRIBUTE.md](../CONTRIBUTE.md)
 
 ## Copyright & License
 

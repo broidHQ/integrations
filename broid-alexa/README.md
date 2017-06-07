@@ -143,68 +143,11 @@ alexa.send(formatted_message)
 
 ## Examples of messages
 
-### Message received
+You can find examples of sent and received messages at [Broid-Schemas](https://github.com/broidHQ/integrations/tree/master/broid-schemas).
 
-- A message received from Sally
+## Contributing to Broid
 
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "published": 1483677146,
-  "type": "Create",
-  "generator": {
-    "id": "67c9cb10-8a74-42c8-ba55-294d0447cdf9",
-    "type": "Service",
-    "name": "alexa"
-  },
-  "actor": {
-    "id": "15146345659",
-    "name": "15146345659",
-    "type": "Person"
-  },
-  "target": {
-    "id": "12262101490",
-    "name": "12262101490",
-    "type": "Person"
-  },
-  "object": {
-    "type": "Note",
-    "id": "0B0000003186F6EB",
-    "content": "Hello world"
-  }
-}
-```
-
-### Send a message
-
-- Send a simple message
-
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "type": "Create",
-  "generator": {
-    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
-    "type": "Service",
-    "name": "alexa"
-  },
-  "object": {
-    "type": "Note",
-    "content": "hello world"
-  },
-  "to": {
-    "id": "15146345659",
-    "type": "Person"
-  }
-}
-```
-
-# Contributing to Broid
-
-Broid is an open source project. Broid wouldn't be where it is now without contributions by the community. Please consider forking Broid to improve, enhance or fix issues. If you feel like the community will benefit from your fork, please open a pull request.
-
-And because we want to do the better for you. Help us improving Broid by
-sharing your feedback on our [Integrations GitHub Repo](https://github.com/broidhq/integrations) and let's build Broid together!
+See [CONTRIBUTE.md](../CONTRIBUTE.md)
 
 ## Code of Conduct
 

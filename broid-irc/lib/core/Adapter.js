@@ -15,7 +15,7 @@ class Adapter {
         this.connectTimeout = obj && obj.connectTimeout || 60000;
         this.address = obj && obj.address;
         this.username = obj && obj.username;
-        this.channels = obj && obj.channels;
+        this.ircChannels = obj && obj.channels;
         this.ee = new events_1.EventEmitter();
         this.parser = new Parser_1.Parser(this.serviceName(), this.username, this.serviceID, this.logLevel);
         this.logger = new utils_1.Logger('adapter', this.logLevel);
@@ -25,6 +25,15 @@ class Adapter {
     }
     serviceId() {
         return this.serviceID;
+    }
+    getRouter() {
+        return null;
+    }
+    users() {
+        return Promise.reject(new Error('Not supported'));
+    }
+    channels() {
+        return Promise.reject(new Error('Not supported'));
     }
     connect() {
         if (this.connected) {
@@ -38,7 +47,7 @@ class Adapter {
         }
         this.client = Promise.promisifyAll(new irc.Client(this.address, this.username, {
             autoConnect: false,
-            channels: this.channels,
+            channels: this.ircChannels,
         }));
         const connect = this.client.connectAsync()
             .catch((err) => {
