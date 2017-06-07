@@ -65,7 +65,12 @@ class Adapter {
     listen() {
         return Rx_1.Observable.fromEvent(this.emitter, 'message')
             .mergeMap((event) => this.parser.normalize(event))
-            .mergeMap((messages) => Rx_1.Observable.from(messages))
+            .mergeMap((messages) => {
+            if (!messages || R.isEmpty(messages)) {
+                return Rx_1.Observable.empty();
+            }
+            return Rx_1.Observable.from(messages);
+        })
             .mergeMap((message) => this.user(message.author)
             .then((author) => R.assoc('authorInformation', author, message)))
             .mergeMap((normalized) => this.parser.parse(normalized))
