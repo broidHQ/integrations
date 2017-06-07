@@ -34,6 +34,9 @@ class Parser {
         if (!normalized || R.isEmpty(normalized)) {
             return Promise.resolve(null);
         }
+        if (!normalized.text) {
+            return Promise.resolve(null);
+        }
         const activitystreams = this.createActivityStream(normalized);
         activitystreams.actor = {
             id: R.path(['user', 'id'], normalized),
@@ -74,7 +77,7 @@ class Parser {
                 if (attachment) {
                     as2.object = {
                         content: attachment.content,
-                        id: normalized.ts || this.createIdentifier(),
+                        id: normalized.thread_ts || normalized.ts || this.createIdentifier(),
                         mediaType: attachment.mediaType,
                         name: attachment.name,
                         type: attachment.type,
@@ -91,7 +94,7 @@ class Parser {
             if (!as2.object && !R.isEmpty(normalized.content)) {
                 as2.object = {
                     content: normalized.text,
-                    id: normalized.ts || this.createIdentifier(),
+                    id: normalized.thread_ts || normalized.ts || this.createIdentifier(),
                     type: 'Note',
                 };
             }
@@ -109,6 +112,7 @@ class Parser {
         return uuid.v4();
     }
     createActivityStream(normalized) {
+        const ts = normalized.thread_ts || normalized.ts;
         return {
             '@context': 'https://www.w3.org/ns/activitystreams',
             'generator': {
@@ -116,9 +120,7 @@ class Parser {
                 name: this.generatorName,
                 type: 'Service',
             },
-            'published': normalized.ts ?
-                this.ts2Timestamp(normalized.ts)
-                : Math.floor(Date.now() / 1000),
+            'published': ts ? this.ts2Timestamp(ts) : Math.floor(Date.now() / 1000),
             'type': 'Create',
         };
     }

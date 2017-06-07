@@ -114,6 +114,17 @@ app.listen(8080);
 | token           | string   |            | Your access token |
 | http             | object   |            | WebServer options (`host`, `port`) |
 
+
+### Generate the "Bot User Token"
+
+`broid-slack` needs the "Bot User Token" to authenticate against the Slack RTM and Web Client. To obtain this client, you can use the script at `bin/oauth.js`. You will need your "Client ID" and your "Client Secret":
+
+```sh
+$ ./oauth.js --new --clientID xxxxxxxxxxxxxxxxxxxxxxxxx --clientSecret yyyyyyyyyyyyyyyyyyyyyyyyyyyy
+```
+
+This will open your default web browser and guide you to obtain the needeed token (easily spotted starting with: `xoxp-`). Alternatively you can obtain a "Legacy Token" [here](https://api.slack.com/custom-integrations/legacy-tokens).
+
 ### Receive a message
 
 ```javascript

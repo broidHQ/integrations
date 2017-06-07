@@ -108,6 +108,7 @@ export class Adapter {
 
   public disconnect(): Promise<null> {
     this.connected = false;
+    this.session.disconnect();
     return Promise.resolve(null);
   }
 

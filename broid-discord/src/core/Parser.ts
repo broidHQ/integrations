@@ -99,7 +99,7 @@ export class Parser {
   }
 
   private parseMedia(media: any, content: string | null): Promise<any> | null {
-    return fileInfo(media.filename, this.logger)
+    return fileInfo(media.url, this.logger)
       .then((infos) => {
         const mimeType = infos.mimetype;
         let mediaType: string | null = null;
