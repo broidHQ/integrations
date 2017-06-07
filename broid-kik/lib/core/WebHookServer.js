@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const utils_1 = require("@broid/utils");
 const Promise = require("bluebird");
-const bodyParser = require("body-parser");
 const express = require("express");
 class WebHookServer {
     constructor(options, router, logLevel) {
@@ -21,8 +20,6 @@ class WebHookServer {
     }
     setupExpress(router) {
         this.express = express();
-        this.express.use(bodyParser.json());
-        this.express.use(bodyParser.urlencoded({ extended: false }));
         this.express.use('/', router);
     }
 }

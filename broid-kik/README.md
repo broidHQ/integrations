@@ -98,6 +98,8 @@ app.use("/kik", kik.getRouter());
 app.listen(8080);
 ```
 
+When using the kik integration in an express application, ensure that you do **not** mount any kind of `body-parser` middleware before the router. The official kik library [expects to handle a raw body itself](https://github.com/kikinteractive/kik-node/issues/8).
+
 **Options available**
 
 | name             | Type     | default    | Description  |
@@ -107,6 +109,9 @@ app.listen(8080);
 | token           | string  |            | Your API Key |
 | username         | string   |            | Your bot name |
 | http             | object   | `{ "port": 8080, "http": "0.0.0.0", "webhookURL": "127.0.0.1" }` | WebServer options (`host`, `port`, `webhookURL`) |
+
+
+Note: `webhookURL` need to contain a path because Kik `incomingPath` not support empty value.
 
 ### Buttons supported
 
