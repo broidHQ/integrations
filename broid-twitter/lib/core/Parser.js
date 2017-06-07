@@ -50,7 +50,7 @@ class Parser {
         return Promise.map(normalized.attachments, (attachment) => {
             const url = R.prop('url', attachment);
             if (url) {
-                return utils_1.fileInfo(url).then((infos) => R.assoc('mimetype', infos.mimetype, attachment));
+                return utils_1.fileInfo(url, this.logger).then((infos) => R.assoc('mimetype', infos.mimetype, attachment));
             }
             return null;
         })

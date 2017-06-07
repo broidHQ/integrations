@@ -97,7 +97,10 @@ export class Adapter {
   public listen(): Observable<object> {
     return Observable.fromEvent(this.emitter, 'message')
       .mergeMap((event: IWebHookEvent) => this.parser.normalize(event))
-      .mergeMap((messages: any) => Observable.from(messages))
+      .mergeMap((messages: any) => {
+        if (!messages || R.isEmpty(messages)) { return Observable.empty(); }
+        return Observable.from(messages);
+      })
       .mergeMap((message: any) => this.user(message.author)
         .then((author) => R.assoc('authorInformation', author, message)))
       .mergeMap((normalized) => this.parser.parse(normalized))

@@ -65,10 +65,6 @@ export class Adapter {
     return 'wechat';
   }
 
-  public getRouter(): null {
-    return null;
-  }
-
   public connect(): Observable<object> {
     if (this.connected) {
       return Observable.of({ type: 'connected', serviceID: this.serviceId() });
