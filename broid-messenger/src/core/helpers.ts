@@ -49,17 +49,26 @@ export function createAttachment(name: string,
                                  content: string,
                                  buttons?: any[],
                                  imageURL?: any): object {
-  return {
-    payload: {
-      elements: [{
-        buttons: buttons && !R.isEmpty(buttons) ? buttons : null,
-        image_url: imageURL || '',
-        item_url: '',
-        subtitle: content !== name ? content : '',
-        title: name || '',
-      }],
-      template_type: 'generic',
-    },
-    type: 'template',
-  };
+  if (imageURL && (!name || R.isEmpty(name)) && (!buttons || R.isEmpty(buttons))) { // image
+    return {
+      payload: {
+        url: imageURL,
+      },
+      type: 'image',
+    };
+  } else { // card
+    return {
+      payload: {
+        elements: [{
+          buttons: buttons && !R.isEmpty(buttons) ? buttons : null,
+          image_url: imageURL || '',
+          item_url: '',
+          subtitle: content !== name ? content : '',
+          title: !name || R.isEmpty(name) ? content.substring(0, 10) : name,
+        }],
+        template_type: 'generic',
+      },
+      type: 'template',
+    };
+  }
 }
