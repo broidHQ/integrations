@@ -45,7 +45,7 @@ _Buttons, Location, Phone number are platform limitations._
 
 _Image, Video are supported as a simple message_
 
-_Thread as supported_
+_Threads are supported_
 
 ## Getting started
 
@@ -94,7 +94,7 @@ flowdock.listen()
 
 ### Post a message
 
-To send a message, the format should use the [broid-schemas](https://github.com/broidHQ/integrations/tree/master/integrations/broid-schemas).
+To send a message, the format should use the [broid-schemas](https://github.com/broidHQ/integrations/tree/master/broid-schemas).
 
 ```javascript
 const formatted_message = {
@@ -127,234 +127,13 @@ flowdock.send(formatted_message)
   .catch(err => console.error(err));
 ```
 
-
-
 ## Examples of messages
 
-### Message received
+You can find examples of sent and received messages at [Broid-Schemas](https://github.com/broidHQ/integrations/tree/master/broid-schemas).
 
-- A direct message received from Sally
+## Contributing to Broid
 
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "published": 1483589416,
-  "type": "Create",
-  "generator": {
-    "id": "73301570-7ec7-45ce-b035-2ff4831306ab",
-    "type": "Service",
-    "name": "flowdock"
-  },
-  "actor": {
-    "id": "2932680926",
-    "type": "Person",
-    "name": "Sally Dude"
-  },
-  "target": {
-    "id": "bd9b6be2-f2b9-4018-ae6d-372aa68e3f5a",
-    "name": "Main",
-    "type": "Group"
-  },
-  "object": {
-    "content": "hello",
-    "id": "77",
-    "type": "Note",
-    "context": {
-      "content": "E_eqrrwKu2nrtwp-YpfSG9JN53-",
-      "name": "thread",
-      "type": "Object"
-    }
-  }
-}
-```
-
-- A private message received from Sally
-
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "published": 1483590793,
-  "type": "Create",
-  "generator": {
-    "id": "55c5e6a2-a1a3-4fc6-b94a-7011d9faa0a2",
-    "type": "Service",
-    "name": "flowdock"
-  },
-  "actor": {
-    "id": "2932680926",
-    "type": "Person",
-    "name": "Sally Dude"
-  },
-  "target": {
-    "id": "2932680926",
-    "type": "Person",
-    "name": "Sally Dude"
-  },
-  "object": {
-    "content": "hello",
-    "id": "9492845253",
-    "type": "Note"
-  }
-}
-```
-
-- A message received from Sally with hashtag
-
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "published": 1483589416,
-  "type": "Create",
-  "generator": {
-    "id": "73301570-7ec7-45ce-b035-2ff4831306ab",
-    "type": "Service",
-    "name": "flowdock"
-  },
-  "actor": {
-    "id": "2932680926",
-    "type": "Person",
-    "name": "Sally Dude"
-  },
-  "target": {
-    "id": "bd9b6be2-f2b9-4918-ae6d-370aa68e3f5a",
-    "name": "Main",
-    "type": "Group"
-  },
-  "object": {
-    "content": "hello",
-    "id": "77",
-    "type": "Note",
-    "context": {
-      "content": "E_eqrrwKu2nrtwp-YpfSG9JN53-",
-      "name": "thread",
-      "type": "Object"
-    },
-    "tag": [
-      {
-        "id": "tag",
-        "name": "tag",
-        "type": "Object"
-      },
-      {
-        "id": "tag1",
-        "name": "tag1",
-        "type": "Object"
-      }
-    ]    
-  }
-}
-```
-
-
-### Send a message
-
-- Send a simple message
-
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "type": "Create",
-  "generator": {
-    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
-    "type": "Service",
-    "name": "flowdock"
-  },
-  "object": {
-    "type": "Note",
-    "content": "hello world",
-    "tag": [
-      {
-        "id": "my_tag",
-        "name": "my_tag",
-        "type": "Object"
-      }      
-    ]
-  },
-  "to": {
-    "id": "bd9b6be2-f2b9-4018-ae6d-372aa68e3f5a",
-    "type": "Group"
-  }
-}
-```
-
-- Send a private message
-
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "type": "Create",
-  "generator": {
-    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
-    "type": "Service",
-    "name": "flowdock"
-  },
-  "object": {
-    "type": "Note",
-    "content": "hello world"
-  },
-  "to": {
-    "id": "266836",
-    "type": "Person"
-  }
-}
-```
-
-- Update a message
-
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "type": "Update",
-  "generator": {
-    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
-    "type": "Service",
-    "name": "flowdock"
-  },
-  "object": {
-    "id": "58",
-    "type": "Note",
-    "content": "edited!"
-  },
-  "to": {
-    "id": "bd9b6be2-f2b9-4018-ae6d-372aa68e3f5a",
-    "type": "Group"
-  }
-}
-```
-
-- Delete a message
-
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "type": "Delete",
-  "generator": {
-    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
-    "type": "Service",
-    "name": "flowdock"
-  },
-  "object": {
-    "id": "58",
-    "type": "Note",
-    "content": ""
-  },
-  "to": {
-    "id": "bd9b6be2-f2b9-4018-ae6d-372aa68e3f5a",
-    "type": "Group"
-  }
-}
-```
-
-# Contributing to Broid
-
-Broid is an open source project. Broid wouldn't be where it is now without contributions by the community. Please consider forking Broid to improve, enhance or fix issues. If you feel like the community will benefit from your fork, please open a pull request.
-
-And because we want to do the better for you. Help us improving Broid by
-sharing your feedback on our [Integrations GitHub Repo](https://github.com/broidhq/integrations) and let's build Broid together!
-
-## Code of Conduct
-
-Make sure that you're read and understand the [Code of Conduct](http://contributor-covenant.org/version/1/2/0/).
+See [CONTRIBUTE.md](../CONTRIBUTE.md)
 
 ## Copyright & License
 

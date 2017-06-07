@@ -75,8 +75,8 @@ messenger.connect()
 | ---------------- |:--------:| :--------: | --------------------------|
 | serviceID        | string   | random     | Arbitrary identifier of the running instance |
 | logLevel         | string   | `info`     | Can be : `fatal`, `error`, `warn`, `info`, `debug`, `trace` |
-| token            | string   |            | Your account oauth token |
-| tokenSecret      | string   |            | Your auth verify token |
+| token            | string   |            | Your application token |
+| tokenSecret      | string   |            | Your auth verify token (hub.verify_token) |
 | http             | object   | `{ "port": 8080, "http": "0.0.0.0" }` | WebServer options (`host`, `port`) |
 
 ### Receive a message
@@ -112,7 +112,7 @@ messenger.listen()
 
 ### Post a message
 
-To send a message, the format should use the [broid-schemas](https://github.com/broidHQ/integrations/tree/master/integrations/broid-schemas).
+To send a message, the format should use the [broid-schemas](https://github.com/broidHQ/integrations/tree/master/broid-schemas).
 
 ```javascript
 const formatted_message = {
@@ -140,158 +140,11 @@ messenger.send(formatted_message)
 
 ## Examples of messages
 
-### Message received
+You can find examples of sent and received messages at [Broid-Schemas](https://github.com/broidHQ/integrations/tree/master/broid-schemas).
 
-- A message received from Sally
+## Contributing to Broid
 
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "published": 1483677146,
-  "type": "Create",
-  "generator": {
-    "id": "67c9cb10-8a74-42c8-ba55-294d0447cdf9",
-    "type": "Service",
-    "name": "messenger"
-  },
-  "actor": {
-    "id": "1326251318",
-    "type": "Person",
-    "name": "Sally Doe"
-  },
-  "target": {
-    "id": "1396343657196792",
-    "name": "1396343657196792",
-    "type": "Person"
-  },
-  "object": {
-    "type": "Note",
-    "id": "mid.1483842234615:9552e41189",
-    "content": "Hello world"
-  }
-}
-```
-
-- A video/image received from Sally
-
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "published": 1483677146,
-  "type": "Create",
-  "generator": {
-    "id": "67c9cb10-8a74-42c8-ba55-294d0447cdf9",
-    "type": "Service",
-    "name": "messenger"
-  },
-  "actor": {
-    "id": "1326251318",
-    "type": "Person",
-    "name": "Sally Doe"
-  },
-  "target": {
-    "id": "1396343657196792",
-    "name": "1396343657196792",
-    "type": "Person"
-  },
-  "object": {
-    "type": "Image",
-    "id": "mid.1483842234615:9552e41189",
-    "url": "http://images.nationalgeographic.com/wpf/media-live/photos/000/090/cache/african-elephant-standing_9033_600x450.jpg",
-    "mediaType": "image/jpeg"
-  }
-}
-```
-
-### Send a message
-
-- Send a simple message
-
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "type": "Create",
-  "generator": {
-    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
-    "type": "Service",
-    "name": "messenger"
-  },
-  "object": {
-    "type": "Note",
-    "content": "hello world"
-  },
-  "to": {
-    "type": "Person",
-    "id": "1396343657196792"
-  }
-}
-```
-
-- Send a image
-
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "type": "Create",
-  "generator": {
-    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
-    "type": "Service",
-    "name": "messenger"
-  },
-  "object": {
-    "type": "Image",
-    "content": "hello world",
-    "url": "https://www.broid.ai/images/fake.png"
-  },
-  "to": {
-    "type": "Person",
-    "id": "1396343657196792"
-  }
-}
-```
-
-- Send quick reply message
-
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "type": "Create",
-  "generator": {
-    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
-    "type": "Service",
-    "name": "messenger"
-  },
-  "object": {
-    "type": "Note",
-    "content": "hello world",
-    "attachment": [{
-        "type": "Button",
-        "name": "broid",
-        "mediaType": "text/html",
-        "url": "https://www.broid.ai"
-    }, {
-        "type": "Button",
-        "name": "Green",
-        "url": "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_GREEN"
-    }]  
-  },
-  "to": {
-    "type": "Person",
-    "id": "1396343657196792"
-  }
-}
-```
-
-# Contributing to Broid
-
-Broid is an open source project. Broid wouldn't be where it is now without contributions by the community. Please consider forking Broid to improve, enhance or fix issues. If you feel like the community will benefit from your fork, please open a pull request.
-
-And because we want to do the better for you. Help us improving Broid by
-sharing your feedback on our [Integrations GitHub Repo](https://github.com/broidhq/integrations) and let's build Broid together!
-
-## Code of Conduct
-
-Make sure that you're read and understand the [Code of Conduct](http://contributor-covenant.org/version/1/2/0/).
+See [CONTRIBUTE.md](../CONTRIBUTE.md)
 
 ## Copyright & License
 

@@ -120,106 +120,13 @@ irc.send(formatted_message)
   .catch(err => console.error(err));
 ```
 
-
-
 ## Examples of messages
 
-### Message received
+You can find examples of sent and received messages at [Broid-Schemas](https://github.com/broidHQ/integrations/tree/master/broid-schemas).
 
-- A direct message received from Sally
+## Contributing to Broid
 
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "published": 1483589416,
-  "type": "Create",
-  "generator": {
-    "id": "73301570-7ec7-45ce-b035-2ff4831306ab",
-    "type": "Service",
-    "name": "irc"
-  },
-  "actor": {
-    "id": "SallyDude",
-    "type": "Person",
-    "name": "SallyDude"
-  },
-  "target": {
-    "id": "#supersecretirc",
-    "type": "Group",
-    "name": "#supersecretirc"
-  },
-  "object": {
-    "type": "Note",
-    "id": "73301570-7ec7-45ce-b035-2ff4831306ab",
-    "content": "hello world"
-  }
-}
-```
-
-- A message received from Sally through a private message.
-
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "published": 1483590793,
-  "type": "Create",
-  "generator": {
-    "id": "55c5e6a2-a1a3-4fc6-b94a-7011d9faa0a2",
-    "type": "Service",
-    "name": "irc"
-  },
-  "actor": {
-    "id": "SallyDude",
-    "type": "Person",
-    "name": "SallyDude"
-  },
-  "target": {
-    "id": "248881752",
-    "type": "Group",
-    "name": "JohnDow"
-  },
-  "object": {
-    "type": "Note",
-    "id": "55c5e6a2-a1a3-4fc6-b94a-7011d9faa0a2",
-    "content": "hello world"
-  }
-}
-```
-
-### Send a message
-
-- Send a simple message to the channel
-
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "type": "Create",
-  "generator": {
-    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
-    "type": "Service",
-    "name": "irc"
-  },
-  "object": {
-    "type": "Note",
-    "content": "hello world"
-  },
-  "to": {
-    "type": "Group",
-    "id": "#supersecretirc"
-  }
-}
-```
-
-# Contributing to Broid
-
-Broid is an open source project. Broid wouldn't be where it is now without contributions by the community. Please consider forking Broid to improve, enhance or fix issues. If you feel like the community will benefit from your fork, please open a pull request.
-
-And because we want to do the better for you. Help us improving Broid by
-sharing your feedback on our [Integrations GitHub Repo](https://github.com/broidhq/integrations) and let's build Broid together!
-
-## Code of Conduct
-
-Make sure that you're read and understand the [Code of Conduct](http://contributor-covenant.org/version/1/2/0/).
+See [CONTRIBUTE.md](../CONTRIBUTE.md)
 
 ## Copyright & License
 
