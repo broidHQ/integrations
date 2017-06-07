@@ -70,7 +70,7 @@ export class Parser {
         url = url.substring(0, url.length - 1);
 
         if (isUrl(url)) {
-          return fileInfo(url)
+          return fileInfo(url, this.logger)
             .then((infos) => {
               const mediaType: string = infos.mimetype;
               let fileType: string | null = null;

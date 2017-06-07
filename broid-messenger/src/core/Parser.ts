@@ -185,7 +185,7 @@ export class Parser {
       return Promise.resolve(a)
         .then((am) => {
           if (am.url) {
-            return fileInfo(am.url.split('?')[0])
+            return fileInfo(am.url.split('?')[0], this.logger)
               .then((infos) => R.assoc('mediaType', infos.mimetype, am));
           }
           return null;
