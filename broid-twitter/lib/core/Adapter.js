@@ -8,7 +8,7 @@ const uuid = require("node-uuid");
 const R = require("ramda");
 const rp = require("request-promise");
 const Rx_1 = require("rxjs/Rx");
-const Twit = require("twit");
+const Twitter = require("twitter");
 const Parser_1 = require("./Parser");
 class Adapter {
     constructor(obj) {
@@ -49,8 +49,8 @@ class Adapter {
         if (!this.token || !this.tokenSecret || !this.consumerKey || !this.consumerSecret) {
             return Rx_1.Observable.throw(new Error('Credentials should exist.'));
         }
-        this.session = new Twit({
-            access_token: this.token,
+        this.session = new Twitter({
+            access_token_key: this.token,
             access_token_secret: this.tokenSecret,
             consumer_key: this.consumerKey,
             consumer_secret: this.consumerSecret,
@@ -66,10 +66,18 @@ class Adapter {
     }
     listen() {
         const streamMention = this.session.stream('statuses/filter', { track: this.username });
-        const streamDm = this.session.stream('user');
-        return Rx_1.Observable.merge(Rx_1.Observable.fromEvent(streamDm, 'direct_message'), Rx_1.Observable.fromEvent(streamMention, 'tweet'))
+        const streamDm = this.session.stream('user', { with: 'user' });
+        return Rx_1.Observable.merge(Rx_1.Observable.fromEvent(streamDm, 'data').mergeMap((event) => {
+            if (event.direct_message) {
+                return Promise.resolve(event.direct_message);
+            }
+            return Promise.resolve(null);
+        }), Rx_1.Observable.fromEvent(streamMention, 'data'))
             .mergeMap((event) => {
             this.logger.debug('Event received', event);
+            if (!event || R.isEmpty(event)) {
+                return Promise.resolve(null);
+            }
             if (event.direct_message) {
                 event = event.direct_message;
             }
