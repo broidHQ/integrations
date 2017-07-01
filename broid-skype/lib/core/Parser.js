@@ -58,8 +58,8 @@ class Parser {
         const attachmentVideos = R.filter((attachment) => attachment.contentType.startsWith('video')
             || attachment.contentType === 'application/octet-stream', normalized.attachments);
         const assoc = (attachment, infos, fileType) => R.assoc('name', attachment.name, R.assoc('contentUrl', attachment.contentUrl, R.assoc('fileType', fileType, infos)));
-        return Promise.map(attachmentImages, (attachment) => utils_1.fileInfo(attachment.name).then((infos) => assoc(attachment, infos, 'Image')))
-            .then((dataImages) => Promise.map(attachmentVideos, (attachment) => utils_1.fileInfo(attachment.name).then((infos) => assoc(attachment, infos, 'Video')))
+        return Promise.map(attachmentImages, (attachment) => utils_1.fileInfo(attachment.name, this.logger).then((infos) => assoc(attachment, infos, 'Image')))
+            .then((dataImages) => Promise.map(attachmentVideos, (attachment) => utils_1.fileInfo(attachment.name, this.logger).then((infos) => assoc(attachment, infos, 'Video')))
             .then((dataVideos) => R.concat(dataImages, dataVideos)))
             .then((fileInfos) => {
             const count = R.length(fileInfos);

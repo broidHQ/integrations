@@ -126,6 +126,7 @@ export class Adapter {
 
   public disconnect(): Promise<null> {
     this.connected = false;
+    this.session.disconnect();
     if (this.webhookServer) {
       return this.webhookServer.close();
     }
@@ -244,6 +245,7 @@ export class Adapter {
         const opts = {
           as_user: this.asUser,
           attachments: msg.attachments || [],
+          thread_ts: msg.messageID,
           unfurl_links: true,
         };
 
@@ -364,6 +366,13 @@ export class Adapter {
         request: req,
         response: res,
       };
+
+      // Challenge verification
+      const payloadType: string = R.path(['body', 'type'], req) as string;
+      if (payloadType === 'url_verification') {
+        const challenge: string = R.path(['body', 'challenge'], req) as string;
+        return res.json({ challenge });
+      }
 
       this.emitter.emit('message', event);
 

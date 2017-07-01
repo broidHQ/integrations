@@ -7,7 +7,7 @@ import * as uuid from 'node-uuid';
 import * as R from 'ramda';
 import * as rp from 'request-promise';
 import { Observable } from 'rxjs/Rx';
-import * as Twit from 'twit';
+import * as Twitter from 'twitter';
 
 import { IAdapterOptions, ITwitterSendParameters } from './interfaces';
 import { Parser } from './Parser';
@@ -69,6 +69,10 @@ export class Adapter {
     return 'twitter';
   }
 
+  public getRouter(): null {
+    return null;
+  }
+
   // Connect to Twitter
   public connect(): Observable<object> {
     if (this.connected) {
@@ -79,8 +83,8 @@ export class Adapter {
       return Observable.throw(new Error('Credentials should exist.'));
     }
 
-    this.session = new Twit({
-      access_token: this.token,
+    this.session = new Twitter({
+      access_token_key: this.token,
       access_token_secret: this.tokenSecret,
       consumer_key: this.consumerKey,
       consumer_secret: this.consumerSecret,
@@ -101,13 +105,21 @@ export class Adapter {
   // Listen 'message' event from Twitter
   public listen(): Observable<object> {
     const streamMention = this.session.stream('statuses/filter', { track: this.username });
-    const streamDm = this.session.stream('user');
+    const streamDm = this.session.stream('user', { with: 'user' });
 
     return Observable.merge(
-      Observable.fromEvent(streamDm, 'direct_message'),
-      Observable.fromEvent(streamMention, 'tweet'))
+      Observable.fromEvent(streamDm, 'data').mergeMap((event: any) => {
+        if (event.direct_message) {
+          return Promise.resolve(event.direct_message);
+        }
+        return Promise.resolve(null);
+      }),
+      Observable.fromEvent(streamMention, 'data'))
       .mergeMap((event: any) => {
         this.logger.debug('Event received', event);
+
+        if (!event || R.isEmpty(event)) { return Promise.resolve(null); }
+
         if (event.direct_message) { event = event.direct_message; }
         const authorInformation = event.user || event.sender;
 

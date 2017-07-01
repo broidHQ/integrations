@@ -70,7 +70,7 @@ export class Parser {
     return Promise.resolve(activitystreams)
       .then((as2) => {
         if (normalized.url && (normalized.type === 'Image' || normalized.type === 'Video')) {
-          return fileInfo(normalized.url.split('?')[0])
+          return fileInfo(normalized.url.split('?')[0], this.logger)
             .then((infos) => {
               as2.object = {
                 id,

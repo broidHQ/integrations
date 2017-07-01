@@ -152,7 +152,7 @@ class Parser {
             return Promise.resolve(a)
                 .then((am) => {
                 if (am.url) {
-                    return utils_1.fileInfo(am.url.split('?')[0])
+                    return utils_1.fileInfo(am.url.split('?')[0], this.logger)
                         .then((infos) => R.assoc('mediaType', infos.mimetype, am));
                 }
                 return null;
