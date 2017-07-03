@@ -53,7 +53,7 @@ _Image, Video, and Audio are supported as a simple message_.
 npm install --save @broid/wechat
 ```
 
-### Connect to Twitter
+### Connect to WeChat
 
 ```javascript
 const BroidWeChat = require('@broid/wechat');
