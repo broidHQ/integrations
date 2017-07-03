@@ -144,14 +144,26 @@ class Adapter {
                 return Promise.resolve(data);
             }
         }
-        return rp({
+        const params = {
             json: true,
             method: 'GET',
             qs: { access_token: this.token, fields },
             uri: `https://graph.facebook.com/v2.8/${id}`,
+        };
+        return rp(params)
+            .catch((err) => {
+            if (err.message && err.message.includes('nonexisting field')) {
+                params.qs.fields = 'name';
+                return rp(params);
+            }
+            throw err;
         })
             .then((data) => {
             data.id = data.id || id;
+            if (!data.first_name && data.name) {
+                data.first_name = data.name;
+                data.last_name = '';
+            }
             this.storeUsers.set(key, data);
             return data;
         });

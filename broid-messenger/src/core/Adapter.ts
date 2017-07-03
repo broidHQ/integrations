@@ -186,17 +186,32 @@ export class Adapter {
       }
     }
 
-    return rp({
+    const params: rp.OptionsWithUri = {
       json: true,
       method: 'GET',
       qs: { access_token: this.token, fields },
       uri: `https://graph.facebook.com/v2.8/${id}`,
-    })
-    .then((data: any) => {
-      data.id = data.id || id;
-      this.storeUsers.set(key, data);
-      return data;
-    });
+    };
+
+    return rp(params)
+       .catch((err) => {
+          if (err.message && err.message.includes('nonexisting field')) {
+            params.qs.fields = 'name';
+            return rp(params);
+          }
+
+          throw err;
+       })
+      .then((data: any) => {
+        data.id = data.id || id;
+        if (!data.first_name && data.name) {
+          data.first_name = data.name;
+          data.last_name = '';
+        }
+
+        this.storeUsers.set(key, data);
+        return data;
+      });
   }
 
   private setupRouter(): Router {
