@@ -56,8 +56,8 @@
     "watch": "^1.0.1"
   },
   "dependencies": {
-    "@broid/schemas": "^1.0.0",
-    "@broid/utils": "^1.1.0",
+    "@broid/schemas": "^1.0.1",
+    "@broid/utils": "^1.1.1",
     "bluebird": "^3.4.7",
     "node-gitter": "^2.0.5",
     "node-uuid": "^1.4.7",
