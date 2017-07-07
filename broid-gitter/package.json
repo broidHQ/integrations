@@ -1,7 +1,7 @@
 {
   "name": "@broid/gitter",
   "version": "2.1.0",
-  "main": "dist/index.js",
+  "main": "lib/core/index.js",
   "license": "AGPL-3.0+",
   "author": "Broid Team <opensource@broid.ai> (https://broid.ai)",
   "description": "Convert Gitter messages into Activity Streams 2 with Broid Integration",
