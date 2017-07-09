@@ -52,8 +52,6 @@ export function createSendMessage(data: any,
   }
 
   if (dataType === 'Image') {
-    attachments.push({ image_url: url, text: '', title: '' });
-
     return {
       attachments,
       callbackID,

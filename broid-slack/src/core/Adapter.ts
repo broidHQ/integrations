@@ -1,4 +1,4 @@
-import schemas from '@broid/schemas';
+import schemas, { ISendParameters } from '@broid/schemas';
 import { Logger } from '@broid/utils';
 
 import { CLIENT_EVENTS, RTM_EVENTS, RtmClient, WebClient } from '@slack/client';
@@ -203,7 +203,7 @@ export class Adapter {
       });
   }
 
-  public send(data: object): Promise<object | Error> {
+  public send(data: ISendParameters): Promise<object | Error> {
     this.logger.debug('sending', { message: data });
 
     return schemas(data, 'send')
@@ -214,9 +214,14 @@ export class Adapter {
           R.path(['object', 'attachment'], data) as any[] || []);
 
         const actions = createActions(buttons);
-        const images = R.filter(
-          (attachment: any) => attachment.type === 'Image',
-          R.path(['object', 'attachment'], data) as any[] || []);
+
+        let images: any[] = [];
+        if (data.object && data.object.attachment) {
+          images = R.filter(R.propEq('type', 'Image'), data.object.attachment);
+        } else if (data.object && data.object.type === 'Image') {
+          images.push(data.object);
+        }
+
         const attachments = R.map(
           (image: any) => ({ image_url: image.url, text: image.content || '', title: image.name }),
           images);
@@ -274,7 +279,7 @@ export class Adapter {
           return Promise.fromCallback((cb) =>
             this.sessionWeb.chat.update(msg.contentID, msg.targetID, msg.content, opts, cb))
             .then(confirm);
-        } else if (!R.isEmpty(msg.content)) {
+        } else if (!R.isEmpty(msg.content) || !R.isEmpty(msg.attachments)) {
           return Promise.fromCallback((cb) =>
             this.sessionWeb.chat.postMessage(msg.targetID, msg.content, opts, cb))
             .then(confirm);

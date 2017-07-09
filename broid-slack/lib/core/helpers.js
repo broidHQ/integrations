@@ -41,7 +41,6 @@ function createSendMessage(data, message, actions, attachments, responseURL) {
         });
     }
     if (dataType === 'Image') {
-        attachments.push({ image_url: url, text: '', title: '' });
         return {
             attachments,
             callbackID,
