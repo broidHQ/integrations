@@ -60,7 +60,7 @@
     "watch": "^1.0.1"
   },
   "dependencies": {
-    "@broid/schemas": "^1.0.0",
+    "@broid/schemas": "^1.0.1",
     "@broid/utils": "^1.1.0",
     "bluebird": "^3.4.7",
     "body-parser": "^1.16.0",

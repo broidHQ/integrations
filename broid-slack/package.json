@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "@broid/schemas": "^1.0.1",
-    "@broid/utils": "^1.1.0",
+    "@broid/utils": "^1.1.1",
     "@slack/client": "^3.8.1",
     "bluebird": "^3.4.7",
     "body-parser": "^1.15.2",
