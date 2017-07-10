@@ -34,16 +34,16 @@
     ansi-styles "^2.2.1"
     esutils "^2.0.2"
 
-"@broid/schemas@^1.0.0":
+"@broid/schemas@^1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@broid/schemas/-/schemas-1.0.1.tgz#3e2a318be8e2789e50730ea37528db19baa71f14"
   dependencies:
     ajv "^5.0.1-beta.1"
     bluebird "^3.4.6"
 
-"@broid/utils@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@broid/utils/-/utils-1.1.0.tgz#cba5fdb2ad46082516e6ca11f0bd9d82aa535f5f"
+"@broid/utils@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@broid/utils/-/utils-1.1.1.tgz#b79174c2e6898940a7b5b6c0332b0fe67f4c81ca"
   dependencies:
     bluebird "^3.5.0"
     file-type "^4.1.0"
