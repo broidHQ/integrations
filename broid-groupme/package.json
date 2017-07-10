@@ -1,7 +1,7 @@
 {
   "name": "@broid/groupme",
   "version": "2.0.0",
-  "main": "dist/index.js",
+  "main": "lib/core/index.js",
   "license": "AGPL-3.0+",
   "author": "Broid Team <opensource@broid.ai> (https://broid.ai)",
   "description": "Convert GroupMe messages into Activity Streams 2 with Broid Integration",
