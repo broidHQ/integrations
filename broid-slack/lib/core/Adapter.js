@@ -161,7 +161,13 @@ class Adapter {
             .then((message) => {
             const buttons = R.filter((attachment) => attachment.type === 'Button', R.path(['object', 'attachment'], data) || []);
             const actions = helpers_1.createActions(buttons);
-            const images = R.filter((attachment) => attachment.type === 'Image', R.path(['object', 'attachment'], data) || []);
+            let images = [];
+            if (data.object && data.object.attachment) {
+                images = R.filter(R.propEq('type', 'Image'), data.object.attachment);
+            }
+            else if (data.object && data.object.type === 'Image') {
+                images.push(data.object);
+            }
             const attachments = R.map((image) => ({ image_url: image.url, text: image.content || '', title: image.name }), images);
             return [message, actions, attachments];
         })
@@ -209,7 +215,7 @@ class Adapter {
                 return Promise.fromCallback((cb) => this.sessionWeb.chat.update(msg.contentID, msg.targetID, msg.content, opts, cb))
                     .then(confirm);
             }
-            else if (!R.isEmpty(msg.content)) {
+            else if (!R.isEmpty(msg.content) || !R.isEmpty(msg.attachments)) {
                 return Promise.fromCallback((cb) => this.sessionWeb.chat.postMessage(msg.targetID, msg.content, opts, cb))
                     .then(confirm);
             }
@@ -286,7 +292,7 @@ class Adapter {
                 response: res,
             };
             const payloadType = R.path(['body', 'type'], req);
-            if (payloadType === "url_verification") {
+            if (payloadType === 'url_verification') {
                 const challenge = R.path(['body', 'challenge'], req);
                 return res.json({ challenge });
             }

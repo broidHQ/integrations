@@ -54,9 +54,9 @@ npm install --save @broid/viber
 ### Connect to Viber
 
 ```javascript
-const BroidViper = require('@broid/viber');
+const BroidViber = require('@broid/viber');
 
-const viber = new BroidViper({
+const viber = new BroidViber({
   username: '<sender_name>',
   token: "<app_key>",
   webhookURL: "http://127.0.0.1/",
@@ -77,10 +77,10 @@ viber.connect()
 Viber can also be used with your existing express setup.
 
 ```javascript
-const BroidViper = require('@broid/viber');
+const BroidViber = require('@broid/viber');
 const express = require("express");
 
-const viber = new BroidViper({
+const viber = new BroidViber({
   username: '<sender_name>',
   token: "<app_key>",
   webhookURL: "http://127.0.0.1/"

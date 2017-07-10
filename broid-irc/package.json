@@ -1,6 +1,6 @@
 {
   "name": "@broid/irc",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "main": "lib/core/index.js",
   "license": "AGPL-3.0+",
   "author": "Broid Team <opensource@broid.ai> (https://broid.ai)",
@@ -60,8 +60,8 @@
     "watch": "^1.0.1"
   },
   "dependencies": {
-    "@broid/schemas": "^1.0.0",
-    "@broid/utils": "^1.1.0",
+    "@broid/schemas": "^1.0.1",
+    "@broid/utils": "^1.1.1",
     "bluebird": "^3.4.7",
     "irc": "^0.5.2",
     "mimetype": "^0.0.8",

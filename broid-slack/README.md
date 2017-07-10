@@ -85,7 +85,7 @@ slack.connect()
 Slack can also be used with your existing express setup.
 
 ```javascript
-const BroidSlack = require('broid-slack');
+const BroidSlack = require('@broid/slack');
 const express = require("express");
 
 const slack  = new BroidSlack({
