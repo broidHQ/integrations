@@ -1,6 +1,6 @@
 {
   "name": "@broid/alexa",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "main": "lib/core/index.js",
   "license": "AGPL-3.0+",
   "author": "Broid Team <opensource@broid.ai> (https://broid.ai)",
