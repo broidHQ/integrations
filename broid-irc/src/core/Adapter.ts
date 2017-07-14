@@ -7,8 +7,8 @@ import { Logger } from '@broid/utils';
 import * as Promise from 'bluebird';
 import { EventEmitter } from 'events';
 import * as irc from 'irc';
-import * as uuid from 'node-uuid';
 import { Observable } from 'rxjs/Rx';
+import * as uuid from 'uuid';
 
 import { IAdapterOptions } from './interfaces';
 import { Parser } from './Parser';

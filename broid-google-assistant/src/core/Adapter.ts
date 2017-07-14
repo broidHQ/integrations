@@ -5,9 +5,9 @@ import * as actionsSdk from 'actions-on-google';
 import * as Promise from 'bluebird';
 import { EventEmitter  } from 'events';
 import { Router   } from 'express';
-import * as uuid from 'node-uuid';
 import * as R from 'ramda';
 import { Observable } from 'rxjs/Rx';
+import * as uuid from 'uuid';
 
 import { IAdapterOptions } from './interfaces';
 import { Parser } from './Parser';

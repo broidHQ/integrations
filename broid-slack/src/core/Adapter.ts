@@ -5,10 +5,10 @@ import { CLIENT_EVENTS, RTM_EVENTS, RtmClient, WebClient } from '@slack/client';
 import * as Promise from 'bluebird';
 import { EventEmitter } from 'events';
 import { Router } from 'express';
-import * as uuid from 'node-uuid';
 import * as R from 'ramda';
 import * as rp from 'request-promise';
 import { Observable } from 'rxjs/Rx';
+import * as uuid from 'uuid';
 
 import { createActions, createSendMessage, parseWebHookEvent } from './helpers';
 import {

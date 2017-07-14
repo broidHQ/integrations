@@ -3,10 +3,10 @@ import { Logger } from '@broid/utils';
 
 import * as Promise from 'bluebird';
 import * as Discordie from 'discordie';
-import * as uuid from 'node-uuid';
 import * as R from 'ramda';
 import * as request from 'request-promise';
 import { Observable } from 'rxjs/Rx';
+import * as uuid from 'uuid';
 
 const Events: any = Discordie.Events;
 import { IAdapterOptions, IChannelInformations, IUserInformations } from './interfaces';

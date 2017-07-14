@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const schemas_1 = require("@broid/schemas");
 const utils_1 = require("@broid/utils");
 const Promise = require("bluebird");
-const uuid = require("node-uuid");
+const uuid = require("uuid");
 const R = require("ramda");
 class Parser {
     constructor(serviceName, serviceID, logLevel) {

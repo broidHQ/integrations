@@ -5,9 +5,9 @@ import * as Promise from 'bluebird';
 import * as Callr from 'callr';
 import * as EventEmitter from 'events';
 import { Router } from 'express';
-import * as uuid from 'node-uuid';
 import * as R from 'ramda';
 import { Observable } from 'rxjs/Rx';
+import * as uuid from 'uuid';
 
 import { IAdapterOptions, ICallrWebHookEvent } from './interfaces';
 import { Parser } from './Parser';

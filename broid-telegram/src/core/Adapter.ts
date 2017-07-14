@@ -4,10 +4,10 @@ import { Logger } from '@broid/utils';
 import * as Promise from 'bluebird';
 import { Router } from 'express';
 import * as TelegramBot from 'node-telegram-bot-api';
-import * as uuid from 'node-uuid';
 import * as R from 'ramda';
 import * as request from 'request-promise';
 import { Observable } from 'rxjs/Rx';
+import * as uuid from 'uuid';
 
 import { IAdapterOptions } from './interfaces';
 import { Parser } from './Parser';
