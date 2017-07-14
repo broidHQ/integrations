@@ -47,6 +47,8 @@
     "@types/node": "^7.0.12",
     "@types/node-uuid": "^0.0.28",
     "@types/ramda": "^0.0.5",
+    "@types/sinon": "^2.3.2",
+    "@types/watch": "^1.0.0",
     "ava": "^0.18.1",
     "concurrently": "^3.1.0",
     "copyfiles": "^1.2.0",
