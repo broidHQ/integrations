@@ -21,6 +21,10 @@
     request "^2.81.0"
     valid-url "^1.0.9"
 
+"@types/bluebird@^3.5.8":
+  version "3.5.8"
+  resolved "https://registry.yarnpkg.com/@types/bluebird/-/bluebird-3.5.8.tgz#242a83379f06c90f96acf6d1aeab3af6faebdb98"
+
 "@types/node-uuid@^0.0.28":
   version "0.0.28"
   resolved "https://registry.yarnpkg.com/@types/node-uuid/-/node-uuid-0.0.28.tgz#41655b5ce63b2f3374c4e826b4dd21e729058e3d"
@@ -34,6 +38,16 @@
 "@types/ramda@^0.0.5":
   version "0.0.5"
   resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.0.5.tgz#8b381e3363de9db3cb89d3b62f23b73cfb56bc0b"
+
+"@types/sinon@^2.3.2":
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/@types/sinon/-/sinon-2.3.2.tgz#1e1e99e67162d78e2db17816892bf93bf5209885"
+
+"@types/watch@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@types/watch/-/watch-1.0.0.tgz#99269e99c149c9c2da5dd5aef8bee5fc44585648"
+  dependencies:
+    "@types/node" "*"
 
 abbrev@1:
   version "1.1.0"
