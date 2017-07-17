@@ -1,6 +1,6 @@
 {
   "name": "@broid/alexa",
-  "version": "2.0.0",
+  "version": "2.0.2",
   "main": "lib/core/index.js",
   "license": "AGPL-3.0+",
   "author": "Broid Team <opensource@broid.ai> (https://broid.ai)",
@@ -60,8 +60,8 @@
     "watch": "^1.0.1"
   },
   "dependencies": {
-    "@broid/schemas": "^1.0.0",
-    "@broid/utils": "^1.1.0",
+    "@broid/schemas": "^1.0.1",
+    "@broid/utils": "^1.1.1",
     "bluebird": "^3.4.7",
     "body-parser": "^1.16.0",
     "express": "^4.14.0",

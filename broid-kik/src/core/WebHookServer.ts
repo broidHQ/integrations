@@ -1,7 +1,6 @@
 import { Logger } from '@broid/utils';
 
 import * as Promise from 'bluebird';
-import * as bodyParser from 'body-parser';
 import * as express from 'express';
 import * as http from 'http';
 
@@ -34,8 +33,6 @@ export class WebHookServer {
 
   private setupExpress(router: express.Router) {
     this.express = express();
-    this.express.use(bodyParser.json());
-    this.express.use(bodyParser.urlencoded({ extended: false  }));
     this.express.use('/', router);
   }
 }

@@ -2,16 +2,16 @@
 # yarn lockfile v1
 
 
-"@broid/schemas@^1.0.0":
+"@broid/schemas@^1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@broid/schemas/-/schemas-1.0.1.tgz#3e2a318be8e2789e50730ea37528db19baa71f14"
   dependencies:
     ajv "^5.0.1-beta.1"
     bluebird "^3.4.6"
 
-"@broid/utils@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@broid/utils/-/utils-1.1.0.tgz#cba5fdb2ad46082516e6ca11f0bd9d82aa535f5f"
+"@broid/utils@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@broid/utils/-/utils-1.1.1.tgz#b79174c2e6898940a7b5b6c0332b0fe67f4c81ca"
   dependencies:
     bluebird "^3.5.0"
     file-type "^4.1.0"
@@ -31,6 +31,12 @@
   version "3.5.2"
   resolved "https://registry.yarnpkg.com/@types/bluebird/-/bluebird-3.5.2.tgz#ecf1104217495e50fe0b588d538146cd6f733b89"
 
+"@types/form-data@*":
+  version "0.0.33"
+  resolved "https://registry.yarnpkg.com/@types/form-data/-/form-data-0.0.33.tgz#c9ac85b2a5fd18435b8c85d9ecb50e6d6c893ff8"
+  dependencies:
+    "@types/node" "*"
+
 "@types/node-uuid@^0.0.28":
   version "0.0.28"
   resolved "https://registry.yarnpkg.com/@types/node-uuid/-/node-uuid-0.0.28.tgz#41655b5ce63b2f3374c4e826b4dd21e729058e3d"
@@ -44,6 +50,20 @@
 "@types/ramda@^0.0.5":
   version "0.0.5"
   resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.0.5.tgz#8b381e3363de9db3cb89d3b62f23b73cfb56bc0b"
+
+"@types/request-promise@^4.1.35":
+  version "4.1.35"
+  resolved "https://registry.yarnpkg.com/@types/request-promise/-/request-promise-4.1.35.tgz#955d54da582dccb7d61e235a078c957f9cd7d4c7"
+  dependencies:
+    "@types/bluebird" "*"
+    "@types/request" "*"
+
+"@types/request@*":
+  version "0.0.45"
+  resolved "https://registry.yarnpkg.com/@types/request/-/request-0.0.45.tgz#c6e52be8b108eb035c35aa9af56a38a260c3e7e6"
+  dependencies:
+    "@types/form-data" "*"
+    "@types/node" "*"
 
 abbrev@1:
   version "1.1.0"

@@ -8,6 +8,7 @@ const express_1 = require("express");
 const uuid = require("node-uuid");
 const R = require("ramda");
 const Rx_1 = require("rxjs/Rx");
+const url = require("url");
 const Parser_1 = require("./Parser");
 const WebHookServer_1 = require("./WebHookServer");
 class Adapter {
@@ -53,17 +54,18 @@ class Adapter {
         if (!this.token || !this.username || !this.webhookURL) {
             return Rx_1.Observable.throw(new Error('Credentials should exist.'));
         }
-        this.session = new KikBot({
+        const webhookURL = url.parse(this.webhookURL);
+        const kikOptions = {
             apiKey: this.token,
-            baseUrl: this.webhookURL,
+            baseUrl: `${webhookURL.protocol}//${webhookURL.hostname}`,
+            incomingPath: '/',
             username: this.username,
-        });
-        this.router.get('/', (req, res) => {
-            const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-            this.logger.info(`Request to home from ${ip}`);
-            res.send('Hello. This is a Broid Kik bot server. Got to www.broid.aid to get more details.');
-        });
-        this.router.use(this.session.incoming());
+        };
+        if (webhookURL.path) {
+            kikOptions.incomingPath = webhookURL.path.replace(/\/?$/, '');
+        }
+        this.session = new KikBot(kikOptions);
+        this.router.use('/', this.session.incoming());
         if (this.webhookServer) {
             this.webhookServer.listen();
         }
@@ -84,7 +86,6 @@ class Adapter {
         this.session.updateBotConfiguration();
         return Rx_1.Observable.create((observer) => {
             this.session.use((incoming, next) => {
-                next();
                 this.user(incoming.from, true)
                     .then((userInformation) => this.parser.normalize(incoming, userInformation))
                     .then((normalized) => this.parser.parse(normalized))
@@ -93,7 +94,7 @@ class Adapter {
                     if (validated) {
                         observer.next(validated);
                     }
-                    return null;
+                    return next();
                 });
             });
         });
@@ -114,13 +115,19 @@ class Adapter {
                 if (dataType === 'Image' || dataType === 'Video') {
                     const url = R.path(['object', 'url'], data);
                     const name = R.path(['object', 'name'], data) || '';
-                    let message = KikBot.Message.picture(url)
-                        .setAttributionName(name)
-                        .setAttributionIcon(R.path(['object', 'preview'], data) || url);
+                    const preview = R.path(['object', 'preview'], data) || url;
+                    let message;
+                    if (dataType === 'Image') {
+                        message = KikBot.Message.picture(url);
+                    }
                     if (dataType === 'Video') {
-                        message = KikBot.Message.video(url)
-                            .setAttributionName(name)
-                            .setAttributionIcon(R.path(['object', 'preview'], data));
+                        message = KikBot.Message.video(url);
+                    }
+                    if (message && name) {
+                        message.setAttributionName(name);
+                    }
+                    if (message && preview) {
+                        message.setAttributionIcon(preview);
                     }
                     return [btns, message];
                 }

@@ -72,7 +72,7 @@ class Adapter {
         });
         const disconnected = Rx_1.Observable
             .fromEvent(this.session, client_1.CLIENT_EVENTS.RTM.DISCONNECT)
-            .map(() => Promise.resolve({ type: 'connected', serviceID: this.serviceId() }));
+            .map(() => Promise.resolve({ type: 'disconnected', serviceID: this.serviceId() }));
         const rateLimited = Rx_1.Observable
             .fromEvent(this.session, client_1.CLIENT_EVENTS.WEB.RATE_LIMITED)
             .map(() => Promise.resolve({ type: 'rate_limited', serviceID: this.serviceId() }));
@@ -82,6 +82,7 @@ class Adapter {
     }
     disconnect() {
         this.connected = false;
+        this.session.disconnect();
         if (this.webhookServer) {
             return this.webhookServer.close();
         }
@@ -160,7 +161,13 @@ class Adapter {
             .then((message) => {
             const buttons = R.filter((attachment) => attachment.type === 'Button', R.path(['object', 'attachment'], data) || []);
             const actions = helpers_1.createActions(buttons);
-            const images = R.filter((attachment) => attachment.type === 'Image', R.path(['object', 'attachment'], data) || []);
+            let images = [];
+            if (data.object && data.object.attachment) {
+                images = R.filter(R.propEq('type', 'Image'), data.object.attachment);
+            }
+            else if (data.object && data.object.type === 'Image') {
+                images.push(data.object);
+            }
             const attachments = R.map((image) => ({ image_url: image.url, text: image.content || '', title: image.name }), images);
             return [message, actions, attachments];
         })
@@ -182,6 +189,7 @@ class Adapter {
             const opts = {
                 as_user: this.asUser,
                 attachments: msg.attachments || [],
+                thread_ts: msg.messageID,
                 unfurl_links: true,
             };
             const confirm = () => {
@@ -207,7 +215,7 @@ class Adapter {
                 return Promise.fromCallback((cb) => this.sessionWeb.chat.update(msg.contentID, msg.targetID, msg.content, opts, cb))
                     .then(confirm);
             }
-            else if (!R.isEmpty(msg.content)) {
+            else if (!R.isEmpty(msg.content) || !R.isEmpty(msg.attachments)) {
                 return Promise.fromCallback((cb) => this.sessionWeb.chat.postMessage(msg.targetID, msg.content, opts, cb))
                     .then(confirm);
             }
@@ -283,6 +291,11 @@ class Adapter {
                 request: req,
                 response: res,
             };
+            const payloadType = R.path(['body', 'type'], req);
+            if (payloadType === 'url_verification') {
+                const challenge = R.path(['body', 'challenge'], req);
+                return res.json({ challenge });
+            }
             this.emitter.emit('message', event);
             res.send('');
         });

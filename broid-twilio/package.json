@@ -1,6 +1,6 @@
 {
   "name": "@broid/twilio",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "main": "lib/core/index.js",
   "license": "AGPL-3.0+",
   "author": "Broid Team <opensource@broid.ai> (https://broid.ai)",
@@ -41,8 +41,8 @@
     "watch": "concurrently --kill-others \"yarn run lint:watch\" \"yarn run tsc:watch\""
   },
   "dependencies": {
-    "@broid/schemas": "^1.0.0",
-    "@broid/utils": "^1.1.0",
+    "@broid/schemas": "^1.0.1",
+    "@broid/utils": "^1.1.1",
     "bluebird": "^3.4.7",
     "body-parser": "^1.15.2",
     "express": "^4.14.0",

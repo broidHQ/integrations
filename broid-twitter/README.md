@@ -98,7 +98,7 @@ twitter.listen()
 
 ### Post a message
 
-To send a message, the format should use the [broid-schemas](https://github.com/broidHQ/integrations/tree/master/integrations/broid-schemas).
+To send a message, the format should use the [broid-schemas](https://github.com/broidHQ/integrations/tree/master/broid-schemas).
 
 ```javascript
 const formatted_message = {
@@ -124,194 +124,13 @@ twitter.send(formatted_message)
   .catch(err => console.error(err));
 ```
 
-
-
 ## Examples of messages
 
-### Message received
+You can find examples of sent and received messages at [Broid-Schemas](https://github.com/broidHQ/integrations/tree/master/broid-schemas).
 
-- A direct message received from Sally
+## Contributing to Broid
 
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "published": 1483589416,
-  "type": "Create",
-  "generator": {
-    "id": "73301570-7ec7-45ce-b035-2ff4831306ab",
-    "type": "Service",
-    "name": "twitter"
-  },
-  "actor": {
-    "id": "2932680926",
-    "type": "Person",
-    "name": "Sally Dude"
-  },
-  "target": {
-    "id": "248881752",
-    "type": "Person",
-    "name": "John Dow"
-  },
-  "object": {
-    "type": "Note",
-    "id": "816859333602508803",
-    "content": "hello world"
-  }
-}
-```
-
-- A message received from Sally with @mention
-
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "published": 1483590793,
-  "type": "Create",
-  "generator": {
-    "id": "55c5e6a2-a1a3-4fc6-b94a-7011d9faa0a2",
-    "type": "Service",
-    "name": "twitter"
-  },
-  "actor": {
-    "id": "2932680926",
-    "type": "Person",
-    "name": "Sally Dude"
-  },
-  "target": {
-    "id": "248881752",
-    "type": "Group",
-    "name": "John Dow"
-  },
-  "object": {
-    "type": "Note",
-    "id": "816865109930819584",
-    "content": "hello world"
-  }
-}
-```
-
-- A video received from Sally
-
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "published": 1483589499,
-  "type": "Create",
-  "generator": {
-    "id": "73301570-7ec7-45ce-b035-2ff4831306ab",
-    "type": "Service",
-    "name": "twitter"
-  },
-  "actor": {
-    "id": "2932680926",
-    "type": "Person",
-    "name": "Sally Dude"
-  },
-  "target": {
-    "id": "248881752",
-    "type": "Person",
-    "name": "John Doe"
-  },
-  "object": {
-    "type": "Video",
-    "id": "816859677984260103",
-    "content": "hello gif",
-    "mediaType": "video/mp4",
-    "url": "https://video.twimg.com/dm_gif/816859666814636032/zZvU_moKWIoIkdgnNul9mNV9X9oZNLnjZT7eBIf9tvraGBSObs.mp4"
-  }
-}
-```
-
-- A image received from Sally
-
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "published": 1483589694,
-  "type": "Create",
-  "generator": {
-    "id": "7e6bc29e-7227-45c6-b227-1ddeb3a26fba",
-    "type": "Service",
-    "name": "twitter"
-  },
-  "actor": {
-    "id": "2932680926",
-    "type": "Person",
-    "name": "Sally Dude"
-  },
-  "target": {
-    "id": "248881752",
-    "type": "Person",
-    "name": "John Doe"
-  },
-  "object": {
-    "type": "Image",
-    "id": "816860497685397507",
-    "content": "hello image",
-    "mediaType": "image/jpeg",
-    "url": "https://ton.twitter.com/1.1/ton/data/dm/816860497685397507/816860476374032384/Vr0Zlpy3.jpg"
-  }
-}
-```
-
-
-### Send a message
-
-- Send a simple message
-
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "type": "Create",
-  "generator": {
-    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
-    "type": "Service",
-    "name": "twitter"
-  },
-  "object": {
-    "type": "Note",
-    "content": "hello world"
-  },
-  "to": {
-    "type": "Person",
-    "id": "152486124831181614"
-  }
-}
-```
-
-- Send a image
-
-```json
-{
-  "@context": "https://www.w3.org/ns/activitystreams",
-  "type": "Create",
-  "generator": {
-    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
-    "type": "Service",
-    "name": "twitter"
-  },
-  "object": {
-    "type": "Image",
-    "content": "hello world",
-    "url": "https://www.broid.ai/images/fake.png"
-  },
-  "to": {
-    "type": "Person",
-    "id": "152486124831181614"
-  }
-}
-```
-
-# Contributing to Broid
-
-Broid is an open source project. Broid wouldn't be where it is now without contributions by the community. Please consider forking Broid to improve, enhance or fix issues. If you feel like the community will benefit from your fork, please open a pull request.
-
-And because we want to do the better for you. Help us improving Broid by
-sharing your feedback on our [Integrations GitHub Repo](https://github.com/broidhq/integrations) and let's build Broid together!
-
-## Code of Conduct
-
-Make sure that you're read and understand the [Code of Conduct](http://contributor-covenant.org/version/1/2/0/).
+See [CONTRIBUTE.md](../CONTRIBUTE.md)
 
 ## Copyright & License
 

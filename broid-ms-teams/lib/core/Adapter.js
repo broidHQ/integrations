@@ -159,7 +159,7 @@ class Adapter {
                     return messageBuilder;
                 }
                 else {
-                    return utils_1.fileInfo(url)
+                    return utils_1.fileInfo(url, this.logger)
                         .then((infos) => {
                         messageAttachments = [{ contentType: infos.mimetype, contentUrl: url }, hero];
                         messageBuilder.attachments(messageAttachments);

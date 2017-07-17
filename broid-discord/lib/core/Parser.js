@@ -81,7 +81,7 @@ class Parser {
         });
     }
     parseMedia(media, content) {
-        return utils_1.fileInfo(media.filename)
+        return utils_1.fileInfo(media.url, this.logger)
             .then((infos) => {
             const mimeType = infos.mimetype;
             let mediaType = null;

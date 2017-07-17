@@ -1,6 +1,6 @@
 {
   "name": "@broid/kik",
-  "version": "2.0.0",
+  "version": "2.0.2",
   "main": "lib/core/index.js",
   "license": "AGPL-3.0+",
   "author": "Broid Team <opensource@broid.ai> (https://broid.ai)",
@@ -41,11 +41,10 @@
     "watch": "concurrently --kill-others \"yarn run lint:watch\" \"yarn run tsc:watch\""
   },
   "dependencies": {
-    "@broid/schemas": "^1.0.0",
-    "@broid/utils": "^1.1.0",
-    "@kikinteractive/kik": "^2.0.12",
+    "@broid/schemas": "^1.0.1",
+    "@broid/utils": "^1.1.1",
+    "@kikinteractive/kik": "^2.2.0",
     "bluebird": "^3.4.7",
-    "body-parser": "^1.17.1",
     "express": "^4.15.2",
     "node-uuid": "^1.4.7",
     "ramda": "^0.23.0",

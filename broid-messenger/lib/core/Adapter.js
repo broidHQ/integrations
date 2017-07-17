@@ -65,7 +65,12 @@ class Adapter {
     listen() {
         return Rx_1.Observable.fromEvent(this.emitter, 'message')
             .mergeMap((event) => this.parser.normalize(event))
-            .mergeMap((messages) => Rx_1.Observable.from(messages))
+            .mergeMap((messages) => {
+            if (!messages || R.isEmpty(messages)) {
+                return Rx_1.Observable.empty();
+            }
+            return Rx_1.Observable.from(messages);
+        })
             .mergeMap((message) => this.user(message.author)
             .then((author) => R.assoc('authorInformation', author, message)))
             .mergeMap((normalized) => this.parser.parse(normalized))
@@ -139,14 +144,26 @@ class Adapter {
                 return Promise.resolve(data);
             }
         }
-        return rp({
+        const params = {
             json: true,
             method: 'GET',
             qs: { access_token: this.token, fields },
             uri: `https://graph.facebook.com/v2.8/${id}`,
+        };
+        return rp(params)
+            .catch((err) => {
+            if (err.message && err.message.includes('nonexisting field')) {
+                params.qs.fields = 'name';
+                return rp(params);
+            }
+            throw err;
         })
             .then((data) => {
             data.id = data.id || id;
+            if (!data.first_name && data.name) {
+                data.first_name = data.name;
+                data.last_name = '';
+            }
             this.storeUsers.set(key, data);
             return data;
         });
