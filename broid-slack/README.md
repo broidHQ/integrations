@@ -51,7 +51,7 @@ _Location, Phone number are platform limitations._
 
 - Instructions to create **app**, can be found [here](https://api.slack.com/slack-apps).
 
-_Notes:_ Interactive message are only supported on app (with Oauth bot token).
+_Notes:_ Interactive message are only supported on app (with Oauth bot token). Set Redirect URLs (in OAuth & Permissions) to http://127.0.0.1:8080, so you can catch the token.
 
 You can generate one for test with this command: ``node bin/oauth.js --new -c client_id -s secret_id``
 
