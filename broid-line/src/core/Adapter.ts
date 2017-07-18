@@ -4,9 +4,9 @@ import { Logger } from '@broid/utils';
 import * as Promise from 'bluebird';
 import { Router  } from 'express';
 import * as LineBot from 'line-messaging';
-import * as uuid from 'node-uuid';
 import * as R from 'ramda';
 import { Observable } from 'rxjs/Rx';
+import * as uuid from 'uuid';
 
 import { IAdapterOptions } from './interfaces';
 import { Parser } from './Parser';

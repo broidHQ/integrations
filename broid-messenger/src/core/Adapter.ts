@@ -3,10 +3,10 @@ import { concat, Logger } from '@broid/utils';
 import * as Promise from 'bluebird';
 import { EventEmitter } from 'events';
 import { Router } from 'express';
-import * as uuid from 'node-uuid';
 import * as R from 'ramda';
 import * as rp from 'request-promise';
 import { Observable } from 'rxjs/Rx';
+import * as uuid from 'uuid';
 
 import { createAttachment, createButtons, parseQuickReplies } from './helpers';
 import { IAdapterOptions, IWebHookEvent } from './interfaces';

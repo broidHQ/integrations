@@ -5,8 +5,8 @@ import {
 import { cleanNulls, fileInfo, isUrl, Logger } from '@broid/utils';
 
 import * as Promise from 'bluebird';
-import * as uuid from 'node-uuid';
 import * as R from 'ramda';
+import * as uuid from 'uuid';
 
 import { ICallrWebHookEvent } from './interfaces';
 

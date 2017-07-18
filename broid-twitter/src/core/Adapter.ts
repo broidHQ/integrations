@@ -3,11 +3,11 @@ import { Logger } from '@broid/utils';
 
 import * as Promise from 'bluebird';
 import * as fs from 'fs';
-import * as uuid from 'node-uuid';
 import * as R from 'ramda';
 import * as rp from 'request-promise';
 import { Observable } from 'rxjs/Rx';
 import * as Twitter from 'twitter';
+import * as uuid from 'uuid';
 
 import { IAdapterOptions, ITwitterSendParameters } from './interfaces';
 import { Parser } from './Parser';

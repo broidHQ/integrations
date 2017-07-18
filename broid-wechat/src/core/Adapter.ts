@@ -6,12 +6,12 @@ import * as crypto from 'crypto';
 import { EventEmitter } from 'events';
 import { Router } from 'express';
 import * as fs from 'fs-extra';
-import * as uuid from 'node-uuid';
 import * as path from 'path';
 import * as R from 'ramda';
 import * as request from 'request';
 import { Observable } from 'rxjs/Rx';
 import * as tmp from 'tmp';
+import * as uuid from 'uuid';
 import * as WeChat from 'wechat-api';
 
 import { IAdapterOptions } from './interfaces';

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const ava_1 = require("ava");
-const uuid = require("node-uuid");
+const uuid = require("uuid");
 const sinon = require("sinon");
 const Parser_1 = require("../core/Parser");
 const groupMessage = require("./fixtures/group-message.json");

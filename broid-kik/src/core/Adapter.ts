@@ -4,10 +4,10 @@ import { Logger } from '@broid/utils';
 import * as KikBot from '@kikinteractive/kik';
 import * as Promise from 'bluebird';
 import { Router  } from 'express';
-import * as uuid from 'node-uuid';
 import * as R from 'ramda';
 import { Observable } from 'rxjs/Rx';
 import * as url from 'url';
+import * as uuid from 'uuid';
 
 import { IAdapterOptions } from './interfaces';
 import { Parser } from './Parser';

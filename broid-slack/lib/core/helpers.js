@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const utils_1 = require("@broid/utils");
 const Promise = require("bluebird");
-const uuid = require("node-uuid");
+const uuid = require("uuid");
 const R = require("ramda");
 function createActions(buttons) {
     return R.map((button) => {

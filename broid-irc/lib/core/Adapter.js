@@ -5,7 +5,7 @@ const utils_1 = require("@broid/utils");
 const Promise = require("bluebird");
 const events_1 = require("events");
 const irc = require("irc");
-const uuid = require("node-uuid");
+const uuid = require("uuid");
 const Rx_1 = require("rxjs/Rx");
 const Parser_1 = require("./Parser");
 class Adapter {

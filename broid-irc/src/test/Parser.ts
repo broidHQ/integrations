@@ -1,6 +1,6 @@
 import ava from 'ava';
-import * as uuid from 'node-uuid';
 import * as sinon from 'sinon';
+import * as uuid from 'uuid';
 
 import { Parser } from '../core/Parser';
 

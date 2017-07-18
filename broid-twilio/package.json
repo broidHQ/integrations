@@ -46,17 +46,17 @@
     "bluebird": "^3.4.7",
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
-    "node-uuid": "^1.4.7",
     "ramda": "^0.23.0",
     "rxjs": "^5.0.2",
-    "twilio": "^2.11.1"
+    "twilio": "^2.11.1",
+    "uuid": "^3.1.0"
   },
   "devDependencies": {
     "@types/bluebird": "^3.5.2",
     "@types/bluebird-global": "^3.5.1",
     "@types/node": "^7.0.12",
-    "@types/node-uuid": "^0.0.28",
     "@types/ramda": "^0.0.5",
+    "@types/uuid": "^3.0.0",
     "ava": "^0.17.0",
     "concurrently": "^3.1.0",
     "copyfiles": "^1.0.0",
