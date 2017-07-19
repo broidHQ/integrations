@@ -131,9 +131,9 @@ export class Adapter {
 
         event._username = this.username;
 
-        if (event.in_reply_to_user_id) {
+        if (event.in_reply_to_user_id_str) {
           // mention
-          return this.userById(event.in_reply_to_user_id, true)
+          return this.userById(event.in_reply_to_user_id_str, true)
             .then((data) => {
               event.recipient = R.assoc('is_mention', true, data);
               return event;
