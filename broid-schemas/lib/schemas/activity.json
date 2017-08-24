@@ -1,1 +1,59 @@
-{"id":"http://schemas.broid.ai/activity.json","type":"object","properties":{"@context":{"type":"string","enum":["https://www.w3.org/ns/activitystreams"]},"type":{"type":"string","enum":["Create","Update","Delete"]},"published":{"type":"number","pattern":"(\\d+(?:\\.\\d*)?|\\.\\d+)\\s+(\\S+)"},"generator":{"$ref":"http://schemas.broid.ai/embedded/generator.json"},"actor":{"$ref":"http://schemas.broid.ai/embedded/actor.json","required":["id","type"]},"target":{"oneOf":[{"$ref":"http://schemas.broid.ai/embedded/actor.json","required":["id","type"]},{"$ref":"http://schemas.broid.ai/embedded/group.json","required":["id","type"]}]},"cc":{"oneOf":[{"$ref":"http://schemas.broid.ai/embedded/actor.json","required":["id","type"]},{"$ref":"http://schemas.broid.ai/embedded/group.json","required":["id","type"]}]},"object":{"oneOf":[{"$ref":"http://schemas.broid.ai/object/note.json","required":["type","id","content"]},{"$ref":"http://schemas.broid.ai/object/media.json","required":["type","id","url"]},{"$ref":"http://schemas.broid.ai/object/place.json","required":["type","id","latitude","longitude"]}]}},"required":["type","published","generator","actor","target","object"]}
+{
+  "id": "http://schemas.broid.ai/activity.json",
+  "type": "object",
+  "properties": {
+    "@context": {
+      "type": "string",
+      "enum": ["https://www.w3.org/ns/activitystreams"]
+    },
+    "type": {
+      "type": "string",
+      "enum": ["Create", "Update", "Delete"]
+    },
+    "published": {
+      "type": "number",
+      "pattern": "(\\d+(?:\\.\\d*)?|\\.\\d+)\\s+(\\S+)"
+    },
+    "generator": {
+      "$ref": "http://schemas.broid.ai/embedded/generator.json"
+    },
+    "actor": {
+      "$ref": "http://schemas.broid.ai/embedded/actor.json",
+      "required": ["id", "type"]
+    },
+    "target": {
+      "oneOf": [{
+        "$ref": "http://schemas.broid.ai/embedded/actor.json",
+        "required": ["id", "type"]
+      }, {
+        "$ref": "http://schemas.broid.ai/embedded/group.json",
+        "required": ["id", "type"]
+      }]
+    },
+    "cc": {
+      "oneOf": [{
+        "$ref": "http://schemas.broid.ai/embedded/actor.json",
+        "required": ["id", "type"]
+      }, {
+        "$ref": "http://schemas.broid.ai/embedded/group.json",
+        "required": ["id", "type"]
+      }]
+    },
+    "object": {
+      "oneOf": [{
+        "$ref": "http://schemas.broid.ai/object/note.json",
+        "required": ["type", "id", "content"]
+      }, {
+        "$ref": "http://schemas.broid.ai/object/media.json",
+        "required": ["type", "id", "url"]
+      }, {
+        "$ref": "http://schemas.broid.ai/object/place.json",
+        "required": ["type", "id", "latitude", "longitude"]
+      }, {
+        "$ref": "http://schemas.broid.ai/object/collection.json",
+        "required": ["type", "items"]
+      }]
+    }
+  },
+  "required": ["type", "published", "generator", "actor", "target", "object"]
+}
