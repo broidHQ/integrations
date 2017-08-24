@@ -1,0 +1,14 @@
+{
+  "id": "http://schemas.broid.ai/object/object.json",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": ["Note", "Image", "Video", "Audio", "Place", "Document"]
+    }
+  },
+  "required": ["id", "type"]
+}

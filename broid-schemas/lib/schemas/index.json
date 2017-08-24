@@ -8,6 +8,7 @@
   "object/context",
   "object/media",
   "object/note",
+  "object/object",
   "object/place",
   "send"
 ]
