@@ -2,7 +2,7 @@ type: object
 properties:
   type:
     type: string
-    enum: [ Audio, Image, Video ]
+    enum: [ Audio, Image, Video, Document ]
   id:
     type: string
   name:

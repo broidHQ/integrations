@@ -6,4 +6,5 @@ properties:
     type: string
   type:
     type: string
+    enum: [ Object ]
 required: [ id, type, name ]

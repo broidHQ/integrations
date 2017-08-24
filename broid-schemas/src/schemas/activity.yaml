@@ -34,4 +34,6 @@ properties:
         required: [ type, id, url ]
       - $ref: "http://schemas.broid.ai/object/place.json"
         required: [ type, id, latitude, longitude ]
+      - $ref: "http://schemas.broid.ai/object/collection.json"
+        required: [ type, items ]
 required: [ type, published, generator, actor, target, object ]
