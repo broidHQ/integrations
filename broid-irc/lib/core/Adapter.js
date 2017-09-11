@@ -5,8 +5,8 @@ const utils_1 = require("@broid/utils");
 const Promise = require("bluebird");
 const events_1 = require("events");
 const irc = require("irc");
-const uuid = require("node-uuid");
 const Rx_1 = require("rxjs/Rx");
+const uuid = require("uuid");
 const Parser_1 = require("./Parser");
 class Adapter {
     constructor(obj) {
@@ -70,13 +70,26 @@ class Adapter {
     }
     listen() {
         return Rx_1.Observable.fromEvent(this.ee, 'message')
-            .map((normalized) => this.parser.parse(normalized))
-            .map((parsed) => this.parser.validate(parsed))
-            .map((validated) => {
-            if (!validated) {
+            .switchMap((value) => {
+            return Rx_1.Observable.of(value)
+                .map((normalized) => this.parser.parse(normalized))
+                .map((parsed) => this.parser.validate(parsed))
+                .map((validated) => {
+                if (!validated) {
+                    return Rx_1.Observable.empty();
+                }
+                return Promise.resolve(validated);
+            })
+                .catch((err) => {
+                this.logger.error('Caught Error, continuing', err);
+                return Rx_1.Observable.of(err);
+            });
+        })
+            .mergeMap((value) => {
+            if (value instanceof Error) {
                 return Rx_1.Observable.empty();
             }
-            return Promise.resolve(validated);
+            return Promise.resolve(value);
         });
     }
     send(data) {

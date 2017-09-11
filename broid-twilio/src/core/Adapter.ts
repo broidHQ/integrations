@@ -4,10 +4,10 @@ import { Logger } from '@broid/utils';
 import * as Promise from 'bluebird';
 import { EventEmitter } from 'events';
 import { Router } from 'express';
-import * as uuid from 'node-uuid';
 import * as R from 'ramda';
 import { Observable } from 'rxjs/Rx';
 import * as twilio from 'twilio';
+import * as uuid from 'uuid';
 
 import { IAdapterOptions, ITwilioWebHookEvent } from './interfaces';
 import { Parser } from './Parser';
@@ -106,12 +106,26 @@ export class Adapter {
     }
 
     return Observable.fromEvent(this.emitter, 'message')
-      .mergeMap((event: ITwilioWebHookEvent) => this.parser.normalize(event))
-      .mergeMap((normalized) => this.parser.parse(normalized))
-      .mergeMap((parsed) => this.parser.validate(parsed))
-      .mergeMap((validated) => {
-        if (!validated) { return Observable.empty(); }
-        return Promise.resolve(validated);
+      .switchMap((value) => {
+        return Observable.of(value)
+          .mergeMap((event: ITwilioWebHookEvent) => this.parser.normalize(event))
+          .mergeMap((normalized) => this.parser.parse(normalized))
+          .mergeMap((parsed) => this.parser.validate(parsed))
+          .mergeMap((validated) => {
+            if (!validated) { return Observable.empty(); }
+            return Promise.resolve(validated);
+          })
+          .catch((err) => {
+            this.logger.error('Caught Error, continuing', err);
+            // Return an empty Observable which gets collapsed in the output
+            return Observable.of(err);
+          });
+      })
+      .mergeMap((value) => {
+        if (value instanceof Error) {
+          return Observable.empty();
+        }
+        return Promise.resolve(value);
       });
   }
 

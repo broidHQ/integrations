@@ -6,12 +6,12 @@ import * as crypto from 'crypto';
 import { EventEmitter } from 'events';
 import { Router } from 'express';
 import * as fs from 'fs-extra';
-import * as uuid from 'node-uuid';
 import * as path from 'path';
 import * as R from 'ramda';
 import * as request from 'request';
 import { Observable } from 'rxjs/Rx';
 import * as tmp from 'tmp';
+import * as uuid from 'uuid';
 import * as WeChat from 'wechat-api';
 
 import { IAdapterOptions } from './interfaces';
@@ -93,12 +93,26 @@ export class Adapter {
     }
 
     return Observable.fromEvent(this.emitter, 'message')
-      .mergeMap((event: object) => this.parser.parse(event))
-      .mergeMap((parsed: object | null) => this.parser.validate(parsed))
-      .mergeMap((validated: object | null) => {
-        if (!validated) { return Observable.empty(); }
-        return Promise.resolve(validated);
-      });
+    .switchMap((value) => {
+      return Observable.of(value)
+        .mergeMap((event: object) => this.parser.parse(event))
+        .mergeMap((parsed: object | null) => this.parser.validate(parsed))
+        .mergeMap((validated: object | null) => {
+          if (!validated) { return Observable.empty(); }
+          return Promise.resolve(validated);
+        })
+        .catch((err) => {
+          this.logger.error('Caught Error, continuing', err);
+          // Return an empty Observable which gets collapsed in the output
+          return Observable.of(err);
+        });
+    })
+    .mergeMap((value) => {
+      if (value instanceof Error) {
+        return Observable.empty();
+      }
+      return Promise.resolve(value);
+    });
   }
 
   // TODO: https://github.com/broidHQ/integrations/issues/114

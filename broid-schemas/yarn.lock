@@ -12,19 +12,23 @@
   version "3.5.2"
   resolved "https://registry.yarnpkg.com/@types/bluebird/-/bluebird-3.5.2.tgz#ecf1104217495e50fe0b588d538146cd6f733b89"
 
-"@types/node-uuid@^0.0.28":
-  version "0.0.28"
-  resolved "https://registry.yarnpkg.com/@types/node-uuid/-/node-uuid-0.0.28.tgz#41655b5ce63b2f3374c4e826b4dd21e729058e3d"
-  dependencies:
-    "@types/node" "*"
+"@types/node@*":
+  version "8.0.12"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-8.0.12.tgz#0560c3e8c9e3da0aa07d0b86e0b0a02b5fd29480"
 
-"@types/node@*", "@types/node@^7.0.11":
+"@types/node@^7.0.11":
   version "7.0.12"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-7.0.12.tgz#ae5f67a19c15f752148004db07cbbb372e69efc9"
 
 "@types/ramda@^0.0.5":
   version "0.0.5"
   resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.0.5.tgz#8b381e3363de9db3cb89d3b62f23b73cfb56bc0b"
+
+"@types/uuid@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-3.0.0.tgz#be93b14bcf97f59c079a9e58754960b5efd946c3"
+  dependencies:
+    "@types/node" "*"
 
 agent-base@2:
   version "2.0.1"

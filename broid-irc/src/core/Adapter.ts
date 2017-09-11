@@ -7,8 +7,8 @@ import { Logger } from '@broid/utils';
 import * as Promise from 'bluebird';
 import { EventEmitter } from 'events';
 import * as irc from 'irc';
-import * as uuid from 'node-uuid';
 import { Observable } from 'rxjs/Rx';
+import * as uuid from 'uuid';
 
 import { IAdapterOptions } from './interfaces';
 import { Parser } from './Parser';
@@ -107,11 +107,25 @@ export class Adapter {
 
   public listen(): Observable<object> {
     return Observable.fromEvent(this.ee, 'message')
-      .map((normalized: object | null) => this.parser.parse(normalized))
-      .map((parsed: object | null) => this.parser.validate(parsed))
-      .map((validated: object | null) => {
-        if (!validated) { return Observable.empty(); }
-        return Promise.resolve(validated);
+      .switchMap((value) => {
+        return Observable.of(value)
+          .map((normalized: object | null) => this.parser.parse(normalized))
+          .map((parsed: object | null) => this.parser.validate(parsed))
+          .map((validated: object | null) => {
+            if (!validated) { return Observable.empty(); }
+            return Promise.resolve(validated);
+          })
+          .catch((err) => {
+            this.logger.error('Caught Error, continuing', err);
+            // Return an empty Observable which gets collapsed in the output
+            return Observable.of(err);
+          });
+      })
+     .mergeMap((value) => {
+        if (value instanceof Error) {
+          return Observable.empty();
+        }
+        return Promise.resolve(value);
       });
   }
 

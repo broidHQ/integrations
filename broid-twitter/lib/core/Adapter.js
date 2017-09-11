@@ -4,11 +4,11 @@ const schemas_1 = require("@broid/schemas");
 const utils_1 = require("@broid/utils");
 const Promise = require("bluebird");
 const fs = require("fs");
-const uuid = require("node-uuid");
 const R = require("ramda");
 const rp = require("request-promise");
 const Rx_1 = require("rxjs/Rx");
 const Twitter = require("twitter");
+const uuid = require("uuid");
 const Parser_1 = require("./Parser");
 class Adapter {
     constructor(obj) {
@@ -73,37 +73,50 @@ class Adapter {
             }
             return Promise.resolve(null);
         }), Rx_1.Observable.fromEvent(streamMention, 'data'))
-            .mergeMap((event) => {
-            this.logger.debug('Event received', event);
-            if (!event || R.isEmpty(event)) {
-                return Promise.resolve(null);
-            }
-            if (event.direct_message) {
-                event = event.direct_message;
-            }
-            const authorInformation = event.user || event.sender;
-            this.storeUsers.set(authorInformation.id_str, authorInformation);
-            if (authorInformation.id_str === this.myid) {
-                return Promise.resolve(null);
-            }
-            event._username = this.username;
-            if (event.in_reply_to_user_id) {
-                return this.userById(event.in_reply_to_user_id, true)
-                    .then((data) => {
-                    event.recipient = R.assoc('is_mention', true, data);
-                    return event;
-                });
-            }
-            return Promise.resolve(event);
+            .switchMap((value) => {
+            return Rx_1.Observable.of(value)
+                .mergeMap((event) => {
+                this.logger.debug('Event received', event);
+                if (!event || R.isEmpty(event)) {
+                    return Promise.resolve(null);
+                }
+                if (event.direct_message) {
+                    event = event.direct_message;
+                }
+                const authorInformation = event.user || event.sender;
+                this.storeUsers.set(authorInformation.id_str, authorInformation);
+                if (authorInformation.id_str === this.myid) {
+                    return Promise.resolve(null);
+                }
+                event._username = this.username;
+                if (event.in_reply_to_user_id) {
+                    return this.userById(event.in_reply_to_user_id, true)
+                        .then((data) => {
+                        event.recipient = R.assoc('is_mention', true, data);
+                        return event;
+                    });
+                }
+                return Promise.resolve(event);
+            })
+                .mergeMap((event) => this.parser.normalize(event))
+                .mergeMap((normalized) => this.parser.parse(normalized))
+                .mergeMap((parsed) => this.parser.validate(parsed))
+                .mergeMap((validated) => {
+                if (!validated) {
+                    return Rx_1.Observable.empty();
+                }
+                return Promise.resolve(validated);
+            })
+                .catch((err) => {
+                this.logger.error('Caught Error, continuing', err);
+                return Rx_1.Observable.of(err);
+            });
         })
-            .mergeMap((event) => this.parser.normalize(event))
-            .mergeMap((normalized) => this.parser.parse(normalized))
-            .mergeMap((parsed) => this.parser.validate(parsed))
-            .mergeMap((validated) => {
-            if (!validated) {
+            .mergeMap((value) => {
+            if (value instanceof Error) {
                 return Rx_1.Observable.empty();
             }
-            return Promise.resolve(validated);
+            return Promise.resolve(value);
         });
     }
     send(data) {

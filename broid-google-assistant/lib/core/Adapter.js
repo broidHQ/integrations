@@ -6,9 +6,9 @@ const actionsSdk = require("actions-on-google");
 const Promise = require("bluebird");
 const events_1 = require("events");
 const express_1 = require("express");
-const uuid = require("node-uuid");
 const R = require("ramda");
 const Rx_1 = require("rxjs/Rx");
+const uuid = require("uuid");
 const Parser_1 = require("./Parser");
 const WebHookServer_1 = require("./WebHookServer");
 const events = [
@@ -74,13 +74,26 @@ class Adapter {
     listen() {
         const fromEvents = R.map((event) => Rx_1.Observable.fromEvent(this.emitter, event), events);
         return Rx_1.Observable.merge(...fromEvents)
-            .mergeMap((normalized) => this.parser.parse(normalized))
-            .mergeMap((parsed) => this.parser.validate(parsed))
-            .mergeMap((validated) => {
-            if (!validated) {
+            .switchMap((value) => {
+            return Rx_1.Observable.of(value)
+                .mergeMap((normalized) => this.parser.parse(normalized))
+                .mergeMap((parsed) => this.parser.validate(parsed))
+                .mergeMap((validated) => {
+                if (!validated) {
+                    return Rx_1.Observable.empty();
+                }
+                return Promise.resolve(validated);
+            })
+                .catch((err) => {
+                this.logger.error('Caught Error, continuing', err);
+                return Rx_1.Observable.of(err);
+            });
+        })
+            .mergeMap((value) => {
+            if (value instanceof Error) {
                 return Rx_1.Observable.empty();
             }
-            return Promise.resolve(validated);
+            return Promise.resolve(value);
         });
     }
     send(data) {

@@ -4,9 +4,9 @@ import { Logger } from '@broid/utils';
 import * as Promise from 'bluebird';
 import { EventEmitter } from 'events';
 import * as Gitter from 'node-gitter';
-import * as uuid from 'node-uuid';
 import * as R from 'ramda';
 import { Observable } from 'rxjs/Rx';
+import * as uuid from 'uuid';
 
 import { IAdapterOptions } from './interfaces';
 import { Parser } from './Parser';
@@ -138,11 +138,25 @@ export class Adapter {
       eventNames);
 
     return Observable.merge(...fromEvents)
-      .mergeMap((normalized: object | null) => this.parser.parse(normalized))
-      .mergeMap((parsed: object | null) => this.parser.validate(parsed))
-      .mergeMap((validated: object | null) => {
-        if (!validated) { return Observable.empty(); }
-        return Promise.resolve(validated);
+      .switchMap((value) => {
+        return Observable.of(value)
+          .mergeMap((normalized: object | null) => this.parser.parse(normalized))
+          .mergeMap((parsed: object | null) => this.parser.validate(parsed))
+          .mergeMap((validated: object | null) => {
+            if (!validated) { return Observable.empty(); }
+            return Promise.resolve(validated);
+          })
+          .catch((err) => {
+            this.logger.error('Caught Error, continuing', err);
+            // Return an empty Observable which gets collapsed in the output
+            return Observable.of(err);
+          });
+      })
+      .mergeMap((value) => {
+        if (value instanceof Error) {
+          return Observable.empty();
+        }
+        return Promise.resolve(value);
       });
   }
 

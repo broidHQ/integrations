@@ -4,10 +4,10 @@ const schemas_1 = require("@broid/schemas");
 const utils_1 = require("@broid/utils");
 const Promise = require("bluebird");
 const Discordie = require("discordie");
-const uuid = require("node-uuid");
 const R = require("ramda");
 const request = require("request-promise");
 const Rx_1 = require("rxjs/Rx");
+const uuid = require("uuid");
 const Events = Discordie.Events;
 const Parser_1 = require("./Parser");
 class Adapter {
@@ -83,52 +83,65 @@ class Adapter {
     }
     listen() {
         return Rx_1.Observable.merge(Rx_1.Observable.fromEvent(this.session.Dispatcher, Events.MESSAGE_CREATE), Rx_1.Observable.fromEvent(this.session.Dispatcher, Events.MESSAGE_UPDATE))
-            .mergeMap((e) => {
-            if (R.path(['User', 'id'], this.session)
-                && R.path(['message', 'author', 'id'], e) === this.session.User.id) {
-                return Promise.resolve(null);
-            }
-            let msg = null;
-            if (e.messageId) {
-                msg = this.session.Messages.get(e.messageId);
-            }
-            else if (e.data) {
-                msg = e.data;
-            }
-            else if (e.message) {
-                msg = e.message.toJSON();
-            }
-            if (!msg) {
-                return Promise.resolve(null);
-            }
-            msg.guild = msg.guild ? msg.guild.toJSON() : null;
-            return Promise.resolve(msg)
-                .then((m) => {
-                let channel = this.session.Channels.get(m.channel_id);
-                if (!channel) {
-                    channel = this.session.DirectMessageChannels.get(m.channel_id);
-                    channel = channel.toJSON();
-                    channel.isPrivate = true;
+            .switchMap((value) => {
+            return Rx_1.Observable.of(value)
+                .mergeMap((e) => {
+                if (R.path(['User', 'id'], this.session)
+                    && R.path(['message', 'author', 'id'], e) === this.session.User.id) {
+                    return Promise.resolve(null);
                 }
-                else {
-                    channel = channel.toJSON();
+                let msg = null;
+                if (e.messageId) {
+                    msg = this.session.Messages.get(e.messageId);
                 }
-                m.channel = channel;
-                return m;
+                else if (e.data) {
+                    msg = e.data;
+                }
+                else if (e.message) {
+                    msg = e.message.toJSON();
+                }
+                if (!msg) {
+                    return Promise.resolve(null);
+                }
+                msg.guild = msg.guild ? msg.guild.toJSON() : null;
+                return Promise.resolve(msg)
+                    .then((m) => {
+                    let channel = this.session.Channels.get(m.channel_id);
+                    if (!channel) {
+                        channel = this.session.DirectMessageChannels.get(m.channel_id);
+                        channel = channel.toJSON();
+                        channel.isPrivate = true;
+                    }
+                    else {
+                        channel = channel.toJSON();
+                    }
+                    m.channel = channel;
+                    return m;
+                })
+                    .then((m) => {
+                    const author = this.session.Users.get(m.author.id);
+                    m.author = author.toJSON();
+                    return m;
+                });
             })
-                .then((m) => {
-                const author = this.session.Users.get(m.author.id);
-                m.author = author.toJSON();
-                return m;
+                .mergeMap((normalized) => this.parser.parse(normalized))
+                .mergeMap((parsed) => this.parser.validate(parsed))
+                .mergeMap((validated) => {
+                if (!validated) {
+                    return Rx_1.Observable.empty();
+                }
+                return Promise.resolve(validated);
+            })
+                .catch((err) => {
+                this.logger.error('Caught Error, continuing', err);
+                return Rx_1.Observable.of(err);
             });
         })
-            .mergeMap((normalized) => this.parser.parse(normalized))
-            .mergeMap((parsed) => this.parser.validate(parsed))
-            .mergeMap((validated) => {
-            if (!validated) {
+            .mergeMap((value) => {
+            if (value instanceof Error) {
                 return Rx_1.Observable.empty();
             }
-            return Promise.resolve(validated);
+            return Promise.resolve(value);
         });
     }
     send(data) {

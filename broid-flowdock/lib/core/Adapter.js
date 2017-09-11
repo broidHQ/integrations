@@ -4,9 +4,9 @@ const schemas_1 = require("@broid/schemas");
 const utils_1 = require("@broid/utils");
 const Promise = require("bluebird");
 const flowdock = require("flowdock");
-const uuid = require("node-uuid");
 const R = require("ramda");
 const Rx_1 = require("rxjs/Rx");
+const uuid = require("uuid");
 const Parser_1 = require("./Parser");
 const makeRequest = (session, method, ...args) => new Promise((resolve, reject) => session[method](...args, (err, body) => err ? reject(err) : resolve(body)));
 class Adapter {
@@ -59,48 +59,61 @@ class Adapter {
             });
         });
         return Rx_1.Observable.fromPromise(getFlows)
-            .mergeMap((flows) => {
-            const users = R.flatten(R.map((flow) => flow.users, flows));
-            R.forEach((user) => this.storeUsers.set(user.id.toString(), user), users);
-            R.forEach((flow) => this.storeFlows.set(flow.id.toString(), R.dissoc('users', flow)), flows);
-            return Promise.resolve(R.map((flow) => flow.id.toString(), flows));
-        })
-            .mergeMap((flowIDs) => {
-            const streams = R.map((flowID) => this.session.stream(flowID, { user: 1 }), flowIDs);
-            const obs = R.map((stream) => Rx_1.Observable.fromEvent(stream, 'message'), streams);
-            return Rx_1.Observable.merge(...obs);
-        })
-            .mergeMap((event) => {
-            this.logger.debug('Event received', event);
-            if (event.event !== 'message' && event.event !== 'message-edit') {
-                return Rx_1.Observable.empty();
-            }
-            if (!event.flow) {
-                return this.userByID(event.user)
-                    .then((userFrom) => {
-                    event.flow = userFrom;
-                    event.user = userFrom;
-                    event._isPrivate = true;
-                    return event;
+            .switchMap((value) => {
+            return Rx_1.Observable.of(value)
+                .mergeMap((flows) => {
+                const users = R.flatten(R.map((flow) => flow.users, flows));
+                R.forEach((user) => this.storeUsers.set(user.id.toString(), user), users);
+                R.forEach((flow) => this.storeFlows.set(flow.id.toString(), R.dissoc('users', flow)), flows);
+                return Promise.resolve(R.map((flow) => flow.id.toString(), flows));
+            })
+                .mergeMap((flowIDs) => {
+                const streams = R.map((flowID) => this.session.stream(flowID, { user: 1 }), flowIDs);
+                const obs = R.map((stream) => Rx_1.Observable.fromEvent(stream, 'message'), streams);
+                return Rx_1.Observable.merge(...obs);
+            })
+                .mergeMap((event) => {
+                this.logger.debug('Event received', event);
+                if (event.event !== 'message' && event.event !== 'message-edit') {
+                    return Rx_1.Observable.empty();
+                }
+                if (!event.flow) {
+                    return this.userByID(event.user)
+                        .then((userFrom) => {
+                        event.flow = userFrom;
+                        event.user = userFrom;
+                        event._isPrivate = true;
+                        return event;
+                    });
+                }
+                return this.flowByID(event.flow)
+                    .then((flow) => {
+                    return this.userByID(event.user)
+                        .then((user) => {
+                        event.flow = flow;
+                        event.user = user;
+                        return event;
+                    });
                 });
-            }
-            return this.flowByID(event.flow)
-                .then((flow) => {
-                return this.userByID(event.user)
-                    .then((user) => {
-                    event.flow = flow;
-                    event.user = user;
-                    return event;
-                });
+            })
+                .mergeMap((normalized) => this.parser.parse(normalized))
+                .mergeMap((parsed) => this.parser.validate(parsed))
+                .mergeMap((validated) => {
+                if (!validated) {
+                    return Rx_1.Observable.empty();
+                }
+                return Promise.resolve(validated);
+            })
+                .catch((err) => {
+                this.logger.error('Caught Error, continuing', err);
+                return Rx_1.Observable.of(err);
             });
         })
-            .mergeMap((normalized) => this.parser.parse(normalized))
-            .mergeMap((parsed) => this.parser.validate(parsed))
-            .mergeMap((validated) => {
-            if (!validated) {
+            .mergeMap((value) => {
+            if (value instanceof Error) {
                 return Rx_1.Observable.empty();
             }
-            return Promise.resolve(validated);
+            return Promise.resolve(value);
         });
     }
     send(data) {

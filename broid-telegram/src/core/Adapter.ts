@@ -4,10 +4,10 @@ import { Logger } from '@broid/utils';
 import * as Promise from 'bluebird';
 import { Router } from 'express';
 import * as TelegramBot from 'node-telegram-bot-api';
-import * as uuid from 'node-uuid';
 import * as R from 'ramda';
 import * as request from 'request-promise';
 import { Observable } from 'rxjs/Rx';
+import * as uuid from 'uuid';
 
 import { IAdapterOptions } from './interfaces';
 import { Parser } from './Parser';
@@ -125,47 +125,62 @@ export class Adapter {
       Observable.fromEvent(this.session, 'chosen_inline_result')
         .map(R.assoc('_event', 'chosen_inline_result')),
       Observable.fromEvent(this.session, 'message')
-        .map(R.assoc('_event', 'message')))
-      .mergeMap((event) => this.parser.normalize(event))
-      .mergeMap((data: any) => {
-        const normalized: any = data;
-        if (data.text) {
-          normalized.type = 'Note';
-          return Promise.resolve(normalized);
-        } else if (data.photo || data.video) {
-          let file = data.photo;
-          if (R.is(Array, data.photo)) {
-            normalized.type = 'Image';
-            normalized.photo = sortByFileSize(data.photo);
-            file = normalized.photo[0];
-          }
-
-          if (data.video) {
-            file = data.video;
-            if (R.is(Array, data.video)) {
-              normalized.type = 'Video';
-              normalized.video = sortByFileSize(data.video);
-              file = normalized.video[0];
+        .map(R.assoc('_event', 'message')),
+    )
+    .switchMap((value) => {
+      return Observable.of(value)
+        .mergeMap((event) => this.parser.normalize(event))
+        .mergeMap((data: any) => {
+          const normalized: any = data;
+          if (data.text) {
+            normalized.type = 'Note';
+            return Promise.resolve(normalized);
+          } else if (data.photo || data.video) {
+            let file = data.photo;
+            if (R.is(Array, data.photo)) {
+              normalized.type = 'Image';
+              normalized.photo = sortByFileSize(data.photo);
+              file = normalized.photo[0];
             }
+
+            if (data.video) {
+              file = data.video;
+              if (R.is(Array, data.video)) {
+                normalized.type = 'Video';
+                normalized.video = sortByFileSize(data.video);
+                file = normalized.video[0];
+              }
+            }
+
+            const fileID = R.path(['file_id'], file);
+            return this.session.getFileLink(fileID)
+              .then((link) => {
+                normalized.text = link;
+                return normalized;
+              });
           }
 
-          const fileID = R.path(['file_id'], file);
-          return this.session.getFileLink(fileID)
-            .then((link) => {
-              normalized.text = link;
-              return normalized;
-            });
-        }
-
-        this.logger.warning(new Error('This event is not supported.'));
-        return Promise.resolve(null);
-      })
-      .mergeMap((normalized) => this.parser.parse(normalized))
-      .mergeMap((parsed) => this.parser.validate(parsed))
-      .mergeMap((validated) => {
-        if (!validated) { return Observable.empty(); }
-        return Promise.resolve(validated);
-      });
+          this.logger.warning(new Error('This event is not supported.'));
+          return Promise.resolve(null);
+        })
+        .mergeMap((normalized) => this.parser.parse(normalized))
+        .mergeMap((parsed) => this.parser.validate(parsed))
+        .mergeMap((validated) => {
+          if (!validated) { return Observable.empty(); }
+          return Promise.resolve(validated);
+        })
+        .catch((err) => {
+          this.logger.error('Caught Error, continuing', err);
+          // Return an empty Observable which gets collapsed in the output
+          return Observable.of(err);
+        });
+    })
+    .mergeMap((value) => {
+      if (value instanceof Error) {
+        return Observable.empty();
+      }
+      return Promise.resolve(value);
+    });
   }
 
   public send(data: object): Promise<object | Error> {

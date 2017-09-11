@@ -6,10 +6,10 @@ const client_1 = require("@slack/client");
 const Promise = require("bluebird");
 const events_1 = require("events");
 const express_1 = require("express");
-const uuid = require("node-uuid");
 const R = require("ramda");
 const rp = require("request-promise");
 const Rx_1 = require("rxjs/Rx");
+const uuid = require("uuid");
 const helpers_1 = require("./helpers");
 const Parser_1 = require("./Parser");
 const WebHookServer_1 = require("./WebHookServer");
@@ -95,63 +95,76 @@ class Adapter {
             .mergeMap(helpers_1.parseWebHookEvent);
         events.push(webHookEvent);
         return Rx_1.Observable.merge(...events)
-            .mergeMap((event) => {
-            if (!R.contains(event.type, [
-                'message',
-                'event_callback',
-                'slash_command',
-                'interactive_message',
-            ])) {
-                return Promise.resolve(null);
-            }
-            if (event.type === 'message' && R.contains(event.subtype, [
-                'channel_join',
-                'message_changed',
-            ])) {
-                return Promise.resolve(null);
-            }
-            return Promise.resolve(event)
-                .then((evt) => {
-                if (evt.user) {
-                    return this.user(evt.user)
-                        .then((userInfo) => {
-                        if (userInfo) {
-                            evt.user = userInfo;
-                        }
-                        return evt;
-                    });
+            .switchMap((value) => {
+            return Rx_1.Observable.of(value)
+                .mergeMap((event) => {
+                if (!R.contains(event.type, [
+                    'message',
+                    'event_callback',
+                    'slash_command',
+                    'interactive_message',
+                ])) {
+                    return Promise.resolve(null);
                 }
-                return evt;
+                if (event.type === 'message' && R.contains(event.subtype, [
+                    'channel_join',
+                    'message_changed',
+                ])) {
+                    return Promise.resolve(null);
+                }
+                return Promise.resolve(event)
+                    .then((evt) => {
+                    if (evt.user) {
+                        return this.user(evt.user)
+                            .then((userInfo) => {
+                            if (userInfo) {
+                                evt.user = userInfo;
+                            }
+                            return evt;
+                        });
+                    }
+                    return evt;
+                })
+                    .then((evt) => {
+                    if (evt.channel) {
+                        return this.channel(evt.channel)
+                            .then((channelInfo) => {
+                            if (channelInfo) {
+                                evt.channel = channelInfo;
+                            }
+                            return evt;
+                        });
+                    }
+                })
+                    .then((evt) => {
+                    if (evt.subtype === 'bot_message') {
+                        evt.user = {
+                            id: evt.bot_id,
+                            is_bot: true,
+                            name: evt.username,
+                        };
+                    }
+                    return evt;
+                });
             })
-                .then((evt) => {
-                if (evt.channel) {
-                    return this.channel(evt.channel)
-                        .then((channelInfo) => {
-                        if (channelInfo) {
-                            evt.channel = channelInfo;
-                        }
-                        return evt;
-                    });
+                .mergeMap((normalized) => this.parser.parse(normalized))
+                .mergeMap((parsed) => this.parser.validate(parsed))
+                .mergeMap((validated) => {
+                if (!validated) {
+                    return Rx_1.Observable.empty();
                 }
+                return Promise.resolve(validated);
             })
-                .then((evt) => {
-                if (evt.subtype === 'bot_message') {
-                    evt.user = {
-                        id: evt.bot_id,
-                        is_bot: true,
-                        name: evt.username,
-                    };
-                }
-                return evt;
+                .catch((err) => {
+                this.logger.error('Caught Error, continuing', err);
+                return Rx_1.Observable.of(err);
             });
         })
-            .mergeMap((normalized) => this.parser.parse(normalized))
-            .mergeMap((parsed) => this.parser.validate(parsed))
-            .mergeMap((validated) => {
-            if (!validated) {
+            .mergeMap((value) => {
+            if (value instanceof Error) {
                 return Rx_1.Observable.empty();
             }
-            return Promise.resolve(validated);
+            return Promise.resolve(value);
         });
     }
     send(data) {

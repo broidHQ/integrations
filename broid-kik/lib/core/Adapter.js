@@ -5,10 +5,10 @@ const utils_1 = require("@broid/utils");
 const KikBot = require("@kikinteractive/kik");
 const Promise = require("bluebird");
 const express_1 = require("express");
-const uuid = require("node-uuid");
 const R = require("ramda");
 const Rx_1 = require("rxjs/Rx");
 const url = require("url");
+const uuid = require("uuid");
 const Parser_1 = require("./Parser");
 const WebHookServer_1 = require("./WebHookServer");
 class Adapter {

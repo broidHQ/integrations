@@ -25,12 +25,12 @@ export interface IMessage {
 }
 
 // Slack Interface
-interface ISlackField {
+export interface ISlackField {
   value: string;
   alt: string;
 }
 
-interface ISlackProfile {
+export interface ISlackProfile {
   first_name: string;
   last_name: string;
   avatar_hash: string;
@@ -46,7 +46,7 @@ interface ISlackProfile {
   fields: { [name: string]: ISlackField };
 }
 
-interface ISlackUser {
+export interface ISlackUser {
   id: string;
   team_id: string;
   name: string;
@@ -66,7 +66,7 @@ interface ISlackUser {
   presence: string;
 }
 
-interface ISlackChannel {
+export interface ISlackChannel {
   id: string;
   name: string;
   is_channel: boolean;
@@ -78,7 +78,7 @@ interface ISlackChannel {
   is_member: boolean;
 }
 
-interface ISlackDirectMessage {
+export interface ISlackDirectMessage {
   id: string;
   user: string;
   created: number;
@@ -92,7 +92,7 @@ interface ISlackDirectMessage {
   is_open: boolean;
 }
 
-interface ISlackGroup {
+export interface ISlackGroup {
   id: string;
   name: string;
   is_group: boolean;

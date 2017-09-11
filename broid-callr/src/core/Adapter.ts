@@ -5,9 +5,9 @@ import * as Promise from 'bluebird';
 import * as Callr from 'callr';
 import * as EventEmitter from 'events';
 import { Router } from 'express';
-import * as uuid from 'node-uuid';
 import * as R from 'ramda';
 import { Observable } from 'rxjs/Rx';
+import * as uuid from 'uuid';
 
 import { IAdapterOptions, ICallrWebHookEvent } from './interfaces';
 import { Parser } from './Parser';
@@ -129,12 +129,21 @@ export class Adapter {
     }
 
     return Observable.fromEvent(this.emitter, 'message')
-      .mergeMap((event: ICallrWebHookEvent) => this.parser.normalize(event))
-      .mergeMap((normalized) => this.parser.parse(normalized))
-      .mergeMap((parsed) => this.parser.validate(parsed))
-      .mergeMap((validated) => {
-        if (!validated) { return Observable.empty(); }
-        return Promise.resolve(validated);
+      .switchMap((value) => {
+        return Observable.of(value)
+        .mergeMap((event: ICallrWebHookEvent) => this.parser.normalize(event))
+        .mergeMap((normalized) => this.parser.parse(normalized))
+        .mergeMap((parsed) => this.parser.validate(parsed))
+        .mergeMap((validated) => {
+          if (!validated) { return Observable.empty(); }
+          return Promise.resolve(validated);
+        });
+      })
+      .mergeMap((value) => {
+        if (value instanceof Error) {
+          return Observable.empty();
+        }
+        return Promise.resolve(value);
       });
   }
 

@@ -5,9 +5,9 @@ const utils_1 = require("@broid/utils");
 const Promise = require("bluebird");
 const botbuilder = require("botbuilder");
 const express_1 = require("express");
-const uuid = require("node-uuid");
 const R = require("ramda");
 const Rx_1 = require("rxjs/Rx");
+const uuid = require("uuid");
 const Parser_1 = require("./Parser");
 const WebHookServer_1 = require("./WebHookServer");
 class Adapter {
@@ -90,7 +90,10 @@ class Adapter {
                     }
                     return null;
                 })
-                    .catch((error) => this.logger.error(error));
+                    .catch((error) => {
+                    this.logger.error(error);
+                    return Rx_1.Observable.empty();
+                });
             });
         });
     }

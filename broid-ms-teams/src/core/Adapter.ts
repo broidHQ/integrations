@@ -4,9 +4,9 @@ import { fileInfo, Logger } from '@broid/utils';
 import * as Promise from 'bluebird';
 import * as botbuilder from 'botbuilder';
 import { Router } from 'express';
-import * as uuid from 'node-uuid';
 import * as R from 'ramda';
 import { Observable } from 'rxjs/Rx';
+import * as uuid from 'uuid';
 
 import { IAdapterOptions } from './interfaces';
 import { Parser } from './Parser';
@@ -133,7 +133,10 @@ export class Adapter {
             if (validated) { return observer.next(validated); }
             return null;
           })
-          .catch((error) => this.logger.error(error));
+          .catch((error) => {
+            this.logger.error(error);
+            return Observable.empty();
+          });
       });
     });
   }

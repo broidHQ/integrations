@@ -3,9 +3,9 @@ import { Logger } from '@broid/utils';
 
 import * as Promise from 'bluebird';
 import { Router  } from 'express';
-import * as uuid from 'node-uuid';
 import * as R from 'ramda';
 import { Observable } from 'rxjs/Rx';
+import * as uuid from 'uuid';
 import { Bot, Events, Message } from 'viber-bot';
 
 import { IAdapterOptions } from './interfaces';
@@ -131,33 +131,48 @@ export class Adapter {
     return Observable.fromEvent(
       this.session,
       Events.MESSAGE_RECEIVED,
-      (...args) => ({ message: args[0], user_profile: args[1].userProfile }))
-      .mergeMap((event: any) => this.parser.normalize(event))
-      .mergeMap((normalized: any) => {
-        if (!normalized) { return Promise.resolve(null); }
+      (...args) => ({ message: args[0], user_profile: args[1].userProfile }),
+    )
+    .switchMap((value) => {
+      return Observable.of(value)
+        .mergeMap((event: any) => this.parser.normalize(event))
+        .mergeMap((normalized: any) => {
+          if (!normalized) { return Promise.resolve(null); }
 
-        const id: any = R.path(['author', 'id'], normalized);
-        if (id) {
-          this.storeUsers.set(id as string, normalized.author);
-        }
-        if (this.me) {
-          normalized.target = this.me;
-          return Promise.resolve(normalized);
-        }
-
-        return this.session.getBotProfile()
-          .then((profile: any) => {
-            this.me = R.assoc('_isMe', true, profile);
+          const id: any = R.path(['author', 'id'], normalized);
+          if (id) {
+            this.storeUsers.set(id as string, normalized.author);
+          }
+          if (this.me) {
             normalized.target = this.me;
-            return normalized;
-          });
-      })
-      .mergeMap((normalized) => this.parser.parse(normalized))
-      .mergeMap((parsed) => this.parser.validate(parsed))
-      .mergeMap((validated) => {
-        if (!validated) { return Observable.empty(); }
-        return Promise.resolve(validated);
-      });
+            return Promise.resolve(normalized);
+          }
+
+          return this.session.getBotProfile()
+            .then((profile: any) => {
+              this.me = R.assoc('_isMe', true, profile);
+              normalized.target = this.me;
+              return normalized;
+            });
+        })
+        .mergeMap((normalized) => this.parser.parse(normalized))
+        .mergeMap((parsed) => this.parser.validate(parsed))
+        .mergeMap((validated) => {
+          if (!validated) { return Observable.empty(); }
+          return Promise.resolve(validated);
+        })
+        .catch((err) => {
+          this.logger.error('Caught Error, continuing', err);
+          // Return an empty Observable which gets collapsed in the output
+          return Observable.of(err);
+        });
+    })
+    .mergeMap((value) => {
+      if (value instanceof Error) {
+        return Observable.empty();
+      }
+      return Promise.resolve(value);
+    });
   }
 
   public send(data: object): Promise<any> {
