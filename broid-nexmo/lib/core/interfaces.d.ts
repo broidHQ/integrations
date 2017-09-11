@@ -3,9 +3,9 @@ export interface IAdapterHTTPOptions {
     port: number;
 }
 export interface IAdapterOptions {
-    http: IAdapterHTTPOptions;
-    logLevel: string;
-    serviceID: string;
+    http?: IAdapterHTTPOptions;
+    logLevel?: string;
+    serviceID?: string;
     token: string;
     tokenSecret: string;
     username: string;

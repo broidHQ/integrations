@@ -29,6 +29,6 @@ export declare class Adapter {
     listen(): Observable<object>;
     send(data: ISendParameters): Promise<object | Error>;
     private channel(key, cache?);
-    private user(key, cache?);
+    user(key: string, cache?: boolean): Promise<object>;
     private setupRoutes();
 }

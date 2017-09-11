@@ -3,8 +3,8 @@ export interface IAdapterHTTPOptions {
     port: number;
 }
 export interface IAdapterOptions {
-    logLevel: string;
-    serviceID: string;
+    logLevel?: string;
+    serviceID?: string;
     token: string;
     tokenSecret: string;
     username: string;

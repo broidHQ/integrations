@@ -4,8 +4,8 @@ export interface IAdapterOptions {
   consumerSecret: string;
   consumerKey: string;
   username: string;
-  serviceID: string;
-  logLevel: string;
+  serviceID?: string;
+  logLevel?: string;
 }
 
 export interface ITwitterSendParameters {
