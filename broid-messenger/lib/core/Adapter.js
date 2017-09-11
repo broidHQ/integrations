@@ -5,10 +5,10 @@ const utils_1 = require("@broid/utils");
 const Promise = require("bluebird");
 const events_1 = require("events");
 const express_1 = require("express");
-const uuid = require("uuid");
 const R = require("ramda");
 const rp = require("request-promise");
 const Rx_1 = require("rxjs/Rx");
+const uuid = require("uuid");
 const helpers_1 = require("./helpers");
 const Parser_1 = require("./Parser");
 const WebHookServer_1 = require("./WebHookServer");
@@ -64,22 +64,35 @@ class Adapter {
     }
     listen() {
         return Rx_1.Observable.fromEvent(this.emitter, 'message')
-            .mergeMap((event) => this.parser.normalize(event))
-            .mergeMap((messages) => {
-            if (!messages || R.isEmpty(messages)) {
-                return Rx_1.Observable.empty();
-            }
-            return Rx_1.Observable.from(messages);
+            .switchMap((value) => {
+            return Rx_1.Observable.of(value)
+                .mergeMap((event) => this.parser.normalize(event))
+                .mergeMap((messages) => {
+                if (!messages || R.isEmpty(messages)) {
+                    return Rx_1.Observable.empty();
+                }
+                return Rx_1.Observable.from(messages);
+            })
+                .mergeMap((message) => this.user(message.author)
+                .then((author) => R.assoc('authorInformation', author, message)))
+                .mergeMap((normalized) => this.parser.parse(normalized))
+                .mergeMap((parsed) => this.parser.validate(parsed))
+                .mergeMap((validated) => {
+                if (!validated) {
+                    return Rx_1.Observable.empty();
+                }
+                return Promise.resolve(validated);
+            })
+                .catch((err) => {
+                this.logger.error('Caught Error, continuing', err);
+                return Rx_1.Observable.of(err);
+            });
         })
-            .mergeMap((message) => this.user(message.author)
-            .then((author) => R.assoc('authorInformation', author, message)))
-            .mergeMap((normalized) => this.parser.parse(normalized))
-            .mergeMap((parsed) => this.parser.validate(parsed))
-            .mergeMap((validated) => {
-            if (!validated) {
+            .mergeMap((value) => {
+            if (value instanceof Error) {
                 return Rx_1.Observable.empty();
             }
-            return Promise.resolve(validated);
+            return Promise.resolve(value);
         });
     }
     send(data) {

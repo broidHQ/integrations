@@ -4,9 +4,9 @@ const schemas_1 = require("@broid/schemas");
 const utils_1 = require("@broid/utils");
 const Promise = require("bluebird");
 const express_1 = require("express");
-const uuid = require("uuid");
 const R = require("ramda");
 const Rx_1 = require("rxjs/Rx");
+const uuid = require("uuid");
 const viber_bot_1 = require("viber-bot");
 const Parser_1 = require("./Parser");
 const WebHookServer_1 = require("./WebHookServer");
@@ -87,33 +87,46 @@ class Adapter {
             return Rx_1.Observable.throw(new Error('No session found.'));
         }
         return Rx_1.Observable.fromEvent(this.session, viber_bot_1.Events.MESSAGE_RECEIVED, (...args) => ({ message: args[0], user_profile: args[1].userProfile }))
-            .mergeMap((event) => this.parser.normalize(event))
-            .mergeMap((normalized) => {
-            if (!normalized) {
-                return Promise.resolve(null);
-            }
-            const id = R.path(['author', 'id'], normalized);
-            if (id) {
-                this.storeUsers.set(id, normalized.author);
-            }
-            if (this.me) {
-                normalized.target = this.me;
-                return Promise.resolve(normalized);
-            }
-            return this.session.getBotProfile()
-                .then((profile) => {
-                this.me = R.assoc('_isMe', true, profile);
-                normalized.target = this.me;
-                return normalized;
+            .switchMap((value) => {
+            return Rx_1.Observable.of(value)
+                .mergeMap((event) => this.parser.normalize(event))
+                .mergeMap((normalized) => {
+                if (!normalized) {
+                    return Promise.resolve(null);
+                }
+                const id = R.path(['author', 'id'], normalized);
+                if (id) {
+                    this.storeUsers.set(id, normalized.author);
+                }
+                if (this.me) {
+                    normalized.target = this.me;
+                    return Promise.resolve(normalized);
+                }
+                return this.session.getBotProfile()
+                    .then((profile) => {
+                    this.me = R.assoc('_isMe', true, profile);
+                    normalized.target = this.me;
+                    return normalized;
+                });
+            })
+                .mergeMap((normalized) => this.parser.parse(normalized))
+                .mergeMap((parsed) => this.parser.validate(parsed))
+                .mergeMap((validated) => {
+                if (!validated) {
+                    return Rx_1.Observable.empty();
+                }
+                return Promise.resolve(validated);
+            })
+                .catch((err) => {
+                this.logger.error('Caught Error, continuing', err);
+                return Rx_1.Observable.of(err);
             });
         })
-            .mergeMap((normalized) => this.parser.parse(normalized))
-            .mergeMap((parsed) => this.parser.validate(parsed))
-            .mergeMap((validated) => {
-            if (!validated) {
+            .mergeMap((value) => {
+            if (value instanceof Error) {
                 return Rx_1.Observable.empty();
             }
-            return Promise.resolve(validated);
+            return Promise.resolve(value);
         });
     }
     send(data) {
