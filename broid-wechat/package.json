@@ -78,7 +78,7 @@
     "rxjs": "^5.0.2",
     "tmp": "^0.0.31",
     "uuid": "^3.1.0",
-    "wechat-api": "git+https://git@github.com/node-webot/wechat-api.git#295ad45e199ef93610c4d3a9350de6992a932d8c"
+    "wechat-api": "^1.35.0"
   },
   "ava": {
     "files": [
