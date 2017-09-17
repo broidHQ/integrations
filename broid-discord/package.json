@@ -1,6 +1,6 @@
 {
   "name": "@broid/discord",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "main": "lib/core/index.js",
   "license": "AGPL-3.0+",
   "author": "Broid Team <opensource@broid.ai> (https://broid.ai)",

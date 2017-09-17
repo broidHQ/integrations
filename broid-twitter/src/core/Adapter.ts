@@ -114,41 +114,56 @@ export class Adapter {
         }
         return Promise.resolve(null);
       }),
-      Observable.fromEvent(streamMention, 'data'))
-      .mergeMap((event: any) => {
-        this.logger.debug('Event received', event);
+      Observable.fromEvent(streamMention, 'data'),
+    )
+    .switchMap((value) => {
+      return Observable.of(value)
+        .mergeMap((event: any) => {
+          this.logger.debug('Event received', event);
 
-        if (!event || R.isEmpty(event)) { return Promise.resolve(null); }
+          if (!event || R.isEmpty(event)) { return Promise.resolve(null); }
 
-        if (event.direct_message) { event = event.direct_message; }
-        const authorInformation = event.user || event.sender;
+          if (event.direct_message) { event = event.direct_message; }
+          const authorInformation = event.user || event.sender;
 
-        this.storeUsers.set(authorInformation.id_str, authorInformation);
-        // Ignore message from me
-        if (authorInformation.id_str === this.myid) {
-          return Promise.resolve(null);
-        }
+          this.storeUsers.set(authorInformation.id_str, authorInformation);
+          // Ignore message from me
+          if (authorInformation.id_str === this.myid) {
+            return Promise.resolve(null);
+          }
 
-        event._username = this.username;
+          event._username = this.username;
 
-        if (event.in_reply_to_user_id_str) {
-          // mention
-          return this.userById(event.in_reply_to_user_id_str, true)
-            .then((data) => {
-              event.recipient = R.assoc('is_mention', true, data);
-              return event;
-            });
-        }
+          if (event.in_reply_to_user_id) {
+            // mention
+            return this.userById(event.in_reply_to_user_id, true)
+              .then((data) => {
+                event.recipient = R.assoc('is_mention', true, data);
+                return event;
+              });
+          }
 
-        return Promise.resolve(event);
-      })
-      .mergeMap((event) => this.parser.normalize(event))
-      .mergeMap((normalized) => this.parser.parse(normalized))
-      .mergeMap((parsed) => this.parser.validate(parsed))
-      .mergeMap((validated) => {
-        if (!validated) { return Observable.empty(); }
-        return Promise.resolve(validated);
-      });
+          return Promise.resolve(event);
+        })
+        .mergeMap((event) => this.parser.normalize(event))
+        .mergeMap((normalized) => this.parser.parse(normalized))
+        .mergeMap((parsed) => this.parser.validate(parsed))
+        .mergeMap((validated) => {
+          if (!validated) { return Observable.empty(); }
+          return Promise.resolve(validated);
+        })
+        .catch((err) => {
+          this.logger.error('Caught Error, continuing', err);
+          // Return an empty Observable which gets collapsed in the output
+          return Observable.of(err);
+        });
+    })
+    .mergeMap((value) => {
+      if (value instanceof Error) {
+        return Observable.empty();
+      }
+      return Promise.resolve(value);
+    });
   }
 
   public send(data: object): Promise<object | null> {

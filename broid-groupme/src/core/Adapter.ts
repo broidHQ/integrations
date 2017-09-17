@@ -130,17 +130,31 @@ export class Adapter {
   // Listen 'message' event from Groupme
   public listen(): Observable<object> {
     return Observable.fromEvent(this.emitter, 'message')
-      .mergeMap((event: any) => {
-        return this.channels()
-          .filter((group: any) => group.id === R.path(['body', 'group_id'], event))
-          .then((group: any) => R.assoc('group', group, event));
+      .switchMap((value) => {
+        return Observable.of(value)
+          .mergeMap((event: any) => {
+            return this.channels()
+              .filter((group: any) => group.id === R.path(['body', 'group_id'], event))
+              .then((group: any) => R.assoc('group', group, event));
+          })
+          .mergeMap((normalized: any) =>
+            this.parser.parse(normalized))
+          .mergeMap((parsed) => this.parser.validate(parsed))
+          .mergeMap((validated) => {
+            if (!validated) { return Observable.empty(); }
+            return Promise.resolve(validated);
+          })
+          .catch((err) => {
+            this.logger.error('Caught Error, continuing', err);
+            // Return an empty Observable which gets collapsed in the output
+            return Observable.of(err);
+          });
       })
-      .mergeMap((normalized: any) =>
-        this.parser.parse(normalized))
-      .mergeMap((parsed) => this.parser.validate(parsed))
-      .mergeMap((validated) => {
-        if (!validated) { return Observable.empty(); }
-        return Promise.resolve(validated);
+      .mergeMap((value) => {
+        if (value instanceof Error) {
+          return Observable.empty();
+        }
+        return Promise.resolve(value);
       });
   }
 
