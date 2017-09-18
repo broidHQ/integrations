@@ -83,6 +83,9 @@ class Parser {
                     type: 'Note',
                 };
             }
+            if (normalized.title) {
+                as2.object.name = normalized.title;
+            }
             return as2;
         });
     }
@@ -106,6 +109,7 @@ class Parser {
                         mid: data.timestamp.toString(),
                         quickReply: [],
                         seq: data.timestamp.toString(),
+                        title: data.postback.title || null,
                     };
                 }
                 else {

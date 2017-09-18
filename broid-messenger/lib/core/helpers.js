@@ -40,16 +40,17 @@ function createQuickReplies(buttons) {
 exports.createQuickReplies = createQuickReplies;
 function createButtons(buttons) {
     return R.reject(R.isNil)(R.map((button) => {
+        const title = button.content || button.name;
         if (!button.mediaType) {
             return {
                 payload: button.url,
-                title: button.content || button.name,
+                title,
                 type: 'postback',
             };
         }
         else if (button.mediaType === 'text/html') {
             return {
-                title: button.content || button.name,
+                title,
                 type: 'web_url',
                 url: button.url,
             };
@@ -57,7 +58,7 @@ function createButtons(buttons) {
         else if (button.mediaType === 'audio/telephone-event') {
             return {
                 payload: button.url,
-                title: button.content || button.name,
+                title,
                 type: 'phone_number',
             };
         }
