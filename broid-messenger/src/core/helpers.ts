@@ -51,17 +51,18 @@ export function createQuickReplies(buttons: any[]): any[] {
 export function createButtons(buttons: any[]): any[] {
   return R.reject(R.isNil)(R.map(
     (button: any) => {
+      const title = button.content || button.name;
       // facebook type: postback, element_share
       if (!button.mediaType) {
         return {
           payload: button.url,
-          title: button.content || button.name,
+          title,
           type: 'postback',
         };
       } else if (button.mediaType === 'text/html') {
         // facebook type: web_url, account_link
         return {
-          title: button.content || button.name,
+          title,
           type: 'web_url',
           url: button.url,
         };
@@ -69,7 +70,7 @@ export function createButtons(buttons: any[]): any[] {
         // facebook type: phone_number
         return {
           payload: button.url,
-          title: button.content || button.name,
+          title,
           type: 'phone_number',
         };
       } else if (button.mediaType === 'broid/share') {
