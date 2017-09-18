@@ -5,10 +5,10 @@ const utils_1 = require("@broid/utils");
 const Promise = require("bluebird");
 const events_1 = require("events");
 const express_1 = require("express");
-const uuid = require("uuid");
 const R = require("ramda");
 const rp = require("request-promise");
 const Rx_1 = require("rxjs/Rx");
+const uuid = require("uuid");
 const helpers_1 = require("./helpers");
 const Parser_1 = require("./Parser");
 const WebHookServer_1 = require("./WebHookServer");
@@ -89,42 +89,56 @@ class Adapter {
             const toID = R.path(['to', 'id'], data) ||
                 R.path(['to', 'name'], data);
             const dataType = R.path(['object', 'type'], data);
-            const content = R.path(['object', 'content'], data);
-            const name = R.path(['object', 'name'], data) || content;
-            const attachments = R.path(['object', 'attachment'], data) || [];
-            const buttons = R.filter((attachment) => attachment.type === 'Button', attachments);
-            const quickReplies = R.filter((button) => button.mediaType === 'application/vnd.geo+json', buttons);
-            const fButtons = helpers_1.createButtons(buttons);
-            const fbQuickReplies = helpers_1.parseQuickReplies(quickReplies);
-            const messageData = {
-                message: { attachment: {}, text: '' },
-                recipient: { id: toID },
-            };
-            if (R.length(fbQuickReplies) > 0) {
-                messageData.message.quick_replies = fbQuickReplies;
+            let messageData = {};
+            if (dataType === 'Collection') {
+                const items = R.filter((item) => item.type === 'Image', R.path(['object', 'items'], data));
+                const elements = R.map(helpers_1.createElement, items);
+                messageData = {
+                    message: {
+                        attachment: {
+                            payload: {
+                                elements,
+                                template_type: 'generic',
+                            },
+                            type: 'template',
+                        },
+                    },
+                    recipient: { id: toID },
+                };
             }
-            if (dataType === 'Image' || dataType === 'Video') {
-                if (dataType === 'Video' && R.isEmpty(fButtons)) {
-                    messageData.message.text = utils_1.concat([
-                        R.path(['object', 'name'], data) || '',
-                        R.path(['object', 'content'], data) || '',
-                        R.path(['object', 'url'], data),
-                    ]);
+            else if (dataType === 'Note' || dataType === 'Image' || dataType === 'Video') {
+                messageData = {
+                    message: { attachment: {}, text: '' },
+                    recipient: { id: toID },
+                };
+                const content = R.path(['object', 'content'], data);
+                const name = R.path(['object', 'name'], data) || content;
+                const attachments = R.path(['object', 'attachment'], data) || [];
+                const buttons = R.filter((attachment) => attachment.type === 'Button', attachments);
+                if (dataType === 'Image' || dataType === 'Video') {
+                    const fButtons = helpers_1.createButtons(buttons);
+                    if (dataType === 'Video' && R.isEmpty(fButtons)) {
+                        messageData.message.text = utils_1.concat([
+                            R.path(['object', 'name'], data) || '',
+                            R.path(['object', 'content'], data) || '',
+                            R.path(['object', 'url'], data),
+                        ]);
+                    }
+                    else {
+                        messageData.message.attachment = helpers_1.createAttachment(name, content, fButtons, R.path(['object', 'url'], data));
+                    }
                 }
-                else {
-                    messageData.message.attachment = helpers_1.createAttachment(name, content, fButtons, R.path(['object', 'url'], data));
-                }
-            }
-            else if (dataType === 'Note') {
-                if (!R.isEmpty(fButtons)) {
-                    messageData.message.attachment = helpers_1.createAttachment(name, content, fButtons);
-                }
-                else {
+                else if (dataType === 'Note') {
+                    const quickReplies = helpers_1.createQuickReplies(buttons);
+                    if (!R.isEmpty(quickReplies)) {
+                        messageData.message.quick_replies = quickReplies;
+                    }
                     messageData.message.text = R.path(['object', 'content'], data);
                     delete messageData.message.attachment;
                 }
             }
-            if (dataType === 'Note' || dataType === 'Image' || dataType === 'Video') {
+            if (!R.isEmpty(messageData)) {
+                this.logger.debug('Message build', { message: messageData });
                 return rp({
                     json: messageData,
                     method: 'POST',

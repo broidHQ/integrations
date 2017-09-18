@@ -14,6 +14,31 @@ export function parseQuickReplies(quickReplies: any[]): any[] {
     quickReplies));
 }
 
+export function createQuickReplies(buttons: any[]): any[] {
+  return R.reject(R.isNil)(R.map(
+    (button: any) => {
+      if (button.mediaType === 'application/vnd.geo+json') {
+        return {
+          content_type: 'location',
+        };
+      } else {
+        return {
+          content_type: 'text',
+          payload: button.url,
+          title: button.name,
+        };
+      }
+      // TODO:
+      // {
+      //   "content_type":"text",
+      //   "title":"Red",
+      //   "image_url":"http://example.com/img/red.png",
+      //   "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_RED"
+      // }
+    },
+    buttons));
+}
+
 export function createButtons(buttons: any[]): any[] {
   return R.reject(R.isNil)(R.map(
     (button: any) => {
@@ -40,9 +65,29 @@ export function createButtons(buttons: any[]): any[] {
         };
       }
 
+      // TODO: "type": "element_share", "type":"payment", "type": "account_link",
       return null;
     },
     buttons));
+}
+
+export function createElement(data: any): any {
+  const content: string = R.path(['content'], data) as string;
+  const name: string = R.path(['name'], data) as string || content;
+  const attachments: any[] = R.path(['attachment'], data) as any[] || [];
+  const buttons = R.filter(
+    (attachment: any) => attachment.type === 'Button',
+    attachments);
+  const fButtons = createButtons(buttons);
+  const imageURL = R.prop('url', data);
+
+  return {
+    buttons: fButtons && !R.isEmpty(fButtons) ? fButtons : null,
+    image_url: imageURL || '',
+    item_url: '',
+    subtitle: content !== name ? content : '',
+    title: !name || R.isEmpty(name) ? content.substring(0, 10) : name,
+  };
 }
 
 export function createAttachment(name: string,
