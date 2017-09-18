@@ -133,7 +133,10 @@ export class Adapter {
             if (validated) { return observer.next(validated); }
             return null;
           })
-          .catch((error) => this.logger.error(error));
+          .catch((error) => {
+            this.logger.error(error);
+            return Observable.empty();
+          });
       });
     });
   }

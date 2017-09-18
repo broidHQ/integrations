@@ -117,49 +117,63 @@ export class Adapter {
     return Observable.merge(
       Observable.fromEvent(this.session.Dispatcher, Events.MESSAGE_CREATE),
       Observable.fromEvent(this.session.Dispatcher, Events.MESSAGE_UPDATE))
-      .mergeMap((e: any) => {
-        // ignore message from me
-        if (R.path(['User', 'id'], this.session)
-          && R.path(['message', 'author', 'id'], e) === this.session.User.id) {
-          return Promise.resolve(null);
-        }
-
-        let msg: any = null;
-        if (e.messageId) {
-          msg = this.session.Messages.get(e.messageId);
-        } else if (e.data) {
-          msg = e.data;
-        } else if (e.message) {
-          msg = e.message.toJSON();
-        }
-
-        if (!msg) { return Promise.resolve(null); }
-        msg.guild = msg.guild ? msg.guild.toJSON() : null;
-
-        return Promise.resolve(msg)
-          .then((m) => {
-            let channel: any = this.session.Channels.get(m.channel_id);
-            if (!channel) {
-              channel = this.session.DirectMessageChannels.get(m.channel_id);
-              channel = channel.toJSON();
-              channel.isPrivate = true;
-            } else {
-              channel = channel.toJSON();
+      .switchMap((value) => {
+        return Observable.of(value)
+          .mergeMap((e: any) => {
+            // ignore message from me
+            if (R.path(['User', 'id'], this.session)
+              && R.path(['message', 'author', 'id'], e) === this.session.User.id) {
+              return Promise.resolve(null);
             }
-            m.channel = channel;
-            return m;
+
+            let msg: any = null;
+            if (e.messageId) {
+              msg = this.session.Messages.get(e.messageId);
+            } else if (e.data) {
+              msg = e.data;
+            } else if (e.message) {
+              msg = e.message.toJSON();
+            }
+
+            if (!msg) { return Promise.resolve(null); }
+            msg.guild = msg.guild ? msg.guild.toJSON() : null;
+
+            return Promise.resolve(msg)
+              .then((m) => {
+                let channel: any = this.session.Channels.get(m.channel_id);
+                if (!channel) {
+                  channel = this.session.DirectMessageChannels.get(m.channel_id);
+                  channel = channel.toJSON();
+                  channel.isPrivate = true;
+                } else {
+                  channel = channel.toJSON();
+                }
+                m.channel = channel;
+                return m;
+              })
+              .then((m) => {
+                const author = this.session.Users.get(m.author.id);
+                m.author = author.toJSON();
+                return m;
+              });
           })
-          .then((m) => {
-            const author = this.session.Users.get(m.author.id);
-            m.author = author.toJSON();
-            return m;
+          .mergeMap((normalized: any) => this.parser.parse(normalized))
+          .mergeMap((parsed) => this.parser.validate(parsed))
+          .mergeMap((validated) => {
+            if (!validated) { return Observable.empty(); }
+            return Promise.resolve(validated);
+          })
+          .catch((err) => {
+            this.logger.error('Caught Error, continuing', err);
+            // Return an empty Observable which gets collapsed in the output
+            return Observable.of(err);
           });
       })
-      .mergeMap((normalized: any) => this.parser.parse(normalized))
-      .mergeMap((parsed) => this.parser.validate(parsed))
-      .mergeMap((validated) => {
-        if (!validated) { return Observable.empty(); }
-        return Promise.resolve(validated);
+     .mergeMap((value) => {
+        if (value instanceof Error) {
+          return Observable.empty();
+        }
+        return Promise.resolve(value);
       });
   }
 

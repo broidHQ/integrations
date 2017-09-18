@@ -104,18 +104,32 @@ export class Adapter {
   // Listen 'message' event from Messenger
   public listen(): Observable<object> {
     return Observable.fromEvent(this.emitter, 'message')
-      .mergeMap((event: IWebHookEvent) => this.parser.normalize(event))
-      .mergeMap((messages: any) => {
-        if (!messages || R.isEmpty(messages)) { return Observable.empty(); }
-        return Observable.from(messages);
+      .switchMap((value) => {
+        return Observable.of(value)
+          .mergeMap((event: IWebHookEvent) => this.parser.normalize(event))
+          .mergeMap((messages: any) => {
+            if (!messages || R.isEmpty(messages)) { return Observable.empty(); }
+            return Observable.from(messages);
+          })
+          .mergeMap((message: any) => this.user(message.author)
+            .then((author) => R.assoc('authorInformation', author, message)))
+          .mergeMap((normalized) => this.parser.parse(normalized))
+          .mergeMap((parsed) => this.parser.validate(parsed))
+          .mergeMap((validated) => {
+            if (!validated) { return Observable.empty(); }
+            return Promise.resolve(validated);
+          })
+          .catch((err) => {
+            this.logger.error('Caught Error, continuing', err);
+            // Return an empty Observable which gets collapsed in the output
+            return Observable.of(err);
+          });
       })
-      .mergeMap((message: any) => this.user(message.author)
-        .then((author) => R.assoc('authorInformation', author, message)))
-      .mergeMap((normalized) => this.parser.parse(normalized))
-      .mergeMap((parsed) => this.parser.validate(parsed))
-      .mergeMap((validated) => {
-        if (!validated) { return Observable.empty(); }
-        return Promise.resolve(validated);
+      .mergeMap((value) => {
+        if (value instanceof Error) {
+          return Observable.empty();
+        }
+        return Promise.resolve(value);
       });
   }
 

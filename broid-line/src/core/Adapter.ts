@@ -139,20 +139,34 @@ export class Adapter {
     return Observable.merge(
       Observable.fromEvent(this.session, LineBot.Events.MESSAGE, (...args) => args[1].getEvent()),
       Observable.fromEvent(this.session, LineBot.Events.POSTBACK, (...args) => args[1].getEvent()))
-      .mergeMap((event: any) => this.parser.normalize(event))
-      .mergeMap((message: any) => {
-        if (R.path(['source', 'type'], message) === 'user') {
-          return this.user(message.source.userId)
-            .then((authorInformation) =>
-                  R.assoc('source', authorInformation, message));
-        }
-        return Promise.resolve(message);
+      .switchMap((value) => {
+        return Observable.of(value)
+          .mergeMap((event: any) => this.parser.normalize(event))
+          .mergeMap((message: any) => {
+            if (R.path(['source', 'type'], message) === 'user') {
+              return this.user(message.source.userId)
+                .then((authorInformation) =>
+                      R.assoc('source', authorInformation, message));
+            }
+            return Promise.resolve(message);
+          })
+          .mergeMap((normalized) => this.parser.parse(normalized))
+          .mergeMap((parsed) => this.parser.validate(parsed))
+          .mergeMap((validated) => {
+            if (!validated) { return Observable.empty(); }
+            return Promise.resolve(validated);
+          })
+          .catch((err) => {
+            this.logger.error('Caught Error, continuing', err);
+            // Return an empty Observable which gets collapsed in the output
+            return Observable.of(err);
+          });
       })
-      .mergeMap((normalized) => this.parser.parse(normalized))
-      .mergeMap((parsed) => this.parser.validate(parsed))
-      .mergeMap((validated) => {
-        if (!validated) { return Observable.empty(); }
-        return Promise.resolve(validated);
+      .mergeMap((value) => {
+        if (value instanceof Error) {
+          return Observable.empty();
+        }
+        return Promise.resolve(value);
       });
   }
 

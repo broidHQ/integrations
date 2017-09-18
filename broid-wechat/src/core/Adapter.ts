@@ -93,12 +93,26 @@ export class Adapter {
     }
 
     return Observable.fromEvent(this.emitter, 'message')
-      .mergeMap((event: object) => this.parser.parse(event))
-      .mergeMap((parsed: object | null) => this.parser.validate(parsed))
-      .mergeMap((validated: object | null) => {
-        if (!validated) { return Observable.empty(); }
-        return Promise.resolve(validated);
-      });
+    .switchMap((value) => {
+      return Observable.of(value)
+        .mergeMap((event: object) => this.parser.parse(event))
+        .mergeMap((parsed: object | null) => this.parser.validate(parsed))
+        .mergeMap((validated: object | null) => {
+          if (!validated) { return Observable.empty(); }
+          return Promise.resolve(validated);
+        })
+        .catch((err) => {
+          this.logger.error('Caught Error, continuing', err);
+          // Return an empty Observable which gets collapsed in the output
+          return Observable.of(err);
+        });
+    })
+    .mergeMap((value) => {
+      if (value instanceof Error) {
+        return Observable.empty();
+      }
+      return Promise.resolve(value);
+    });
   }
 
   // TODO: https://github.com/broidHQ/integrations/issues/114

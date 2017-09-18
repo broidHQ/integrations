@@ -7,12 +7,12 @@ const crypto = require("crypto");
 const events_1 = require("events");
 const express_1 = require("express");
 const fs = require("fs-extra");
-const uuid = require("uuid");
 const path = require("path");
 const R = require("ramda");
 const request = require("request");
 const Rx_1 = require("rxjs/Rx");
 const tmp = require("tmp");
+const uuid = require("uuid");
 const WeChat = require("wechat-api");
 const Parser_1 = require("./Parser");
 const WebHookServer_1 = require("./WebHookServer");
@@ -65,13 +65,26 @@ class Adapter {
             return Rx_1.Observable.throw(new Error('No webhookServer found.'));
         }
         return Rx_1.Observable.fromEvent(this.emitter, 'message')
-            .mergeMap((event) => this.parser.parse(event))
-            .mergeMap((parsed) => this.parser.validate(parsed))
-            .mergeMap((validated) => {
-            if (!validated) {
+            .switchMap((value) => {
+            return Rx_1.Observable.of(value)
+                .mergeMap((event) => this.parser.parse(event))
+                .mergeMap((parsed) => this.parser.validate(parsed))
+                .mergeMap((validated) => {
+                if (!validated) {
+                    return Rx_1.Observable.empty();
+                }
+                return Promise.resolve(validated);
+            })
+                .catch((err) => {
+                this.logger.error('Caught Error, continuing', err);
+                return Rx_1.Observable.of(err);
+            });
+        })
+            .mergeMap((value) => {
+            if (value instanceof Error) {
                 return Rx_1.Observable.empty();
             }
-            return Promise.resolve(validated);
+            return Promise.resolve(value);
         });
     }
     users() {
