@@ -18,6 +18,7 @@ class Adapter {
         this.logLevel = obj && obj.logLevel || 'info';
         this.token = obj && obj.token || null;
         this.tokenSecret = obj && obj.tokenSecret || null;
+        this.consumerSecret = obj && obj.consumerSecret || null;
         this.storeUsers = new Map();
         this.parser = new Parser_1.Parser(this.serviceName(), this.serviceID, this.logLevel);
         this.logger = new utils_1.Logger('adapter', this.logLevel);
@@ -102,42 +103,56 @@ class Adapter {
             const toID = R.path(['to', 'id'], data) ||
                 R.path(['to', 'name'], data);
             const dataType = R.path(['object', 'type'], data);
-            const content = R.path(['object', 'content'], data);
-            const name = R.path(['object', 'name'], data) || content;
-            const attachments = R.path(['object', 'attachment'], data) || [];
-            const buttons = R.filter((attachment) => attachment.type === 'Button', attachments);
-            const quickReplies = R.filter((button) => button.mediaType === 'application/vnd.geo+json', buttons);
-            const fButtons = helpers_1.createButtons(buttons);
-            const fbQuickReplies = helpers_1.parseQuickReplies(quickReplies);
-            const messageData = {
-                message: { attachment: {}, text: '' },
-                recipient: { id: toID },
-            };
-            if (R.length(fbQuickReplies) > 0) {
-                messageData.message.quick_replies = fbQuickReplies;
+            let messageData = {};
+            if (dataType === 'Collection') {
+                const items = R.filter((item) => item.type === 'Image', R.path(['object', 'items'], data));
+                const elements = R.map(helpers_1.createElement, items);
+                messageData = {
+                    message: {
+                        attachment: {
+                            payload: {
+                                elements,
+                                template_type: 'generic',
+                            },
+                            type: 'template',
+                        },
+                    },
+                    recipient: { id: toID },
+                };
             }
-            if (dataType === 'Image' || dataType === 'Video') {
-                if (dataType === 'Video' && R.isEmpty(fButtons)) {
-                    messageData.message.text = utils_1.concat([
-                        R.path(['object', 'name'], data) || '',
-                        R.path(['object', 'content'], data) || '',
-                        R.path(['object', 'url'], data),
-                    ]);
+            else if (dataType === 'Note' || dataType === 'Image' || dataType === 'Video') {
+                messageData = {
+                    message: { attachment: {}, text: '' },
+                    recipient: { id: toID },
+                };
+                const content = R.path(['object', 'content'], data);
+                const name = R.path(['object', 'name'], data) || content;
+                const attachments = R.path(['object', 'attachment'], data) || [];
+                const buttons = R.filter((attachment) => attachment.type === 'Button', attachments);
+                if (dataType === 'Image' || dataType === 'Video') {
+                    const fButtons = helpers_1.createButtons(buttons);
+                    if (dataType === 'Video' && R.isEmpty(fButtons)) {
+                        messageData.message.text = utils_1.concat([
+                            R.path(['object', 'name'], data) || '',
+                            R.path(['object', 'content'], data) || '',
+                            R.path(['object', 'url'], data),
+                        ]);
+                    }
+                    else {
+                        messageData.message.attachment = helpers_1.createAttachment(name, content, fButtons, R.path(['object', 'url'], data));
+                    }
                 }
-                else {
-                    messageData.message.attachment = helpers_1.createAttachment(name, content, fButtons, R.path(['object', 'url'], data));
-                }
-            }
-            else if (dataType === 'Note') {
-                if (!R.isEmpty(fButtons)) {
-                    messageData.message.attachment = helpers_1.createAttachment(name, content, fButtons);
-                }
-                else {
+                else if (dataType === 'Note') {
+                    const quickReplies = helpers_1.createQuickReplies(buttons);
+                    if (!R.isEmpty(quickReplies)) {
+                        messageData.message.quick_replies = quickReplies;
+                    }
                     messageData.message.text = R.path(['object', 'content'], data);
                     delete messageData.message.attachment;
                 }
             }
-            if (dataType === 'Note' || dataType === 'Image' || dataType === 'Video') {
+            if (!R.isEmpty(messageData)) {
+                this.logger.debug('Message build', { message: messageData });
                 return rp({
                     json: messageData,
                     method: 'POST',
@@ -194,12 +209,21 @@ class Adapter {
             }
         });
         router.post('/', (req, res) => {
-            const event = {
-                request: req,
-                response: res,
-            };
-            this.emitter.emit('message', event);
-            res.sendStatus(200);
+            let verify = true;
+            if (this.consumerSecret) {
+                verify = helpers_1.isXHubSignatureValid(req, this.consumerSecret);
+            }
+            if (verify) {
+                const event = {
+                    request: req,
+                    response: res,
+                };
+                this.emitter.emit('message', event);
+                res.sendStatus(200);
+                return;
+            }
+            this.logger.error('Failed signature validation. Make sure the consumerSecret is match.');
+            res.sendStatus(403);
         });
         return router;
     }

@@ -8,7 +8,13 @@ import * as rp from 'request-promise';
 import { Observable } from 'rxjs/Rx';
 import * as uuid from 'uuid';
 
-import { createAttachment, createButtons, parseQuickReplies } from './helpers';
+import {
+  createAttachment,
+  createButtons,
+  createElement,
+  createQuickReplies,
+  isXHubSignatureValid,
+} from './helpers';
 import { IAdapterOptions, IWebHookEvent } from './interfaces';
 import { Parser } from './Parser';
 import { WebHookServer } from './WebHookServer';
@@ -24,6 +30,7 @@ export class Adapter {
   private storeUsers: Map<string, object>;
   private token: string | null;
   private tokenSecret: string | null;
+  private consumerSecret: string | null;
   private webhookServer: WebHookServer;
 
   constructor(obj: IAdapterOptions) {
@@ -31,6 +38,7 @@ export class Adapter {
     this.logLevel = obj && obj.logLevel || 'info';
     this.token = obj && obj.token || null;
     this.tokenSecret = obj && obj.tokenSecret || null;
+    this.consumerSecret = obj && obj.consumerSecret || null;
     this.storeUsers = new Map();
 
     this.parser = new Parser(this.serviceName(), this.serviceID, this.logLevel);
@@ -133,48 +141,68 @@ export class Adapter {
         const toID: string = R.path(['to', 'id'], data) as string ||
           R.path(['to', 'name'], data) as string;
         const dataType: string = R.path(['object', 'type'], data) as string;
-        const content: string = R.path(['object', 'content'], data) as string;
-        const name: string = R.path(['object', 'name'], data) as string || content;
-        const attachments: any[] = R.path(['object', 'attachment'], data) as any[] || [];
-        const buttons = R.filter(
-          (attachment: any) => attachment.type === 'Button',
-          attachments);
-        const quickReplies = R.filter(
-          (button: any) => button.mediaType === 'application/vnd.geo+json',
-          buttons);
-        const fButtons = createButtons(buttons);
-        const fbQuickReplies = parseQuickReplies(quickReplies);
-        const messageData: any = {
-          message: { attachment: {}, text: '' },
-          recipient: { id: toID },
-        };
 
-        // Add Quick Reply
-        if (R.length(fbQuickReplies) > 0) {
-          messageData.message.quick_replies = fbQuickReplies;
-        }
+        let messageData: any = {};
 
-        if (dataType === 'Image' || dataType === 'Video') {
-          if (dataType === 'Video' && R.isEmpty(fButtons)) {
-            messageData.message.text = concat([
-              R.path(['object', 'name'], data) || '',
-              R.path(['object', 'content'], data) || '',
-              R.path(['object', 'url'], data),
-            ]);
-          } else {
-            messageData.message.attachment = createAttachment(name, content, fButtons,
-                                                              R.path(['object', 'url'], data));
-          }
-        } else if (dataType === 'Note') {
-          if (!R.isEmpty(fButtons)) {
-            messageData.message.attachment = createAttachment(name, content, fButtons);
-          } else {
+        if (dataType === 'Collection') {
+          const items: any = R.filter((item: any) =>
+            item.type === 'Image', R.path(['object', 'items'], data) as any);
+          const elements = R.map(createElement, items);
+
+          messageData = {
+            message: {
+              attachment: {
+                payload: {
+                  elements,
+                  template_type: 'generic',
+                },
+                type: 'template',
+              },
+            },
+            recipient: { id: toID },
+          };
+
+        } else if (dataType === 'Note' || dataType === 'Image' || dataType === 'Video') {
+          messageData = {
+            message: { attachment: {}, text: '' },
+            recipient: { id: toID },
+          };
+
+          const content: string = R.path(['object', 'content'], data) as string;
+          const name: string = R.path(['object', 'name'], data) as string || content;
+          const attachments: any[] = R.path(['object', 'attachment'], data) as any[] || [];
+          const buttons = R.filter(
+            (attachment: any) => attachment.type === 'Button',
+            attachments);
+
+          if (dataType === 'Image' || dataType === 'Video') {
+            const fButtons = createButtons(buttons);
+
+            if (dataType === 'Video' && R.isEmpty(fButtons)) {
+              messageData.message.text = concat([
+                R.path(['object', 'name'], data) || '',
+                R.path(['object', 'content'], data) || '',
+                R.path(['object', 'url'], data),
+              ]);
+            } else {
+              messageData.message.attachment = createAttachment(name, content, fButtons,
+                                                                R.path(['object', 'url'], data));
+            }
+          } else if (dataType === 'Note') {
+            const quickReplies = createQuickReplies(buttons);
+
+            if (!R.isEmpty(quickReplies)) {
+              messageData.message.quick_replies = quickReplies;
+            }
+
+            // TODO: add attachment in others attachments than button is setup
             messageData.message.text = R.path(['object', 'content'], data);
             delete messageData.message.attachment;
           }
         }
 
-        if (dataType === 'Note' || dataType === 'Image' || dataType === 'Video') {
+        if (!R.isEmpty(messageData)) {
+          this.logger.debug('Message build', { message: messageData });
           return rp({
             json: messageData,
             method: 'POST',
@@ -244,15 +272,25 @@ export class Adapter {
 
     // route handler
     router.post('/', (req, res) => {
-      const event: IWebHookEvent = {
-        request: req,
-        response: res,
-      };
+      let verify = true; // consumerSecret is optional
+      if (this.consumerSecret) {
+        verify = isXHubSignatureValid(req, this.consumerSecret);
+      }
 
-      this.emitter.emit('message', event);
+      if (verify) {
+        const event: IWebHookEvent = {
+          request: req,
+          response: res,
+        };
 
-      // Assume all went well.
-      res.sendStatus(200);
+        this.emitter.emit('message', event);
+        // Assume all went well.
+        res.sendStatus(200);
+        return;
+      }
+
+      this.logger.error('Failed signature validation. Make sure the consumerSecret is match.');
+      res.sendStatus(403);
     });
 
     return router;

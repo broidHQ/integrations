@@ -9,6 +9,7 @@ export interface IAdapterOptions {
   serviceID: string;
   token: string;
   tokenSecret: string;
+  consumerSecret: string;
 }
 
 export interface IWebHookEvent {
