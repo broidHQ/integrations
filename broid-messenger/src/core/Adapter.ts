@@ -8,7 +8,13 @@ import * as rp from 'request-promise';
 import { Observable } from 'rxjs/Rx';
 import * as uuid from 'uuid';
 
-import { createAttachment, createButtons, createElement, createQuickReplies } from './helpers';
+import {
+  createAttachment,
+  createButtons,
+  createElement,
+  createQuickReplies,
+  isXHubSignatureValid
+} from './helpers';
 import { IAdapterOptions, IWebHookEvent } from './interfaces';
 import { Parser } from './Parser';
 import { WebHookServer } from './WebHookServer';
@@ -24,6 +30,7 @@ export class Adapter {
   private storeUsers: Map<string, object>;
   private token: string | null;
   private tokenSecret: string | null;
+  private consumerSecret: string | null;
   private webhookServer: WebHookServer;
 
   constructor(obj: IAdapterOptions) {
@@ -31,6 +38,7 @@ export class Adapter {
     this.logLevel = obj && obj.logLevel || 'info';
     this.token = obj && obj.token || null;
     this.tokenSecret = obj && obj.tokenSecret || null;
+    this.consumerSecret = obj && obj.consumerSecret || null;
     this.storeUsers = new Map();
 
     this.parser = new Parser(this.serviceName(), this.serviceID, this.logLevel);
@@ -250,15 +258,25 @@ export class Adapter {
 
     // route handler
     router.post('/', (req, res) => {
-      const event: IWebHookEvent = {
-        request: req,
-        response: res,
-      };
+      let verify = true; // consumerSecret is optional
+      if (this.consumerSecret) {
+        verify = isXHubSignatureValid(req, this.consumerSecret);
+      }
 
-      this.emitter.emit('message', event);
+      if (verify) {
+        const event: IWebHookEvent = {
+          request: req,
+          response: res,
+        };
 
-      // Assume all went well.
-      res.sendStatus(200);
+        this.emitter.emit('message', event);
+        // Assume all went well.
+        res.sendStatus(200);
+        return;
+      }
+
+      this.logger.error('Failed signature validation. Make sure the consumerSecret is match.')
+      res.sendStatus(403);
     });
 
     return router;

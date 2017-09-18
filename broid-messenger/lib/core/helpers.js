@@ -1,6 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const crypto = require("crypto");
 const R = require("ramda");
+function isXHubSignatureValid(request, secret) {
+    const expected = crypto.createHmac('sha1', secret)
+        .update(JSON.stringify(request.body), 'utf8')
+        .digest('hex');
+    const received = request.headers['x-hub-signature'].split('sha1=')[1];
+    return crypto.timingSafeEqual(new Buffer(received, 'utf8'), new Buffer(expected, 'utf8'));
+}
+exports.isXHubSignatureValid = isXHubSignatureValid;
 function parseQuickReplies(quickReplies) {
     return R.reject(R.isNil)(R.map((button) => {
         if (button.mediaType === 'application/vnd.geo+json') {
@@ -23,7 +32,7 @@ function createQuickReplies(buttons) {
             return {
                 content_type: 'text',
                 payload: button.url,
-                title: button.name,
+                title: button.content || button.name,
             };
         }
     }, buttons));
@@ -34,13 +43,13 @@ function createButtons(buttons) {
         if (!button.mediaType) {
             return {
                 payload: button.url,
-                title: button.name,
+                title: button.content || button.name,
                 type: 'postback',
             };
         }
         else if (button.mediaType === 'text/html') {
             return {
-                title: button.name,
+                title: button.content || button.name,
                 type: 'web_url',
                 url: button.url,
             };
@@ -48,8 +57,13 @@ function createButtons(buttons) {
         else if (button.mediaType === 'audio/telephone-event') {
             return {
                 payload: button.url,
-                title: button.name,
+                title: button.content || button.name,
                 type: 'phone_number',
+            };
+        }
+        else if (button.mediaType === 'broid/share') {
+            return {
+                "type": "element_share",
             };
         }
         return null;

@@ -18,6 +18,7 @@ class Adapter {
         this.logLevel = obj && obj.logLevel || 'info';
         this.token = obj && obj.token || null;
         this.tokenSecret = obj && obj.tokenSecret || null;
+        this.consumerSecret = obj && obj.consumerSecret || null;
         this.storeUsers = new Map();
         this.parser = new Parser_1.Parser(this.serviceName(), this.serviceID, this.logLevel);
         this.logger = new utils_1.Logger('adapter', this.logLevel);
@@ -138,6 +139,7 @@ class Adapter {
                 }
             }
             if (!R.isEmpty(messageData)) {
+                console.log(JSON.stringify(messageData, null, 2));
                 this.logger.debug('Message build', { message: messageData });
                 return rp({
                     json: messageData,
@@ -195,12 +197,21 @@ class Adapter {
             }
         });
         router.post('/', (req, res) => {
-            const event = {
-                request: req,
-                response: res,
-            };
-            this.emitter.emit('message', event);
-            res.sendStatus(200);
+            let verify = true;
+            if (this.consumerSecret) {
+                verify = helpers_1.isXHubSignatureValid(req, this.consumerSecret);
+            }
+            if (verify) {
+                const event = {
+                    request: req,
+                    response: res,
+                };
+                this.emitter.emit('message', event);
+                res.sendStatus(200);
+                return;
+            }
+            this.logger.error('Failed signature validation. Make sure the consumerSecret is match.');
+            res.sendStatus(403);
         });
         return router;
     }

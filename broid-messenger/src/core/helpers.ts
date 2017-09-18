@@ -1,4 +1,13 @@
+import * as crypto from 'crypto';
 import * as R from 'ramda';
+
+export function isXHubSignatureValid(request: any, secret: string): boolean {
+  const expected = crypto.createHmac('sha1', secret)
+      .update(JSON.stringify(request.body), 'utf8')
+      .digest('hex');
+  const received = request.headers['x-hub-signature'].split('sha1=')[1];
+  return crypto.timingSafeEqual(new Buffer(received, 'utf8'), new Buffer(expected, 'utf8'));
+}
 
 export function parseQuickReplies(quickReplies: any[]): any[] {
   return R.reject(R.isNil)(R.map(
@@ -25,7 +34,7 @@ export function createQuickReplies(buttons: any[]): any[] {
         return {
           content_type: 'text',
           payload: button.url,
-          title: button.name,
+          title: button.content || button.name,
         };
       }
       // TODO:
@@ -46,13 +55,13 @@ export function createButtons(buttons: any[]): any[] {
       if (!button.mediaType) {
         return {
           payload: button.url,
-          title: button.name,
+          title: button.content || button.name,
           type: 'postback',
         };
       } else if (button.mediaType === 'text/html') {
         // facebook type: web_url, account_link
         return {
-          title: button.name,
+          title: button.content || button.name,
           type: 'web_url',
           url: button.url,
         };
@@ -60,12 +69,16 @@ export function createButtons(buttons: any[]): any[] {
         // facebook type: phone_number
         return {
           payload: button.url,
-          title: button.name,
+          title: button.content || button.name,
           type: 'phone_number',
+        };
+      } else if (button.mediaType === 'broid/share') {
+        return {
+          "type": "element_share",
         };
       }
 
-      // TODO: "type": "element_share", "type":"payment", "type": "account_link",
+      // TODO: "type":"payment", "type": "account_link",
       return null;
     },
     buttons));

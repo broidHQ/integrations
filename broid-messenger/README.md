@@ -58,7 +58,11 @@ const BroidMessenger = require('@broid/messenger');
 
 const messenger = new broidMessenger({
   token: "<oauth_token>",
-  tokenSecret: "<verify_token>"
+  tokenSecret: "<verify_token>",
+  http: {
+    port: 8080,
+    host: "0.0.0.0"
+  }
 });
 
 messenger.connect()
@@ -77,7 +81,8 @@ messenger.connect()
 | logLevel         | string   | `info`     | Can be : `fatal`, `error`, `warn`, `info`, `debug`, `trace` |
 | token            | string   |            | Your application token |
 | tokenSecret      | string   |            | Your auth verify token (hub.verify_token) |
-| http             | object   | `{ "port": 8080, "http": "0.0.0.0" }` | WebServer options (`host`, `port`) |
+| consumerSecret   | string   |            | You App Secret to validate all requests |
+| http             | object   |            | WebServer options (`host`, `port`) |
 
 ### Receive a message
 
