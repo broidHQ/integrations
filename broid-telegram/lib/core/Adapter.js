@@ -5,10 +5,10 @@ const utils_1 = require("@broid/utils");
 const Promise = require("bluebird");
 const express_1 = require("express");
 const TelegramBot = require("node-telegram-bot-api");
-const uuid = require("uuid");
 const R = require("ramda");
 const request = require("request-promise");
 const Rx_1 = require("rxjs/Rx");
+const uuid = require("uuid");
 const Parser_1 = require("./Parser");
 const WebHookServer_1 = require("./WebHookServer");
 const sortByFileSize = R.compose(R.reverse, R.sortBy(R.prop('file_size')));
@@ -78,45 +78,58 @@ class Adapter {
             .map(R.assoc('_event', 'inline_query')), Rx_1.Observable.fromEvent(this.session, 'chosen_inline_result')
             .map(R.assoc('_event', 'chosen_inline_result')), Rx_1.Observable.fromEvent(this.session, 'message')
             .map(R.assoc('_event', 'message')))
-            .mergeMap((event) => this.parser.normalize(event))
-            .mergeMap((data) => {
-            const normalized = data;
-            if (data.text) {
-                normalized.type = 'Note';
-                return Promise.resolve(normalized);
-            }
-            else if (data.photo || data.video) {
-                let file = data.photo;
-                if (R.is(Array, data.photo)) {
-                    normalized.type = 'Image';
-                    normalized.photo = sortByFileSize(data.photo);
-                    file = normalized.photo[0];
+            .switchMap((value) => {
+            return Rx_1.Observable.of(value)
+                .mergeMap((event) => this.parser.normalize(event))
+                .mergeMap((data) => {
+                const normalized = data;
+                if (data.text) {
+                    normalized.type = 'Note';
+                    return Promise.resolve(normalized);
                 }
-                if (data.video) {
-                    file = data.video;
-                    if (R.is(Array, data.video)) {
-                        normalized.type = 'Video';
-                        normalized.video = sortByFileSize(data.video);
-                        file = normalized.video[0];
+                else if (data.photo || data.video) {
+                    let file = data.photo;
+                    if (R.is(Array, data.photo)) {
+                        normalized.type = 'Image';
+                        normalized.photo = sortByFileSize(data.photo);
+                        file = normalized.photo[0];
                     }
+                    if (data.video) {
+                        file = data.video;
+                        if (R.is(Array, data.video)) {
+                            normalized.type = 'Video';
+                            normalized.video = sortByFileSize(data.video);
+                            file = normalized.video[0];
+                        }
+                    }
+                    const fileID = R.path(['file_id'], file);
+                    return this.session.getFileLink(fileID)
+                        .then((link) => {
+                        normalized.text = link;
+                        return normalized;
+                    });
                 }
-                const fileID = R.path(['file_id'], file);
-                return this.session.getFileLink(fileID)
-                    .then((link) => {
-                    normalized.text = link;
-                    return normalized;
-                });
-            }
-            this.logger.warning(new Error('This event is not supported.'));
-            return Promise.resolve(null);
+                this.logger.warning(new Error('This event is not supported.'));
+                return Promise.resolve(null);
+            })
+                .mergeMap((normalized) => this.parser.parse(normalized))
+                .mergeMap((parsed) => this.parser.validate(parsed))
+                .mergeMap((validated) => {
+                if (!validated) {
+                    return Rx_1.Observable.empty();
+                }
+                return Promise.resolve(validated);
+            })
+                .catch((err) => {
+                this.logger.error('Caught Error, continuing', err);
+                return Rx_1.Observable.of(err);
+            });
         })
-            .mergeMap((normalized) => this.parser.parse(normalized))
-            .mergeMap((parsed) => this.parser.validate(parsed))
-            .mergeMap((validated) => {
-            if (!validated) {
+            .mergeMap((value) => {
+            if (value instanceof Error) {
                 return Rx_1.Observable.empty();
             }
-            return Promise.resolve(validated);
+            return Promise.resolve(value);
         });
     }
     send(data) {

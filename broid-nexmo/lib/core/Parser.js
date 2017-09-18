@@ -4,8 +4,8 @@ const schemas_1 = require("@broid/schemas");
 const utils_1 = require("@broid/utils");
 const Promise = require("bluebird");
 const moment = require("moment");
-const uuid = require("uuid");
 const R = require("ramda");
+const uuid = require("uuid");
 class Parser {
     constructor(serviceName, serviceID, logLevel) {
         this.serviceID = serviceID;

@@ -129,12 +129,21 @@ export class Adapter {
     }
 
     return Observable.fromEvent(this.emitter, 'message')
-      .mergeMap((event: ICallrWebHookEvent) => this.parser.normalize(event))
-      .mergeMap((normalized) => this.parser.parse(normalized))
-      .mergeMap((parsed) => this.parser.validate(parsed))
-      .mergeMap((validated) => {
-        if (!validated) { return Observable.empty(); }
-        return Promise.resolve(validated);
+      .switchMap((value) => {
+        return Observable.of(value)
+        .mergeMap((event: ICallrWebHookEvent) => this.parser.normalize(event))
+        .mergeMap((normalized) => this.parser.parse(normalized))
+        .mergeMap((parsed) => this.parser.validate(parsed))
+        .mergeMap((validated) => {
+          if (!validated) { return Observable.empty(); }
+          return Promise.resolve(validated);
+        });
+      })
+      .mergeMap((value) => {
+        if (value instanceof Error) {
+          return Observable.empty();
+        }
+        return Promise.resolve(value);
       });
   }
 

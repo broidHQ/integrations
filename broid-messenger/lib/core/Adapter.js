@@ -65,22 +65,35 @@ class Adapter {
     }
     listen() {
         return Rx_1.Observable.fromEvent(this.emitter, 'message')
-            .mergeMap((event) => this.parser.normalize(event))
-            .mergeMap((messages) => {
-            if (!messages || R.isEmpty(messages)) {
-                return Rx_1.Observable.empty();
-            }
-            return Rx_1.Observable.from(messages);
+            .switchMap((value) => {
+            return Rx_1.Observable.of(value)
+                .mergeMap((event) => this.parser.normalize(event))
+                .mergeMap((messages) => {
+                if (!messages || R.isEmpty(messages)) {
+                    return Rx_1.Observable.empty();
+                }
+                return Rx_1.Observable.from(messages);
+            })
+                .mergeMap((message) => this.user(message.author)
+                .then((author) => R.assoc('authorInformation', author, message)))
+                .mergeMap((normalized) => this.parser.parse(normalized))
+                .mergeMap((parsed) => this.parser.validate(parsed))
+                .mergeMap((validated) => {
+                if (!validated) {
+                    return Rx_1.Observable.empty();
+                }
+                return Promise.resolve(validated);
+            })
+                .catch((err) => {
+                this.logger.error('Caught Error, continuing', err);
+                return Rx_1.Observable.of(err);
+            });
         })
-            .mergeMap((message) => this.user(message.author)
-            .then((author) => R.assoc('authorInformation', author, message)))
-            .mergeMap((normalized) => this.parser.parse(normalized))
-            .mergeMap((parsed) => this.parser.validate(parsed))
-            .mergeMap((validated) => {
-            if (!validated) {
+            .mergeMap((value) => {
+            if (value instanceof Error) {
                 return Rx_1.Observable.empty();
             }
-            return Promise.resolve(validated);
+            return Promise.resolve(value);
         });
     }
     send(data) {

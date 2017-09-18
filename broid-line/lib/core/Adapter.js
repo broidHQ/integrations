@@ -5,9 +5,9 @@ const utils_1 = require("@broid/utils");
 const Promise = require("bluebird");
 const express_1 = require("express");
 const LineBot = require("line-messaging");
-const uuid = require("uuid");
 const R = require("ramda");
 const Rx_1 = require("rxjs/Rx");
+const uuid = require("uuid");
 const Parser_1 = require("./Parser");
 const WebHookServer_1 = require("./WebHookServer");
 const createButtons = (attachments, tpl) => {
@@ -93,21 +93,34 @@ class Adapter {
     }
     listen() {
         return Rx_1.Observable.merge(Rx_1.Observable.fromEvent(this.session, LineBot.Events.MESSAGE, (...args) => args[1].getEvent()), Rx_1.Observable.fromEvent(this.session, LineBot.Events.POSTBACK, (...args) => args[1].getEvent()))
-            .mergeMap((event) => this.parser.normalize(event))
-            .mergeMap((message) => {
-            if (R.path(['source', 'type'], message) === 'user') {
-                return this.user(message.source.userId)
-                    .then((authorInformation) => R.assoc('source', authorInformation, message));
-            }
-            return Promise.resolve(message);
+            .switchMap((value) => {
+            return Rx_1.Observable.of(value)
+                .mergeMap((event) => this.parser.normalize(event))
+                .mergeMap((message) => {
+                if (R.path(['source', 'type'], message) === 'user') {
+                    return this.user(message.source.userId)
+                        .then((authorInformation) => R.assoc('source', authorInformation, message));
+                }
+                return Promise.resolve(message);
+            })
+                .mergeMap((normalized) => this.parser.parse(normalized))
+                .mergeMap((parsed) => this.parser.validate(parsed))
+                .mergeMap((validated) => {
+                if (!validated) {
+                    return Rx_1.Observable.empty();
+                }
+                return Promise.resolve(validated);
+            })
+                .catch((err) => {
+                this.logger.error('Caught Error, continuing', err);
+                return Rx_1.Observable.of(err);
+            });
         })
-            .mergeMap((normalized) => this.parser.parse(normalized))
-            .mergeMap((parsed) => this.parser.validate(parsed))
-            .mergeMap((validated) => {
-            if (!validated) {
+            .mergeMap((value) => {
+            if (value instanceof Error) {
                 return Rx_1.Observable.empty();
             }
-            return Promise.resolve(validated);
+            return Promise.resolve(value);
         });
     }
     send(data) {
