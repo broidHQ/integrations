@@ -13,7 +13,7 @@ import {
   createButtons,
   createElement,
   createQuickReplies,
-  isXHubSignatureValid
+  isXHubSignatureValid,
 } from './helpers';
 import { IAdapterOptions, IWebHookEvent } from './interfaces';
 import { Parser } from './Parser';
@@ -275,7 +275,7 @@ export class Adapter {
         return;
       }
 
-      this.logger.error('Failed signature validation. Make sure the consumerSecret is match.')
+      this.logger.error('Failed signature validation. Make sure the consumerSecret is match.');
       res.sendStatus(403);
     });
 

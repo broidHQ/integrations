@@ -139,7 +139,6 @@ class Adapter {
                 }
             }
             if (!R.isEmpty(messageData)) {
-                console.log(JSON.stringify(messageData, null, 2));
                 this.logger.debug('Message build', { message: messageData });
                 return rp({
                     json: messageData,

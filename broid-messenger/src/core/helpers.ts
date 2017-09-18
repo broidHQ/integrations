@@ -74,7 +74,7 @@ export function createButtons(buttons: any[]): any[] {
         };
       } else if (button.mediaType === 'broid/share') {
         return {
-          "type": "element_share",
+          type: 'element_share',
         };
       }
 

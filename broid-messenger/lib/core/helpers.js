@@ -63,7 +63,7 @@ function createButtons(buttons) {
         }
         else if (button.mediaType === 'broid/share') {
             return {
-                "type": "element_share",
+                type: 'element_share',
             };
         }
         return null;
