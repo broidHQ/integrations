@@ -176,9 +176,12 @@ export class Parser {
   }
 
   private parseAttachment(attachment: any): Promise<IASMedia | IASObject | null> {
-    if (attachment.type.toLowerCase() === 'image' || attachment.type.toLowerCase() === 'video') {
+    let attachmentType = attachment.type || '';
+    attachmentType = attachmentType.toLowerCase();
+
+    if (attachmentType === 'image' || attachmentType === 'video') {
       const a: IASMedia = {
-        type: capitalizeFirstLetter(attachment.type.toLowerCase()),
+        type: capitalizeFirstLetter(attachmentType),
         url: R.path(['payload', 'url'], attachment),
       };
 
@@ -191,7 +194,7 @@ export class Parser {
           return null;
         });
 
-    } else if (attachment.type.toLowerCase() === 'location') {
+    } else if (attachmentType === 'location') {
       return Promise.resolve({
         id: this.createIdentifier(),
         latitude: R.path(['payload', 'coordinates', 'lat'], attachment),
@@ -200,6 +203,12 @@ export class Parser {
         type: 'Place',
       } as IASObject);
     }
+    // TODO
+    // else if (attachmentType === 'template') {
+    //   // "template_type": "generic",
+    //   // Handle with collection
+    //
+    // }
 
     return Promise.resolve(null);
   }

@@ -144,9 +144,11 @@ class Parser {
         };
     }
     parseAttachment(attachment) {
-        if (attachment.type.toLowerCase() === 'image' || attachment.type.toLowerCase() === 'video') {
+        let attachmentType = attachment.type || '';
+        attachmentType = attachmentType.toLowerCase();
+        if (attachmentType === 'image' || attachmentType === 'video') {
             const a = {
-                type: utils_1.capitalizeFirstLetter(attachment.type.toLowerCase()),
+                type: utils_1.capitalizeFirstLetter(attachmentType),
                 url: R.path(['payload', 'url'], attachment),
             };
             return Promise.resolve(a)
@@ -158,7 +160,7 @@ class Parser {
                 return null;
             });
         }
-        else if (attachment.type.toLowerCase() === 'location') {
+        else if (attachmentType === 'location') {
             return Promise.resolve({
                 id: this.createIdentifier(),
                 latitude: R.path(['payload', 'coordinates', 'lat'], attachment),
