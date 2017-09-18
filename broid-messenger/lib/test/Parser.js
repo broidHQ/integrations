@@ -13,19 +13,22 @@ const ava_1 = require("ava");
 const Bluebird = require("bluebird");
 const sinon = require("sinon");
 const Parser_1 = require("../core/Parser");
-const messengerMessage = require("./fixtures/messenger/message.json");
-const messengerMessageImage = require("./fixtures/messenger/messageImage.json");
-const messengerMessageInteractiveCallback = require("./fixtures/messenger/messageInteractiveCallback.json");
-const messengerMessageLink = require("./fixtures/messenger/messageLink.json");
-const messengerMessageLocation = require("./fixtures/messenger/messageLocation.json");
+const mMessage = require("./fixtures/messenger/message.json");
+const mMessageImage = require("./fixtures/messenger/messageImage.json");
+const mMessageInteractiveCallback = require("./fixtures/messenger/messageInteractiveCallback.json");
+const mMessageInteractiveCallbackTitle = require("./fixtures/messenger/messageInteractiveCallbackTitle.json");
+const mMessageLink = require("./fixtures/messenger/messageLink.json");
+const mMessageLocation = require("./fixtures/messenger/messageLocation.json");
 const broidMessageNorm = require("./fixtures/broid/normalized/message.json");
 const broidMessageNormImage = require("./fixtures/broid/normalized/messageImage.json");
 const broidMessageNormInteraCallback = require("./fixtures/broid/normalized/messageInteractiveCallback.json");
+const broidMessageNormInteraCallbackTitle = require("./fixtures/broid/normalized/messageInteractiveCallbackTitle.json");
 const broidMessageNormLink = require("./fixtures/broid/normalized/messageLink.json");
 const broidMessageNormLocation = require("./fixtures/broid/normalized/messageLocation.json");
 const broidMessage = require("./fixtures/broid/parsed/message.json");
 const broidMessageImage = require("./fixtures/broid/parsed/messageImage.json");
 const broidMessageInteraCallback = require("./fixtures/broid/parsed/messageInteractiveCallback.json");
+const broidMessageInteraCallbackTitle = require("./fixtures/broid/parsed/messageInteractiveCallbackTitle.json");
 const broidMessageLink = require("./fixtures/broid/parsed/messageLink.json");
 const broidMessageLocation = require("./fixtures/broid/parsed/messageLocation.json");
 const author = {
@@ -49,23 +52,27 @@ ava_1.default('Parse a null', (t) => __awaiter(this, void 0, void 0, function* (
     t.deepEqual(yield data, null);
 }));
 ava_1.default('Normalize a simple message', (t) => __awaiter(this, void 0, void 0, function* () {
-    const data = parser.normalize(messengerMessage);
+    const data = parser.normalize(mMessage);
     t.deepEqual(yield data, broidMessageNorm);
 }));
 ava_1.default('Normalize a message with image', (t) => __awaiter(this, void 0, void 0, function* () {
-    const data = parser.normalize(messengerMessageImage);
+    const data = parser.normalize(mMessageImage);
     t.deepEqual(yield data, broidMessageNormImage);
 }));
 ava_1.default('Normalize a message with link', (t) => __awaiter(this, void 0, void 0, function* () {
-    const data = parser.normalize(messengerMessageLink);
+    const data = parser.normalize(mMessageLink);
     t.deepEqual(yield data, broidMessageNormLink);
 }));
 ava_1.default('Normalize a interactive message callback', (t) => __awaiter(this, void 0, void 0, function* () {
-    const data = parser.normalize(messengerMessageInteractiveCallback);
+    const data = parser.normalize(mMessageInteractiveCallback);
     t.deepEqual(yield data, broidMessageNormInteraCallback);
 }));
+ava_1.default('Normalize a interactive message callback with title', (t) => __awaiter(this, void 0, void 0, function* () {
+    const data = parser.normalize(mMessageInteractiveCallbackTitle);
+    t.deepEqual(yield data, broidMessageNormInteraCallbackTitle);
+}));
 ava_1.default('Normalize a location message', (t) => __awaiter(this, void 0, void 0, function* () {
-    const data = parser.normalize(messengerMessageLocation);
+    const data = parser.normalize(mMessageLocation);
     t.deepEqual(yield data, broidMessageNormLocation);
 }));
 ava_1.default('Parse a simple message', (t) => __awaiter(this, void 0, void 0, function* () {
@@ -91,6 +98,12 @@ ava_1.default('Parse a interactive message callback', (t) => __awaiter(this, voi
     r.authorInformation = author;
     const data = parser.parse(r);
     t.deepEqual(yield data, broidMessageInteraCallback);
+}));
+ava_1.default('Parse a interactive message callback with title', (t) => __awaiter(this, void 0, void 0, function* () {
+    const r = Object.assign({}, broidMessageNormInteraCallbackTitle[0]);
+    r.authorInformation = author;
+    const data = parser.parse(r);
+    t.deepEqual(yield data, broidMessageInteraCallbackTitle);
 }));
 ava_1.default('Parse a location message', (t) => __awaiter(this, void 0, void 0, function* () {
     const r = Object.assign({}, broidMessageNormLocation[0]);
