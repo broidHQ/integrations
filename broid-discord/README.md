@@ -34,6 +34,7 @@ Broid Integrations is an open source project providing a suite of Activity Strea
 > Connect your App to Multiple Messaging Channels with  One OpenSource Language.
 
 [![gitter](https://badges.gitter.im/broidHQ/broid.svg)](https://t.broid.ai/c/Blwjlw?utm_source=github&utm_medium=readme&utm_campaign=top&link=gitter)
+[![slackin](https://slackin.broid.ai/badge.svg)](https://slackin.broid.ai)
 
 ## Message types supported
 
