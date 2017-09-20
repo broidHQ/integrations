@@ -50,14 +50,15 @@ class Parser {
             .then(R.reject(R.isNil))
             .then((attachments) => {
             const places = R.filter((attachment) => attachment.type === 'Place', attachments);
+            const objectID = normalized.mid || this.createIdentifier();
             if (R.length(places) === 1) {
                 activitystreams.object = places[0];
-                activitystreams.object.id = normalized.mid;
+                activitystreams.object.id = objectID;
             }
             else if (R.length(attachments) === 1) {
                 const attachment = attachments[0];
                 activitystreams.object = {
-                    id: normalized.mid || this.createIdentifier(),
+                    id: objectID,
                     type: attachment.type,
                     url: attachment.url,
                 };
@@ -69,7 +70,15 @@ class Parser {
                 activitystreams.object = {
                     attachment: attachments,
                     content: normalized.content || '',
-                    id: normalized.mid || this.createIdentifier(),
+                    id: objectID,
+                    type: 'Note',
+                };
+            }
+            else if (R.path(['quickReply', 'payload'], normalized)) {
+                activitystreams.object = {
+                    content: R.path(['quickReply', 'payload'], normalized),
+                    id: objectID,
+                    name: normalized.content || '',
                     type: 'Note',
                 };
             }
