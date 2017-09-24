@@ -337,7 +337,6 @@ In order to continue providing the community with our open source work, we offer
 	* Message Bird
 	* Web Messenger (live chat for website and mobile apps with FB Messenger like features)
 	* Github
-	* WhatsApp
 	* ++ more ++
 * **Unlimited Messages & users**
 * **Secure encryption & Failover system**
