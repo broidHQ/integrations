@@ -247,7 +247,7 @@ Rx.Observable.merge(...Object.values(clients).map(client => client.listen()))
 		error: err => console.error(`Something went wrong: ${err.message}`),
 	});
 ```
-<br>
+
 ## 🔌 Get Started 🔌
 
 Here are 2 quick tutorials to get started with broid in under 5 minutes and 30 lines of codes :
@@ -257,6 +257,7 @@ Here are 2 quick tutorials to get started with broid in under 5 minutes and 30 l
 
 
 <br>
+
 ## 📱🔗📱 Integrations 🖥️🔗📱
 
 Broid Integrations support simple, media and rich messages (location, carroussel) and split into multiple libraries.
@@ -289,7 +290,7 @@ This make Broid **flexible** and **useful** to use in your application.
 |<a href="http://www.broid.ai?utm_source=github&utm_medium=readme&utm_campaign=premium_messagebird."><img width="35" src="http://www.broid.ai/dist/assets/images/github/integrations/messagebird.png"></a>| broid-messagebird |<a href="http://www.broid.ai?utm_source=github&utm_medium=readme&utm_campaign=premium_messagebird"><img src="https://img.shields.io/badge/🔒-Premium_Integration-00BFFF.svg?style=flat">|
 |<a href="http://www.broid.ai?utm_source=github&utm_medium=readme&utm_campaign=premium_github."><img width="35" src="http://www.broid.ai/dist/assets/images/github/integrations/github.png"></a>| broid-github |<a href="http://www.broid.ai?utm_source=github&utm_medium=readme&utm_campaign=premium_github"><img src="https://img.shields.io/badge/🔒-Premium_Integration-00BFFF.svg?style=flat">|
 |<a href="http://www.broid.ai?utm_source=github&utm_medium=readme&utm_campaign=premium_webmessenger."><img width="35" src="http://www.broid.ai/dist/assets/images/github/integrations/broid_webmessenger.png"></a>| broid-webmessenger |<a href="http://www.broid.ai?utm_source=github&utm_medium=readme&utm_campaign=premium_webmessenger"><img src="https://img.shields.io/badge/🔒-Premium_Integration-00BFFF.svg?style=flat">|
-<br>
+
 ### Broid Formats
 
 Broid integrations supports [Activity Streams 2.0](https://t.broid.ai/c/LSB12U?utm_source=github&utm_medium=readme&utm_campaign=formats&link=as2) and uses [broid-schemas](https://t.broid.ai/c/gepuZo?utm_source=github&utm_medium=readme&utm_campaign=formats&link=github-broid-schemas) package to validate input and output message.
@@ -298,7 +299,7 @@ Broid integrations supports [Activity Streams 2.0](https://t.broid.ai/c/LSB12U?u
 |Name|Status|
 |:--:|:----:|
 |broid-schemas |[![schemas][schemas-npm]][schemas-url] [![schemas][schemas-dm]][schemas-dm-url] [![schemas][integration-doc-badge]][schemas-url]|
-<br>
+
 ## ❤️️ Contribute ❤️️
 
 See [CONTRIBUTE.md](CONTRIBUTE.md).
