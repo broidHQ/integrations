@@ -11,8 +11,8 @@ properties:
     type: string
   context:
     oneOf:
-      - $ref: "http://schemas.broid.ai/object/object.json"
-      - { type: array, items: { $ref: "http://schemas.broid.ai/object/object.json" } }
+      - $ref: "http://schemas.broid.ai/object/context.json"
+      - { type: array, items: { $ref: "http://schemas.broid.ai/object/context.json" } }
   tag:
     oneOf:
       - $ref: "http://schemas.broid.ai/embedded/tag.json"

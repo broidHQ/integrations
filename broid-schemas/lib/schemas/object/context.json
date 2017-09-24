@@ -1,5 +1,5 @@
 {
-  "id": "http://schemas.broid.ai/embedded/actor.json",
+  "id": "http://schemas.broid.ai/object/context.json",
   "type": "object",
   "properties": {
     "id": {
@@ -7,11 +7,14 @@
     },
     "type": {
       "type": "string",
-      "enum": ["Person", "Bot", "Application"]
+      "enum": ["Object"]
     },
     "name": {
       "type": "string"
+    },
+    "content": {
+      "type": "string"
     }
   },
-  "required": ["type"]
+  "required": ["type", "content"]
 }

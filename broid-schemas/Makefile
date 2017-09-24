@@ -20,4 +20,4 @@ prepare:
 
 %.json: %.yaml prepare
 	@echo Building $@
-	(echo "id: '$(BASE_URL)$(subst src/schemas/,,$@)'"; cat $<) | js-yaml | json-minify > lib/$(subst src/,,$@)
+	(echo "id: '$(BASE_URL)$(subst src/schemas/,,$@)'"; cat $<) | js-yaml | json-minify | js-beautify -s 2 -b end-expand > lib/$(subst src/,,$@)

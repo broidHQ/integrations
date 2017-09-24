@@ -11,12 +11,5 @@ properties:
     type: number
   items:
     type: array
-    items:
-      oneOf:
-        - $ref: "http://schemas.broid.ai/object/note.json"
-          required: [ type, content ]
-        - $ref: "http://schemas.broid.ai/object/media.json"
-          required: [ type, url ]
-        - $ref: "http://schemas.broid.ai/object/place.json"
-          required: [ type, latitude, longitude ]
+    items: { $ref: "http://schemas.broid.ai/object/media.json" }
 required: [ type, items ]

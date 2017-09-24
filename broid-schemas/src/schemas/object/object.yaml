@@ -1,10 +1,8 @@
 type: object
 properties:
+  id:
+    type: string
   type:
     type: string
-    enum: [ Object ]
-  name:
-    type: string
-  content:
-    type: string
-required: [ type, content ]
+    enum: [ Note, Image, Video, Audio, Place, Document ]
+required: [ id, type ]

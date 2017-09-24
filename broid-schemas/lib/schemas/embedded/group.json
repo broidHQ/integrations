@@ -1,1 +1,17 @@
-{"id":"http://schemas.broid.ai/embedded/group.json","type":"object","properties":{"id":{"type":"string"},"type":{"type":"string","enum":["Group"]},"name":{"type":"string"}},"required":["type"]}
+{
+  "id": "http://schemas.broid.ai/embedded/group.json",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": ["Group"]
+    },
+    "name": {
+      "type": "string"
+    }
+  },
+  "required": ["type"]
+}

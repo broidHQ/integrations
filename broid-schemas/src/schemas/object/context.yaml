@@ -2,9 +2,11 @@ type: object
 properties:
   id:
     type: string
-  name:
-    type: string
   type:
     type: string
     enum: [ Object ]
-required: [ id, type, name ]
+  name:
+    type: string
+  content:
+    type: string
+required: [ type, content ]
