@@ -99,6 +99,11 @@
 [wechat-dm-url]: https://david-dm.org/broidhq/integrations?path=broid-wechat
 [wechat-npm]: https://img.shields.io/npm/v/@broid/wechat.svg
 
+[messagebird-url]: https://github.com/broidHQ/integrations/tree/master/broid-messagebird
+[messagebird-dm]: https://david-dm.org/broidhq/integrations.svg?path=broid-messagebird
+[messagebird-dm-url]: https://david-dm.org/broidhq/integrations?path=broid-messagebird
+[messagebird-npm]: https://img.shields.io/npm/v/@broid/messagebird.svg
+
 [integration-doc-badge]:https://img.shields.io/badge/docs--green.svg?style=flat
 
 [schemas-url]: https://github.com/broidHQ/integrations/tree/master/broid-schemas
@@ -110,7 +115,7 @@
 [npm-url]:https://www.npmjs.com/org/broid
 
 [node]:https://img.shields.io/node/v/@broid/slack.svg
-[node-url]:https://nodejs.org
+[node-url]:https://nodejs.org/en/download/
 
 [deps]:https://img.shields.io/badge/dependencies-checked-green.svg?style=flat
 [deps-url]:#integrations
@@ -130,43 +135,89 @@
 [gitter]:https://badges.gitter.im/broidHQ/broid.svg
 [gitter-url]:https://t.broid.ai/c/Blwjlw?utm_source=github&utm_medium=readme&utm_campaign=top&link=gitter
 
-[join-slack]:https://img.shields.io/badge/chat-on_slack-lightgrey.svg?style=flat
+[join-slack2]:http://slackin.broid.ai/badge.svg
+[join-slack]:https://img.shields.io/badge/chat-on_slack-red.svg?style=flat
 [join-slack-url]:http://slackin.broid.ai/
 
-[![npm][npm]][npm-url]
-[![node][node]][node-url]
-[![deps][deps]][deps-url]
-[![tests][tests]][tests-url]
-[![bithound][bithound]][bithound-url]
-[![bithoundscore][bithoundscore]][bithoundscore-url]
-[![nsp-checked][nsp-checked]][nsp-checked-url]
+[MEDIUM1-url]:https://medium.com/broid/integrate-a-dozen-messaging-platforms-in-5-minutes-4d77ee48f4c3
+[MEDIUM2-url]:https://medium.com/broid/integrate-a-dozen-messaging-platforms-in-30-lines-of-code-bdb3697fcb1e
 
-# Broid
 
-Broid Integrations is an open source project providing a suite of Activity Streams 2 libraries for unified interface among a vast number of communication platforms.
 
-> Connect your App to Multiple Messaging Channels with the W3C Open standard.
+<p align="center" style="font-size:50px;font-family:Courier new;">
+<a href="http://www.broid.ai?utm_source=github&utm_medium=readme&utm_campaign=header_banner)">
+		<img align="center" width=60% alt="Broid" src="http://www.broid.ai/dist/assets/images/github/integrations/broid_integrations_logo.png">
+	</a>
+</p>
+
+<p align="center"  style="font-size:100%;font-family:verdana;">
+Connect your App to Multiple Messaging Channels in a Single Integration with W3C Open standard.
+	<br>
+	<br>
+		<a href="http://slackin.broid.ai">
+			<img src="https://img.shields.io/badge/chat-on_slack-red.svg?style=flat" alt="chat on Discord">
+        </a>
+		<a href="https://github.com/broidhq/integrations/stargazers">
+        	<img src="https://img.shields.io/github/stars/broidhq/integrations.svg?style=social" alt="GitHub stars">
+		</a>
+		<a href="https://github.com/broidhq/integrations/watchers">
+        	<img src="https://img.shields.io/github/watchers/broidhq/integrations.svg?style=social" alt="GitHub watchers">
+		</a>
+		<a href="https://twitter.com/intent/tweet?text=I%20just%20discovered%20%40BroidHQ%20Integrations!%20%E2%9C%A8%20%20Here%20is%20the%20Open%20Source%20Repo%20%E2%9C%A8%20https://github.com/broidhq/integrations%20%F0%9F%A4%97">
+			<img src="https://img.shields.io/twitter/url/https/github.com/broidhq/integrations.svg?style=social" alt="Tweet">
+		</a>
+		<a href="https://twitter.com/broidhq">
+			<img src="https://img.shields.io/twitter/follow/broidhq.svg?style=social&label=Follow" alt="Tweet">
+		</a>        
+		<br><br>
+		<a href="https://github.com/broidHQ/integrations">
+			<img width="60%" alt="One API to Rule Them All" src="http://www.broid.ai/dist/assets/images/github/integrations/Broid_connector.gif">
+		</a>
+	<br>
+	<br>
+</p>
+
+<p align="center">
+		<a href="https://www.npmjs.com/org/broid">
+			<img src="https://img.shields.io/badge/npm-broid-green.svg?style=flat" alt="NPM">
+        </a>
+        <a href="https://github.com/broidHQ/integrations/blob/master/README.md#integrations">
+			<img src="https://img.shields.io/badge/dependencies-checked-green.svg?style=flat" alt="Dependencies">
+        </a>
+		<a href="https://app.wercker.com/project/byKey/661157f9db415b5b60bc8c2b92744604">
+			<img src="https://app.wercker.com/status/661157f9db415b5b60bc8c2b92744604/s/master" alt="Build">
+        </a>
+        <a href="https://www.bithound.io/github/broidHQ/integrations">
+			<img src="https://img.shields.io/bithound/code/github/broidHQ/integrations.svg" alt="NPM">
+        </a>
+        <a href="https://nodesecurity.io">
+			<img src="https://img.shields.io/badge/nsp-checked-green.svg?style=flat" alt="NPM">
+        </a>        
+</p>
+        
 
 <br>
-<a href="https://github.com/broidHQ/integrations">
-<img alt="Broid.ai" src="https://t.broid.ai/i/b-github-cover?utm_source=github&utm_medium=readme&utm_campaign=cover#a">
-</a>
-<br>
-<br>
 
-[![gitter][gitter]][gitter-url] [![join-slack][join-slack]][join-slack-url]
+## ⭐️ Introduction ⭐️
 
-## Introduction
+Broid Integrations is an open source project released by [Broid](http://www.broid.ai?utm_source=github&utm_medium=readme&utm_campaign=introduction) that allows you to easily converse on all the major communication platforms (messaging & voice) without integrating each API.
 
-Broid Integrations provide a suite of libraries to convert all messaging platforms events to [Activity Streams 2](https://t.broid.ai/c/LSB12U?utm_source=github&utm_medium=readme&utm_campaign=introduction&link=as2) schemas.
+It provides a suite of libraries to convert all messaging platforms events to [Activity Streams 2](https://www.w3.org/TR/activitystreams-core?utm_source=github&utm_medium=readme&utm_campaign=introduction&link=as2) schemas.
 
 **TL;DR**
 
 * All events are Observables ([RxJS](https://github.com/ReactiveX/rxjs))
 * All functions return a Promise ([Bluebird](http://bluebirdjs.com/docs/getting-started.html))
 * Highly modular to keep your focus on high level features
+<br><br>
 
-### Quick Example
+## 💪 Motivation 💪
+
+With billions of daily users Messaging💬 is now the prefered channel of communication but there is a clear lack of open standard for the various APIs. 
+<br><br>
+Each one come with a specfic schema, docs, etc. We want to empower the community to built great things with messaging so we open-sourced our [Premium API](https://www.broid.ai?utm_source=github&utm_medium=readme&utm_campaign=motivation) so that you can avoid the tedious work of integrating new channels and focus on your core product 💡.
+<br><br>
+## 🔎 Quick Example 🔎
 
 A quick example showing off listening for new messages on Facebook Messenger and Discord with Observables.
 
@@ -176,7 +227,6 @@ npm i --save @broid/messenger @broid/discord rxjs ramda
 
 ```javascript
 const Rx = require("rxjs/Rx");
-const R = require("ramda");
 const BroidDiscord = require("@broid/discord");
 const BroidMessenger = require("@broid/messenger");
 
@@ -185,55 +235,61 @@ const clients = {
 	messenger: new BroidMessenger({token: 'FACEBOOK_TOKEN', tokenSecret: 'FACEBOOK_SECRET'})
 };
 
-Rx.Observable.merge(...R.map(client => client.connect(), R.values(clients)))
+Rx.Observable.merge(...Object.values(clients).map(client => client.connect()))
 	.subscribe({
 		next: data => console.log(JSON.stringify(data, null, 2)),
 		error: err => console.error(`Something went wrong: ${err.message}`),
 	});
 
-Rx.Observable.merge(...R.map(client => client.listen(), R.values(clients)))
+Rx.Observable.merge(...Object.values(clients).map(client => client.listen()))
 	.subscribe({
 		next: message => console.log(JSON.stringify(message, null, 2)),
 		error: err => console.error(`Something went wrong: ${err.message}`),
 	});
 ```
+<br>
+## 🔌 Get Started 🔌
 
-### Get Started
+Here are 2 quick tutorials to get started with broid in under 5 minutes and 30 lines of codes :
+* **[Integrate a Dozen Messaging Platforms in 5 Minutes](MEDIUM1-url)**
+<br><br>
+* **[Integrate a Dozen Messaging Platforms in 30 lines of code](MEDIUM2-url)**
 
-Check out Broid's quick [**Get Started**](https://t.broid.ai/c/MRAxh0?utm_source=github&utm_medium=readme&utm_campaign=get-started) guide to get a better feel of what Broid is capable of.
 
-
-<a name="integrations"></a>
-## Integrations
+<br>
+## 📱🔗📱 Integrations 🖥️🔗📱
 
 Broid Integrations support simple, media and rich messages (location, carroussel) and split into multiple libraries.
 This make Broid **flexible** and **useful** to use in your application.
-
+<br><br>
 #### Node packages
 
 | |Name|Status|
 |:--|:--|:----|
-|<a href="https://github.com/broidHQ/integrations/tree/master/broid-alexa"><img width="35" src="https://t.broid.ai/i/p-alexa-color?utm_source=github&utm_medium=readme&utm_campaign=integrations"></a>| broid-alexa |[![alexa][alexa-npm]][alexa-url] [![alexa][alexa-dm]][alexa-dm-url] [![alexa][integration-doc-badge]][alexa-url]|
-|<a href="https://github.com/broidHQ/integrations/tree/master/broid-callr"><img width="35" src="https://t.broid.ai/i/p-callr-color?utm_source=github&utm_medium=readme&utm_campaign=integrations"></a>| broid-callr |[![callr][callr-npm]][callr-url] [![callr][callr-dm]][callr-dm-url] [![callr][integration-doc-badge]][callr-url]|
-|<a href="https://github.com/broidHQ/integrations/tree/master/broid-discord"><img width="35" src="https://t.broid.ai/i/s-discord-color?utm_source=github&utm_medium=readme&utm_campaign=integrations"></a>| broid-discord |[![discord][discord-npm]][discord-url] [![discord][discord-dm]][discord-dm-url] [![discord][integration-doc-badge]][discord-url]|
-|<a href="https://github.com/broidHQ/integrations/tree/master/broid-flowdock"><img width="35" src="https://t.broid.ai/i/s-flowdock-color?utm_source=github&utm_medium=readme&utm_campaign=integrations"></a>| broid-flowdock |[![flowdock][flowdock-npm]][flowdock-url] [![flowdock][flowdock-dm]][flowdock-dm-url] [![flowdock][integration-doc-badge]][flowdock-url]|
-|<a href="https://github.com/broidHQ/integrations/tree/master/broid-gitter"><img width="35" src="https://t.broid.ai/i/p-gitter-color?utm_source=github&utm_medium=readme&utm_campaign=integrations"></a>| broid-gitter |[![gitter][gitter-npm]][gitter-url] [![gitter][gitter-dm]][gitter-dm-url] [![gitter][integration-doc-badge]][gitter-url]|
-|<a href="https://github.com/broidHQ/integrations/tree/master/broid-google-assistant"><img width="35" src="https://t.broid.ai/i/p-google-assistant-color?utm_source=github&utm_medium=readme&utm_campaign=integrations"></a>| broid-google-assistant |[![google-assistant][google-assistant-npm]][google-assistant-url] [![google-assistant][google-assistant-dm]][google-assistant-dm-url] [![google-assistant][integration-doc-badge]][google-assistant-url]|
-|<a href="https://github.com/broidHQ/integrations/tree/master/broid-groupme"><img width="35" src="https://t.broid.ai/i/p-groupme-color?utm_source=github&utm_medium=readme&utm_campaign=integrations"></a>| broid-groupme |[![groupme][groupme-npm]][groupme-url] [![groupme][groupme-dm]][groupme-dm-url] [![groupme][integration-doc-badge]][groupme-url]|
-|<a href="https://github.com/broidHQ/integrations/tree/master/broid-irc"><img width="35" src="https://t.broid.ai/i/p-irc-color?utm_source=github&utm_medium=readme&utm_campaign=integrations"></a>| broid-irc |[![irc][irc-npm]][irc-url] [![irc][irc-dm]][irc-dm-url] [![irc][integration-doc-badge]][irc-url]|
-|<a href="https://github.com/broidHQ/integrations/tree/master/broid-kik"><img width="35" src="https://t.broid.ai/i/p-kik-color?utm_source=github&utm_medium=readme&utm_campaign=integrations"></a>| broid-kik |[![kik][kik-npm]][kik-url] [![kik][kik-dm]][kik-dm-url] [![kik][integration-doc-badge]][kik-url]|
-|<a href="https://github.com/broidHQ/integrations/tree/master/broid-line"><img width="35" src="https://t.broid.ai/i/p-line-color?utm_source=github&utm_medium=readme&utm_campaign=integrations"></a>| broid-line |[![line][line-npm]][line-url] [![line][line-dm]][line-dm-url] [![line][integration-doc-badge]][line-url]|
-|<a href="https://github.com/broidHQ/integrations/tree/master/broid-messenger"><img width="35" src="https://t.broid.ai/i/s-messenger-color?utm_source=github&utm_medium=readme&utm_campaign=integrations"></a>| broid-messenger |[![messenger][messenger-npm]][messenger-url] [![messenger][messenger-dm]][messenger-dm-url] [![messenger][integration-doc-badge]][messenger-url]|
-|<a href="https://github.com/broidHQ/integrations/tree/master/broid-ms-teams"><img width="35" src="https://t.broid.ai/i/p-ms-teams-color?utm_source=github&utm_medium=readme&utm_campaign=integrations"></a>| broid-ms-teams |[![ms-teams][ms-teams-npm]][ms-teams-url] [![ms-teams][ms-teams-dm]][ms-teams-dm-url] [![ms-teams][integration-doc-badge]][ms-teams-url]|
-|<a href="https://github.com/broidHQ/integrations/tree/master/broid-nexmo"><img width="35" src="https://t.broid.ai/i/p-nexmo-color?utm_source=github&utm_medium=readme&utm_campaign=integrations"></a>| broid-nexmo |[![nexmo][nexmo-npm]][nexmo-url] [![nexmo][nexmo-dm]][nexmo-dm-url] [![nexmo][integration-doc-badge]][nexmo-url]|
-|<a href="https://github.com/broidHQ/integrations/tree/master/broid-skype"><img width="35" src="https://t.broid.ai/i/p-skype-color?utm_source=github&utm_medium=readme&utm_campaign=integrations"></a>| broid-skype |[![skype][skype-npm]][skype-url] [![skype][skype-dm]][skype-dm-url] [![skype][integration-doc-badge]][skype-url]|
-|<a href="https://github.com/broidHQ/integrations/tree/master/broid-slack"><img width="35" src="https://t.broid.ai/i/s-slack-color?utm_source=github&utm_medium=readme&utm_campaign=integrations"></a>| broid-slack |[![viber][slack-npm]][slack-url] [![slack][slack-dm]][slack-dm-url] [![slack][integration-doc-badge]][slack-url]|
-|<a href="https://github.com/broidHQ/integrations/tree/master/broid-telegram"><img width="35" src="https://t.broid.ai/i/s-telegram-color?utm_source=github&utm_medium=readme&utm_campaign=integrations"></a>| broid-telegram |[![telegram][telegram-npm]][telegram-url] [![telegram][telegram-dm]][telegram-dm-url] [![telegram][integration-doc-badge]][telegram-url]|
-|<a href="https://github.com/broidHQ/integrations/tree/master/broid-twilio"><img width="35" src="https://t.broid.ai/i/p-twilio-color?utm_source=github&utm_medium=readme&utm_campaign=integrations"></a>| broid-twilio |[![twilio][twilio-npm]][twilio-url] [![twilio][twilio-dm]][twilio-dm-url] [![twilio][integration-doc-badge]][twilio-url]|
-|<a href="https://github.com/broidHQ/integrations/tree/master/broid-twitter"><img width="35" src="https://t.broid.ai/i/s-twitter-color?utm_source=github&utm_medium=readme&utm_campaign=integrations"></a>| broid-twitter |[![viber][twitter-npm]][twitter-url] [![twitter][twitter-dm]][twitter-dm-url] [![twitter][integration-doc-badge]][twitter-url]|
-|<a href="https://github.com/broidHQ/integrations/tree/master/broid-viber"><img width="35" src="https://t.broid.ai/i/p-viber-color?utm_source=github&utm_medium=readme&utm_campaign=integrations"></a>| broid-viber |[![viber][viber-npm]][viber-url] [![viber][viber-dm]][viber-dm-url] [![viber][integration-doc-badge]][viber-url]|
-|<a href="https://github.com/broidHQ/integrations/tree/master/broid-wechat"><img width="35" src="https://t.broid.ai/i/p-wechat-color?utm_source=github&utm_medium=readme&utm_campaign=integrations"></a>| broid-wechat |[![wechat][wechat-npm]][wechat-url] [![wechat][wechat-dm]][wechat-dm-url] [![wechat][integration-doc-badge]][wechat-url]|
-
+|<a href="https://github.com/broidHQ/integrations/tree/master/broid-alexa"><img width="35" src="http://www.broid.ai/dist/assets/images/github/integrations/Alexa.png"></a>| broid-alexa |[![alexa][alexa-npm]][alexa-url] [![alexa][alexa-dm]][alexa-dm-url] [![alexa][integration-doc-badge]][alexa-url]|
+|<a href="https://github.com/broidHQ/integrations/tree/master/broid-callr"><img width="35" src="http://www.broid.ai/dist/assets/images/github/integrations/callr.png"></a>| broid-callr |[![callr][callr-npm]][callr-url] [![callr][callr-dm]][callr-dm-url] [![callr][integration-doc-badge]][callr-url]|
+|<a href="https://github.com/broidHQ/integrations/tree/master/broid-discord"><img width="35" src="http://www.broid.ai/dist/assets/images/github/integrations/discord.png"></a>| broid-discord |[![discord][discord-npm]][discord-url] [![discord][discord-dm]][discord-dm-url] [![discord][integration-doc-badge]][discord-url]|
+|<a href="https://github.com/broidHQ/integrations/tree/master/broid-flowdock"><img width="35" src="http://www.broid.ai/dist/assets/images/github/integrations/flowdock.png"></a>| broid-flowdock |[![flowdock][flowdock-npm]][flowdock-url] [![flowdock][flowdock-dm]][flowdock-dm-url] [![flowdock][integration-doc-badge]][flowdock-url]|
+|<a href="https://github.com/broidHQ/integrations/tree/master/broid-gitter"><img width="35" src="http://www.broid.ai/dist/assets/images/github/integrations/gitter.png"></a>| broid-gitter |[![gitter][gitter-npm]][gitter-url] [![gitter][gitter-dm]][gitter-dm-url] [![gitter][integration-doc-badge]][gitter-url]|
+|<a href="https://github.com/broidHQ/integrations/tree/master/broid-google-assistant"><img width="35" src="http://www.broid.ai/dist/assets/images/github/integrations/google_assistant.png"></a>| broid-google-assistant |[![google-assistant][google-assistant-npm]][google-assistant-url] [![google-assistant][google-assistant-dm]][google-assistant-dm-url] [![google-assistant][integration-doc-badge]][google-assistant-url]|
+|<a href="https://github.com/broidHQ/integrations/tree/master/broid-groupme"><img width="35" src="http://www.broid.ai/dist/assets/images/github/integrations/groupme.png"></a>| broid-groupme |[![groupme][groupme-npm]][groupme-url] [![groupme][groupme-dm]][groupme-dm-url] [![groupme][integration-doc-badge]][groupme-url]|
+|<a href="https://github.com/broidHQ/integrations/tree/master/broid-irc"><img width="35" src="http://www.broid.ai/dist/assets/images/github/integrations/irc.png"></a>| broid-irc |[![irc][irc-npm]][irc-url] [![irc][irc-dm]][irc-dm-url] [![irc][integration-doc-badge]][irc-url]|
+|<a href="https://github.com/broidHQ/integrations/tree/master/broid-kik"><img width="35" src="http://www.broid.ai/dist/assets/images/github/integrations/kik.png"></a>| broid-kik |[![kik][kik-npm]][kik-url] [![kik][kik-dm]][kik-dm-url] [![kik][integration-doc-badge]][kik-url]|
+|<a href="https://github.com/broidHQ/integrations/tree/master/broid-line"><img width="35" src="http://www.broid.ai/dist/assets/images/github/integrations/line.png"></a>| broid-line |[![line][line-npm]][line-url] [![line][line-dm]][line-dm-url] [![line][integration-doc-badge]][line-url]|
+|<a href="https://github.com/broidHQ/integrations/tree/master/broid-messenger"><img width="35" src="http://www.broid.ai/dist/assets/images/github/integrations/messenger.png"></a>| broid-messenger |[![messenger][messenger-npm]][messenger-url] [![messenger][messenger-dm]][messenger-dm-url] [![messenger][integration-doc-badge]][messenger-url]|
+|<a href="https://github.com/broidHQ/integrations/tree/master/broid-ms-teams"><img width="35" src="http://www.broid.ai/dist/assets/images/github/integrations/ms_teams.png"></a>| broid-ms-teams |[![ms-teams][ms-teams-npm]][ms-teams-url] [![ms-teams][ms-teams-dm]][ms-teams-dm-url] [![ms-teams][integration-doc-badge]][ms-teams-url]|
+|<a href="https://github.com/broidHQ/integrations/tree/master/broid-nexmo"><img width="35" src="http://www.broid.ai/dist/assets/images/github/integrations/nexmo.png"></a>| broid-nexmo |[![nexmo][nexmo-npm]][nexmo-url] [![nexmo][nexmo-dm]][nexmo-dm-url] [![nexmo][integration-doc-badge]][nexmo-url]|
+|<a href="https://github.com/broidHQ/integrations/tree/master/broid-skype"><img width="35" src="http://www.broid.ai/dist/assets/images/github/integrations/skype.png"></a>| broid-skype |[![skype][skype-npm]][skype-url] [![skype][skype-dm]][skype-dm-url] [![skype][integration-doc-badge]][skype-url]|
+|<a href="https://github.com/broidHQ/integrations/tree/master/broid-slack"><img width="35" src="http://www.broid.ai/dist/assets/images/github/integrations/slack.png"></a>| broid-slack |[![viber][slack-npm]][slack-url] [![slack][slack-dm]][slack-dm-url] [![slack][integration-doc-badge]][slack-url]|
+|<a href="https://github.com/broidHQ/integrations/tree/master/broid-telegram"><img width="35" src="http://www.broid.ai/dist/assets/images/github/integrations/telegram.png"></a>| broid-telegram |[![telegram][telegram-npm]][telegram-url] [![telegram][telegram-dm]][telegram-dm-url] [![telegram][integration-doc-badge]][telegram-url]|
+|<a href="https://github.com/broidHQ/integrations/tree/master/broid-twilio"><img width="35" src="http://www.broid.ai/dist/assets/images/github/integrations/twilio.png"></a>| broid-twilio |[![twilio][twilio-npm]][twilio-url] [![twilio][twilio-dm]][twilio-dm-url] [![twilio][integration-doc-badge]][twilio-url]|
+|<a href="https://github.com/broidHQ/integrations/tree/master/broid-twitter"><img width="35" src="http://www.broid.ai/dist/assets/images/github/integrations/twitter.png"></a>| broid-twitter |[![viber][twitter-npm]][twitter-url] [![twitter][twitter-dm]][twitter-dm-url] [![twitter][integration-doc-badge]][twitter-url]|
+|<a href="https://github.com/broidHQ/integrations/tree/master/broid-viber"><img width="35" src="http://www.broid.ai/dist/assets/images/github/integrations/viber.png"></a>| broid-viber |[![viber][viber-npm]][viber-url] [![viber][viber-dm]][viber-dm-url] [![viber][integration-doc-badge]][viber-url]|
+|<a href="https://github.com/broidHQ/integrations/tree/master/broid-wechat"><img width="35" src="http://www.broid.ai/dist/assets/images/github/integrations/Wechat.png"></a>| broid-wechat |[![wechat][wechat-npm]][wechat-url] [![wechat][wechat-dm]][wechat-dm-url] [![wechat][integration-doc-badge]][wechat-url]|
+|<a href="http://www.broid.ai?utm_source=github&utm_medium=readme&utm_campaign=premium_messagebird."><img width="35" src="http://www.broid.ai/dist/assets/images/github/integrations/messagebird.png"></a>| broid-messagebird |<a href="http://www.broid.ai?utm_source=github&utm_medium=readme&utm_campaign=premium_messagebird"><img src="https://img.shields.io/badge/🔒-Premium_Integration-00BFFF.svg?style=flat">|
+|<a href="http://www.broid.ai?utm_source=github&utm_medium=readme&utm_campaign=premium_github."><img width="35" src="http://www.broid.ai/dist/assets/images/github/integrations/github.png"></a>| broid-github |<a href="http://www.broid.ai?utm_source=github&utm_medium=readme&utm_campaign=premium_github"><img src="https://img.shields.io/badge/🔒-Premium_Integration-00BFFF.svg?style=flat">|
+|<a href="http://www.broid.ai?utm_source=github&utm_medium=readme&utm_campaign=premium_webmessenger."><img width="35" src="http://www.broid.ai/dist/assets/images/github/integrations/broid_webmessenger.png"></a>| broid-webmessenger |<a href="http://www.broid.ai?utm_source=github&utm_medium=readme&utm_campaign=premium_webmessenger"><img src="https://img.shields.io/badge/🔒-Premium_Integration-00BFFF.svg?style=flat">|
+<br>
 ### Broid Formats
 
 Broid integrations supports [Activity Streams 2.0](https://t.broid.ai/c/LSB12U?utm_source=github&utm_medium=readme&utm_campaign=formats&link=as2) and uses [broid-schemas](https://t.broid.ai/c/gepuZo?utm_source=github&utm_medium=readme&utm_campaign=formats&link=github-broid-schemas) package to validate input and output message.
@@ -242,19 +298,49 @@ Broid integrations supports [Activity Streams 2.0](https://t.broid.ai/c/LSB12U?u
 |Name|Status|
 |:--:|:----:|
 |broid-schemas |[![schemas][schemas-npm]][schemas-url] [![schemas][schemas-dm]][schemas-dm-url] [![schemas][integration-doc-badge]][schemas-url]|
-
-## Contribute
+<br>
+## ❤️️ Contribute ❤️️
 
 See [CONTRIBUTE.md](CONTRIBUTE.md).
-
-## CLA
+<br><br>
+## 👮 CLA 👮
 
 To protect the interests of the Broid contributors, Broid, customers and end users we require contributors to sign a [Contributors License Agreement](https://cla-assistant.io/broidhq/integrations) (CLA) before we pull the changes into the main repository. [Our CLA](https://cla-assistant.io/broidhq/integrations) is simple and straightforward - it requires that the contributions you make to any Broid open source project are properly licensed and that you have the legal authority to make those changes. This helps us significantly reduce future legal risk for everyone involved. It's easy---no faxing or printing required!
 
 You can digitally sign the [CLA online](https://cla-assistant.io/broidhq/integrations). Please indicate your email address in your first pull request so that we can make sure that will locate your CLA. Once you've submitted it, you no longer need to send one for subsequent submissions.
+<br><br>
 
-## Contributors
+## 📣 Support Broid 📣
 
-[![Broid contributors](https://img.shields.io/badge/Broid%20contributors%20-broidy-%23FF0000.svg?style=flat)](https://github.com/broidy)
-[![Broid contributors](https://img.shields.io/badge/Broid%20contributors%20-killix-%23FF0000.svg?style=flat)](https://github.com/killix)
-[![Broid contributors](https://img.shields.io/badge/Broid%20contributors%20-dustinblackman-%23FF0000.svg?style=flat)](https://github.com/dustinblackman)
+<p align="center">
+  <a href="http://www.broid.ai?utm_source=github&utm_medium=readme&utm_campaign=premium">
+    <img src="https://img.shields.io/badge/✅_-Premium_Integrations-00BFFF.svg?style=flat" alt="Contribuyentes">
+  </a>
+  <a href="http://www.broid.ai?utm_source=github&utm_medium=readme&utm_campaign=premium">
+    <img src="https://img.shields.io/badge/💰_-$9.99_per_month-00BFFF.svg?style=flat" alt="Contribuyentes">
+  </a>
+  <a href="http://www.broid.ai?utm_source=github&utm_medium=readme&utm_campaign=premium">
+    <img src="https://img.shields.io/badge/🔒_-Secure_encryption_and_failover-00BFFF.svg?style=flat" alt="Speakers">
+  </a>
+  <a href="http://www.broid.ai?utm_source=github&utm_medium=readme&utm_campaign=premium">
+    <img src="https://img.shields.io/badge/∞_-Unlimited_Messages-00BFFF.svg?style=flat" alt="Speakers">
+  </a>
+  <a href="http://www.broid.ai?utm_source=github&utm_medium=readme&utm_campaign=premium">
+    <img src="https://img.shields.io/badge/📊_-Admin_Dashboard-00BFFF.svg?style=flat" alt="Speakers">
+  </a>
+<br><br>
+</p>
+
+In order to continue providing the community with our open source work, we offer a [Public API](https://www.broid.ai?utm_source=github&utm_medium=readme&utm_campaign=support). Paying users get additionnal features and early access to new integrations:
+
+* **Premium Integrations**
+	* Message Bird
+	* Web Messenger (live chat for website and mobile apps with FB Messenger like features)
+	* Github
+	* ++ more ++
+* **Unlimited Messages & users**
+* **Secure encryption & Failover system**
+* **Access to Admin Dashboard**
+* **Priviledged Technical Support**
+
+> Only $9.99 per month per active integration
