@@ -345,7 +345,7 @@ In order to continue providing the community with our open source work, we offer
 
 > Only $9.99 per month per active integration
 
-### Thanks
+## Thanks
 Project cross-browser compatibility supported by [BrowserStack](https://browserstack.com)
 
 <img width="150px" src="https://user-images.githubusercontent.com/1795343/30826593-1d3c5c96-a205-11e7-940c-6007a744026b.png" alt="Speakers">
