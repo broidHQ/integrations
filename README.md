@@ -344,3 +344,8 @@ In order to continue providing the community with our open source work, we offer
 * **Priviledged Technical Support**
 
 > Only $9.99 per month per active integration
+
+### Thanks
+Project cross-browser compatibility supported by [BrowserStack](https://browserstack.com)
+
+<img width="100px" src="https://user-images.githubusercontent.com/1795343/30826593-1d3c5c96-a205-11e7-940c-6007a744026b.png" alt="Speakers">
