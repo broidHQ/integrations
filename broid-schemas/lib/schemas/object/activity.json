@@ -1,0 +1,1 @@
+{"id":"http://schemas.broid.ai/object/activity.json","type":"object","properties":{"type":{"type":"string","enum":["Activity"]},"id":{"type":"string"},"content":{"type":"string"},"context":{"oneOf":[{"$ref":"http://schemas.broid.ai/object/object.json"},{"type":"array","items":{"$ref":"http://schemas.broid.ai/object/object.json"}}]}},"required":["type","content"]}
