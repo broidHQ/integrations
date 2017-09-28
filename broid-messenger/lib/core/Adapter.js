@@ -104,7 +104,7 @@ class Adapter {
                 R.path(['to', 'name'], data);
             const dataType = R.path(['object', 'type'], data);
             let messageData = {
-                recipient: { id: toID }
+                recipient: { id: toID },
             };
             if (dataType === 'Collection') {
                 const items = R.filter((item) => item.type === 'Image', R.path(['object', 'items'], data));
@@ -122,7 +122,7 @@ class Adapter {
             else if (dataType === 'Note' || dataType === 'Image' || dataType === 'Video') {
                 messageData = R.assoc('message', {
                     attachment: {},
-                    text: ''
+                    text: '',
                 }, messageData);
                 const content = R.path(['object', 'content'], data);
                 const name = R.path(['object', 'name'], data) || content;
@@ -148,7 +148,8 @@ class Adapter {
                         messageData.message.text = content;
                     }
                     else if (!R.isEmpty(fButtons)) {
-                        messageData.message.attachment = helpers_1.createTextWithButtons(name, content, fButtons);
+                        messageData
+                            .message.attachment = helpers_1.createTextWithButtons(name, content, fButtons);
                     }
                     else {
                         messageData.message.text = content;

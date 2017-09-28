@@ -9,11 +9,11 @@ import { Observable } from 'rxjs/Rx';
 import * as uuid from 'uuid';
 
 import {
-  createCard,
   createButtons,
+  createCard,
   createElement,
-  createTextWithButtons,
   createQuickReplies,
+  createTextWithButtons,
   isXHubSignatureValid,
 } from './helpers';
 import { IAdapterOptions, IWebHookEvent } from './interfaces';
@@ -144,7 +144,7 @@ export class Adapter {
         const dataType: string = R.path(['object', 'type'], data) as string;
 
         let messageData: any = {
-          recipient: { id: toID }
+          recipient: { id: toID },
         };
 
         if (dataType === 'Collection') {
@@ -165,7 +165,7 @@ export class Adapter {
         } else if (dataType === 'Note' || dataType === 'Image' || dataType === 'Video') {
           messageData = R.assoc('message', {
             attachment: {},
-            text: ''
+            text: '',
           }, messageData);
 
           const content: string = R.path(['object', 'content'], data) as string;
@@ -174,7 +174,6 @@ export class Adapter {
           const buttons = R.filter(
             (attachment: any) => attachment.type === 'Button' || attachment.type === 'Link',
             attachments);
-
           const fButtons = createButtons(buttons);
 
           if (dataType === 'Image' || dataType === 'Video') {
@@ -189,7 +188,7 @@ export class Adapter {
                 name,
                 content,
                 fButtons,
-                R.path(['object', 'url'], data)
+                R.path(['object', 'url'], data),
               );
             }
           } else if (dataType === 'Note') {
@@ -197,15 +196,12 @@ export class Adapter {
 
             if (!R.isEmpty(quickReplies)) {
               messageData.message.quick_replies = quickReplies;
-              messageData.message.text = content; 
+              messageData.message.text = content;
             } else if (!R.isEmpty(fButtons)) {
-              messageData.message.attachment = createTextWithButtons(
-                name,
-                content,
-                fButtons
-              );
+              messageData
+                .message.attachment = createTextWithButtons(name, content, fButtons);
             } else {
-              messageData.message.text = content; 
+              messageData.message.text = content;
             }
           }
         } else if (dataType === 'Activity') {

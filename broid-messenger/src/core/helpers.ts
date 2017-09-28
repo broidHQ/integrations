@@ -106,9 +106,9 @@ export function createElement(data: any): any {
 }
 
 export function createCard(name: string,
-                                 content: string,
-                                 buttons?: any[],
-                                 imageURL?: any): object {
+                           content: string,
+                           buttons?: any[],
+                           imageURL?: any): object {
   if (imageURL && (!name || R.isEmpty(name)) && (!buttons || R.isEmpty(buttons))) { // image
     return {
       payload: {
@@ -136,9 +136,9 @@ export function createCard(name: string,
 export function createTextWithButtons(name: string, content: string, buttons?: any[]): object {
   return {
     payload: {
+      buttons,
       template_type: 'button',
       text: content || name,
-      buttons: buttons,
     },
     type: 'template',
   };

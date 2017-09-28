@@ -117,9 +117,9 @@ exports.createCard = createCard;
 function createTextWithButtons(name, content, buttons) {
     return {
         payload: {
+            buttons,
             template_type: 'button',
             text: content || name,
-            buttons: buttons,
         },
         type: 'template',
     };
