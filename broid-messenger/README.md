@@ -38,9 +38,9 @@ Broid Integrations is an open source project providing a suite of Activity Strea
 
 ## Message types supported
 
-| Simple | Image | Video | Buttons | Location | Phone number |
-|:------:|:-----:|:-----:|:-------:|:--------:|:------------:|
-|   ✅    |   ✅   |   ✅   |    ✅    |    ✅     |              |
+| Simple | Image | Video | Buttons | Location | Activity | Phone number |
+|:------:|:-----:|:-----:|:-------:|:--------:|:------------:|:------------:|
+|   ✅    |   ✅   |   ✅   |    ✅    |    ✅     |    ✅     |              |
 
 _Phone number is platform limitation._
 
@@ -105,8 +105,70 @@ messenger.listen()
 | audio/telephone-event | phone_number  | Destination for a call in following format: "tel:123123123123". |
 |                       | postback   | Text of message which client will sent back as ordinary chat message. |
 
+## Quick replies
 
+To send quick replies, button need to contains mediaType value "text/plain"
 
+Example:
+
+```json
+{
+  "@context": "https://www.w3.org/ns/activitystreams",
+  "type": "Create",
+  "generator": {
+    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
+    "type": "Service",
+    "name": "messenger"
+  },
+  "object": {
+    "type": "Note",
+    "content": "Simple example with quickreplies",
+    "attachment": [
+      {
+        "content": "Broid",
+        "mediaType": "text/plain",
+        "name": "broid",
+        "type": "Button",
+        "url": "broid_payload",
+      }      
+    ]
+  },
+  "to": {
+    "type": "Person",
+    "id": "1396343657196792"
+  }
+}
+```
+
+## Sender Actions or Activity
+
+| content       | Action types  |                           |
+| ------------- |:-------------:| --------------------------|
+| typing/on     | typing_on     | Turn typing indicators on |
+| typing/off    | typing_off    | Turn typing indicators off |
+| typing/off    | mark_seen     | Mark last message as read |
+
+Example of turning typing indicators on with 
+
+```json
+{
+  "@context": "https://www.w3.org/ns/activitystreams",
+  "type": "Create",
+  "generator": {
+    "id": "f6e92eb6-f69e-4eae-8158-06613461cf3a",
+    "type": "Service",
+    "name": "messenger"
+  },
+  "object": {
+    "type": "Activity",
+    "content": "typing/on",
+  },
+  "to": {
+    "type": "Person",
+    "id": "1396343657196792"
+  }
+}
+```
 ### Not supported yet
 
 |            | Action types   | Content of value property |
