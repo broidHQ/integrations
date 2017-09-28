@@ -28,13 +28,14 @@ function createQuickReplies(buttons) {
                 content_type: 'location',
             };
         }
-        else {
+        else if (button.mediaType === 'text/plain') {
             return {
                 content_type: 'text',
                 payload: button.url,
                 title: button.content || button.name,
             };
         }
+        return null;
     }, buttons));
 }
 exports.createQuickReplies = createQuickReplies;
@@ -87,7 +88,7 @@ function createElement(data) {
     };
 }
 exports.createElement = createElement;
-function createAttachment(name, content, buttons, imageURL) {
+function createCard(name, content, buttons, imageURL) {
     if (imageURL && (!name || R.isEmpty(name)) && (!buttons || R.isEmpty(buttons))) {
         return {
             payload: {
@@ -112,4 +113,15 @@ function createAttachment(name, content, buttons, imageURL) {
         };
     }
 }
-exports.createAttachment = createAttachment;
+exports.createCard = createCard;
+function createTextWithButtons(name, content, buttons) {
+    return {
+        payload: {
+            template_type: 'button',
+            text: content || name,
+            buttons: buttons,
+        },
+        type: 'template',
+    };
+}
+exports.createTextWithButtons = createTextWithButtons;
