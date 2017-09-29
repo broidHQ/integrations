@@ -3,6 +3,7 @@
 - embedded/generator
 - embedded/group
 - embedded/tag
+- object/activity
 - object/collection
 - object/media
 - object/note

@@ -9,10 +9,11 @@ import { Observable } from 'rxjs/Rx';
 import * as uuid from 'uuid';
 
 import {
-  createAttachment,
   createButtons,
+  createCard,
   createElement,
   createQuickReplies,
+  createTextWithButtons,
   isXHubSignatureValid,
 } from './helpers';
 import { IAdapterOptions, IWebHookEvent } from './interfaces';
@@ -142,63 +143,80 @@ export class Adapter {
           R.path(['to', 'name'], data) as string;
         const dataType: string = R.path(['object', 'type'], data) as string;
 
-        let messageData: any = {};
+        let messageData: any = {
+          recipient: { id: toID },
+        };
 
         if (dataType === 'Collection') {
           const items: any = R.filter((item: any) =>
             item.type === 'Image', R.path(['object', 'items'], data) as any);
           const elements = R.map(createElement, items);
 
-          messageData = {
-            message: {
-              attachment: {
-                payload: {
-                  elements,
-                  template_type: 'generic',
-                },
-                type: 'template',
+          messageData = R.assoc('message', {
+            attachment: {
+              payload: {
+                elements,
+                template_type: 'generic',
               },
+              type: 'template',
             },
-            recipient: { id: toID },
-          };
+          }, messageData);
 
         } else if (dataType === 'Note' || dataType === 'Image' || dataType === 'Video') {
-          messageData = {
-            message: { attachment: {}, text: '' },
-            recipient: { id: toID },
-          };
+          messageData = R.assoc('message', {
+            attachment: {},
+            text: '',
+          }, messageData);
 
           const content: string = R.path(['object', 'content'], data) as string;
           const name: string = R.path(['object', 'name'], data) as string || content;
           const attachments: any[] = R.path(['object', 'attachment'], data) as any[] || [];
           const buttons = R.filter(
-            (attachment: any) => attachment.type === 'Button',
+            (attachment: any) => attachment.type === 'Button' || attachment.type === 'Link',
             attachments);
+          const fButtons = createButtons(buttons);
 
           if (dataType === 'Image' || dataType === 'Video') {
-            const fButtons = createButtons(buttons);
-
             if (dataType === 'Video' && R.isEmpty(fButtons)) {
               messageData.message.text = concat([
-                R.path(['object', 'name'], data) || '',
-                R.path(['object', 'content'], data) || '',
+                name || '',
+                content || '',
                 R.path(['object', 'url'], data),
               ]);
             } else {
-              messageData.message.attachment = createAttachment(name, content, fButtons,
-                                                                R.path(['object', 'url'], data));
+              messageData.message.attachment = createCard(
+                name,
+                content,
+                fButtons,
+                R.path(['object', 'url'], data),
+              );
             }
           } else if (dataType === 'Note') {
             const quickReplies = createQuickReplies(buttons);
 
             if (!R.isEmpty(quickReplies)) {
               messageData.message.quick_replies = quickReplies;
+              messageData.message.text = content;
+            } else if (!R.isEmpty(fButtons)) {
+              messageData
+                .message.attachment = createTextWithButtons(name, content, fButtons);
+            } else {
+              messageData.message.text = content;
             }
-
-            // TODO: add attachment in others attachments than button is setup
-            messageData.message.text = R.path(['object', 'content'], data);
-            delete messageData.message.attachment;
           }
+        } else if (dataType === 'Activity') {
+          const content: string = R.path(['object', 'content'], data) as string;
+          if (content === 'typing/on') {
+            messageData.sender_action = 'typing_on';
+          } else if (content === 'typing/off') {
+            messageData.sender_action = 'typing_off';
+          } else if (content === 'mark/seen') {
+            messageData.sender_action = 'mark_seen';
+          }
+        }
+
+        if (R.isEmpty(R.path(['message', 'attachment'], messageData))) {
+          delete messageData.message.attachment;
         }
 
         if (!R.isEmpty(messageData)) {
