@@ -30,13 +30,14 @@ export function createQuickReplies(buttons: any[]): any[] {
         return {
           content_type: 'location',
         };
-      } else {
+      } else if (button.mediaType === 'text/plain') {
         return {
           content_type: 'text',
           payload: button.url,
           title: button.content || button.name,
         };
       }
+      return null;
       // TODO:
       // {
       //   "content_type":"text",
@@ -104,10 +105,10 @@ export function createElement(data: any): any {
   };
 }
 
-export function createAttachment(name: string,
-                                 content: string,
-                                 buttons?: any[],
-                                 imageURL?: any): object {
+export function createCard(name: string,
+                           content: string,
+                           buttons?: any[],
+                           imageURL?: any): object {
   if (imageURL && (!name || R.isEmpty(name)) && (!buttons || R.isEmpty(buttons))) { // image
     return {
       payload: {
@@ -130,4 +131,15 @@ export function createAttachment(name: string,
       type: 'template',
     };
   }
+}
+
+export function createTextWithButtons(name: string, content: string, buttons?: any[]): object {
+  return {
+    payload: {
+      buttons,
+      template_type: 'button',
+      text: content || name,
+    },
+    type: 'template',
+  };
 }
