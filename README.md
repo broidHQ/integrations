@@ -293,7 +293,7 @@ This make Broid **flexible** and **useful** to use in your application.
 
 ### Broid Formats
 
-Broid integrations supports [Activity Streams 2.0](https://t.broid.ai/c/LSB12U?utm_source=github&utm_medium=readme&utm_campaign=formats&link=as2) and uses [broid-schemas](https://t.broid.ai/c/gepuZo?utm_source=github&utm_medium=readme&utm_campaign=formats&link=github-broid-schemas) package to validate input and output message.
+Broid integrations supports [Activity Streams 2.0](https://t.broid.ai/c/LSB12U?utm_source=github&utm_medium=readme&utm_campaign=formats&link=as2) and uses [broid-schemas](https://t.broid.ai/c/U3AMg8?utm_source=github&utm_medium=readme&utm_campaign=formats&link=github-broid-schemas) package to validate input and output message.
 
 
 |Name|Status|
