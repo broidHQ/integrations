@@ -77,7 +77,7 @@ class Parser {
                 if (attachment) {
                     as2.object = {
                         content: attachment.content,
-                        id: normalized.thread_ts || normalized.ts || this.createIdentifier(),
+                        id: normalized.ts || this.createIdentifier(),
                         mediaType: attachment.mediaType,
                         name: attachment.name,
                         type: attachment.type,
@@ -94,7 +94,7 @@ class Parser {
             if (!as2.object && !R.isEmpty(normalized.content)) {
                 as2.object = {
                     content: normalized.text,
-                    id: normalized.thread_ts || normalized.ts || this.createIdentifier(),
+                    id: normalized.ts || this.createIdentifier(),
                     type: 'Note',
                 };
             }
@@ -106,13 +106,23 @@ class Parser {
                 };
             }
             return as2;
+        })
+            .then((as2) => {
+            if (normalized.thread_ts) {
+                as2.object.context = {
+                    content: normalized.thread_ts.toString(),
+                    name: 'thread',
+                    type: 'Object',
+                };
+            }
+            return as2;
         });
     }
     createIdentifier() {
         return uuid.v4();
     }
     createActivityStream(normalized) {
-        const ts = normalized.thread_ts || normalized.ts;
+        const ts = normalized.ts;
         return {
             '@context': 'https://www.w3.org/ns/activitystreams',
             'generator': {
