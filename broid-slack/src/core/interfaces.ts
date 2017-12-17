@@ -4,11 +4,11 @@ export interface IAdapterHTTPOptions {
 }
 
 export interface IAdapterOptions {
-  logLevel: string;
-  http: IAdapterHTTPOptions;
-  serviceID: string;
   token: string;
-  asUser: boolean;
+  asUser?: boolean;
+  logLevel?: string;
+  http?: IAdapterHTTPOptions;
+  serviceID?: string;
 }
 
 export interface IWebHookEvent {
