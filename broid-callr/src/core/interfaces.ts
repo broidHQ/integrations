@@ -4,12 +4,12 @@ export interface IAdapterHTTPOptions {
 }
 
 export interface IAdapterOptions {
-  logLevel: string;
-  serviceID: string;
   token: string;
   tokenSecret: string;
-  username: string;
   webhookURL: string;
+  logLevel?: string;
+  username?: string;
+  serviceID?: string;
   http?: IAdapterHTTPOptions;
 }
 
