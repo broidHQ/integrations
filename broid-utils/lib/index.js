@@ -23,8 +23,7 @@ function isUrl(url) {
     return validUrl.isWebUri(url);
 }
 exports.isUrl = isUrl;
-function fileInfo(file) {
-    const logger = new Logger_1.Logger('fileInfo', 'debug');
+function fileInfo(file, logger) {
     return Promise.resolve(isUrl(file))
         .then((is) => {
         if (is) {
@@ -35,7 +34,9 @@ function fileInfo(file) {
     })
         .then((infos) => R.dissoc('mime', R.assoc('mimetype', infos.mime, infos)))
         .catch((error) => {
-        logger.error(error);
+        if (logger) {
+            logger.debug(error);
+        }
         return { mimetype: '' };
     });
 }

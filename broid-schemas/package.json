@@ -2,6 +2,7 @@
   "name": "@broid/schemas",
   "version": "1.1.1",
   "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "license": "AGPL-3.0+",
   "author": "Broid Team <opensource@broid.ai> (https://broid.ai)",
   "description": "Validate Broid activity streams 2.0 messages",

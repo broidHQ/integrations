@@ -1,0 +1,32 @@
+import * as Promise from 'bluebird';
+import { Observable } from 'rxjs/Rx';
+import { IAdapterOptions } from './interfaces';
+export declare class Adapter {
+    private connected;
+    private serviceID;
+    private username;
+    private myid;
+    private token;
+    private tokenSecret;
+    private consumerKey;
+    private consumerSecret;
+    private session;
+    private parser;
+    private logLevel;
+    private logger;
+    private storeUsers;
+    private sessionGET;
+    private sessionPOST;
+    constructor(obj?: IAdapterOptions);
+    users(): Promise<Map<string, object>>;
+    channels(): Promise<Error>;
+    serviceId(): string;
+    serviceName(): string;
+    getRouter(): null;
+    connect(): Observable<object>;
+    disconnect(): Promise<null>;
+    listen(): Observable<object>;
+    send(data: object): Promise<object | null>;
+    private userById(key, cache?);
+    private createMedia(url, altText?);
+}

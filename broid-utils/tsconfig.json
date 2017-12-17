@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
-    "removeComments": true,
-    "preserveConstEnums": true,
+    "declaration": true,
     "moduleResolution": "node",
     "target": "es2015",
     "module": "commonjs",

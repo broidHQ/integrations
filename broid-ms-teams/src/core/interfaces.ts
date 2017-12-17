@@ -4,9 +4,9 @@ export interface IAdapterHTTPOptions {
 }
 
 export interface IAdapterOptions {
-  logLevel: string;
-  http?: IAdapterHTTPOptions;
-  serviceID: string;
   token: string;
   tokenSecret: string;
+  logLevel?: string;
+  http?: IAdapterHTTPOptions;
+  serviceID?: string;
 }
