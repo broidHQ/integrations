@@ -1,0 +1,30 @@
+import * as Promise from 'bluebird';
+import { Router } from 'express';
+import { Observable } from 'rxjs/Rx';
+import { IAdapterOptions } from './interfaces';
+export declare class Adapter {
+    private avatar;
+    private connected;
+    private logger;
+    private logLevel;
+    private me;
+    private parser;
+    private serviceID;
+    private session;
+    private storeUsers;
+    private token;
+    private username;
+    private router;
+    private webhookServer;
+    private webhookURL;
+    constructor(obj: IAdapterOptions);
+    users(): Promise<Map<string, any>>;
+    channels(): Promise<Error>;
+    serviceName(): string;
+    serviceId(): string;
+    getRouter(): Router | null;
+    connect(): Observable<object | Error>;
+    disconnect(): Promise<null>;
+    listen(): Observable<object>;
+    send(data: object): Promise<any>;
+}
