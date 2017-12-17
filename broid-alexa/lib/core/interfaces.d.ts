@@ -1,24 +1,22 @@
+/// <reference types="bluebird" />
 import * as Promise from 'bluebird';
-import { Router  } from 'express';
+import { Router } from 'express';
 import { Observable } from 'rxjs/Rx';
-
 export interface IAdapterHTTPOptions {
-  host: string;
-  port: number;
+    host: string;
+    port: number;
 }
-
 export interface IAdapterOptions {
-  http?: IAdapterHTTPOptions;
-  logLevel?: string;
-  serviceID?: string;
+    http?: IAdapterHTTPOptions;
+    logLevel?: string;
+    serviceID?: string;
 }
-
 export interface IAdapter {
     serviceName(): string;
     serviceId(): string;
     getRouter(): Router | null;
-    users(): Promise<Map<string, object>  | Error>;
-    channels(): Promise<Map<string, object>  | Error>;
+    users(): Promise<Map<string, object> | Error>;
+    channels(): Promise<Map<string, object> | Error>;
     connect(): Observable<object>;
     disconnect(): Promise<null>;
     listen(): Observable<object>;
