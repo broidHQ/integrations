@@ -5,6 +5,8 @@ properties:
     enum: [ Collection ]
   name:
     type: string
+  id:
+    type: string    
   content:
     type: string
   totalItems:
