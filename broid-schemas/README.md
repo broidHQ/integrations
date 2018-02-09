@@ -13,7 +13,7 @@ Theses schemas use [activitystreams 2.0](https://www.w3.org/TR/activitystreams-c
 
 ### Examples
 
-Here you'll find examples of communcation across different services. Even though the examples may not be to the service
+Here you'll find examples of communication across different services. Even though the examples may not be to the service
 you wish to use, the schema remains the same across all integrations if the communication method (e.g images, videos) is
 supported.
 
