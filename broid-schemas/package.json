@@ -1,6 +1,6 @@
 {
   "name": "@broid/schemas",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "main": "lib/index.js",
   "license": "AGPL-3.0+",
   "author": "Broid Team <opensource@broid.ai> (https://broid.ai)",
@@ -55,7 +55,7 @@
     "tslint": "^4.4.2",
     "tslint-eslint-rules": "^3.5.1",
     "tslint-microsoft-contrib": "^4.0.1",
-    "typescript": "~2.2.2",
+    "typescript": "^2.7.1",
     "watch": "^1.0.1"
   }
 }
