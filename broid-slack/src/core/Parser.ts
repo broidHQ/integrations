@@ -1,8 +1,8 @@
- import {
-   default as schemas,
-   IActivityStream,
-   IASMedia,
- } from '@broid/schemas';
+import {
+  default as schemas,
+  IActivityStream,
+  IASMedia,
+} from '@broid/schemas';
 import { cleanNulls, fileInfo, isUrl, Logger } from '@broid/utils';
 
 import * as Promise from 'bluebird';
@@ -95,7 +95,7 @@ export class Parser {
           if (attachment) {
             as2.object = {
               content: attachment.content,
-              id: normalized.thread_ts || normalized.ts || this.createIdentifier(),
+              id: normalized.ts || this.createIdentifier(),
               mediaType: attachment.mediaType,
               name: attachment.name,
               type: attachment.type,
@@ -110,11 +110,11 @@ export class Parser {
 
         return as2;
       })
-      .then((as2) => {
+      .then((as2: IActivityStream) => {
         if (!as2.object && !R.isEmpty(normalized.content)) {
           as2.object = {
             content: normalized.text,
-            id: normalized.thread_ts || normalized.ts || this.createIdentifier(),
+            id: normalized.ts || this.createIdentifier(),
             type: 'Note',
           };
         }
@@ -128,6 +128,17 @@ export class Parser {
         }
 
         return as2;
+      })
+      .then((as2: IActivityStream) => { // Thread
+        if (normalized.thread_ts) {
+          as2.object.context = {
+            content: normalized.thread_ts.toString(),
+            name: 'thread',
+            type: 'Object',
+          };
+        }
+
+        return as2;
       });
   }
 
@@ -136,7 +147,7 @@ export class Parser {
   }
 
   private createActivityStream(normalized: any): IActivityStream {
-    const ts: string = normalized.thread_ts || normalized.ts;
+    const ts: string = normalized.ts;
 
     return {
       '@context': 'https://www.w3.org/ns/activitystreams',

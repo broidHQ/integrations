@@ -18,7 +18,7 @@ import {
   IWebHookEvent,
 } from './interfaces';
 import { Parser } from './Parser';
-import { WebHookServer} from './WebHookServer';
+import { WebHookServer } from './WebHookServer';
 
 export class Adapter {
   private asUser: boolean;
@@ -145,76 +145,76 @@ export class Adapter {
     events.push(webHookEvent);
 
     return Observable.merge(...events)
-    .switchMap((value) => {
-      return Observable.of(value)
-        .mergeMap((event: ISlackMessage) => {
-          if (!R.contains(event.type, [
-            'message',
-            'event_callback',
-            'slash_command',
-            'interactive_message',
-          ])) { return Promise.resolve(null); }
+      .switchMap((value) => {
+        return Observable.of(value)
+          .mergeMap((event: ISlackMessage) => {
+            if (!R.contains(event.type, [
+              'message',
+              'event_callback',
+              'slash_command',
+              'interactive_message',
+            ])) { return Promise.resolve(null); }
 
-          if (event.type === 'message' && R.contains(event.subtype, [
-             'channel_join',
-             'message_changed',
-          ])) { return Promise.resolve(null); }
+            if (event.type === 'message' && R.contains(event.subtype, [
+              'channel_join',
+              'message_changed',
+            ])) { return Promise.resolve(null); }
 
-          return Promise.resolve(event)
-            .then((evt) => {
-              // if user id exist, we get information about the user
-              if (evt.user) {
-                return this.user(evt.user)
-                  .then((userInfo) => {
-                    if (userInfo) {
-                      evt.user = userInfo;
-                    }
-                    return evt;
-                  });
-              }
-              return evt;
-            })
-            .then((evt) => {
-              // if channel id exist, we get information about the channel
-              if (evt.channel) {
-                return this.channel(evt.channel)
-                  .then((channelInfo) => {
-                    if (channelInfo) {
-                      evt.channel = channelInfo;
-                    }
-                    return evt;
-                  });
-              }
-            })
-            .then((evt) => {
-              if (evt.subtype === 'bot_message') {
-                evt.user = {
-                  id: evt.bot_id,
-                  is_bot: true,
-                  name: evt.username,
-                };
-              }
-              return evt;
-            });
-        })
-        .mergeMap((normalized: IMessage) => this.parser.parse(normalized))
-        .mergeMap((parsed) => this.parser.validate(parsed))
-        .mergeMap((validated) => {
-          if (!validated) { return Observable.empty(); }
-          return Promise.resolve(validated);
-        })
-        .catch((err) => {
-          this.logger.error('Caught Error, continuing', err);
-          // Return an empty Observable which gets collapsed in the output
-          return Observable.of(err);
-        });
-    })
-    .mergeMap((value) => {
-      if (value instanceof Error) {
-        return Observable.empty();
-      }
-      return Promise.resolve(value);
-    });
+            return Promise.resolve(event)
+              .then((evt) => {
+                // if user id exist, we get information about the user
+                if (evt.user) {
+                  return this.user(evt.user)
+                    .then((userInfo) => {
+                      if (userInfo) {
+                        evt.user = userInfo;
+                      }
+                      return evt;
+                    });
+                }
+                return evt;
+              })
+              .then((evt) => {
+                // if channel id exist, we get information about the channel
+                if (evt.channel) {
+                  return this.channel(evt.channel)
+                    .then((channelInfo) => {
+                      if (channelInfo) {
+                        evt.channel = channelInfo;
+                      }
+                      return evt;
+                    });
+                }
+              })
+              .then((evt) => {
+                if (evt.subtype === 'bot_message') {
+                  evt.user = {
+                    id: evt.bot_id,
+                    is_bot: true,
+                    name: evt.username,
+                  };
+                }
+                return evt;
+              });
+          })
+          .mergeMap((normalized: IMessage) => this.parser.parse(normalized))
+          .mergeMap((parsed) => this.parser.validate(parsed))
+          .mergeMap((validated) => {
+            if (!validated) { return Observable.empty(); }
+            return Promise.resolve(validated);
+          })
+          .catch((err) => {
+            this.logger.error('Caught Error, continuing', err);
+            // Return an empty Observable which gets collapsed in the output
+            return Observable.of(err);
+          });
+      })
+      .mergeMap((value) => {
+        if (value instanceof Error) {
+          return Observable.empty();
+        }
+        return Promise.resolve(value);
+      });
   }
 
   public send(data: ISendParameters): Promise<object | Error> {
@@ -261,12 +261,16 @@ export class Adapter {
       .spread((message, actions, attachments, responseURL) =>
         createSendMessage(data, message, actions, attachments, responseURL))
       .then((msg) => {
-        const opts = {
+        const opts: any = {
           as_user: this.asUser,
           attachments: msg.attachments || [],
-          thread_ts: msg.messageID,
           unfurl_links: true,
         };
+
+        // In case this is a reply
+        if (R.path(['object', 'context', 'name'], data) === 'thread') {
+          opts.thread_ts = R.path(['object', 'context', 'content'], data);
+        }
 
         const confirm = () => {
           if (msg.callbackID) {
@@ -348,10 +352,10 @@ export class Adapter {
 
       throw chan.error || grp.error;
     })
-    .then((info) => {
-      this.storeChannels.set(key, info);
-      return info;
-    });
+      .then((info) => {
+        this.storeChannels.set(key, info);
+        return info;
+      });
   }
 
   // Return user information

@@ -202,9 +202,11 @@ class Adapter {
             const opts = {
                 as_user: this.asUser,
                 attachments: msg.attachments || [],
-                thread_ts: msg.messageID,
                 unfurl_links: true,
             };
+            if (R.path(['object', 'context', 'name'], data) === 'thread') {
+                opts.thread_ts = R.path(['object', 'context', 'content'], data);
+            }
             const confirm = () => {
                 if (msg.callbackID) {
                     return { callbackID: msg.callbackID, serviceID: this.serviceId(), type: 'sent' };
