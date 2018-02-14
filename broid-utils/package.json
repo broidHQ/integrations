@@ -25,6 +25,7 @@
   "engines": {
     "node": ">=6.0.0"
   },
+  "types": "./lib/core/index.d.ts",
   "scripts": {
     "build": "yarn run clean && yarn run copy:config && tsc -p tsconfig.json",
     "clean": "rm -rf lib && rm -rf tsconfig.json && rm -rf tslint.json",

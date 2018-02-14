@@ -359,7 +359,7 @@ export class Adapter {
   }
 
   // Return user information
-  private user(key: string, cache: boolean = true): Promise<object> {
+  public user(key: string, cache: boolean = true): Promise<object> {
     if (cache && this.storeUsers.get(key)) {
       const data = this.storeUsers.get(key);
       return Promise.resolve(data);

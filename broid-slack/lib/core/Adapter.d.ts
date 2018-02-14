@@ -1,0 +1,34 @@
+import { ISendParameters } from '@broid/schemas';
+import * as Promise from 'bluebird';
+import { Router } from 'express';
+import { Observable } from 'rxjs/Rx';
+import { IAdapterOptions } from './interfaces';
+export declare class Adapter {
+    private asUser;
+    private connected;
+    private emitter;
+    private logLevel;
+    private logger;
+    private parser;
+    private router;
+    private serviceID;
+    private session;
+    private sessionWeb;
+    private storeUsers;
+    private storeChannels;
+    private token;
+    private webhookServer;
+    constructor(obj: IAdapterOptions);
+    users(): Promise<Map<string, object>>;
+    channels(): Promise<Map<string, object>>;
+    serviceId(): string;
+    getRouter(): Router | null;
+    serviceName(): string;
+    connect(): Observable<object>;
+    disconnect(): Promise<null>;
+    listen(): Observable<object>;
+    send(data: ISendParameters): Promise<object | Error>;
+    private channel(key, cache?);
+    user(key: string, cache?: boolean): Promise<object>;
+    private setupRoutes();
+}
